@@ -1,4 +1,4 @@
-﻿using Autofac.Core.Resolving.Pipeline;
+﻿using Autofac.Core.Resolving;
 
 namespace Autofac.Core.Diagnostics
 {

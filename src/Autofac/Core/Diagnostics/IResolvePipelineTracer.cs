@@ -1,4 +1,5 @@
 ﻿using System;
+using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Diagnostics

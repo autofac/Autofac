@@ -27,8 +27,9 @@ using System;
 using System.Collections.Generic;
 using Autofac.Core.Diagnostics;
 using Autofac.Core.Resolving.Middleware;
+using Autofac.Core.Resolving.Pipeline;
 
-namespace Autofac.Core.Resolving.Pipeline
+namespace Autofac.Core.Resolving
 {
     /// <summary>
     /// Defines the base properties and behaviour of a resolve operation.
