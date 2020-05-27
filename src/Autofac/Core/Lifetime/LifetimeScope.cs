@@ -165,6 +165,7 @@ namespace Autofac.Core.Lifetime
             handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
         }
 
+        /// <inheritdoc />
         public void AttachTrace(IResolvePipelineTracer tracer)
         {
             _tracer = tracer ?? throw new ArgumentNullException(nameof(tracer));

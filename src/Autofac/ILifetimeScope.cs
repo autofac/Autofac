@@ -119,7 +119,7 @@ namespace Autofac
         ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction);
 
         /// <summary>
-        /// Enable tracing on this scope, routing trace events to the specified tracer.
+        /// Enable tracing (or replace existing tracing) on this scope, routing trace events to the specified tracer.
         /// All lifetime scopes created from this one will inherit this tracer as well.
         /// </summary>
         /// <param name="tracer">The <see cref="IResolvePipelineTracer"/> implementation.</param>
