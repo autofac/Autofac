@@ -34,9 +34,9 @@ namespace Autofac.Core
     public interface IInstanceActivator : IDisposable
     {
         /// <summary>
-        /// Configure a registrations resolve pipeline just before the pipeline is built, and with the available services known to you.
+        /// Allows an implementation to add middleware to a registration's resolve pipeline.
         /// </summary>
-        /// <param name="componentRegistryServices">Provides access to the set of available services.</param>
+        /// <param name="componentRegistryServices">Provides access to the set of all available services.</param>
         /// <param name="pipelineBuilder">The registration's pipeline builder.</param>
         void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder);
 
