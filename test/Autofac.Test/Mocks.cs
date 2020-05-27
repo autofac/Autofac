@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Core.Diagnostics;
+using Autofac.Core.Resolving;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Test
 {
@@ -66,22 +69,13 @@ namespace Autofac.Test
 
             public bool IsAdapterForIndividualComponent { get; }
 
-            public event EventHandler<PreparingEventArgs> Preparing = (sender, args) => { };
+            public event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
 
-            public void RaisePreparing(IComponentContext context, Service service, ref IEnumerable<Parameter> parameters)
+            public IResolvePipeline ResolvePipeline { get; } = new ResolvePipelineBuilder().Build();
+
+            public void BuildResolvePipeline(IComponentRegistryServices registryServices)
             {
-            }
-
-            public event EventHandler<ActivatingEventArgs<object>> Activating = (sender, args) => { };
-
-            public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, Service service, ref object instance)
-            {
-            }
-
-            public event EventHandler<ActivatedEventArgs<object>> Activated = (sender, args) => { };
-
-            public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, Service service, object instance)
-            {
+                PipelineBuilding?.Invoke(this, new ResolvePipelineBuilder());
             }
         }
     }

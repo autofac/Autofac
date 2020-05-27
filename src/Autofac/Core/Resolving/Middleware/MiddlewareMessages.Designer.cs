@@ -8,9 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Core.Resolving {
+namespace Autofac.Core.Resolving.Middleware {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,17 +19,17 @@ namespace Autofac.Core.Resolving {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class CircularDependencyDetectorResources {
+    internal class MiddlewareMessages {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal CircularDependencyDetectorResources() {
+        internal MiddlewareMessages() {
         }
         
         /// <summary>
@@ -40,7 +39,7 @@ namespace Autofac.Core.Resolving {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Resolving.CircularDependencyDetectorResources", typeof(CircularDependencyDetectorResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Resolving.Middleware.MiddlewareMessages", typeof(MiddlewareMessages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,20 +61,22 @@ namespace Autofac.Core.Resolving {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Circular component dependency detected: {0}..
+        ///   Looks up a localized string similar to The Activation phase of the resolve pipeline did not populate the request context&apos;s Instance..
         /// </summary>
-        internal static string CircularDependency {
+        internal static string ActivatorDidNotPopulateInstance {
             get {
-                return ResourceManager.GetString("CircularDependency", resourceCulture);
+                return ResourceManager.GetString("ActivatorDidNotPopulateInstance", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Probable circular dependency between factory-scoped components. Chain includes &apos;{0}&apos;.
+        ///   Looks up a localized string similar to Unable to resolve the type &apos;{0}&apos; because the lifetime scope it belongs in can&apos;t be located. The following services are exposed by this registration:
+        ///{1}
+        ///Details.
         /// </summary>
-        internal static string MaxDepthExceeded {
+        internal static string UnableToLocateLifetimeScope {
             get {
-                return ResourceManager.GetString("MaxDepthExceeded", resourceCulture);
+                return ResourceManager.GetString("UnableToLocateLifetimeScope", resourceCulture);
             }
         }
     }

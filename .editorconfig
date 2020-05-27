@@ -15,6 +15,18 @@ insert_final_newline = true
 indent_size = 4
 charset = utf-8-bom
 
+; Force VS to recommend underscore at the start of created private fields.
+[*.{cs,vb}]
+dotnet_naming_rule.private_members_with_underscore.symbols  = private_fields
+dotnet_naming_rule.private_members_with_underscore.style    = prefix_underscore
+dotnet_naming_rule.private_members_with_underscore.severity = suggestion
+
+dotnet_naming_symbols.private_fields.applicable_kinds           = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+
+dotnet_naming_style.prefix_underscore.capitalization = camel_case
+dotnet_naming_style.prefix_underscore.required_prefix = _
+
 ; .NET project files and MSBuild - match defaults for VS
 [*.{csproj,nuspec,proj,projitems,props,shproj,targets,vbproj,vcxproj,vcxproj.filters,vsixmanifest,vsct}]
 indent_size = 2

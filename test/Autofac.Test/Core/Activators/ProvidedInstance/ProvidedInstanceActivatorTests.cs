@@ -19,7 +19,11 @@ namespace Autofac.Test.Component.Activation
 
             ProvidedInstanceActivator target = new ProvidedInstanceActivator(instance);
 
-            var actual = target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters);
+            var container = Factory.CreateEmptyContainer();
+
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+            var actual = invoker(container, Factory.NoParameters);
 
             Assert.Same(instance, actual);
         }
@@ -32,10 +36,14 @@ namespace Autofac.Test.Component.Activation
             ProvidedInstanceActivator target =
                 new ProvidedInstanceActivator(instance);
 
-            target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters);
+            var container = Factory.CreateEmptyContainer();
+
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+            invoker(container, Factory.NoParameters);
 
             Assert.Throws<InvalidOperationException>(() =>
-                target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters));
+                invoker(container, Factory.NoParameters));
         }
     }
 }

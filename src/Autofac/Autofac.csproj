@@ -46,10 +46,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="2.9.8">
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.0.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Condition="Exists('$(MSBuildThisFileDirectory)../../.git')">
@@ -129,6 +129,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ContainerResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Core\Diagnostics\TracerMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TracerMessages.resx</DependentUpon>
+    </Compile>
     <Compile Update="Core\Lifetime\LifetimeScopeResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -154,15 +159,25 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ServiceRegistrationInfoResources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Core\Resolving\CircularDependencyDetectorResources.Designer.cs">
+    <Compile Update="Core\Resolving\Middleware\CircularDependencyDetectorMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>CircularDependencyDetectorResources.resx</DependentUpon>
+      <DependentUpon>CircularDependencyDetectorMessages.resx</DependentUpon>
     </Compile>
     <Compile Update="Core\Resolving\ComponentActivationResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ComponentActivationResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Resolving\Middleware\MiddlewareMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MiddlewareMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Resolving\Pipeline\ResolvePipelineBuilderMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResolvePipelineBuilderMessages.resx</DependentUpon>
     </Compile>
     <Compile Update="Core\Resolving\ResolveOperationResources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -330,6 +345,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ContainerResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Core\Diagnostics\TracerMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TracerMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Core\Lifetime\LifetimeScopeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LifetimeScopeResources.Designer.cs</LastGenOutput>
@@ -350,13 +369,21 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ServiceRegistrationInfoResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Core\Resolving\CircularDependencyDetectorResources.resx">
+    <EmbeddedResource Update="Core\Resolving\Middleware\CircularDependencyDetectorMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>CircularDependencyDetectorResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>CircularDependencyDetectorMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\Resolving\ComponentActivationResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ComponentActivationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Resolving\Middleware\MiddlewareMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MiddlewareMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Resolving\Pipeline\ResolvePipelineBuilderMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResolvePipelineBuilderMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\Resolving\ResolveOperationResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

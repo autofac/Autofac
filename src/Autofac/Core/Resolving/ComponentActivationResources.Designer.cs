@@ -8,8 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System.Reflection;
-
 namespace Autofac.Core.Resolving {
     using System;
     
@@ -21,7 +19,7 @@ namespace Autofac.Core.Resolving {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ComponentActivationResources {
@@ -41,7 +39,7 @@ namespace Autofac.Core.Resolving {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Resolving.ComponentActivationResources", typeof(ComponentActivationResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Resolving.ComponentActivationResources", typeof(ComponentActivationResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -77,17 +75,6 @@ namespace Autofac.Core.Resolving {
         internal static string ErrorDuringActivation {
             get {
                 return ResourceManager.GetString("ErrorDuringActivation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to resolve the type &apos;{0}&apos; because the lifetime scope it belongs in can&apos;t be located. The following services are exposed by this registration:
-        ///{1}
-        ///Details.
-        /// </summary>
-        internal static string UnableToLocateLifetimeScope {
-            get {
-                return ResourceManager.GetString("UnableToLocateLifetimeScope", resourceCulture);
             }
         }
     }

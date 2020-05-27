@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright © 2020 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,36 +23,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-
-namespace Autofac.Core.Resolving
+namespace Autofac.Core.Resolving.Pipeline
 {
     /// <summary>
-    /// Fired when an instance is looked up.
+    /// Represents a pipeline that can be invoked to resolve an instance of a service.
     /// </summary>
-    public class InstanceLookupEndingEventArgs : EventArgs
+    public interface IResolvePipeline
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="InstanceLookupEndingEventArgs"/> class.
+        /// Invoke the pipeline to the end, or until an exception is thrown.
         /// </summary>
-        /// <param name="instanceLookup">The instance lookup that is ending.</param>
-        /// <param name="newInstanceActivated">True if a new instance was created as part of the operation.</param>
-        public InstanceLookupEndingEventArgs(IInstanceLookup instanceLookup, bool newInstanceActivated)
-        {
-            if (instanceLookup == null) throw new ArgumentNullException(nameof(instanceLookup));
-
-            InstanceLookup = instanceLookup;
-            NewInstanceActivated = newInstanceActivated;
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether a new instance was created as part of the operation.
-        /// </summary>
-        public bool NewInstanceActivated { get; }
-
-        /// <summary>
-        /// Gets the instance lookup operation that is ending.
-        /// </summary>
-        public IInstanceLookup InstanceLookup { get; }
+        /// <param name="context">The request context.</param>
+        void Invoke(ResolveRequestContextBase context);
     }
 }

@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2018 Autofac Contributors
+// Copyright © 2020 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,31 +23,71 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
+using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Autofac.Core;
 using Autofac.Core.Registration;
+using Autofac.Core.Resolving.Pipeline;
+using Autofac.Features.Decorators;
 
-namespace Autofac.Features.Decorators
+namespace Autofac.Core.Resolving.Middleware
 {
-    internal static class InstanceDecorator
+    /// <summary>
+    /// Provides resolve middleware for locating decorators.
+    /// </summary>
+    internal class DecoratorMiddleware : IResolveMiddleware
     {
-        internal static object TryDecorateRegistration(
-            Service service,
-            IComponentRegistration registration,
-            object instance,
-            IComponentContext context,
-            IEnumerable<Parameter> parameters)
+        /// <summary>
+        /// Gets a singleton instance of the middleware.
+        /// </summary>
+        public static DecoratorMiddleware Instance { get; } = new DecoratorMiddleware();
+
+        private DecoratorMiddleware()
         {
+        }
+
+        /// <inheritdoc />
+        public PipelinePhase Phase => PipelinePhase.Decoration;
+
+        /// <inheritdoc />
+        public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
+        {
+            // Proceed down the pipeline.
+            next(context);
+
+            // If we can get a decorated instance, then use it.
+            if (TryDecorateRegistration(context, out var newInstance))
+            {
+                context.Instance = newInstance;
+            }
+        }
+
+        /// <inheritdoc />
+        public override string ToString() => nameof(DecoratorMiddleware);
+
+        private static bool TryDecorateRegistration(ResolveRequestContextBase context, [NotNullWhen(true)] out object? instance)
+        {
+            var service = context.Service;
+
             if (service is DecoratorService
                 || !(service is IServiceWithType serviceWithType)
-                || registration is ExternalComponentRegistration) return instance;
+                || context.Registration is ExternalComponentRegistration)
+            {
+                instance = null;
+                return false;
+            }
 
             var decoratorRegistrations = context.ComponentRegistry.DecoratorsFor(serviceWithType);
-            if (decoratorRegistrations.Count == 0) return instance;
+            if (decoratorRegistrations.Count == 0)
+            {
+                instance = null;
+                return false;
+            }
+
+            instance = context.Instance!;
 
             var serviceType = serviceWithType.ServiceType;
-            var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
+            var resolveParameters = context.Parameters as Parameter[] ?? context.Parameters.ToArray();
 
             var instanceType = instance.GetType();
             var decoratorContext = DecoratorContext.Create(instanceType, serviceType, instance);
@@ -69,14 +109,14 @@ namespace Autofac.Features.Decorators
                 invokeParameters[invokeParameters.Length - 2] = serviceParameter;
                 invokeParameters[invokeParameters.Length - 1] = contextParameter;
 
-                var resolveRequest = new ResolveRequest(decoratorService, decoratorRegistration, invokeParameters, registration);
-                instance = context.ResolveComponent(resolveRequest);
+                var resolveRequest = new ResolveRequest(decoratorService, decoratorRegistration, invokeParameters, context.Registration);
+                instance = context.ResolveComponentWithNewOperation(resolveRequest);
 
                 if (index < decoratorCount - 1)
                     decoratorContext = decoratorContext.UpdateContext(instance);
             }
 
-            return instance;
+            return true;
         }
     }
 }

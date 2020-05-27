@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -33,7 +34,7 @@ namespace Autofac.Core.Registration
     /// <summary>
     /// Wraps a component registration, switching its lifetime.
     /// </summary>
-    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the inner registration is responsible for disposal.")]
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2215", Justification = "The creator of the inner registration is responsible for disposal.")]
     internal class ComponentRegistrationLifetimeDecorator : Disposable, IComponentRegistration
     {
         private readonly IComponentRegistration _inner;
@@ -62,37 +63,17 @@ namespace Autofac.Core.Registration
 
         public bool IsAdapterForIndividualComponent => _inner.IsAdapterForIndividualComponent;
 
-        public event EventHandler<PreparingEventArgs> Preparing
+        public IResolvePipeline ResolvePipeline => _inner.ResolvePipeline;
+
+        public event EventHandler<IResolvePipelineBuilder> PipelineBuilding
         {
-            add => _inner.Preparing += value;
-            remove => _inner.Preparing -= value;
+            add => _inner.PipelineBuilding += value;
+            remove => _inner.PipelineBuilding -= value;
         }
 
-        public void RaisePreparing(IComponentContext context, Service service, ref IEnumerable<Parameter> parameters)
+        public void BuildResolvePipeline(IComponentRegistryServices registryServices)
         {
-            _inner.RaisePreparing(context, service, ref parameters);
-        }
-
-        public event EventHandler<ActivatingEventArgs<object>> Activating
-        {
-            add => _inner.Activating += value;
-            remove => _inner.Activating -= value;
-        }
-
-        public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, Service service, ref object instance)
-        {
-            _inner.RaiseActivating(context, parameters, service, ref instance);
-        }
-
-        public event EventHandler<ActivatedEventArgs<object>> Activated
-        {
-            add => _inner.Activated += value;
-            remove => _inner.Activated -= value;
-        }
-
-        public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, Service service, object instance)
-        {
-            _inner.RaiseActivated(context, parameters, service, instance);
+            _inner.BuildResolvePipeline(registryServices);
         }
 
         protected override void Dispose(bool disposing)

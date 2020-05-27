@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 namespace Autofac.Core.Resolving
 {
@@ -44,11 +45,11 @@ namespace Autofac.Core.Resolving
         /// <summary>
         /// Raised when the entire operation is complete.
         /// </summary>
-        event EventHandler<ResolveOperationEndingEventArgs> CurrentOperationEnding;
+        event EventHandler<ResolveOperationEndingEventArgs>? CurrentOperationEnding;
 
         /// <summary>
-        /// Raised when an instance is looked up within the operation.
+        /// Raised when a resolve request starts.
         /// </summary>
-        event EventHandler<InstanceLookupBeginningEventArgs> InstanceLookupBeginning;
+        event EventHandler<ResolveRequestBeginningEventArgs>? ResolveRequestBeginning;
     }
 }

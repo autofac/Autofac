@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 using Autofac.Builder;
+using Autofac.Core.Pipeline;
+using Autofac.Core.Resolving;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -72,7 +74,15 @@ namespace Autofac.Core.Registration
         /// <returns>A new component registry with the configured component registrations.</returns>
         public IComponentRegistry Build()
         {
-            return new ComponentRegistry(_registeredServicesTracker, Properties);
+            // Go through all our registrations and build the component pipeline for each one.
+            foreach (var registration in _registeredServicesTracker.Registrations)
+            {
+                registration.BuildResolvePipeline(_registeredServicesTracker);
+            }
+
+            var componentRegistry = new ComponentRegistry(_registeredServicesTracker, Properties);
+
+            return componentRegistry;
         }
 
         /// <summary>

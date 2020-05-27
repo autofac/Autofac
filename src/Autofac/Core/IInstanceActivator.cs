@@ -24,7 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core
 {
@@ -34,16 +34,11 @@ namespace Autofac.Core
     public interface IInstanceActivator : IDisposable
     {
         /// <summary>
-        /// Activate an instance in the provided context.
+        /// Allows an implementation to add middleware to a registration's resolve pipeline.
         /// </summary>
-        /// <param name="context">Context in which to activate instances.</param>
-        /// <param name="parameters">Parameters to the instance.</param>
-        /// <returns>The activated instance.</returns>
-        /// <remarks>
-        /// The context parameter here should probably be ILifetimeScope in order to reveal Disposer,
-        /// but will wait until implementing a concrete use case to make the decision.
-        /// </remarks>
-        object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters);
+        /// <param name="componentRegistryServices">Provides access to the set of all available services.</param>
+        /// <param name="pipelineBuilder">The registration's pipeline builder.</param>
+        void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder);
 
         /// <summary>
         /// Gets the most specific type that the component instances are known to be castable to.

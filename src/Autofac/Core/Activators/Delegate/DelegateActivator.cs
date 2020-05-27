@@ -27,6 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Autofac.Core.Resolving;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Activators.Delegate
 {
@@ -46,22 +48,29 @@ namespace Autofac.Core.Activators.Delegate
         public DelegateActivator(Type limitType, Func<IComponentContext, IEnumerable<Parameter>, object> activationFunction)
             : base(limitType)
         {
-            if (activationFunction == null) throw new ArgumentNullException(nameof(activationFunction));
+            _activationFunction = activationFunction ?? throw new ArgumentNullException(nameof(activationFunction));
+        }
 
-            _activationFunction = activationFunction;
+        /// <inheritdoc/>
+        public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)
+        {
+            if (pipelineBuilder is null) throw new ArgumentNullException(nameof(pipelineBuilder));
+
+            pipelineBuilder.Use(this.DisplayName(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
+            {
+                ctxt.Instance = ActivateInstance(ctxt, ctxt.Parameters);
+
+                next(ctxt);
+            });
         }
 
         /// <summary>
-        /// Activate an instance in the provided context.
+        /// Invokes the delegate and returns the instance.
         /// </summary>
         /// <param name="context">Context in which to activate instances.</param>
         /// <param name="parameters">Parameters to the instance.</param>
         /// <returns>The activated instance.</returns>
-        /// <remarks>
-        /// The context parameter here should probably be ILifetimeScope in order to reveal Disposer,
-        /// but will wait until implementing a concrete use case to make the decision.
-        /// </remarks>
-        public object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
+        private object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));

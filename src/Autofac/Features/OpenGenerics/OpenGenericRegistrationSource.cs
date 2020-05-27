@@ -30,6 +30,7 @@ using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Features.OpenGenerics
 {
@@ -39,10 +40,12 @@ namespace Autofac.Features.OpenGenerics
     internal class OpenGenericRegistrationSource : IRegistrationSource
     {
         private readonly RegistrationData _registrationData;
+        private readonly IResolvePipelineBuilder _existingPipelineBuilder;
         private readonly ReflectionActivatorData _activatorData;
 
         public OpenGenericRegistrationSource(
             RegistrationData registrationData,
+            IResolvePipelineBuilder existingPipelineBuilder,
             ReflectionActivatorData activatorData)
         {
             if (registrationData == null) throw new ArgumentNullException(nameof(registrationData));
@@ -51,6 +54,7 @@ namespace Autofac.Features.OpenGenerics
             OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
 
             _registrationData = registrationData;
+            _existingPipelineBuilder = existingPipelineBuilder;
             _activatorData = activatorData;
         }
 
@@ -63,10 +67,13 @@ namespace Autofac.Features.OpenGenerics
             Service[]? services;
             if (OpenGenericServiceBinder.TryBindServiceType(service, _registrationData.Services, _activatorData.ImplementationType, out constructedImplementationType, out services))
             {
+                // Pass the pipeline builder from the original registration to the 'CreateRegistration'.
+                // So the original registration will contain all of the pipeline stages originally added, plus anything we want to add due to the lifetim
                 yield return RegistrationBuilder.CreateRegistration(
                     Guid.NewGuid(),
                     _registrationData,
                     new ReflectionActivator(constructedImplementationType, _activatorData.ConstructorFinder, _activatorData.ConstructorSelector, _activatorData.ConfiguredParameters, _activatorData.ConfiguredProperties),
+                    _existingPipelineBuilder,
                     services);
             }
         }

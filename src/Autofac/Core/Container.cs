@@ -24,11 +24,10 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Autofac.Core.Diagnostics;
 using Autofac.Core.Lifetime;
-using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
 using Autofac.Util;
 
@@ -100,6 +99,12 @@ namespace Autofac.Core
             return _rootLifetimeScope.BeginLifetimeScope(tag, configurationAction);
         }
 
+        /// <inheritdoc/>
+        public void AttachTrace(IResolvePipelineTracer tracer)
+        {
+            _rootLifetimeScope.AttachTrace(tracer);
+        }
+
         /// <summary>
         /// Gets the disposer associated with this container. Instances can be associated
         /// with it manually if required.
@@ -166,11 +171,12 @@ namespace Autofac.Core
             base.Dispose(disposing);
         }
 
+        /// <inheritdoc/>
         protected override async ValueTask DisposeAsync(bool disposing)
         {
             if (disposing)
             {
-                await _rootLifetimeScope.DisposeAsync();
+                await _rootLifetimeScope.DisposeAsync().ConfigureAwait(false);
 
                 // Registries are not likely to have async tasks to dispose of,
                 // so we will leave it as a straight dispose.

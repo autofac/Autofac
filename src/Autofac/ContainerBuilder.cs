@@ -173,9 +173,9 @@ namespace Autofac
         {
             Properties[MetadataKeys.ContainerBuildOptions] = options;
 
-            #pragma warning disable CA2000 // Dispose objects before losing scope
+#pragma warning disable CA2000 // Dispose objects before losing scope
             ComponentRegistryBuilder.Register(new SelfComponentRegistration());
-            #pragma warning restore CA2000 // Dispose objects before losing scope
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
             Build(ComponentRegistryBuilder, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
 

@@ -37,6 +37,7 @@ using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.Decorators;
 using Autofac.Features.LightweightAdapters;
 using Autofac.Features.OpenGenerics;
@@ -99,13 +100,13 @@ namespace Autofac
 
                 activator.DisposeInstance = rb.RegistrationData.Ownership == InstanceOwnership.OwnedByLifetimeScope;
 
-                if (rb.RegistrationData.ActivatedHandlers.Any() || rb.RegistrationData.ActivatingHandlers.Any())
+                // https://github.com/autofac/Autofac/issues/1102
+                // Single instance registrations with any custom activation phases (i.e. activation handlers) need to be auto-activated,
+                // so that other behaviour (such as OnRelease) that expects 'normal' object lifetime behaviour works as expected.
+                if (rb.ResolvePipeline.Middleware.Any(s => s.Phase == PipelinePhase.Activation))
                 {
                     var autoStartService = rb.RegistrationData.Services.First();
 
-                    // https://github.com/autofac/Autofac/issues/1102
-                    // Single instance registrations with activation handlers need to be auto-activated,
-                    // so that other behaviour (such as OnRelease) that expects 'normal' object lifetime behaviour works as expected.
                     var activationRegistration = new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
                         new AutoActivateService(),
                         new SimpleActivatorData(new DelegateActivator(typeof(T), (c, p) => c.ResolveService(autoStartService))),
@@ -1467,10 +1468,12 @@ namespace Autofac
             // .OnActivating() handler may call .ReplaceInstance() and we'll
             // have closed over the wrong thing.
             registration.ExternallyOwned();
-            registration.RegistrationData.ActivatingHandlers.Add((s, e) =>
+            registration.ResolvePipeline.Use(nameof(OnRelease), PipelinePhase.Activation, MiddlewareInsertionMode.StartOfPhase, (ctxt, next) =>
             {
-                var ra = new ReleaseAction<TLimit>(releaseAction, () => (TLimit)e.Instance);
-                e.Context.Resolve<ILifetimeScope>().Disposer.AddInstanceForDisposal(ra);
+                // Continue down the pipeline.
+                next(ctxt);
+
+                ctxt.ActivationScope.Disposer.AddInstanceForAsyncDisposal(new ReleaseAction<TLimit>(releaseAction, () => (TLimit)ctxt.Instance!));
             });
             return registration;
         }

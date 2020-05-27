@@ -23,44 +23,37 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-
-namespace Autofac.Core.Resolving
+namespace Autofac.Core.Resolving.Pipeline
 {
     /// <summary>
-    /// Represents the process of finding a component during a resolve operation.
+    /// Defines a declared piece of middleware in a pipeline builder.
     /// </summary>
-    public interface IInstanceLookup
+    internal sealed class MiddlewareDeclaration
     {
-        /// <summary>
-        /// Gets the component for which an instance is to be looked up.
-        /// </summary>
-        IComponentRegistration ComponentRegistration { get; }
+        public MiddlewareDeclaration(IResolveMiddleware middleware)
+        {
+            Middleware = middleware;
+            Phase = middleware.Phase;
+        }
 
         /// <summary>
-        /// Gets the scope in which the instance will be looked up.
+        /// Gets or sets the next node in a pipeline set.
         /// </summary>
-        ILifetimeScope ActivationScope { get; }
+        public MiddlewareDeclaration? Next { get; set; }
 
         /// <summary>
-        /// Gets the parameters provided for new instance creation.
+        /// Gets or sets the previous node in a pipeline set.
         /// </summary>
-        IEnumerable<Parameter> Parameters { get; }
+        public MiddlewareDeclaration? Previous { get; set; }
 
         /// <summary>
-        /// Raised when the lookup phase of the operation is ending.
+        /// Gets the middleware for this declaration.
         /// </summary>
-        event EventHandler<InstanceLookupEndingEventArgs> InstanceLookupEnding;
+        public IResolveMiddleware Middleware { get; }
 
         /// <summary>
-        /// Raised when the completion phase of an instance lookup operation begins.
+        /// Gets the declared phase of the middleware.
         /// </summary>
-        event EventHandler<InstanceLookupCompletionBeginningEventArgs> CompletionBeginning;
-
-        /// <summary>
-        /// Raised when the completion phase of an instance lookup operation ends.
-        /// </summary>
-        event EventHandler<InstanceLookupCompletionEndingEventArgs> CompletionEnding;
+        public PipelinePhase Phase { get; }
     }
 }

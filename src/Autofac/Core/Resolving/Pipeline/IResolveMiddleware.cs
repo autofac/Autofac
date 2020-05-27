@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright © 2020 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -25,27 +25,24 @@
 
 using System;
 
-namespace Autofac.Core.Resolving
+namespace Autofac.Core.Resolving.Pipeline
 {
     /// <summary>
-    /// Raised when the completion phase of an instance lookup operation begins.
+    /// Defines an executable resolve middleware.
     /// </summary>
-    public class InstanceLookupCompletionBeginningEventArgs : EventArgs
+    public interface IResolveMiddleware
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="InstanceLookupCompletionBeginningEventArgs"/> class.
+        /// Gets the phase of the resolve pipeline at which to execute.
         /// </summary>
-        /// <param name="instanceLookup">The instance lookup that is beginning the completion phase.</param>
-        public InstanceLookupCompletionBeginningEventArgs(IInstanceLookup instanceLookup)
-        {
-            if (instanceLookup == null) throw new ArgumentNullException(nameof(instanceLookup));
-
-            InstanceLookup = instanceLookup;
-        }
+        PipelinePhase Phase { get; }
 
         /// <summary>
-        /// Gets the instance lookup operation that is beginning the completion phase.
+        /// Invoked when this middleware is executed as part of an active <see cref="ResolveRequest"/>. The middleware should usually call
+        /// the <paramref name="next"/> method in order to continue the pipeline, unless the middleware fully satisfies the request.
         /// </summary>
-        public IInstanceLookup InstanceLookup { get; }
+        /// <param name="context">The context for the resolve request.</param>
+        /// <param name="next">The method to invoke to continue the pipeline execution; pass this method the <paramref name="context"/> argument.</param>
+        void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next);
     }
 }

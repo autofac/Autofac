@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core
 {
@@ -19,6 +20,7 @@ namespace Autofac.Core
                 new CurrentScopeLifetime(),
                 InstanceSharing.Shared,
                 InstanceOwnership.ExternallyOwned,
+                new ResolvePipelineBuilder(),
                 new Service[] { new TypedService(typeof(ILifetimeScope)), new TypedService(typeof(IComponentContext)) },
                 new Dictionary<string, object?>())
         {

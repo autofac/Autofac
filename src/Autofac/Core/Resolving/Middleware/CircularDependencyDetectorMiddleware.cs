@@ -1,0 +1,113 @@
+﻿// This software is part of the Autofac IoC container
+// Copyright © 2020 Autofac Contributors
+// https://autofac.org
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using Autofac.Core.Resolving.Pipeline;
+
+namespace Autofac.Core.Resolving.Middleware
+{
+    /// <summary>
+    /// Common stage. Added to the start of all component pipelines.
+    /// </summary>
+    internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
+    {
+        public const int DefaultMaxResolveDepth = 50;
+
+        public static CircularDependencyDetectorMiddleware Default { get; } = new CircularDependencyDetectorMiddleware(DefaultMaxResolveDepth);
+
+        private readonly int _maxResolveDepth;
+
+        public CircularDependencyDetectorMiddleware(int maxResolveDepth)
+        {
+            _maxResolveDepth = maxResolveDepth;
+        }
+
+        public PipelinePhase Phase => PipelinePhase.RequestStart;
+
+        public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
+        {
+            var activationDepth = context.Operation.RequestDepth;
+
+            if (activationDepth > _maxResolveDepth)
+            {
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorMessages.MaxDepthExceeded, context.Service));
+            }
+
+            var requestStack = context.Operation.RequestStack;
+
+            // The first one is the current resolve request.
+            // Do our circular dependency check.
+            if (activationDepth > 1)
+            {
+                var registration = context.Registration;
+
+                // Only check the stack for shared components.
+                foreach (var requestEntry in requestStack)
+                {
+                    if (requestEntry.Registration == registration)
+                    {
+                        throw new DependencyResolutionException(string.Format(
+                            CultureInfo.CurrentCulture,
+                            CircularDependencyDetectorMessages.CircularDependency,
+                            CreateDependencyGraphTo(registration, requestStack)));
+                    }
+                }
+            }
+
+            requestStack.Push(context);
+
+            try
+            {
+                // Circular dependency check is done, move to the next stage.
+                next(context);
+            }
+            finally
+            {
+                requestStack.Pop();
+            }
+        }
+
+        public override string ToString() => nameof(CircularDependencyDetectorMiddleware);
+
+        private static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<ResolveRequestContextBase> requestStack)
+        {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (requestStack == null) throw new ArgumentNullException(nameof(requestStack));
+
+            var dependencyGraph = Display(registration);
+
+            return requestStack.Select(a => a.Registration)
+                .Aggregate(dependencyGraph, (current, requestor) => Display(requestor) + " -> " + current);
+        }
+
+        private static string Display(IComponentRegistration registration)
+        {
+            return registration.Activator.DisplayName();
+        }
+    }
+}

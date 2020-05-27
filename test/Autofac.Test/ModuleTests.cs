@@ -15,7 +15,7 @@ namespace Autofac.Test
         {
             protected override void Load(ContainerBuilder builder)
             {
-                builder.RegisterInstance(new object());
+                builder.RegisterInstance(new Service1());
             }
         }
 
@@ -26,7 +26,7 @@ namespace Autofac.Test
             new ObjectModule().Configure(builder);
             var registry = builder.Build();
 
-            Assert.True(registry.IsRegistered(new TypedService(typeof(object))));
+            Assert.True(registry.IsRegistered(new TypedService(typeof(Service1))));
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace Autofac.Test
             Assert.Equal(0, attachingModule.Registrations.Count);
 
             var builder = new ContainerBuilder();
-            builder.RegisterType(typeof(object));
+            builder.RegisterType(typeof(Service1));
             builder.RegisterModule(attachingModule);
             builder.RegisterInstance("Hello!");
 
@@ -72,7 +72,7 @@ namespace Autofac.Test
             builder.RegisterModule(attachingModule);
 
             using (var container = builder.Build())
-            using (var scope = container.BeginLifetimeScope(c => c.RegisterType(typeof(int))))
+            using (var scope = container.BeginLifetimeScope(c => c.RegisterType(typeof(Service1))))
             {
                 var expected = container.ComponentRegistry.Registrations.Count() + scope.ComponentRegistry.Registrations.Count();
                 Assert.Equal(expected, attachingModule.Registrations.Count);
@@ -89,8 +89,8 @@ namespace Autofac.Test
             builder.RegisterModule(attachingModule);
 
             using (var container = builder.Build())
-            using (var outerScope = container.BeginLifetimeScope(c => c.RegisterType(typeof(int))))
-            using (var innerScope = outerScope.BeginLifetimeScope(c => c.RegisterType(typeof(double))))
+            using (var outerScope = container.BeginLifetimeScope(c => c.RegisterType(typeof(Service1))))
+            using (var innerScope = outerScope.BeginLifetimeScope(c => c.RegisterType(typeof(Service2))))
             {
                 var expected = container.ComponentRegistry.Registrations.Count()
                     + outerScope.ComponentRegistry.Registrations.Count() + innerScope.ComponentRegistry.Registrations.Count();
@@ -137,7 +137,7 @@ namespace Autofac.Test
                             outerBuilder.Properties[MetadataKeys.RegisteredPropertyKey]);
                     });
 
-                    c.RegisterType(typeof(int));
+                    c.RegisterType(typeof(Service1));
                 }))
                 {
                 }
@@ -204,6 +204,18 @@ namespace Autofac.Test
             var container = builder.Build();
             Assert.Equal(2, container.ComponentRegistry.Properties["count"]);
             Assert.Equal("value", builder.Properties["prop"]);
+        }
+
+        private class Service1
+        {
+        }
+
+        private class Service2
+        {
+        }
+
+        private class Service3
+        {
         }
     }
 }

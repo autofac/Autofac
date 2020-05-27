@@ -24,28 +24,27 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Linq;
+using Autofac.Core.Pipeline;
+using Autofac.Core.Resolving;
+using Autofac.Core.Resolving.Pipeline;
+using Autofac.Util;
 
-namespace Autofac.Core.Resolving
+namespace Autofac.Core.Registration
 {
-    /// <summary>
-    /// Raised when the completion phase of an instance lookup operation ends.
-    /// </summary>
-    public class InstanceLookupCompletionEndingEventArgs : EventArgs
+    public class ComponentPipelineBuildingArgs
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InstanceLookupCompletionEndingEventArgs"/> class.
-        /// </summary>
-        /// <param name="instanceLookup">The instance lookup that is ending the completion phase.</param>
-        public InstanceLookupCompletionEndingEventArgs(IInstanceLookup instanceLookup)
+        public ComponentPipelineBuildingArgs(IComponentRegistration registration, IResolvePipelineBuilder pipelineBuilder)
         {
-            if (instanceLookup == null) throw new ArgumentNullException(nameof(instanceLookup));
-
-            InstanceLookup = instanceLookup;
+            Registration = registration;
+            PipelineBuilder = pipelineBuilder;
         }
 
-        /// <summary>
-        /// Gets the instance lookup operation that is ending the completion phase.
-        /// </summary>
-        public IInstanceLookup InstanceLookup { get; }
+        public IComponentRegistration Registration { get; }
+
+        public IResolvePipelineBuilder PipelineBuilder { get; }
     }
 }
