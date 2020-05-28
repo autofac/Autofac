@@ -70,8 +70,7 @@ namespace Autofac.Core.Resolving.Middleware
             var service = context.Service;
 
             if (service is DecoratorService
-                || !(service is IServiceWithType serviceWithType)
-                || context.Registration is ExternalComponentRegistration)
+                || !(service is IServiceWithType serviceWithType))
             {
                 instance = null;
                 return false;

@@ -62,6 +62,7 @@ namespace Autofac.Core.Resolving
             IsTopLevelOperation = true;
             CurrentScope = mostNestedLifetimeScope;
             _pipelineTracer = pipelineTracer;
+            IsTopLevelOperation = true;
         }
 
         /// <summary>

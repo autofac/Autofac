@@ -214,6 +214,11 @@ namespace Autofac.Core.Registration
                 PipelineBuilding.Invoke(this, _lateBuildPipeline);
             }
 
+            ResolvePipeline = BuildResolvePipeline(registryServices, _lateBuildPipeline);
+        }
+
+        protected virtual IResolvePipeline BuildResolvePipeline(IComponentRegistryServices registryServices, IResolvePipelineBuilder pipelineBuilder)
+        {
             _lateBuildPipeline.UseRange(_defaultStages);
 
             if (HasStartableService())
@@ -233,7 +238,7 @@ namespace Autofac.Core.Registration
             // Allow the activator to configure the pipeline.
             Activator.ConfigurePipeline(registryServices, _lateBuildPipeline);
 
-            ResolvePipeline = _lateBuildPipeline.Build();
+            return _lateBuildPipeline.Build();
         }
 
         private bool HasStartableService()

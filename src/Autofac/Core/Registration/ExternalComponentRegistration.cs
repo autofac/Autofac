@@ -24,7 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Registration
 {
@@ -33,18 +33,36 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class ExternalComponentRegistration : ComponentRegistration
     {
-        public ExternalComponentRegistration(
-            Guid id,
-            IInstanceActivator activator,
-            IComponentLifetime lifetime,
-            InstanceSharing sharing,
-            InstanceOwnership ownership,
-            IEnumerable<Service> services,
-            IDictionary<string, object?> metadata,
-            IComponentRegistration target,
-            bool isAdapterForIndividualComponent)
-            : base(id, activator, lifetime, sharing, ownership, services, metadata, target, isAdapterForIndividualComponent)
+        public ExternalComponentRegistration(Service service, IComponentRegistration target)
+            : base(target.Id, new NoOpActivator(target.Activator.LimitType), target.Lifetime, target.Sharing, target.Ownership, new[] { service }, target.Metadata, target, false)
         {
+        }
+
+        protected override IResolvePipeline BuildResolvePipeline(IComponentRegistryServices registryServices, IResolvePipelineBuilder pipelineBuilder)
+        {
+            // Just use the external pipeline.
+            return Target.ResolvePipeline;
+        }
+
+        private class NoOpActivator : IInstanceActivator
+        {
+            public NoOpActivator(Type limitType)
+            {
+                LimitType = limitType;
+            }
+
+            public Type LimitType { get; }
+
+            public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)
+            {
+                // Should never be invoked.
+                throw new InvalidOperationException();
+            }
+
+            public void Dispose()
+            {
+                // Do not do anything here.
+            }
         }
     }
 }
