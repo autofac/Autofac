@@ -67,10 +67,7 @@ namespace Autofac.Core.Registration
             {
                 if (registration is ExternalComponentRegistration || !registration.IsAdapting())
                 {
-                    yield return new ExternalComponentRegistration(
-                        registration.Id,
-                        service,
-                        registration);
+                    yield return new ExternalComponentRegistration(service, registration);
                 }
             }
         }

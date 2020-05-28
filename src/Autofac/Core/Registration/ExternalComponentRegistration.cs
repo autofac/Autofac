@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Registration
@@ -34,11 +33,8 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class ExternalComponentRegistration : ComponentRegistration
     {
-        public ExternalComponentRegistration(
-            Guid id,
-            Service service,
-            IComponentRegistration target)
-            : base(id, new NoOpActivator(target.Activator.LimitType), target.Lifetime, target.Sharing, target.Ownership, new[] { service }, target.Metadata, target, false)
+        public ExternalComponentRegistration(Service service, IComponentRegistration target)
+            : base(target.Id, new NoOpActivator(target.Activator.LimitType), target.Lifetime, target.Sharing, target.Ownership, new[] { service }, target.Metadata, target, false)
         {
         }
 
