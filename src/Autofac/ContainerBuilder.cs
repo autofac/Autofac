@@ -58,7 +58,7 @@ namespace Autofac
     /// via extension methods in <see cref="RegistrationExtensions"/>.</remarks>
     /// <seealso cref="IContainer"/>
     /// <see cref="RegistrationExtensions"/>
-    public class ContainerBuilder
+    public sealed class ContainerBuilder
     {
         private readonly IList<DeferredCallback> _configurationCallbacks = new List<DeferredCallback>();
         private BuildCallbackService? _buildCallbacks;
