@@ -39,6 +39,7 @@ namespace Autofac.Core.Resolving
         private bool _ended;
         private IResolvePipelineTracer? _pipelineTracer;
         private List<ResolveRequestContext> _successfulRequests = new List<ResolveRequestContext>();
+        private int _nextCompleteSuccessfulRequestStartPos = 0;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ResolveOperationBase"/> class.
@@ -241,9 +242,10 @@ namespace Autofac.Core.Resolving
         {
             var completed = _successfulRequests;
             int count = completed.Count;
+            var startPosition = _nextCompleteSuccessfulRequestStartPos;
             ResetSuccessfulRequests();
 
-            for (int i = 0; i < count; i++)
+            for (int i = startPosition; i < count; i++)
             {
                 completed[i].Complete();
             }
@@ -251,7 +253,7 @@ namespace Autofac.Core.Resolving
 
         private void ResetSuccessfulRequests()
         {
-            _successfulRequests = new List<ResolveRequestContext>();
+            _nextCompleteSuccessfulRequestStartPos = _successfulRequests.Count;
         }
 
         private void End(Exception? exception = null)
