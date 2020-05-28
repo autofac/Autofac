@@ -68,17 +68,9 @@ namespace Autofac.Core.Registration
                 if (registration is ExternalComponentRegistration || !registration.IsAdapting())
                 {
                     yield return new ExternalComponentRegistration(
-                        Guid.NewGuid(),
-                        #pragma warning disable CA2000 // Dispose objects before losing scope
-                        new DelegateActivator(registration.Activator.LimitType, (c, p) => c.ResolveComponent(new ResolveRequest(service, registration, p))),
-                        #pragma warning restore CA2000 // Dispose objects before losing scope
-                        new CurrentScopeLifetime(),
-                        InstanceSharing.None,
-                        InstanceOwnership.ExternallyOwned,
-                        new[] { service },
-                        registration.Metadata,
-                        registration,
-                        false);
+                        registration.Id,
+                        service,
+                        registration);
                 }
             }
         }

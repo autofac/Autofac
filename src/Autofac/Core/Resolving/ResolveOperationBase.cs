@@ -61,6 +61,7 @@ namespace Autofac.Core.Resolving
             TracingId = this;
             CurrentScope = mostNestedLifetimeScope;
             _pipelineTracer = pipelineTracer;
+            IsTopLevelOperation = true;
         }
 
         /// <summary>

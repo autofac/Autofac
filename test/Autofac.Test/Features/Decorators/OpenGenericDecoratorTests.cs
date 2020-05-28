@@ -630,6 +630,12 @@ namespace Autofac.Test.Features.Decorators
             var container = builder.Build();
 
             var scope = container.BeginLifetimeScope(b => { });
+
+            scope.AttachTrace((req, dump) =>
+            {
+                Console.WriteLine(dump);
+            });
+
             var service = scope.Resolve<IDecoratedService<int>>();
             Assert.IsType<DecoratorA<int>>(service);
             Assert.IsType<ImplementorA<int>>(service.Decorated);
