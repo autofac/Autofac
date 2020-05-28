@@ -36,9 +36,11 @@ namespace Autofac.Core.Resolving
     /// </summary>
     public abstract class ResolveOperationBase : IResolveOperation, ITracingIdentifer
     {
+        private const int SuccessListInitialCapacity = 32;
+
         private bool _ended;
         private IResolvePipelineTracer? _pipelineTracer;
-        private List<ResolveRequestContext> _successfulRequests = new List<ResolveRequestContext>();
+        private List<ResolveRequestContext> _successfulRequests = new List<ResolveRequestContext>(SuccessListInitialCapacity);
         private int _nextCompleteSuccessfulRequestStartPos = 0;
 
         /// <summary>
