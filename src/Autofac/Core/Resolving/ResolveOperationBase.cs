@@ -59,6 +59,7 @@ namespace Autofac.Core.Resolving
         protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope, IResolvePipelineTracer? pipelineTracer)
         {
             TracingId = this;
+            IsTopLevelOperation = true;
             CurrentScope = mostNestedLifetimeScope;
             _pipelineTracer = pipelineTracer;
         }
@@ -74,6 +75,7 @@ namespace Autofac.Core.Resolving
             : this(mostNestedLifetimeScope, pipelineTracer)
         {
             TracingId = tracingId;
+            IsTopLevelOperation = false;
         }
 
         /// <summary>
