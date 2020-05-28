@@ -89,10 +89,8 @@ namespace Autofac.Test.Features.Collections
         public void ReflectsChangesInComponentRegistry()
         {
             var cb = new ContainerBuilder();
-
             cb.RegisterInstance("Hello");
             var c = cb.Build();
-
             Assert.Single(c.Resolve<IEnumerable<string>>());
 
             var lifetimeScope = c.BeginLifetimeScope(inner => inner.RegisterInstance("World"));
