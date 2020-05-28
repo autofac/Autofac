@@ -26,6 +26,11 @@ namespace Autofac.Test
             return new MockComponentRegistration();
         }
 
+        public static MockTracer GetTracer()
+        {
+            return new MockTracer();
+        }
+
         internal class MockConstructorFinder : IConstructorFinder
         {
             public ConstructorInfo[] FindConstructors(Type targetType)
@@ -76,6 +81,69 @@ namespace Autofac.Test
             public void BuildResolvePipeline(IComponentRegistryServices registryServices)
             {
                 PipelineBuilding?.Invoke(this, new ResolvePipelineBuilder());
+            }
+        }
+
+        internal class MockTracer : IResolvePipelineTracer
+        {
+            public MockTracer()
+            {
+            }
+
+            public event Action<ResolveOperationBase, ResolveRequest> OperationStarting;
+
+            public event Action<ResolveOperationBase, ResolveRequestContextBase> RequestStarting;
+
+            public event Action<ResolveOperationBase, ResolveRequestContextBase, IResolveMiddleware> EnteringMiddleware;
+
+            public event Action<ResolveOperationBase, ResolveRequestContextBase, IResolveMiddleware, bool> ExitingMiddleware;
+
+            public event Action<ResolveOperationBase, ResolveRequestContextBase, Exception> RequestFailing;
+
+            public event Action<ResolveOperationBase, ResolveRequestContextBase> RequestSucceeding;
+
+            public event Action<ResolveOperationBase, Exception> OperationFailing;
+
+            public event Action<ResolveOperationBase, object> OperationSucceeding;
+
+            public void OperationStart(ResolveOperationBase operation, ResolveRequest initiatingRequest)
+            {
+                OperationStarting?.Invoke(operation, initiatingRequest);
+            }
+
+            public void RequestStart(ResolveOperationBase operation, ResolveRequestContextBase requestContext)
+            {
+                RequestStarting?.Invoke(operation, requestContext);
+            }
+
+            public void MiddlewareEntry(ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+            {
+                EnteringMiddleware?.Invoke(operation, requestContext, middleware);
+            }
+
+            public void MiddlewareExit(ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware, bool succeeded)
+            {
+                ExitingMiddleware?.Invoke(operation, requestContext, middleware, succeeded);
+            }
+
+            public void RequestFailure(ResolveOperationBase operation, ResolveRequestContextBase requestContext, Exception requestException)
+            {
+                RequestFailing?.Invoke(operation, requestContext, requestException);
+            }
+
+            public void RequestSuccess(ResolveOperationBase operation, ResolveRequestContextBase requestContext)
+            {
+                RequestSucceeding?.Invoke(operation, requestContext);
+            }
+
+            public void OperationFailure(ResolveOperationBase operation, Exception operationException)
+            {
+                OperationFailing?.Invoke(operation, operationException);
+            }
+
+            public void OperationSuccess(ResolveOperationBase operation, object resolvedInstance)
+            {
+                OperationSucceeding?.Invoke(operation, resolvedInstance);
             }
         }
     }

@@ -129,7 +129,11 @@ namespace Autofac.Core.Diagnostics
                 builder.AppendLine(TracerMessages.ExitBrace);
                 builder.AppendException(TracerMessages.OperationFailed, operationException);
 
-                OperationCompleted?.Invoke(this, new OperationTraceCompletedArgs(operation, builder.ToString()));
+                // If we're completing the root operation, raise the event.
+                if (operation.IsTopLevelOperation)
+                {
+                    OperationCompleted?.Invoke(this, new OperationTraceCompletedArgs(operation, builder.ToString()));
+                }
             }
         }
 
