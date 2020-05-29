@@ -160,7 +160,8 @@ namespace Autofac.Features.GeneratedFactories
                 {
                     // There are duplicate input types - that's a problem. Throw
                     // when the function is invoked.
-                    var message = String.Format(CultureInfo.CurrentCulture, GeneratedFactoryRegistrationSourceResources.DuplicateTypesInTypeMappedFuncParameterList, returnType.AssemblyQualifiedName, String.Join(", ", arguments.Cast<object>().ToArray()));
+                    object[] argumentsArray = arguments.ToArray();
+                    var message = String.Format(CultureInfo.CurrentCulture, GeneratedFactoryRegistrationSourceResources.DuplicateTypesInTypeMappedFuncParameterList, returnType.AssemblyQualifiedName, String.Join(", ", argumentsArray));
                     resolveCast = Expression.Throw(Expression.Constant(new DependencyResolutionException(message)), invoke.ReturnType);
                 }
             }
@@ -195,20 +196,17 @@ namespace Autofac.Features.GeneratedFactories
                 case ParameterMapping.ByType:
                     return creatorParams
                         .Select(p => Expression.New(typeof(TypedParameter).GetMatchingConstructor(new[] { typeof(Type), typeof(object) }), Expression.Constant(p.Type, typeof(Type)), Expression.Convert(p, typeof(object))))
-                        .OfType<Expression>()
                         .ToArray();
 
                 case ParameterMapping.ByPosition:
                     return creatorParams
                         .Select((p, i) => Expression.New(typeof(PositionalParameter).GetMatchingConstructor(new[] { typeof(int), typeof(object) }), Expression.Constant(i, typeof(int)), Expression.Convert(p, typeof(object))))
-                        .OfType<Expression>()
                         .ToArray();
 
                 case ParameterMapping.ByName:
                 default:
                     return creatorParams
                         .Select(p => Expression.New(typeof(NamedParameter).GetMatchingConstructor(new[] { typeof(string), typeof(object) }), Expression.Constant(p.Name, typeof(string)), Expression.Convert(p, typeof(object))))
-                        .OfType<Expression>()
                         .ToArray();
             }
         }
