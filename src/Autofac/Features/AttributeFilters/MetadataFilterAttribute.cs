@@ -196,7 +196,7 @@ namespace Autofac.Features.AttributeFilters
         {
             // Using Lazy<T> to ensure components that aren't actually used won't get activated.
             return context.Resolve<IEnumerable<Meta<Lazy<T>>>>()
-                .Where(m => m.Metadata.ContainsKey(metadataKey) && metadataValue.Equals(m.Metadata[metadataKey]))
+                .Where(m => m.Metadata.TryGetValue(metadataKey, out var value) && metadataValue.Equals(value))
                 .Select(m => m.Value.Value)
                 .FirstOrDefault();
         }
@@ -205,7 +205,7 @@ namespace Autofac.Features.AttributeFilters
         {
             // Using Lazy<T> to ensure components that aren't actually used won't get activated.
             return context.Resolve<IEnumerable<Meta<Lazy<T>>>>()
-                .Where(m => m.Metadata.ContainsKey(metadataKey) && metadataValue.Equals(m.Metadata[metadataKey]))
+                .Where(m => m.Metadata.TryGetValue(metadataKey, out var value) && metadataValue.Equals(value))
                 .Select(m => m.Value.Value)
                 .ToArray();
         }
@@ -214,7 +214,7 @@ namespace Autofac.Features.AttributeFilters
         {
             // Using Lazy<T> to ensure components that aren't actually used won't get activated.
             return context.Resolve<IEnumerable<Meta<Lazy<T>>>>()
-                .Any(m => m.Metadata.ContainsKey(metadataKey) && metadataValue.Equals(m.Metadata[metadataKey]));
+                .Any(m => m.Metadata.TryGetValue(metadataKey, out var value) && metadataValue.Equals(value));
         }
     }
 }
