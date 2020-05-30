@@ -264,13 +264,14 @@ namespace Autofac.Builder
             Service[] argArray = new Service[services.Length];
             for (int i = 0; i < services.Length; i++)
             {
-                if (services[i].FullName != null)
+                var service = services[i];
+                if (service.FullName != null)
                 {
-                    argArray[i] = new TypedService(services[i]);
+                    argArray[i] = new TypedService(service);
                 }
                 else
                 {
-                    argArray[i] = new TypedService(services[i].GetGenericTypeDefinition());
+                    argArray[i] = new TypedService(service.GetGenericTypeDefinition());
                 }
             }
 
