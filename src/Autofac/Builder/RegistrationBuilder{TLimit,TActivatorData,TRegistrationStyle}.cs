@@ -191,7 +191,6 @@ namespace Autofac.Builder
         {
             var keyedServices = serviceKeys
                 .Select(k => new KeyedService(k, typeof(TService)))
-                .Cast<object>()
                 .ToArray();
             return InstancePerMatchingLifetimeScope(keyedServices);
         }
