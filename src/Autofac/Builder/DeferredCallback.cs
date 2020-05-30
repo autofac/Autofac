@@ -8,7 +8,7 @@ namespace Autofac.Builder
     /// </summary>
     public class DeferredCallback
     {
-        // _callback set to default! to get around initialisation detection problem in rosyln.
+        // _callback set to default! to get around initialization detection problem in roslyn.
         private Action<IComponentRegistryBuilder> _callback = default!;
 
         /// <summary>
