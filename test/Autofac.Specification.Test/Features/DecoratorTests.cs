@@ -38,7 +38,7 @@ namespace Autofac.Specification.Test.Features
         {
             var builder = new ContainerBuilder();
             builder.RegisterType<ImplementorA>().As<IDecoratedService>();
-            builder.RegisterDecorator<DecoratorA, IDecoratedService>(context => context.AppliedDecorators.Any());
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>(context => context.AppliedDecorators.Count > 0);
             builder.RegisterDecorator<DecoratorB, IDecoratedService>();
             var container = builder.Build();
 

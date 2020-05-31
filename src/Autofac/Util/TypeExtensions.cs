@@ -90,7 +90,7 @@ namespace Autofac.Util
                 if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
                     != GenericParameterAttributes.None)
                 {
-                    if (!parameterTypeInfo.IsValueType && parameterTypeInfo.DeclaredConstructors.Where(c => c.IsPublic).All(c => c.GetParameters().Any()))
+                    if (!parameterTypeInfo.IsValueType && parameterTypeInfo.DeclaredConstructors.Where(c => c.IsPublic).All(c => c.GetParameters().Length > 0))
                     {
                         return false;
                     }

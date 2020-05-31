@@ -99,7 +99,7 @@ namespace Autofac
 
                 activator.DisposeInstance = rb.RegistrationData.Ownership == InstanceOwnership.OwnedByLifetimeScope;
 
-                if (rb.RegistrationData.ActivatedHandlers.Any() || rb.RegistrationData.ActivatingHandlers.Any())
+                if (rb.RegistrationData.ActivatedHandlers.Count > 0 || rb.RegistrationData.ActivatingHandlers.Count > 0)
                 {
                     var autoStartService = rb.RegistrationData.Services.First();
 

@@ -27,8 +27,7 @@ namespace Autofac.Test.Core.Registration
             registryBuilder.AddRegistrationSource(new ObjectRegistrationSource());
             var registry = registryBuilder.Build();
 
-            Assert.False(registry.Registrations.Where(
-                r => r.Services.Contains(new TypedService(typeof(object)))).Any());
+            Assert.DoesNotContain(registry.Registrations, r => r.Services.Contains(new TypedService(typeof(object))));
             Assert.Single(registry.RegistrationsFor(new TypedService(typeof(object))));
         }
 

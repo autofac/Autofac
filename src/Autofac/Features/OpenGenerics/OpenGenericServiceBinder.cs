@@ -127,7 +127,7 @@ namespace Autofac.Features.OpenGenerics
                 return matchingRegularType;
 
             return serviceArgumentDefinitionToArgument
-                .Where(argdef => argdef.Key.GetTypeInfo().IsGenericType && argdef.Value.GetTypeInfo().GenericTypeArguments.Any())
+                .Where(argdef => argdef.Key.GetTypeInfo().IsGenericType && argdef.Value.GetTypeInfo().GenericTypeArguments.Length > 0)
                 .Select(argdef => TryFindServiceArgumentForImplementationArgumentDefinition(
                     implementationGenericArgumentDefinition, argdef.Key.GetTypeInfo().GenericTypeArguments.Zip(
                         argdef.Value.GetTypeInfo().GenericTypeArguments, (a, b) => new KeyValuePair<Type, Type>(a, b))))
