@@ -407,7 +407,7 @@ namespace Autofac.Test.Features.Decorators
         {
             var builder = new ContainerBuilder();
             builder.RegisterGeneric(typeof(ImplementorA<>)).As(typeof(IDecoratedService<>));
-            builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IDecoratedService<>), context => context.AppliedDecorators.Count > 0);
+            builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IDecoratedService<>), context => context.AppliedDecorators.Any());
             builder.RegisterGenericDecorator(typeof(DecoratorB<>), typeof(IDecoratedService<>));
             var container = builder.Build();
 
