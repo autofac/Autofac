@@ -128,7 +128,7 @@ namespace Autofac.Features.ResolveAnything
             return AnyConcreteTypeNotAlreadyRegisteredSourceResources.AnyConcreteTypeNotAlreadyRegisteredSourceDescription;
         }
 
-        private bool ShouldRegisterGenericService(TypeInfo type)
+        private static bool ShouldRegisterGenericService(TypeInfo type)
         {
             var genericType = type.GetGenericTypeDefinition();
 
