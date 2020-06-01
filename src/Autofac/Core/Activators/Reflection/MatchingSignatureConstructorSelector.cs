@@ -65,7 +65,7 @@ namespace Autofac.Core.Activators.Reflection
             if (result.Length == 1)
                 return result[0];
 
-            if (!constructorBindings.Any())
+            if (constructorBindings.Length == 0)
                 throw new ArgumentException(MatchingSignatureConstructorSelectorResources.AtLeastOneBindingRequired);
 
             var targetTypeName = constructorBindings.First().TargetConstructor.DeclaringType.Name;
