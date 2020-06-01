@@ -198,7 +198,7 @@ namespace Autofac.Core.Activators.Reflection
                     var setter = actualProperty.SetMethod;
 
                     if (setter != null &&
-                        configuredProperty.CanSupplyValue(setter.GetParameters().First(), context, out var vp))
+                        configuredProperty.CanSupplyValue(setter.GetParameters()[0], context, out var vp))
                     {
                         actualProperties.Remove(actualProperty);
                         actualProperty.SetValue(instance, vp(), null);

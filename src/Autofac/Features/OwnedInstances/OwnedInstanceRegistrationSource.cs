@@ -55,7 +55,7 @@ namespace Autofac.Features.OwnedInstances
             if (ts == null || !ts.ServiceType.IsGenericTypeDefinedBy(typeof(Owned<>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var ownedInstanceType = ts.ServiceType.GetTypeInfo().GenericTypeArguments.First();
+            var ownedInstanceType = ts.ServiceType.GetTypeInfo().GenericTypeArguments[0];
             var ownedInstanceService = ts.ChangeType(ownedInstanceType);
 
             return registrationAccessor(ownedInstanceService)

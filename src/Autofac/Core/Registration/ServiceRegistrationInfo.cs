@@ -168,8 +168,8 @@ namespace Autofac.Core.Registration
             RequiresInitialization();
 
             registration = _defaultImplementation ??= _defaultImplementations.LastOrDefault() ??
-                                                      _sourceImplementations?.First() ??
-                                                      _preserveDefaultImplementations?.First();
+                                                      _sourceImplementations?[0] ??
+                                                      _preserveDefaultImplementations?[0];
 
             return registration != null;
         }

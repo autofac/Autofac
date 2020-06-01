@@ -90,7 +90,7 @@ namespace Autofac.Features.Collections
 
             if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
             {
-                elementType = serviceType.GetTypeInfo().GenericTypeArguments.First();
+                elementType = serviceType.GetTypeInfo().GenericTypeArguments[0];
                 limitType = elementType.MakeArrayType();
                 factory = GenerateArrayFactory(elementType);
             }
@@ -102,7 +102,7 @@ namespace Autofac.Features.Collections
             }
             else if (serviceType.IsGenericListOrCollectionInterfaceType())
             {
-                elementType = serviceType.GetTypeInfo().GenericTypeArguments.First();
+                elementType = serviceType.GetTypeInfo().GenericTypeArguments[0];
                 limitType = typeof(List<>).MakeGenericType(elementType);
                 factory = GenerateListFactory(elementType);
             }

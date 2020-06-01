@@ -51,7 +51,7 @@ namespace Autofac.Features.LazyDependencies
             if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Lazy<>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var valueType = swt.ServiceType.GetTypeInfo().GenericTypeArguments.First();
+            var valueType = swt.ServiceType.GetTypeInfo().GenericTypeArguments[0];
             var valueService = swt.ChangeType(valueType);
 
             var registrationCreator = CreateLazyRegistrationMethod.MakeGenericMethod(valueType);
