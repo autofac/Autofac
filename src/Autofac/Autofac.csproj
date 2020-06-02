@@ -188,6 +188,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Update="Core\Resolving\SegmentedStackResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SegmentedStackResources.resx</DependentUpon>
+    </Compile>
     <Compile Update="Core\ServiceResources.Designer.cs">
       <DependentUpon>ServiceResources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
@@ -396,6 +401,10 @@
     <EmbeddedResource Update="Core\DisposerResources.resx">
       <LastGenOutput>DisposerResources.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Resolving\SegmentedStackResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SegmentedStackResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\ServiceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

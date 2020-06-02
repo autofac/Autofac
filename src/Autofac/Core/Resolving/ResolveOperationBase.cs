@@ -124,7 +124,17 @@ namespace Autofac.Core.Resolving
         /// Don't want this exposed to the outside world, but we do want it available in the <see cref="CircularDependencyDetectorMiddleware"/>,
         /// hence it's internal.
         /// </remarks>
-        internal Stack<ResolveRequestContextBase> RequestStack { get; } = new Stack<ResolveRequestContextBase>();
+        internal SegmentedStack<ResolveRequestContextBase> RequestStack { get; } = new SegmentedStack<ResolveRequestContextBase>();
+
+        /// <summary>
+        /// Enter a new dependency chain block where subsequent requests inside the operation are allowed to repeat
+        /// registrations from before the block.
+        /// </summary>
+        /// <returns>A disposable that should be disposed to exit the block.</returns>
+        public IDisposable EnterNewDependencyDetectionBlock()
+        {
+            return RequestStack.EnterSegment();
+        }
 
         /// <inheritdoc />
         public event EventHandler<ResolveRequestBeginningEventArgs>? ResolveRequestBeginning;

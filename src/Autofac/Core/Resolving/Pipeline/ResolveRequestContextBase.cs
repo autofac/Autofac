@@ -162,21 +162,10 @@ namespace Autofac.Core.Resolving.Pipeline
         }
 
         /// <inheritdoc />
-        public abstract object ResolveComponent(ResolveRequest request);
-
-        /// <summary>
-        /// Resolve an instance of the provided registration within the context, but isolated inside a new
-        /// <see cref="ResolveOperationBase"/>.
-        /// This method should only be used instead of <see cref="IComponentContext.ResolveComponent(ResolveRequest)"/>
-        /// if you need to resolve a component with a completely separate operation and circular dependency verification stack.
-        /// </summary>
-        /// <param name="request">The resolve request.</param>
-        /// <returns>
-        /// The component instance.
-        /// </returns>
-        /// <exception cref="ComponentNotRegisteredException"/>
-        /// <exception cref="DependencyResolutionException"/>
-        public abstract object ResolveComponentWithNewOperation(ResolveRequest request);
+        public object ResolveComponent(ResolveRequest request)
+        {
+            return Operation.GetOrCreateInstance(ActivationScope, request);
+        }
 
         /// <summary>
         /// Complete the request, raising any appropriate events.

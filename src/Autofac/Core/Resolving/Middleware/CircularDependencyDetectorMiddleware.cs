@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Resolving.Middleware
@@ -78,7 +79,6 @@ namespace Autofac.Core.Resolving.Middleware
             {
                 var registration = context.Registration;
 
-                // Only check the stack for shared components.
                 foreach (var requestEntry in requestStack)
                 {
                     if (requestEntry.Registration == registration)

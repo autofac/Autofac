@@ -114,11 +114,14 @@ namespace Autofac.Features.Decorators
                 resolveParameters,
                 context.Registration);
 
-            var decoratedInstance = context.ResolveComponentWithNewOperation(resolveRequest);
+            using (context.Operation.EnterNewDependencyDetectionBlock())
+            {
+                var decoratedInstance = context.ResolveComponent(resolveRequest);
 
-            context.Instance = decoratedInstance;
+                context.Instance = decoratedInstance;
 
-            context.DecoratorContext = context.DecoratorContext.UpdateContext(decoratedInstance);
+                context.DecoratorContext = context.DecoratorContext.UpdateContext(decoratedInstance);
+            }
         }
 
         /// <inheritdoc/>
