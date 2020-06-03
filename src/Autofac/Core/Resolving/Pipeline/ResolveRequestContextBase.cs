@@ -58,6 +58,7 @@ namespace Autofac.Core.Resolving.Pipeline
             Parameters = request.Parameters;
             PhaseReached = PipelinePhase.RequestStart;
             Tracer = tracer;
+            TracingEnabled = tracer is object;
             _resolveRequest = request;
         }
 
@@ -110,6 +111,11 @@ namespace Autofac.Core.Resolving.Pipeline
         /// Gets the active <see cref="IResolvePipelineTracer"/> for the request.
         /// </summary>
         public IResolvePipelineTracer? Tracer { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether tracing is enabled. If this value is true, then <see cref="Tracer"/> will not be null.
+        /// </summary>
+        public bool TracingEnabled { get; }
 
         /// <summary>
         /// Gets the current resolve parameters. These can be changed using the <see cref="ChangeParameters(IEnumerable{Parameter})"/> method.
