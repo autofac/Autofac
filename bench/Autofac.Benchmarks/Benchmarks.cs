@@ -4,9 +4,9 @@ using Autofac.Benchmarks.Decorators;
 
 namespace Autofac.Benchmarks
 {
-    internal static class Benchmarks
+    public static class Benchmarks
     {
-        internal static readonly Type[] All =
+        public static readonly Type[] All =
         {
             typeof(ChildScopeResolveBenchmark),
             typeof(ConcurrencyBenchmark),
