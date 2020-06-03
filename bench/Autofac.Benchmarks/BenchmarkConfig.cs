@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 
@@ -14,7 +14,7 @@ namespace Autofac.Benchmarks
             var runFolder = DateTime.Now.ToString("u").Replace(' ', '_').Replace(':', '-');
             ArtifactsPath = $"{rootFolder}\\BenchmarkDotNet.Artifacts\\{runFolder}";
 
-            Add(MemoryDiagnoser.Default);
+            AddDiagnoser(MemoryDiagnoser.Default);
         }
     }
 }
