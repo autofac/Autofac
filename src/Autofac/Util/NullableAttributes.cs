@@ -41,6 +41,9 @@ namespace System.Diagnostics.CodeAnalysis
         /// </param>
         public MaybeNullWhenAttribute(bool returnValue) => ReturnValue = returnValue;
 
+        /// <summary>
+        /// Gets a value indicating whether the return value is required to be true or false.
+        /// </summary>
         public bool ReturnValue { get; }
     }
 
@@ -55,6 +58,9 @@ namespace System.Diagnostics.CodeAnalysis
         /// </param>
         public NotNullWhenAttribute(bool returnValue) => ReturnValue = returnValue;
 
+        /// <summary>
+        /// Gets a value indicating whether the return value is required to be true or false.
+        /// </summary>
         public bool ReturnValue { get; }
     }
 
@@ -69,6 +75,9 @@ namespace System.Diagnostics.CodeAnalysis
         /// </param>
         public NotNullIfNotNullAttribute(string parameterName) => ParameterName = parameterName;
 
+        /// <summary>
+        /// Gets the name of the parameter.
+        /// </summary>
         public string ParameterName { get; }
     }
 
@@ -90,6 +99,9 @@ namespace System.Diagnostics.CodeAnalysis
         /// </param>
         public DoesNotReturnIfAttribute(bool parameterValue) => ParameterValue = parameterValue;
 
+        /// <summary>
+        /// Gets a value indicating whether the parameter value is expected to be true or false.
+        /// </summary>
         public bool ParameterValue { get; }
     }
 }

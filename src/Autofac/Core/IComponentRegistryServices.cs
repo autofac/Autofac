@@ -28,6 +28,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Core
 {
+    /// <summary>
+    /// Defines an interface for accessing the set of services available during pipeline build time.
+    /// </summary>
     public interface IComponentRegistryServices
     {
         /// <summary>

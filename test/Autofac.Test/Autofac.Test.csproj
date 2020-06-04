@@ -17,6 +17,10 @@
     <ProjectReference Include="..\..\src\Autofac\Autofac.csproj" />
     <ProjectReference Include="..\Autofac.Test.Scenarios.ScannedAssembly\Autofac.Test.Scenarios.ScannedAssembly.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="TestResults\**" />

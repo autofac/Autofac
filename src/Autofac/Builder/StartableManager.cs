@@ -5,6 +5,9 @@ using Autofac.Core;
 
 namespace Autofac.Builder
 {
+    /// <summary>
+    /// Helper functions for starting 'startable' components.
+    /// </summary>
     internal static class StartableManager
     {
         /// <summary>

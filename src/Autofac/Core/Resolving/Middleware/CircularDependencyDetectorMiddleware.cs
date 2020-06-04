@@ -36,19 +36,31 @@ namespace Autofac.Core.Resolving.Middleware
     /// </summary>
     internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
     {
+        /// <summary>
+        /// Defines the default max resolve depth.
+        /// </summary>
         public const int DefaultMaxResolveDepth = 50;
 
+        /// <summary>
+        /// Gets the default instance of <see cref="CircularDependencyDetectorMiddleware"/>.
+        /// </summary>
         public static CircularDependencyDetectorMiddleware Default { get; } = new CircularDependencyDetectorMiddleware(DefaultMaxResolveDepth);
 
         private readonly int _maxResolveDepth;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CircularDependencyDetectorMiddleware"/> class.
+        /// </summary>
+        /// <param name="maxResolveDepth">The max resolve depth.</param>
         public CircularDependencyDetectorMiddleware(int maxResolveDepth)
         {
             _maxResolveDepth = maxResolveDepth;
         }
 
+        /// <inheritdoc/>
         public PipelinePhase Phase => PipelinePhase.RequestStart;
 
+        /// <inheritdoc/>
         public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
         {
             var activationDepth = context.Operation.RequestDepth;
@@ -92,6 +104,7 @@ namespace Autofac.Core.Resolving.Middleware
             }
         }
 
+        /// <inheritdoc/>
         public override string ToString() => nameof(CircularDependencyDetectorMiddleware);
 
         private static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<ResolveRequestContextBase> requestStack)

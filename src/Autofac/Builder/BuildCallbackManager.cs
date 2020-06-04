@@ -28,6 +28,9 @@ using Autofac.Core;
 
 namespace Autofac.Builder
 {
+    /// <summary>
+    /// Provides support for accessing/invoking the set of build callbacks, invoked on scope/container build.
+    /// </summary>
     internal static class BuildCallbackManager
     {
         private static readonly TypedService CallbackServiceType = new TypedService(typeof(BuildCallbackService));

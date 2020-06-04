@@ -85,8 +85,10 @@ namespace Autofac.Features.OwnedInstances
                 });
         }
 
+        /// <inheritdoc/>
         public bool IsAdapterForIndividualComponents => true;
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return OwnedInstanceRegistrationSourceResources.OwnedInstanceRegistrationSourceDescription;

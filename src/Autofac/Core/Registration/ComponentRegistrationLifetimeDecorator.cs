@@ -39,43 +39,61 @@ namespace Autofac.Core.Registration
     {
         private readonly IComponentRegistration _inner;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ComponentRegistrationLifetimeDecorator"/> class.
+        /// </summary>
+        /// <param name="inner">The inner registration.</param>
+        /// <param name="lifetime">The enforced lifetime.</param>
         public ComponentRegistrationLifetimeDecorator(IComponentRegistration inner, IComponentLifetime lifetime)
         {
             _inner = inner ?? throw new ArgumentNullException(nameof(inner));
             Lifetime = lifetime ?? throw new ArgumentNullException(nameof(lifetime));
         }
 
+        /// <inheritdoc/>
         public Guid Id => _inner.Id;
 
+        /// <inheritdoc/>
         public IInstanceActivator Activator => _inner.Activator;
 
+        /// <inheritdoc/>
         public IComponentLifetime Lifetime { get; }
 
+        /// <inheritdoc/>
         public InstanceSharing Sharing => _inner.Sharing;
 
+        /// <inheritdoc/>
         public InstanceOwnership Ownership => _inner.Ownership;
 
+        /// <inheritdoc/>
         public IEnumerable<Service> Services => _inner.Services;
 
+        /// <inheritdoc/>
         public IDictionary<string, object?> Metadata => _inner.Metadata;
 
+        /// <inheritdoc/>
         public IComponentRegistration Target => _inner.IsAdapting() ? _inner.Target : this;
 
+        /// <inheritdoc/>
         public bool IsAdapterForIndividualComponent => _inner.IsAdapterForIndividualComponent;
 
+        /// <inheritdoc/>
         public IResolvePipeline ResolvePipeline => _inner.ResolvePipeline;
 
+        /// <inheritdoc/>
         public event EventHandler<IResolvePipelineBuilder> PipelineBuilding
         {
             add => _inner.PipelineBuilding += value;
             remove => _inner.PipelineBuilding -= value;
         }
 
+        /// <inheritdoc/>
         public void BuildResolvePipeline(IComponentRegistryServices registryServices)
         {
             _inner.BuildResolvePipeline(registryServices);
         }
 
+        /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
             _inner.Dispose();

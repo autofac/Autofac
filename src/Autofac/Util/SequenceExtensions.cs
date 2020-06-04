@@ -29,6 +29,9 @@ using System.Linq;
 
 namespace Autofac.Util
 {
+    /// <summary>
+    /// Provides extension methods for working with sequences.
+    /// </summary>
     internal static class SequenceExtensions
     {
         /// <summary>
@@ -80,6 +83,12 @@ namespace Autofac.Util
                 yield return t;
         }
 
+        /// <summary>
+        /// Add a set of items to the given collection.
+        /// </summary>
+        /// <typeparam name="T">The set type.</typeparam>
+        /// <param name="collection">The collection to add to.</param>
+        /// <param name="items">The set of items to add.</param>
         public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T> items)
         {
             foreach (var item in items)

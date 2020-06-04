@@ -13,6 +13,9 @@ namespace Autofac.Core
     /// </summary>
     internal sealed class SelfComponentRegistration : ComponentRegistration
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SelfComponentRegistration"/> class.
+        /// </summary>
         public SelfComponentRegistration()
             : base(
                 LifetimeScope.SelfRegistrationId,

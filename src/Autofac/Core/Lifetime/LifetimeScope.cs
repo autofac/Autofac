@@ -55,6 +55,9 @@ namespace Autofac.Core.Lifetime
         private LifetimeScope? _parentScope;
         private IResolvePipelineTracer? _tracer;
 
+        /// <summary>
+        /// Gets the id of the lifetime scope self-registration.
+        /// </summary>
         internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
 
         /// <summary>
@@ -410,6 +413,7 @@ namespace Autofac.Core.Lifetime
             base.Dispose(disposing);
         }
 
+        /// <inheritdoc/>
         protected override async ValueTask DisposeAsync(bool disposing)
         {
             if (disposing)

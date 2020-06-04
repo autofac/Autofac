@@ -126,6 +126,12 @@ namespace Autofac.Core.Registration
             _sourceImplementations != null ||
             _preserveDefaultImplementations != null;
 
+        /// <summary>
+        /// Add an implementation for the service.
+        /// </summary>
+        /// <param name="registration">The component registration.</param>
+        /// <param name="preserveDefaults">Whether to preserve the defaults.</param>
+        /// <param name="originatedFromSource">Whether the registration originated from a dynamic source.</param>
         public void AddImplementation(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource)
         {
             if (preserveDefaults)
@@ -163,6 +169,11 @@ namespace Autofac.Core.Registration
                 _registeredImplementations = new Lazy<IList<IComponentRegistration>>(InitializeComponentRegistrations);
         }
 
+        /// <summary>
+        /// Attempts to access the implementing registration for this service, selecting the correct one based on defaults and all known registrations.
+        /// </summary>
+        /// <param name="registration">The output registration.</param>
+        /// <returns>True if a registration was found; false otherwise.</returns>
         public bool TryGetRegistration([NotNullWhen(returnValue: true)] out IComponentRegistration? registration)
         {
             RequiresInitialization();
@@ -174,6 +185,10 @@ namespace Autofac.Core.Registration
             return registration != null;
         }
 
+        /// <summary>
+        /// Include a registration source in the list of sources for the registration info.
+        /// </summary>
+        /// <param name="source">The registration source.</param>
         public void Include(IRegistrationSource source)
         {
             if (IsInitialized)
@@ -187,10 +202,20 @@ namespace Autofac.Core.Registration
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this service info is initialising.
+        /// </summary>
         public bool IsInitializing => !IsInitialized && _sourcesToQuery != null;
 
+        /// <summary>
+        /// Gets a value indicating whether there are any sources left to query.
+        /// </summary>
         public bool HasSourcesToQuery => IsInitializing && _sourcesToQuery!.Count != 0;
 
+        /// <summary>
+        /// Begin the initialisation process for this service info, given the set of dynamic sources.
+        /// </summary>
+        /// <param name="sources">The set of sources.</param>
         public void BeginInitialization(IEnumerable<IRegistrationSource> sources)
         {
             IsInitialized = false;
@@ -198,6 +223,10 @@ namespace Autofac.Core.Registration
             _sourcesToQuery = new Queue<IRegistrationSource>(sources);
         }
 
+        /// <summary>
+        /// Skip a given source in the set of dynamic sources.
+        /// </summary>
+        /// <param name="source">The source to skip.</param>
         public void SkipSource(IRegistrationSource source)
         {
             EnforceDuringInitialization();
@@ -212,6 +241,10 @@ namespace Autofac.Core.Registration
                 throw new InvalidOperationException(ServiceRegistrationInfoResources.NotDuringInitialization);
         }
 
+        /// <summary>
+        /// Dequeue the next registration source.
+        /// </summary>
+        /// <returns>The source.</returns>
         public IRegistrationSource DequeueNextSource()
         {
             EnforceDuringInitialization();
@@ -220,6 +253,9 @@ namespace Autofac.Core.Registration
             return _sourcesToQuery!.Dequeue();
         }
 
+        /// <summary>
+        /// Complete initialisation of the service info.
+        /// </summary>
         public void CompleteInitialization()
         {
             // Does not EnforceDuringInitialization() because the recursive algorithm

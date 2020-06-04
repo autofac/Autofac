@@ -43,6 +43,12 @@ namespace Autofac.Features.OpenGenerics
         private readonly IResolvePipelineBuilder _existingPipelineBuilder;
         private readonly ReflectionActivatorData _activatorData;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OpenGenericRegistrationSource"/> class.
+        /// </summary>
+        /// <param name="registrationData">The registration data for the open generic.</param>
+        /// <param name="existingPipelineBuilder">The pipeline for the existing open generic registration.</param>
+        /// <param name="activatorData">The activator data.</param>
         public OpenGenericRegistrationSource(
             RegistrationData registrationData,
             IResolvePipelineBuilder existingPipelineBuilder,
@@ -58,6 +64,7 @@ namespace Autofac.Features.OpenGenerics
             _activatorData = activatorData;
         }
 
+        /// <inheritdoc/>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
@@ -68,7 +75,7 @@ namespace Autofac.Features.OpenGenerics
             if (OpenGenericServiceBinder.TryBindServiceType(service, _registrationData.Services, _activatorData.ImplementationType, out constructedImplementationType, out services))
             {
                 // Pass the pipeline builder from the original registration to the 'CreateRegistration'.
-                // So the original registration will contain all of the pipeline stages originally added, plus anything we want to add due to the lifetim
+                // So the original registration will contain all of the pipeline stages originally added, plus anything we want to add.
                 yield return RegistrationBuilder.CreateRegistration(
                     Guid.NewGuid(),
                     _registrationData,
@@ -78,8 +85,10 @@ namespace Autofac.Features.OpenGenerics
             }
         }
 
+        /// <inheritdoc/>
         public bool IsAdapterForIndividualComponents => false;
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format(

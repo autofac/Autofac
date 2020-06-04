@@ -52,6 +52,18 @@ namespace Autofac.Core.Registration
             SharingMiddleware.Instance,
         };
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ComponentRegistration"/> class.
+        /// </summary>
+        /// <param name="id">The registration id.</param>
+        /// <param name="activator">The component activator.</param>
+        /// <param name="lifetime">The lifetime for activated instances.</param>
+        /// <param name="sharing">The sharing setting for the registration.</param>
+        /// <param name="ownership">The ownership setting for the registration.</param>
+        /// <param name="services">The set of services provided by the registration.</param>
+        /// <param name="metadata">Any metadata associated with the registration.</param>
+        /// <param name="target">The target/inner registration.</param>
+        /// <param name="isAdapterForIndividualComponents">Indicates whether this registration is an adapter for individual components (Meta, Func, etc).</param>
         public ComponentRegistration(
            Guid id,
            IInstanceActivator activator,
@@ -66,6 +78,16 @@ namespace Autofac.Core.Registration
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ComponentRegistration"/> class.
+        /// </summary>
+        /// <param name="id">Unique identifier for the component.</param>
+        /// <param name="activator">Activator used to activate instances.</param>
+        /// <param name="lifetime">Determines how the component will be associated with its lifetime.</param>
+        /// <param name="sharing">Whether the component is shared within its lifetime scope.</param>
+        /// <param name="ownership">Whether the component instances are disposed at the end of their lifetimes.</param>
+        /// <param name="services">Services the component provides.</param>
+        /// <param name="metadata">Data associated with the component.</param>
         public ComponentRegistration(
            Guid id,
            IInstanceActivator activator,
@@ -160,7 +182,10 @@ namespace Autofac.Core.Registration
         /// </summary>
         public Guid Id { get; }
 
-        public IInstanceActivator Activator { get; set; }
+        /// <summary>
+        /// Gets the activator for the registration.
+        /// </summary>
+        public IInstanceActivator Activator { get; }
 
         /// <summary>
         /// Gets the lifetime associated with the component.
@@ -217,6 +242,15 @@ namespace Autofac.Core.Registration
             ResolvePipeline = BuildResolvePipeline(registryServices, _lateBuildPipeline);
         }
 
+        /// <summary>
+        /// Populates the resolve pipeline with middleware based on the registration, and builds the pipeline.
+        /// </summary>
+        /// <param name="registryServices">The known set of all services.</param>
+        /// <param name="pipelineBuilder">The registration's pipeline builder (with user-added middleware already in it).</param>
+        /// <returns>The built pipeline.</returns>
+        /// <remarks>
+        /// A derived implementation can use this to add additional middleware, or return a completely different pipeline if required.
+        /// </remarks>
         protected virtual IResolvePipeline BuildResolvePipeline(IComponentRegistryServices registryServices, IResolvePipelineBuilder pipelineBuilder)
         {
             _lateBuildPipeline.UseRange(_defaultStages);

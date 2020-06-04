@@ -44,6 +44,7 @@ namespace Autofac.Features.Metadata
 
         private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, IComponentRegistration valueRegistration);
 
+        /// <inheritdoc/>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
@@ -68,8 +69,10 @@ namespace Autofac.Features.Metadata
                 .Select(v => registrationCreator.Invoke(service, valueService, v));
         }
 
+        /// <inheritdoc/>
         public bool IsAdapterForIndividualComponents => true;
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return MetaRegistrationSourceResources.StronglyTypedMetaRegistrationSourceDescription;

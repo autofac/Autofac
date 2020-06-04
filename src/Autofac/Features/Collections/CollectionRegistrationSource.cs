@@ -150,8 +150,10 @@ namespace Autofac.Features.Collections
             return new IComponentRegistration[] { registration };
         }
 
+        /// <inheritdoc/>
         public bool IsAdapterForIndividualComponents => false;
 
+        /// <inheritdoc/>
         public override string ToString()
             => CollectionRegistrationSourceResources.CollectionRegistrationSourceDescription;
 

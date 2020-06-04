@@ -186,7 +186,7 @@ namespace Autofac.Core.Activators.Reflection
             return lambdaExpression.Compile();
         }
 
-        public static MethodCallExpression ConvertPrimitiveType(Expression valueExpression, Type conversionType)
+        private static MethodCallExpression ConvertPrimitiveType(Expression valueExpression, Type conversionType)
         {
             var changeTypeMethod = typeof(Convert).GetRuntimeMethod(nameof(Convert.ChangeType), new[] { typeof(object), typeof(Type) });
             return Expression.Call(changeTypeMethod, valueExpression, Expression.Constant(conversionType));

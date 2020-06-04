@@ -35,6 +35,9 @@ namespace Autofac.Core.Resolving.Middleware
     /// </summary>
     internal class ScopeSelectionMiddleware : IResolveMiddleware
     {
+        /// <summary>
+        /// Gets the singleton instance of the <see cref="ScopeSelectionMiddleware"/>.
+        /// </summary>
         public static ScopeSelectionMiddleware Instance => new ScopeSelectionMiddleware();
 
         private ScopeSelectionMiddleware()
@@ -42,8 +45,10 @@ namespace Autofac.Core.Resolving.Middleware
             // Only want to use the static instance.
         }
 
+        /// <inheritdoc/>
         public PipelinePhase Phase => PipelinePhase.ScopeSelection;
 
+        /// <inheritdoc/>
         public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
         {
             try
@@ -66,6 +71,7 @@ namespace Autofac.Core.Resolving.Middleware
             next(context);
         }
 
+        /// <inheritdoc/>
         public override string ToString() => nameof(ScopeSelectionMiddleware);
     }
 }

@@ -34,12 +34,16 @@ namespace Autofac.Core.Resolving.Middleware
     /// </summary>
     internal class StartableMiddleware : IResolveMiddleware
     {
+        /// <summary>
+        /// Gets the singleton instance of the <see cref="StartableMiddleware"/>.
+        /// </summary>
         public static StartableMiddleware Instance { get; } = new StartableMiddleware();
 
         private StartableMiddleware()
         {
         }
 
+        /// <inheritdoc/>
         public PipelinePhase Phase => PipelinePhase.Activation;
 
         /// <inheritdoc />
@@ -59,6 +63,7 @@ namespace Autofac.Core.Resolving.Middleware
             }
         }
 
+        /// <inheritdoc/>
         public override string ToString() => nameof(StartableMiddleware);
     }
 }

@@ -30,15 +30,27 @@ using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
-using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.OwnedInstances;
 
 namespace Autofac.Builder
 {
+    /// <summary>
+    /// Data structure used to construct registrations.
+    /// </summary>
+    /// <typeparam name="TLimit">The most specific type to which instances of the registration
+    /// can be cast.</typeparam>
+    /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
+    /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
     internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> : IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>, IHideObjectMembers
         where TLimit : notnull
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}"/> class.
+        /// </summary>
+        /// <param name="defaultService">The default service.</param>
+        /// <param name="activatorData">The activator data.</param>
+        /// <param name="style">The registration style.</param>
         public RegistrationBuilder(Service defaultService, TActivatorData activatorData, TRegistrationStyle style)
         {
             if (defaultService == null) throw new ArgumentNullException(nameof(defaultService));
@@ -69,6 +81,9 @@ namespace Autofac.Builder
         [EditorBrowsable(EditorBrowsableState.Never)]
         public RegistrationData RegistrationData { get; }
 
+        /// <summary>
+        /// Gets the resolve pipeline builder, that can be used to add middleware to the pipeline.
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public IResolvePipelineBuilder ResolvePipeline { get; }
 

@@ -30,8 +30,22 @@ using Autofac.Core;
 
 namespace Autofac.Features.LightweightAdapters
 {
+    /// <summary>
+    /// Extension methods for registering adapters.
+    /// </summary>
     internal static class LightweightAdapterRegistrationExtensions
     {
+        /// <summary>
+        /// Adapt all components implementing service <typeparamref name="TFrom"/>
+        /// to provide <typeparamref name="TTo"/> using the provided <paramref name="adapter"/>
+        /// function.
+        /// </summary>
+        /// <typeparam name="TFrom">Service type to adapt from.</typeparam>
+        /// <typeparam name="TTo">Service type to adapt to. Must not be the
+        /// same as <typeparamref name="TFrom"/>.</typeparam>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="adapter">Function adapting <typeparamref name="TFrom"/> to
+        /// service <typeparamref name="TTo"/>, given the context and parameters.</param>
         public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterAdapter<TFrom, TTo>(
                 ContainerBuilder builder,
@@ -41,6 +55,17 @@ namespace Autofac.Features.LightweightAdapters
             return RegisterAdapter(builder, adapter, new TypedService(typeof(TFrom)), new TypedService(typeof(TTo)));
         }
 
+        /// <summary>
+        /// Decorate all components implementing service <typeparamref name="TService"/>
+        /// using the provided <paramref name="decorator"/> function.
+        /// The <paramref name="fromKey"/> and <paramref name="toKey"/> parameters must be different values.
+        /// </summary>
+        /// <typeparam name="TService">Service type being decorated.</typeparam>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="decorator">Function decorating a component instance that provides
+        /// <typeparamref name="TService"/>, given the context and parameters.</param>
+        /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
+        /// <param name="toKey">Service key or name given to the decorated components.</param>
         public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
             RegisterDecorator<TService>(
                 ContainerBuilder builder,

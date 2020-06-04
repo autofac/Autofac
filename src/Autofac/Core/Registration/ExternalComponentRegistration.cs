@@ -33,11 +33,17 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class ExternalComponentRegistration : ComponentRegistration
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExternalComponentRegistration"/> class.
+        /// </summary>
+        /// <param name="service">The service to register for.</param>
+        /// <param name="target">The target registration ID.</param>
         public ExternalComponentRegistration(Service service, IComponentRegistration target)
             : base(target.Id, new NoOpActivator(target.Activator.LimitType), target.Lifetime, target.Sharing, target.Ownership, new[] { service }, target.Metadata, target, false)
         {
         }
 
+        /// <inheritdoc/>
         protected override IResolvePipeline BuildResolvePipeline(IComponentRegistryServices registryServices, IResolvePipelineBuilder pipelineBuilder)
         {
             // Just use the external pipeline.

@@ -40,6 +40,11 @@ namespace Autofac.Core.Resolving.Pipeline
         IResolvePipeline Build();
 
         /// <summary>
+        /// Gets the set of middleware currently registered.
+        /// </summary>
+        IEnumerable<IResolveMiddleware> Middleware { get; }
+
+        /// <summary>
         /// Use a piece of middleware in a resolve pipeline.
         /// </summary>
         /// <param name="middleware">The middleware instance.</param>
@@ -106,11 +111,6 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <param name="insertionMode">The insertion mode specifying whether to add at the start or end of the phase.</param>
         /// <returns>The same builder instance.</returns>
         IResolvePipelineBuilder UseRange(IEnumerable<IResolveMiddleware> middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase);
-
-        /// <summary>
-        /// Gets the set of middleware currently registered.
-        /// </summary>
-        IEnumerable<IResolveMiddleware> Middleware { get; }
 
         /// <summary>
         /// Clone this builder, returning a new builder containing the set of middleware already added.

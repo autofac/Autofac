@@ -47,6 +47,10 @@ namespace Autofac.Builder
             _callbacks.Add(callback);
         }
 
+        /// <summary>
+        /// Execute the callback for each build callback registered in this service.
+        /// </summary>
+        /// <param name="scope">The scope that has been built.</param>
         public void Execute(ILifetimeScope scope)
         {
             if (scope == null) throw new ArgumentNullException(nameof(scope));

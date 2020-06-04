@@ -33,10 +33,14 @@ namespace Autofac.Core.Resolving.Middleware
     /// </summary>
     internal class DisposalTrackingMiddleware : IResolveMiddleware
     {
+        /// <summary>
+        /// Gets the singleton instance of the <see cref="DisposalTrackingMiddleware"/>.
+        /// </summary>
         public static DisposalTrackingMiddleware Instance { get; } = new DisposalTrackingMiddleware();
 
         private DisposalTrackingMiddleware()
         {
+            // Singleton use only.
         }
 
         /// <inheritdoc />

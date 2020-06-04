@@ -28,6 +28,9 @@ using System.Collections.Generic;
 
 namespace Autofac.Features.Decorators
 {
+    /// <summary>
+    /// Implements the decorator context, exposing the state of the decoration process.
+    /// </summary>
     public sealed class DecoratorContext : IDecoratorContext
     {
         /// <inheritdoc />
@@ -59,11 +62,23 @@ namespace Autofac.Features.Decorators
             AppliedDecorators = appliedDecorators ?? new List<object>(0);
         }
 
+        /// <summary>
+        /// Create a new <see cref="DecoratorContext"/>.
+        /// </summary>
+        /// <param name="implementationType">The type of the concrete implementation.</param>
+        /// <param name="serviceType">The service type being decorated.</param>
+        /// <param name="implementationInstance">The instance of the implementation to be decorated.</param>
+        /// <returns>A new decorator context.</returns>
         internal static DecoratorContext Create(Type implementationType, Type serviceType, object implementationInstance)
         {
             return new DecoratorContext(implementationType, serviceType, implementationInstance);
         }
 
+        /// <summary>
+        /// Creates a new decorator context that consumes the specified decorator instance.
+        /// </summary>
+        /// <param name="decoratorInstance">The decorated instance.</param>
+        /// <returns>A new context.</returns>
         internal DecoratorContext UpdateContext(object decoratorInstance)
         {
             var appliedDecorators = new List<object>(AppliedDecorators.Count + 1);

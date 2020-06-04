@@ -62,8 +62,10 @@ namespace Autofac.Core.Resolving.Pipeline
         private MiddlewareDeclaration? _first;
         private MiddlewareDeclaration? _last;
 
+        /// <inheritdoc/>
         public IEnumerable<IResolveMiddleware> Middleware => this;
 
+        /// <inheritdoc/>
         public IResolvePipelineBuilder Use(IResolveMiddleware stage, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
         {
             if (stage is null)
@@ -76,6 +78,7 @@ namespace Autofac.Core.Resolving.Pipeline
             return this;
         }
 
+        /// <inheritdoc/>
         public IResolvePipelineBuilder Use(PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             Use(phase, MiddlewareInsertionMode.EndOfPhase, callback);
@@ -83,6 +86,7 @@ namespace Autofac.Core.Resolving.Pipeline
             return this;
         }
 
+        /// <inheritdoc/>
         public IResolvePipelineBuilder Use(PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             Use(AnonymousName, phase, insertionMode, callback);
@@ -90,6 +94,7 @@ namespace Autofac.Core.Resolving.Pipeline
             return this;
         }
 
+        /// <inheritdoc/>
         public IResolvePipelineBuilder Use(string name, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             Use(new DelegateMiddleware(name, phase, callback), MiddlewareInsertionMode.EndOfPhase);
@@ -97,6 +102,7 @@ namespace Autofac.Core.Resolving.Pipeline
             return this;
         }
 
+        /// <inheritdoc/>
         public IResolvePipelineBuilder Use(string name, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             Use(new DelegateMiddleware(name, phase, callback), insertionMode);
@@ -104,6 +110,7 @@ namespace Autofac.Core.Resolving.Pipeline
             return this;
         }
 
+        /// <inheritdoc/>
         public IResolvePipelineBuilder UseRange(IEnumerable<IResolveMiddleware> stages, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
         {
             // Use multiple stages.
@@ -302,6 +309,7 @@ namespace Autofac.Core.Resolving.Pipeline
             return new ResolvePipeline(currentInvoke);
         }
 
+        /// <inheritdoc/>
         public IResolvePipelineBuilder Clone()
         {
             // To clone a pipeline, we create a new instance, then insert the same stage
@@ -318,11 +326,13 @@ namespace Autofac.Core.Resolving.Pipeline
             return newPipeline;
         }
 
+        /// <inheritdoc/>
         public IEnumerator<IResolveMiddleware> GetEnumerator()
         {
             return new PipelineBuilderEnumerator(_first);
         }
 
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

@@ -25,8 +25,16 @@
 
 namespace Autofac.Core.Registration
 {
+    /// <summary>
+    /// Extension methods for component registrations.
+    /// </summary>
     internal static class ComponentRegistrationExtensions
     {
+        /// <summary>
+        /// Gets a value indicating whether a given registration is adapting another registration.
+        /// </summary>
+        /// <param name="componentRegistration">The component registration.</param>
+        /// <returns>True if adapting; false otherwise.</returns>
         public static bool IsAdapting(this IComponentRegistration componentRegistration)
         {
             return componentRegistration.Target != componentRegistration;
