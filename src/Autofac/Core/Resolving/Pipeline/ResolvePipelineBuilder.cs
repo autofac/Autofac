@@ -269,14 +269,9 @@ namespace Autofac.Core.Resolving.Pipeline
                 return (ctxt) =>
                 {
                     // Optimise the path depending on whether a tracer is attached.
-                    if (ctxt.Tracer is null)
+                    if (ctxt.TracingEnabled)
                     {
-                        ctxt.PhaseReached = stage.Phase;
-                        stage.Execute(ctxt, next);
-                    }
-                    else
-                    {
-                        ctxt.Tracer.MiddlewareEntry(ctxt.Operation, ctxt, stage);
+                        ctxt.Tracer!.MiddlewareEntry(ctxt.Operation, ctxt, stage);
                         var succeeded = false;
                         try
                         {
@@ -288,6 +283,11 @@ namespace Autofac.Core.Resolving.Pipeline
                         {
                             ctxt.Tracer.MiddlewareExit(ctxt.Operation, ctxt, stage, succeeded);
                         }
+                    }
+                    else
+                    {
+                        ctxt.PhaseReached = stage.Phase;
+                        stage.Execute(ctxt, next);
                     }
                 };
             }
