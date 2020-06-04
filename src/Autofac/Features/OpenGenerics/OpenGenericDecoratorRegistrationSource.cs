@@ -44,6 +44,12 @@ namespace Autofac.Features.OpenGenerics
         private readonly OpenGenericDecoratorActivatorData _activatorData;
         private readonly IResolvePipelineBuilder _existingPipeline;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OpenGenericDecoratorRegistrationSource"/> class.
+        /// </summary>
+        /// <param name="registrationData">The registration data for the open generic.</param>
+        /// <param name="existingPipelineBuilder">The pipeline for the existing open generic registration.</param>
+        /// <param name="activatorData">The activator data.</param>
         public OpenGenericDecoratorRegistrationSource(
             RegistrationData registrationData,
             IResolvePipelineBuilder existingPipelineBuilder,
@@ -62,6 +68,7 @@ namespace Autofac.Features.OpenGenerics
             _existingPipeline = existingPipelineBuilder;
         }
 
+        /// <inheritdoc/>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
@@ -102,8 +109,10 @@ namespace Autofac.Features.OpenGenerics
             return resultArray;
         }
 
+        /// <inheritdoc/>
         public bool IsAdapterForIndividualComponents => true;
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format(

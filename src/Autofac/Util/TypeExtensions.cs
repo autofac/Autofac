@@ -33,6 +33,9 @@ using System.Runtime.CompilerServices;
 
 namespace Autofac.Util
 {
+    /// <summary>
+    /// Provides helper methods for manipulating and inspecting types.
+    /// </summary>
     internal static class TypeExtensions
     {
         private static readonly ConcurrentDictionary<Type, bool> IsGenericEnumerableInterfaceCache = new ConcurrentDictionary<Type, bool>();
@@ -41,6 +44,11 @@ namespace Autofac.Util
 
         private static readonly ConcurrentDictionary<(Type, Type), bool> IsGenericTypeDefinedByCache = new ConcurrentDictionary<(Type, Type), bool>();
 
+        /// <summary>
+        /// For a delegate type, outputs the return type of the delegate.
+        /// </summary>
+        /// <param name="type">The delegate type.</param>
+        /// <returns>The delegate return type.</returns>
         public static Type FunctionReturnType(this Type type)
         {
             var invoke = type.GetTypeInfo().GetDeclaredMethod("Invoke");
@@ -48,6 +56,11 @@ namespace Autofac.Util
             return invoke.ReturnType;
         }
 
+        /// <summary>
+        /// Determine whether a given type is an open generic.
+        /// </summary>
+        /// <param name="type">The input type.</param>
+        /// <returns>True if the type is an open generic; false otherwise.</returns>
         public static bool IsOpenGeneric(this Type type)
         {
             return type.GetTypeInfo().IsGenericTypeDefinition || type.GetTypeInfo().ContainsGenericParameters;
@@ -63,11 +76,23 @@ namespace Autofac.Util
             return FindAssignableTypesThatClose(@this, openGeneric);
         }
 
+        /// <summary>
+        /// Checks whether this type is a closed type of a given generic type.
+        /// </summary>
+        /// <param name="this">The type we are checking.</param>
+        /// <param name="openGeneric">The open generic type to validate against.</param>
+        /// <returns>True if <paramref name="this"/> is a closed type of <paramref name="openGeneric"/>. False otherwise.</returns>
         public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
         {
             return TypesAssignableFrom(@this).Any(t => t.GetTypeInfo().IsGenericType && !@this.GetTypeInfo().ContainsGenericParameters && t.GetGenericTypeDefinition() == openGeneric);
         }
 
+        /// <summary>
+        /// Determines whether a given generic type definition is compatible with the specified type parameters (i.e. is it possible to create a closed generic type from those parameters).
+        /// </summary>
+        /// <param name="genericTypeDefinition">The generic type definition.</param>
+        /// <param name="parameters">The set of parameters to check against.</param>
+        /// <returns>True if the parameters match the generic parameter constraints.</returns>
         public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
         {
             var genericArgumentDefinitions = genericTypeDefinition.GetTypeInfo().GenericTypeParameters;
@@ -119,16 +144,31 @@ namespace Autofac.Util
             return true;
         }
 
+        /// <summary>
+        /// Checks whether a type is compiler generated.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>True if the type is compiler generated; false otherwise.</returns>
         public static bool IsCompilerGenerated(this Type type)
         {
             return type.GetTypeInfo().GetCustomAttributes<CompilerGeneratedAttribute>().Any();
         }
 
+        /// <summary>
+        /// Checks whether a given type is a delegate type.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>True if the type is a delegate; false otherwise.</returns>
         public static bool IsDelegate(this Type type)
         {
             return type.GetTypeInfo().IsSubclassOf(typeof(Delegate));
         }
 
+        /// <summary>
+        /// Checks whether a given type is a generic enumerable interface type, e.g. <see cref="IEnumerable{T}" />, <see cref="IList{T}"/>, <see cref="ICollection{T}"/>, etc.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>True if the type is one of the supported enumerable interface types.</returns>
         public static bool IsGenericEnumerableInterfaceType(this Type type)
         {
             return IsGenericEnumerableInterfaceCache.GetOrAdd(
@@ -136,6 +176,11 @@ namespace Autofac.Util
                            || type.IsGenericListOrCollectionInterfaceType());
         }
 
+        /// <summary>
+        /// Checks whether a given type is a generic list of colleciton interface type, e.g. <see cref="IList{T}"/>, <see cref="ICollection{T}"/> and the read-only variants.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>True if the type is one of the supported list/collection types.</returns>
         public static bool IsGenericListOrCollectionInterfaceType(this Type type)
         {
             return IsGenericListOrCollectionInterfaceTypeCache.GetOrAdd(
@@ -145,6 +190,12 @@ namespace Autofac.Util
                            || t.IsGenericTypeDefinedBy(typeof(IReadOnlyList<>)));
         }
 
+        /// <summary>
+        /// Checks whether a given type is a closed generic defined by the specifed open generic.
+        /// </summary>
+        /// <param name="this">The type to check.</param>
+        /// <param name="openGeneric">The open generic to check against.</param>
+        /// <returns>True if the type is defined by the specified open generic; false otherwise.</returns>
         public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric)
         {
             return IsGenericTypeDefinedByCache.GetOrAdd(

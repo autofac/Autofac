@@ -48,11 +48,13 @@ namespace Autofac.Core.Resolving.Pipeline
         {
         }
 
+        /// <inheritdoc/>
         public override object ResolveComponent(ResolveRequest request)
         {
             return Operation.GetOrCreateInstance(ActivationScope, request);
         }
 
+        /// <inheritdoc/>
         public override object ResolveComponentWithNewOperation(ResolveRequest request)
         {
             // Create a new operation, with the current ActivationScope and Tracer.
@@ -61,6 +63,9 @@ namespace Autofac.Core.Resolving.Pipeline
             return operation.Execute(request);
         }
 
+        /// <summary>
+        /// Completes the request context; invokes any event handlers.
+        /// </summary>
         public void Complete()
         {
             // Let the base class raise events.

@@ -1,4 +1,4 @@
-// This software is part of the Autofac IoC container
+﻿// This software is part of the Autofac IoC container
 // Copyright © 2011 Autofac Contributors
 // https://autofac.org
 //
@@ -37,6 +37,11 @@ namespace Autofac.Core
     [Serializable]
     public class DependencyResolutionException : Exception
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DependencyResolutionException"/> class.
+        /// </summary>
+        /// <param name="info">The serialisation info.</param>
+        /// <param name="context">The serialisation streaming context.</param>
         protected DependencyResolutionException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

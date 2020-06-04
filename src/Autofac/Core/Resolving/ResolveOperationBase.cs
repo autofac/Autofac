@@ -87,6 +87,9 @@ namespace Autofac.Core.Resolving
         /// </summary>
         public ResolveRequestContextBase? ActiveRequestContext { get; private set; }
 
+        /// <summary>
+        /// Gets the current lifetime scope of the operation; based on the most recently executed request.
+        /// </summary>
         public ISharingLifetimeScope CurrentScope { get; private set; }
 
         /// <summary>

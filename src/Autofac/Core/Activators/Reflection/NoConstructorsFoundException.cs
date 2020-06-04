@@ -28,6 +28,9 @@ using System.Globalization;
 
 namespace Autofac.Core.Activators.Reflection
 {
+    /// <summary>
+    /// Exception thrown when no suitable constructors could be found on a type.
+    /// </summary>
     public class NoConstructorsFoundException : Exception
     {
         /// <summary>

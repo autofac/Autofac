@@ -38,6 +38,10 @@ namespace Autofac.Core.Resolving.Pipeline
         private MiddlewareDeclaration? _current;
         private bool _ended;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PipelineBuilderEnumerator"/> class.
+        /// </summary>
+        /// <param name="first">The first middleware declaration.</param>
         public PipelineBuilderEnumerator(MiddlewareDeclaration? first)
         {
             _first = first;

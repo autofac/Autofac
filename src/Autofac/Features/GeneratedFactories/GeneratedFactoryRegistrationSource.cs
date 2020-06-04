@@ -32,6 +32,9 @@ using Autofac.Util;
 
 namespace Autofac.Features.GeneratedFactories
 {
+    /// <summary>
+    /// Registration source for generated factory methods (i.e. when resolving <see cref="Func{T}"/> or some variant).
+    /// </summary>
     internal class GeneratedFactoryRegistrationSource : IRegistrationSource
     {
         /// <summary>
@@ -68,8 +71,10 @@ namespace Autofac.Features.GeneratedFactories
                 });
         }
 
+        /// <inheritdoc/>
         public bool IsAdapterForIndividualComponents => true;
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return GeneratedFactoryRegistrationSourceResources.GeneratedFactoryRegistrationSourceDescription;

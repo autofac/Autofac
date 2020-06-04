@@ -58,6 +58,9 @@ namespace Autofac.Builder
         [EditorBrowsable(EditorBrowsableState.Never)]
         TRegistrationStyle RegistrationStyle { get; }
 
+        /// <summary>
+        /// Gets the resolve pipeline for this registration.
+        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         IResolvePipelineBuilder ResolvePipeline { get; }
 

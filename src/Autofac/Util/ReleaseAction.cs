@@ -54,6 +54,7 @@ namespace Autofac.Util
             _factory = factory;
         }
 
+        /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
             // Value retrieval for the disposal is deferred until

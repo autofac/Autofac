@@ -29,14 +29,26 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-
 using Autofac.Core;
 using Autofac.Util;
 
 namespace Autofac.Features.OpenGenerics
 {
+    /// <summary>
+    /// Helper functions for binding open generic implementations to a known implementation type.
+    /// </summary>
     internal static class OpenGenericServiceBinder
     {
+        /// <summary>
+        /// Given a closed generic service (that is being requested), creates a closed generic implementation type
+        /// and associated services from the open generic implementation and services.
+        /// </summary>
+        /// <param name="service">The closed generic service to bind.</param>
+        /// <param name="configuredOpenGenericServices">The set of configured open generic services.</param>
+        /// <param name="openGenericImplementationType">The implementation type of the open generic.</param>
+        /// <param name="constructedImplementationType">The built closed generic implementation type.</param>
+        /// <param name="constructedServices">The built closed generic services.</param>
+        /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
         public static bool TryBindServiceType(
             Service service,
             IEnumerable<Service> configuredOpenGenericServices,
@@ -134,6 +146,11 @@ namespace Autofac.Features.OpenGenerics
                 .FirstOrDefault(x => x != null);
         }
 
+        /// <summary>
+        /// Throws an exception if an open generic implementation type cannot implement the set of specified open services.
+        /// </summary>
+        /// <param name="implementationType">The open generic implementation type.</param>
+        /// <param name="services">The set of open generic services.</param>
         public static void EnforceBindable(Type implementationType, IEnumerable<Service> services)
         {
             if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));

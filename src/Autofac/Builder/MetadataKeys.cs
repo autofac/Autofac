@@ -25,16 +25,33 @@
 
 namespace Autofac.Builder
 {
+    /// <summary>
+    /// Internal metadata keys.
+    /// </summary>
     internal static class MetadataKeys
     {
+        /// <summary>
+        /// Key containing the registration order.
+        /// </summary>
         internal const string RegistrationOrderMetadataKey = "__RegistrationOrder";
 
+        /// <summary>
+        /// Key containing a value indicating whether the registration has been auto activated.
+        /// </summary>
         internal const string AutoActivated = "__AutoActivated";
 
+        /// <summary>
+        /// Key containing a value indicating whether the registration should be started on activation.
+        /// </summary>
         internal const string StartOnActivatePropertyKey = "__StartOnActivate";
 
+        /// <summary>
+        /// Key containing the container build options.
+        /// </summary>
         internal const string ContainerBuildOptions = "__ContainerBuildOptions";
 
+        // TODO: Change the registration builder event handler to not use these.
+        #pragma warning disable SA1600 // Elements should be documented
         internal const string RegisteredPropertyKey = "__RegisteredKey";
 
         internal const string RegistrationSourceAddedPropertyKey = "__RegistrationSourceAddedKey";
@@ -42,5 +59,6 @@ namespace Autofac.Builder
         internal const string InternalRegisteredPropertyKey = "__InternalRegisteredKey";
 
         internal const string InternalRegistrationSourceAddedPropertyKey = "__InternalRegistrationSourceAddedKey";
+        #pragma warning restore SA1600 // Elements should be documented
     }
 }

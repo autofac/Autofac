@@ -43,6 +43,9 @@ namespace Autofac.Core.Registration
         /// </summary>
         private readonly object _synchRoot = new object();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker"/> class.
+        /// </summary>
         public DefaultRegisteredServicesTracker()
         {
             _registrationAccessor = RegistrationsFor;

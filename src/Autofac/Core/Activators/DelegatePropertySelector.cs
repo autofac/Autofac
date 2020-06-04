@@ -22,6 +22,7 @@ namespace Autofac.Core
             _finder = finder;
         }
 
+        /// <inheritdoc/>
         public bool InjectProperty(PropertyInfo property, object instance)
         {
             return _finder(property, instance);

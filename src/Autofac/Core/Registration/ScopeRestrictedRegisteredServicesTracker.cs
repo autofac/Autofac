@@ -11,6 +11,10 @@ namespace Autofac.Core.Registration
     {
         private readonly IComponentLifetime _restrictedRootScopeLifetime;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScopeRestrictedRegisteredServicesTracker"/> class.
+        /// </summary>
+        /// <param name="restrictedRootScopeLifetime">The scope to which registrations are restricted.</param>
         internal ScopeRestrictedRegisteredServicesTracker(IComponentLifetime restrictedRootScopeLifetime)
         {
             _restrictedRootScopeLifetime = restrictedRootScopeLifetime;

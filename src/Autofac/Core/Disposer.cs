@@ -94,6 +94,7 @@ namespace Autofac.Core
             base.Dispose(disposing);
         }
 
+        /// <inheritdoc/>
         protected override async ValueTask DisposeAsync(bool disposing)
         {
             if (disposing)

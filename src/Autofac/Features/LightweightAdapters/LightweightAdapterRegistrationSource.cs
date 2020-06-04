@@ -32,11 +32,19 @@ using Autofac.Core;
 
 namespace Autofac.Features.LightweightAdapters
 {
+    /// <summary>
+    /// A registration source for registered adapters.
+    /// </summary>
     internal class LightweightAdapterRegistrationSource : IRegistrationSource
     {
         private readonly RegistrationData _registrationData;
         private readonly LightweightAdapterActivatorData _activatorData;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LightweightAdapterRegistrationSource"/> class.
+        /// </summary>
+        /// <param name="registrationData">The registration data for the adapter.</param>
+        /// <param name="activatorData">The activator data for the adapter.</param>
         public LightweightAdapterRegistrationSource(
             RegistrationData registrationData,
             LightweightAdapterActivatorData activatorData)
@@ -51,6 +59,7 @@ namespace Autofac.Features.LightweightAdapters
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, LightweightAdapterRegistrationSourceResources.FromAndToMustDiffer, activatorData.FromService));
         }
 
+        /// <inheritdoc/>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
@@ -107,8 +116,10 @@ namespace Autofac.Features.LightweightAdapters
             return Enumerable.Empty<IComponentRegistration>();
         }
 
+        /// <inheritdoc/>
         public bool IsAdapterForIndividualComponents => true;
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return string.Format(

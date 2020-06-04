@@ -30,6 +30,10 @@ namespace Autofac.Core.Resolving.Pipeline
     /// </summary>
     internal sealed class MiddlewareDeclaration
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MiddlewareDeclaration"/> class.
+        /// </summary>
+        /// <param name="middleware">The middleware that is encapsulated in this declaration.</param>
         public MiddlewareDeclaration(IResolveMiddleware middleware)
         {
             Middleware = middleware;
