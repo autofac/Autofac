@@ -33,7 +33,7 @@ using Autofac.Util;
 namespace Autofac.Features.GeneratedFactories
 {
     /// <summary>
-    /// Registration source for generated factory methods (i.e. when resolving <![CDATA[Func<TService>]]> or some variant).
+    /// Registration source for generated factory methods (i.e. when resolving <see cref="Func{T}"/> or some variant).
     /// </summary>
     internal class GeneratedFactoryRegistrationSource : IRegistrationSource
     {

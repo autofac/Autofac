@@ -165,7 +165,7 @@ namespace Autofac.Util
         }
 
         /// <summary>
-        /// Checks whether a given type is a generic enumerable interface type, e.g. <![CDATA[IEnumerable<T>, IList<T>, ICollection<T>]]>, etc.
+        /// Checks whether a given type is a generic enumerable interface type, e.g. <see cref="IEnumerable{T}" />, <see cref="IList{T}"/>, <see cref="ICollection{T}"/>, etc.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>True if the type is one of the supported enumerable interface types.</returns>
@@ -177,7 +177,7 @@ namespace Autofac.Util
         }
 
         /// <summary>
-        /// Checks whether a given type is a generic list of colleciton interface type, e.g. <![CDATA[IList<T>, ICollection<T>]]> and the read-only variants.
+        /// Checks whether a given type is a generic list of colleciton interface type, e.g. <see cref="IList{T}"/>, <see cref="ICollection{T}"/> and the read-only variants.
         /// </summary>
         /// <param name="type">The type to check.</param>
         /// <returns>True if the type is one of the supported list/collection types.</returns>
