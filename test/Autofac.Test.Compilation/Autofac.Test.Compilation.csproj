@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
+    <Compile Include="..\TestSuppressions.cs" Link="TestSuppressions.cs" />
   </ItemGroup>
   
   <ItemGroup>
