@@ -16,10 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Autofac\Autofac.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="..\TestSuppressions.cs" Link="TestSuppressions.cs" />
-  </ItemGroup>
   
   <ItemGroup>
     <Compile Remove="TestResults\**" />

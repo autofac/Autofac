@@ -17,10 +17,6 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="..\TestSuppressions.cs" Link="TestSuppressions.cs" />
-  </ItemGroup>
   
   <ItemGroup>
     <Compile Remove="TestResults\**" />
