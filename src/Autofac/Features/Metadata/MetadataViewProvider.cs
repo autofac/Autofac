@@ -106,5 +106,21 @@ namespace Autofac.Features.Metadata
             throw new DependencyResolutionException(
                 string.Format(CultureInfo.CurrentCulture, MetadataViewProviderResources.InvalidViewImplementation, typeof(TMetadata).Name));
         }
+
+        /// <summary>
+        /// Used via reflection.
+        /// </summary>
+        private static TValue GetMetadataValue<TValue>(IDictionary<string, object> metadata, string name, DefaultValueAttribute defaultValue)
+        {
+            object result;
+            if (metadata.TryGetValue(name, out result))
+                return (TValue)result;
+
+            if (defaultValue != null)
+                return (TValue)defaultValue.Value;
+
+            throw new DependencyResolutionException(
+                string.Format(CultureInfo.CurrentCulture, MetadataViewProviderResources.MissingMetadata, name));
+        }
     }
 }
