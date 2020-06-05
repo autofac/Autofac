@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2020 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -28,37 +28,25 @@ using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Resolving.Middleware
 {
-    /// <summary>
-    /// Wraps pipeline delegates from the Use* methods in <see cref="PipelineBuilderExtensions" />.
-    /// </summary>
-    internal class DelegateMiddleware : IResolveMiddleware
+    internal class DefaultServicePipelineTerminatorMiddleware : IResolveMiddleware
     {
-        private readonly string _name;
-        private readonly Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> _callback;
+        public static DefaultServicePipelineTerminatorMiddleware Instance { get; } = new DefaultServicePipelineTerminatorMiddleware();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DelegateMiddleware"/> class.
-        /// </summary>
-        /// <param name="description">The middleware description.</param>
-        /// <param name="phase">The pipeline phase.</param>
-        /// <param name="callback">The callback to execute.</param>
-        public DelegateMiddleware(string description, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
+        private DefaultServicePipelineTerminatorMiddleware()
         {
-            _name = description;
-            Phase = phase;
-            _callback = callback;
         }
 
-        /// <inheritdoc />
-        public PipelinePhase Phase { get; }
+        public PipelinePhase Phase => PipelinePhase.ServicePipelineEnd;
 
-        /// <inheritdoc />
         public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
         {
-            _callback(context, next);
-        }
+            // Just invoke the registration's pipeline.
+            if (context.Registration is null)
+            {
+                throw new InvalidOperationException("It should not be possible to get here; the registration is always set if this middleware has been added.");
+            }
 
-        /// <inheritdoc />
-        public override string ToString() => _name;
+            context.Registration.ResolvePipeline.Invoke(context);
+        }
     }
 }

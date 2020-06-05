@@ -26,6 +26,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Autofac.Core.Registration;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core
 {
@@ -54,6 +56,11 @@ namespace Autofac.Core
         IEnumerable<IRegistrationSource> Sources { get; }
 
         /// <summary>
+        /// Gets the set of service middleware sources that are used by the registry.
+        /// </summary>
+        IEnumerable<IServiceMiddlewareSource> ServiceMiddlewareSources { get; }
+
+        /// <summary>
         /// Gets a value indicating whether the registry contains its own components.
         /// True if the registry contains its own components; false if it is forwarding
         /// registrations from another external registry.
@@ -71,11 +78,26 @@ namespace Autofac.Core
         bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration);
 
         /// <summary>
+        /// Attempts to find a default service registration for the specified service.
+        /// </summary>
+        /// <param name="service">The service to look up.</param>
+        /// <param name="serviceRegistration">The default registration for the service.</param>
+        /// <returns>True if a registration exists.</returns>
+        bool TryGetServiceRegistration(Service service, out ServiceRegistration serviceRegistration);
+
+        /// <summary>
         /// Determines whether the specified service is registered.
         /// </summary>
         /// <param name="service">The service to test.</param>
         /// <returns>True if the service is registered.</returns>
         bool IsRegistered(Service service);
+
+        /// <summary>
+        /// Gets the set of custom service middleware for the specified service.
+        /// </summary>
+        /// <param name="service">The service to look up.</param>
+        /// <returns>The set of custom service middleware.</returns>
+        IEnumerable<IResolveMiddleware> ServiceMiddlewareFor(Service service);
 
         /// <summary>
         /// Selects from the available registrations after ensuring that any
@@ -87,10 +109,12 @@ namespace Autofac.Core
         IEnumerable<IComponentRegistration> RegistrationsFor(Service service);
 
         /// <summary>
-        /// Selects all available decorator registrations that can be applied to the specified service.
+        /// Selects from the available service registrations after ensuring that any
+        /// dynamic registration sources that may provide <paramref name="service"/>
+        /// have been invoked.
         /// </summary>
-        /// <param name="service">The service for which decorator registrations are sought.</param>
-        /// <returns>Decorator registrations applicable to <paramref name="service"/>.</returns>
-        IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service);
+        /// <param name="service">The service for which registrations are sought.</param>
+        /// <returns>Service registrations supporting <paramref name="service"/>.</returns>
+        IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service);
     }
 }

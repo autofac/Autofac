@@ -44,7 +44,7 @@ namespace Autofac.Features.LazyDependencies
         private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateLazyRegistration));
 
         /// <inheritdoc/>
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
@@ -71,18 +71,18 @@ namespace Autofac.Features.LazyDependencies
             return LazyRegistrationSourceResources.LazyRegistrationSourceDescription;
         }
 
-        private IComponentRegistration CreateLazyRegistration<T>(Service providedService, Service valueService, IComponentRegistration valueRegistration)
+        private IComponentRegistration CreateLazyRegistration<T>(Service providedService, Service valueService, ServiceRegistration implementation)
         {
             var rb = RegistrationBuilder.ForDelegate(
                 (c, p) =>
                 {
                     var context = c.Resolve<IComponentContext>();
-                    var request = new ResolveRequest(valueService, valueRegistration, p);
+                    var request = new ResolveRequest(valueService, implementation, p);
                     return new Lazy<T>(() => (T)context.ResolveComponent(request));
                 })
                 .As(providedService)
-                .Targeting(valueRegistration, IsAdapterForIndividualComponents)
-                .InheritRegistrationOrderFrom(valueRegistration);
+                .Targeting(implementation.Registration, IsAdapterForIndividualComponents)
+                .InheritRegistrationOrderFrom(implementation.Registration);
 
             return rb.CreateRegistration();
         }

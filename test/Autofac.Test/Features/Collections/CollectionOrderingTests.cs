@@ -76,7 +76,7 @@ namespace Autofac.Test.Features.Collections
                 _instances = instances;
             }
 
-            public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+            public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
             {
                 return service == _stringService
                     ? _instances.Select(Factory.CreateSingletonRegistration)

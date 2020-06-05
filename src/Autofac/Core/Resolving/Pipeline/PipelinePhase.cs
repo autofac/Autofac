@@ -42,7 +42,7 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <summary>
         /// The start of a resolve request. Custom middleware added to this phase executes before circular dependency detection.
         /// </summary>
-        RequestStart = 0,
+        ResolveRequestStart = 0,
 
         /// <summary>
         /// In this phase, the lifetime scope selection takes place. If some middleware needs to change the lifetime scope for resolving against,
@@ -62,14 +62,24 @@ namespace Autofac.Core.Resolving.Pipeline
         Sharing = 100,
 
         /// <summary>
+        /// This phase occurs just before the service pipeline ends (and the registration pipeline is about to start).
+        /// </summary>
+        ServicePipelineEnd = 150,
+
+        /// <summary>
+        /// This phase occurs at the start of the registration pipeline.
+        /// </summary>
+        RegistrationPipelineStart = 200,
+
+        /// <summary>
         /// This phase runs just before Activation, is the recommended point at which the resolve parameters should be replaced
         /// (using <see cref="ResolveRequestContextBase.ChangeParameters(IEnumerable{Parameter})"/>).
         /// </summary>
-        ParameterSelection = 125,
+        ParameterSelection = 250,
 
         /// <summary>
         /// The Activation phase is the last phase of a pipeline, where a new instance of a component is created.
         /// </summary>
-        Activation = 200,
+        Activation = 300,
     }
 }

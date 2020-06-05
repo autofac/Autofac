@@ -24,38 +24,14 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
+using Autofac.Core.Resolving.Middleware;
+using Autofac.Core.Resolving.Pipeline;
 
-namespace Autofac.Core.Resolving.Pipeline
+namespace Autofac
 {
-    /// <summary>
-    /// Provides the ability to build a resolve pipeline from a set of middleware.
-    /// </summary>
-    public interface IResolvePipelineBuilder
+    public static class PipelineBuilderExtensions
     {
-        /// <summary>
-        /// Construct a concrete resolve pipeline from this builder.
-        /// </summary>
-        /// <returns>A built pipeline.</returns>
-        IResolvePipeline Build();
-
-        /// <summary>
-        /// Gets the set of middleware currently registered.
-        /// </summary>
-        IEnumerable<IResolveMiddleware> Middleware { get; }
-
-        /// <summary>
-        /// Gets the type of the pipeline this instance will build.
-        /// </summary>
-        PipelineType Type { get; }
-
-        /// <summary>
-        /// Use a piece of middleware in a resolve pipeline.
-        /// </summary>
-        /// <param name="middleware">The middleware instance.</param>
-        /// <param name="insertionMode">The insertion mode specifying whether to add at the start or end of the phase.</param>
-        /// <returns>The same builder instance.</returns>
-        IResolvePipelineBuilder Use(IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase);
+        private const string AnonymousName = "unnamed";
 
         /// <summary>
         /// Use a middleware callback in a resolve pipeline.
@@ -67,7 +43,12 @@ namespace Autofac.Core.Resolving.Pipeline
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        IResolvePipelineBuilder Use(PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback);
+        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
+        {
+            builder.Use(phase, MiddlewareInsertionMode.EndOfPhase, callback);
+
+            return builder;
+        }
 
         /// <summary>
         /// Use a middleware callback in a resolve pipeline.
@@ -80,7 +61,12 @@ namespace Autofac.Core.Resolving.Pipeline
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        IResolvePipelineBuilder Use(string name, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback);
+        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
+        {
+            builder.Use(AnonymousName, phase, insertionMode, callback);
+
+            return builder;
+        }
 
         /// <summary>
         /// Use a middleware callback in a resolve pipeline.
@@ -93,7 +79,12 @@ namespace Autofac.Core.Resolving.Pipeline
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        IResolvePipelineBuilder Use(PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback);
+        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, string name, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
+        {
+            builder.Use(new DelegateMiddleware(name, phase, callback), MiddlewareInsertionMode.EndOfPhase);
+
+            return builder;
+        }
 
         /// <summary>
         /// Use a middleware callback in a resolve pipeline.
@@ -107,20 +98,11 @@ namespace Autofac.Core.Resolving.Pipeline
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        IResolvePipelineBuilder Use(string name, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback);
+        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, string name, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
+        {
+            builder.Use(new DelegateMiddleware(name, phase, callback), insertionMode);
 
-        /// <summary>
-        /// Use a set of multiple, ordered middleware instances in a resolve pipeline.
-        /// </summary>
-        /// <param name="middleware">The set of middleware items to add to the pipelne. The set of middleware must be pre-ordered by phase.</param>
-        /// <param name="insertionMode">The insertion mode specifying whether to add at the start or end of the phase.</param>
-        /// <returns>The same builder instance.</returns>
-        IResolvePipelineBuilder UseRange(IEnumerable<IResolveMiddleware> middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase);
-
-        /// <summary>
-        /// Clone this builder, returning a new builder containing the set of middleware already added.
-        /// </summary>
-        /// <returns>A new builder instance.</returns>
-        IResolvePipelineBuilder Clone();
+            return builder;
+        }
     }
 }

@@ -43,7 +43,7 @@ namespace Autofac.Builder
         /// <param name="scope">The new scope/container.</param>
         internal static void RunBuildCallbacks(ILifetimeScope scope)
         {
-            var buildCallbackServices = scope.ComponentRegistry.RegistrationsFor(CallbackServiceType);
+            var buildCallbackServices = scope.ComponentRegistry.ServiceRegistrationsFor(CallbackServiceType);
 
             foreach (var srv in buildCallbackServices)
             {
@@ -55,7 +55,7 @@ namespace Autofac.Builder
 
                 var request = new ResolveRequest(CallbackServiceType, srv, Enumerable.Empty<Parameter>());
                 var component = (BuildCallbackService)scope.ResolveComponent(request);
-                srv.Metadata[BuildCallbacksExecutedKey] = true;
+                srv.Registration.Metadata[BuildCallbacksExecutedKey] = true;
 
                 // Run the callbacks for the relevant scope.
                 component.Execute(scope);

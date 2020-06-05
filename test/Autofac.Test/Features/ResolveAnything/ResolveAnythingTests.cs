@@ -95,7 +95,7 @@ namespace Autofac.Test.Features.ResolveAnything
         {
             var source = new AnyConcreteTypeNotAlreadyRegisteredSource();
             var service = new TypedService(serviceType);
-            Assert.False(source.RegistrationsFor(service, s => Enumerable.Empty<IComponentRegistration>()).Any(), $"Failed: {serviceType}");
+            Assert.False(source.RegistrationsFor(service, s => Enumerable.Empty<ServiceRegistration>()).Any(), $"Failed: {serviceType}");
         }
 
         [Fact]

@@ -279,6 +279,11 @@ namespace Autofac.Core.Lifetime
                 {
                     var externalSource = new ExternalRegistrySource(parent.ComponentRegistry);
                     builder.RegisterSource(externalSource);
+
+                    // Add a source for the service pipeline stages.
+                    var externalServicePipelineSource = new ExternalRegistryServicePipelineSource(parent.ComponentRegistry);
+                    builder.RegisterServicePipelineSource(externalServicePipelineSource);
+
                     break;
                 }
 

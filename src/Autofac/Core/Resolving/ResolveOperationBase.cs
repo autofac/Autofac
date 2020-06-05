@@ -204,7 +204,8 @@ namespace Autofac.Core.Resolving
             {
                 _pipelineTracer?.RequestStart(this, requestContext);
 
-                ExecuteRequest(requestContext);
+                // Invoke the resolve pipeline.
+                request.ResolvePipeline.Invoke(requestContext);
 
                 if (requestContext.Instance == null)
                 {
@@ -236,12 +237,6 @@ namespace Autofac.Core.Resolving
 
             return requestContext.Instance;
         }
-
-        /// <summary>
-        /// An implementation must implement this member to execute the specified request context.
-        /// </summary>
-        /// <param name="requestContext">The request context.</param>
-        protected abstract void ExecuteRequest(ResolveRequestContextBase requestContext);
 
         private void CompleteRequests()
         {

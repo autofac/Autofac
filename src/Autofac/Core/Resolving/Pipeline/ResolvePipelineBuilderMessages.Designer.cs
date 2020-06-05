@@ -61,6 +61,24 @@ namespace Autofac.Core.Resolving.Pipeline {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot add registration middleware in phase &apos;{0}&apos; to a service pipeline. Valid registration middleware phases: [{1}].
+        /// </summary>
+        internal static string CannotAddRegistrationMiddlewareToServicePipeline {
+            get {
+                return ResourceManager.GetString("CannotAddRegistrationMiddlewareToServicePipeline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot add service middleware in phase &apos;{0}&apos; to a registration pipeline. Valid service middleware phases: [{1}].
+        /// </summary>
+        internal static string CannotAddServiceMiddlewareToRegistrationPipeline {
+            get {
+                return ResourceManager.GetString("CannotAddServiceMiddlewareToRegistrationPipeline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Middleware provided to the UseRange method must be in phase order..
         /// </summary>
         internal static string MiddlewareMustBeInPhaseOrder {

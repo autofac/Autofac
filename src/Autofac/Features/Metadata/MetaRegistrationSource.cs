@@ -43,7 +43,7 @@ namespace Autofac.Features.Metadata
         private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(MetaRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateMetaRegistration));
 
         /// <inheritdoc/>
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
@@ -71,15 +71,15 @@ namespace Autofac.Features.Metadata
             return MetaRegistrationSourceResources.MetaRegistrationSourceDescription;
         }
 
-        private IComponentRegistration CreateMetaRegistration<T>(Service providedService, Service valueService, IComponentRegistration valueRegistration)
+        private IComponentRegistration CreateMetaRegistration<T>(Service providedService, Service valueService, ServiceRegistration implementation)
         {
             var rb = RegistrationBuilder
                 .ForDelegate((c, p) => new Meta<T>(
-                    (T)c.ResolveComponent(new ResolveRequest(valueService, valueRegistration, p)),
-                    valueRegistration.Target.Metadata))
+                    (T)c.ResolveComponent(new ResolveRequest(valueService, implementation, p)),
+                    implementation.Registration.Target.Metadata))
                 .As(providedService)
-                .Targeting(valueRegistration, IsAdapterForIndividualComponents)
-                .InheritRegistrationOrderFrom(valueRegistration);
+                .Targeting(implementation.Registration, IsAdapterForIndividualComponents)
+                .InheritRegistrationOrderFrom(implementation.Registration);
 
             return rb.CreateRegistration();
         }

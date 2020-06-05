@@ -5,6 +5,7 @@ using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Diagnostics;
 using Autofac.Core.Resolving;
+using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Test
@@ -24,6 +25,20 @@ namespace Autofac.Test
         public static MockComponentRegistration GetComponentRegistration()
         {
             return new MockComponentRegistration();
+        }
+
+        public static ServiceRegistration GetResolvableImplementation()
+        {
+            return new ServiceRegistration(
+                ServicePipelines.DefaultServicePipeline,
+                GetComponentRegistration());
+        }
+
+        public static ServiceRegistration GetResolvableImplementation(IComponentRegistration registration)
+        {
+            return new ServiceRegistration(
+                ServicePipelines.DefaultServicePipeline,
+                registration);
         }
 
         public static MockTracer GetTracer()
@@ -76,11 +91,11 @@ namespace Autofac.Test
 
             public event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
 
-            public IResolvePipeline ResolvePipeline { get; } = new ResolvePipelineBuilder().Build();
+            public IResolvePipeline ResolvePipeline { get; } = new ResolvePipelineBuilder(PipelineType.Registration).Build();
 
             public void BuildResolvePipeline(IComponentRegistryServices registryServices)
             {
-                PipelineBuilding?.Invoke(this, new ResolvePipelineBuilder());
+                PipelineBuilding?.Invoke(this, new ResolvePipelineBuilder(PipelineType.Registration));
             }
         }
 

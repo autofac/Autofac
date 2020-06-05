@@ -1382,7 +1382,15 @@ namespace Autofac
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
 
-            builder.RegisterType<TDecorator>().As(new DecoratorService(typeof(TService), condition));
+            var decoratorService = new DecoratorService(typeof(TService), condition);
+
+            var rb = RegistrationBuilder.ForType<TDecorator>().As(decoratorService);
+
+            var decoratorRegistration = rb.CreateRegistration();
+            builder.RegisterServicePipelineSource(new DecoratorMiddlewareSource(typeof(TService), decoratorService, decoratorRegistration));
+
+            // Add the decorator to the registry so the pipeline gets built.
+            builder.RegisterCallback(crb => crb.Register(decoratorRegistration));
         }
 
         /// <summary>
@@ -1405,7 +1413,15 @@ namespace Autofac
             if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
             if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
 
-            builder.RegisterType(decoratorType).As(new DecoratorService(serviceType, condition));
+            var decoratorService = new DecoratorService(serviceType, condition);
+
+            var rb = RegistrationBuilder.ForType(decoratorType).As(decoratorService);
+
+            var decoratorRegistration = rb.CreateRegistration();
+            builder.RegisterServicePipelineSource(new DecoratorMiddlewareSource(serviceType, decoratorService, decoratorRegistration));
+
+            // Add the decorator to the registry so the pipeline gets built.
+            builder.RegisterCallback(crb => crb.Register(decoratorRegistration));
         }
 
         /// <summary>
@@ -1429,7 +1445,7 @@ namespace Autofac
 
             var service = new DecoratorService(typeof(TService), condition);
 
-            builder.Register((c, p) =>
+            var rb = RegistrationBuilder.ForDelegate((c, p) =>
             {
                 TService? instance = (TService?)p
                     .OfType<TypedParameter>()
@@ -1442,8 +1458,13 @@ namespace Autofac
                 }
 
                 return decorator(c, p, instance);
-            })
-            .As(service);
+            }).As(service);
+
+            var decoratorRegistration = rb.CreateRegistration();
+            builder.RegisterServicePipelineSource(new DecoratorMiddlewareSource(typeof(TService), service, decoratorRegistration));
+
+            // Add the decorator to the registry so the pipeline gets built.
+            builder.RegisterCallback(crb => crb.Register(decoratorRegistration));
         }
 
         /// <summary>
@@ -1465,9 +1486,13 @@ namespace Autofac
             if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
             if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
 
-            OpenGenericRegistrationExtensions
-                .RegisterGeneric(builder, decoratorType)
-                .As(new DecoratorService(serviceType, condition));
+            var decoratorService = new DecoratorService(serviceType, condition);
+
+            var genericRegistration = OpenGenericRegistrationExtensions
+                .CreateGenericBuilder(decoratorType)
+                .As(decoratorService);
+
+            builder.RegisterServicePipelineSource(new OpenGenericDecoratorMiddlewareSource(decoratorService, genericRegistration.RegistrationData, genericRegistration.ActivatorData));
         }
 
         /// <summary>

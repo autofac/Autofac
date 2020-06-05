@@ -171,7 +171,7 @@ namespace Autofac.Test.Core.Lifetime
 
             public SimplifiedRegistrationSource(ITest instance) => _instance = instance;
 
-            public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+            public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
             {
                 // Important that DecoratorService is not included here.
                 if (!(service is IServiceWithType serviceWithType) || service is DecoratorService) yield break;

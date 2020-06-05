@@ -47,6 +47,18 @@ namespace Autofac.Features.OpenGenerics
             RegisterGeneric(ContainerBuilder builder, Type implementer)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
+
+            var rb = CreateGenericBuilder(implementer);
+
+            rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => cr.AddRegistrationSource(
+                new OpenGenericRegistrationSource(rb.RegistrationData, rb.ResolvePipeline.Clone(), rb.ActivatorData)));
+
+            return rb;
+        }
+
+        public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
+            CreateGenericBuilder(Type implementer)
+        {
             if (implementer == null) throw new ArgumentNullException(nameof(implementer));
 
             if (!implementer.GetTypeInfo().IsGenericTypeDefinition)
@@ -56,9 +68,6 @@ namespace Autofac.Features.OpenGenerics
                 new TypedService(implementer),
                 new ReflectionActivatorData(implementer),
                 new DynamicRegistrationStyle());
-
-            rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => cr.AddRegistrationSource(
-                new OpenGenericRegistrationSource(rb.RegistrationData, rb.ResolvePipeline.Clone(), rb.ActivatorData)));
 
             return rb;
         }

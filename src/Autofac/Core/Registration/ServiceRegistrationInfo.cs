@@ -28,13 +28,15 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Autofac.Core.Resolving.Middleware;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Registration
 {
     /// <summary>
     /// Tracks the services known to the registry.
     /// </summary>
-    internal class ServiceRegistrationInfo
+    internal class ServiceRegistrationInfo : IServicePipelineBuilder
     {
         private volatile bool _isInitialized;
 
@@ -72,6 +74,10 @@ namespace Autofac.Core.Registration
         /// </summary>
         private Lazy<IList<IComponentRegistration>>? _registeredImplementations;
 
+        private IResolvePipeline? _resolvePipeline;
+
+        private IResolvePipelineBuilder? _customPipelineBuilder;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceRegistrationInfo"/> class.
         /// </summary>
@@ -89,6 +95,8 @@ namespace Autofac.Core.Registration
             private set => _isInitialized = value;
         }
 
+        public IComponentRegistration? RedirectionTargetRegistration { get; private set; }
+
         /// <summary>
         /// Gets the known implementations. The first implementation is a default one.
         /// </summary>
@@ -99,6 +107,22 @@ namespace Autofac.Core.Registration
                 RequiresInitialization();
 
                 return _registeredImplementations!.Value;
+            }
+        }
+
+        public IResolvePipeline ServicePipeline => IsInitialized ? _resolvePipeline!
+                                                                 : throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
+
+        public IEnumerable<IResolveMiddleware> ServiceMiddleware
+        {
+            get
+            {
+                if (_customPipelineBuilder is null)
+                {
+                    return Enumerable.Empty<IResolveMiddleware>();
+                }
+
+                return _customPipelineBuilder.Middleware.Where(t => !ServicePipelines.IsDefaultMiddleware(t));
             }
         }
 
@@ -122,6 +146,7 @@ namespace Autofac.Core.Registration
         }
 
         private bool Any =>
+            RedirectionTargetRegistration is object ||
             _defaultImplementations.Count > 0 ||
             _sourceImplementations != null ||
             _preserveDefaultImplementations != null;
@@ -169,6 +194,37 @@ namespace Autofac.Core.Registration
                 _registeredImplementations = new Lazy<IList<IComponentRegistration>>(InitializeComponentRegistrations);
         }
 
+        public void UseServiceMiddleware(IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+        {
+            if (_customPipelineBuilder is null)
+            {
+                _customPipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
+            }
+
+            _customPipelineBuilder.Use(middleware, insertionMode);
+
+            if (middleware is IRedirectingMiddleware redirectMiddleware)
+            {
+                // This middleware provides a redirect registration.
+                RedirectionTargetRegistration = redirectMiddleware.TargetRegistration;
+            }
+        }
+
+        public void UseServiceMiddlewareRange(IEnumerable<IResolveMiddleware> middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+        {
+            if (!middleware.Any())
+            {
+                return;
+            }
+
+            if (_customPipelineBuilder is null)
+            {
+                _customPipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
+            }
+
+            _customPipelineBuilder.UseRange(middleware, insertionMode);
+        }
+
         /// <summary>
         /// Attempts to access the implementing registration for this service, selecting the correct one based on defaults and all known registrations.
         /// </summary>
@@ -183,23 +239,6 @@ namespace Autofac.Core.Registration
                                                       _preserveDefaultImplementations?.First();
 
             return registration != null;
-        }
-
-        /// <summary>
-        /// Include a registration source in the list of sources for the registration info.
-        /// </summary>
-        /// <param name="source">The registration source.</param>
-        public void Include(IRegistrationSource source)
-        {
-            if (IsInitialized)
-            {
-                BeginInitialization(new[] { source });
-            }
-            else if (IsInitializing)
-            {
-                // _sourcesToQuery can only be non-null here due to the initialization flow.
-                _sourcesToQuery!.Enqueue(source);
-            }
         }
 
         /// <summary>
@@ -263,6 +302,27 @@ namespace Autofac.Core.Registration
             // began it.
             IsInitialized = true;
             _sourcesToQuery = null;
+
+            if (_resolvePipeline is null)
+            {
+                // Build the custom service pipeline (if we need to).
+                if (_customPipelineBuilder is object)
+                {
+                    if (RedirectionTargetRegistration is null)
+                    {
+                        // Add the terminator that invokes the concrete registration's pipeline.
+                        _customPipelineBuilder.UseRange(ServicePipelines.DefaultStages);
+                    }
+
+                    // Add the default.
+                    _resolvePipeline = _customPipelineBuilder.Build();
+                }
+                else
+                {
+                    // Nothing custom, use an empty pipeline.
+                    _resolvePipeline = ServicePipelines.DefaultServicePipeline;
+                }
+            }
         }
 
         private IList<IComponentRegistration> InitializeComponentRegistrations()
@@ -280,5 +340,11 @@ namespace Autofac.Core.Registration
 
             return resultingCollection.ToList();
         }
+
+        void IServicePipelineBuilder.Use(IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+            => UseServiceMiddleware(middleware, insertionMode);
+
+        void IServicePipelineBuilder.UseRange(IEnumerable<IResolveMiddleware> middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+            => UseServiceMiddlewareRange(middleware, insertionMode);
     }
 }

@@ -26,6 +26,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using Autofac.Core.Pipeline;
 using Autofac.Core.Resolving.Middleware;
 
@@ -55,15 +58,26 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <summary>
         /// Termination action for the end of pipelines, that will execute the specified continuation (if there is one).
         /// </summary>
-        private static readonly Action<ResolveRequestContextBase> _terminateAction = ctxt => ctxt.Continuation?.Invoke(ctxt);
-
+        private static readonly Action<ResolveRequestContextBase> _terminateAction = ctxt => { };
         private const string AnonymousName = "unnamed";
 
         private MiddlewareDeclaration? _first;
         private MiddlewareDeclaration? _last;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResolvePipelineBuilder"/> class.
+        /// </summary>
+        /// <param name="pipelineType">The pipeline type.</param>
+        public ResolvePipelineBuilder(PipelineType pipelineType)
+        {
+            Type = pipelineType;
+        }
+
         /// <inheritdoc/>
         public IEnumerable<IResolveMiddleware> Middleware => this;
+
+        /// <inheritdoc/>
+        public PipelineType Type { get; }
 
         /// <inheritdoc/>
         public IResolvePipelineBuilder Use(IResolveMiddleware stage, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
@@ -126,6 +140,8 @@ namespace Autofac.Core.Resolving.Pipeline
             var nextNewStage = enumerator.Current;
             var lastPhase = nextNewStage.Phase;
 
+            VerifyPhase(nextNewStage.Phase);
+
             while (currentStage is object)
             {
                 if (insertionMode == MiddlewareInsertionMode.StartOfPhase ?
@@ -159,6 +175,8 @@ namespace Autofac.Core.Resolving.Pipeline
 
                     nextNewStage = enumerator.Current;
 
+                    VerifyPhase(nextNewStage.Phase);
+
                     if (nextNewStage.Phase < lastPhase)
                     {
                         throw new InvalidOperationException(ResolvePipelineBuilderMessages.MiddlewareMustBeInPhaseOrder);
@@ -173,6 +191,8 @@ namespace Autofac.Core.Resolving.Pipeline
             do
             {
                 nextNewStage = enumerator.Current;
+
+                VerifyPhase(nextNewStage.Phase);
 
                 if (nextNewStage.Phase < lastPhase)
                 {
@@ -201,6 +221,8 @@ namespace Autofac.Core.Resolving.Pipeline
 
         private void AddStage(IResolveMiddleware stage, MiddlewareInsertionMode insertionLocation)
         {
+            VerifyPhase(stage.Phase);
+
             // Start at the beginning.
             var currentStage = _first;
 
@@ -314,7 +336,7 @@ namespace Autofac.Core.Resolving.Pipeline
         {
             // To clone a pipeline, we create a new instance, then insert the same stage
             // objects in the same order.
-            var newPipeline = new ResolvePipelineBuilder();
+            var newPipeline = new ResolvePipelineBuilder(Type);
             var currentStage = _first;
 
             while (currentStage is object)
@@ -336,6 +358,40 @@ namespace Autofac.Core.Resolving.Pipeline
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        private void VerifyPhase(PipelinePhase middlewarePhase)
+        {
+            if (Type == PipelineType.Service)
+            {
+                if (middlewarePhase > PipelinePhase.ServicePipelineEnd)
+                {
+                    throw new InvalidOperationException(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            ResolvePipelineBuilderMessages.CannotAddRegistrationMiddlewareToServicePipeline,
+                            middlewarePhase,
+                            DescribeValidEnumRange(PipelinePhase.ResolveRequestStart, PipelinePhase.ServicePipelineEnd)));
+                }
+            }
+            else if (middlewarePhase < PipelinePhase.RegistrationPipelineStart)
+            {
+                throw new InvalidOperationException(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            ResolvePipelineBuilderMessages.CannotAddServiceMiddlewareToRegistrationPipeline,
+                            middlewarePhase,
+                            DescribeValidEnumRange(PipelinePhase.ResolveRequestStart, PipelinePhase.ServicePipelineEnd)));
+            }
+        }
+
+        private static string DescribeValidEnumRange(PipelinePhase start, PipelinePhase end)
+        {
+            var enumValues = Enum.GetValues(typeof(PipelinePhase))
+                                 .Cast<PipelinePhase>()
+                                 .Where(value => value >= start && value <= end);
+
+            return string.Join(", ", enumValues);
         }
     }
 }

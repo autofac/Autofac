@@ -239,7 +239,7 @@ namespace Autofac.Test.Features.OpenGenerics
             var source = ConstructSource(component, service);
 
             var closedServiceType = typeof(TClosedService);
-            var registrations = source.RegistrationsFor(new TypedService(closedServiceType), s => Enumerable.Empty<IComponentRegistration>());
+            var registrations = source.RegistrationsFor(new TypedService(closedServiceType), s => Enumerable.Empty<ServiceRegistration>());
             if (registrations.Count() != 1)
                 return false;
 
@@ -259,7 +259,7 @@ namespace Autofac.Test.Features.OpenGenerics
         {
             return new OpenGenericRegistrationSource(
                 new RegistrationData(new TypedService(service ?? component)),
-                new ResolvePipelineBuilder(),
+                new ResolvePipelineBuilder(PipelineType.Registration),
                 new ReflectionActivatorData(component));
         }
     }

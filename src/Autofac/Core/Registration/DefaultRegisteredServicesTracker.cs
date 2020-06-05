@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Autofac.Builder;
-using Autofac.Core.Pipeline;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.Decorators;
 using Autofac.Util;
 
@@ -17,8 +16,7 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredServicesTracker
     {
-        private readonly Func<Service, IEnumerable<IComponentRegistration>> _registrationAccessor;
-        private readonly Func<IServiceWithType, IReadOnlyList<IComponentRegistration>> _decoratorRegistrationsAccessor;
+        private readonly Func<Service, IEnumerable<ServiceRegistration>> _registrationAccessor;
 
         /// <summary>
         /// Keeps track of the status of registered services.
@@ -35,8 +33,7 @@ namespace Autofac.Core.Registration
         /// </summary>
         private readonly List<IComponentRegistration> _registrations = new List<IComponentRegistration>();
 
-        private readonly ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>> _decorators
-            = new ConcurrentDictionary<IServiceWithType, IReadOnlyList<IComponentRegistration>>();
+        private readonly List<IServiceMiddlewareSource> _servicePipelineSources = new List<IServiceMiddlewareSource>();
 
         /// <summary>
         /// Protects instance variables from concurrent access.
@@ -48,8 +45,7 @@ namespace Autofac.Core.Registration
         /// </summary>
         public DefaultRegisteredServicesTracker()
         {
-            _registrationAccessor = RegistrationsFor;
-            _decoratorRegistrationsAccessor = InternalDecoratorRegistrationsFor;
+            _registrationAccessor = ServiceRegistrationsFor;
         }
 
         /// <summary>
@@ -78,11 +74,19 @@ namespace Autofac.Core.Registration
         {
             get
             {
-                lock (_synchRoot)
-                {
-                    return _dynamicRegistrationSources.ToList();
-                }
+                return _dynamicRegistrationSources.ToList();
             }
+        }
+
+        /// <inheritdoc/>
+        public IEnumerable<IServiceMiddlewareSource> ServiceMiddlewareSources => _servicePipelineSources;
+
+        /// <inheritdoc/>
+        public void AddServiceMiddleware(Service service, IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+        {
+            var info = GetServiceInfo(service);
+
+            info.UseServiceMiddleware(middleware, insertionMode);
         }
 
         /// <inheritdoc />
@@ -109,14 +113,29 @@ namespace Autofac.Core.Registration
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
 
+            _dynamicRegistrationSources.Insert(0, source);
+
+            var handler = RegistrationSourceAdded;
+            handler?.Invoke(this, source);
+        }
+
+        /// <inheritdoc/>
+        public void AddServiceMiddlewareSource(IServiceMiddlewareSource serviceMiddlewareSource)
+        {
+            if (serviceMiddlewareSource is null)
+            {
+                throw new ArgumentNullException(nameof(serviceMiddlewareSource));
+            }
+
+            _servicePipelineSources.Add(serviceMiddlewareSource);
+        }
+
+        public IEnumerable<IResolveMiddleware> ServiceMiddlewareFor(Service service)
+        {
             lock (_synchRoot)
             {
-                _dynamicRegistrationSources.Insert(0, source);
-                foreach (var serviceRegistrationInfo in _serviceInfo)
-                    serviceRegistrationInfo.Value.Include(source);
-
-                var handler = RegistrationSourceAdded;
-                handler?.Invoke(this, source);
+                var info = GetInitializedServiceInfo(service);
+                return info.ServiceMiddleware;
             }
         }
 
@@ -130,6 +149,31 @@ namespace Autofac.Core.Registration
                 var info = GetInitializedServiceInfo(service);
                 return info.TryGetRegistration(out registration);
             }
+        }
+
+        public bool TryGetServiceRegistration(Service service, out ServiceRegistration serviceData)
+        {
+            if (service == null) throw new ArgumentNullException(nameof(service));
+
+            lock (_synchRoot)
+            {
+                var info = GetInitializedServiceInfo(service);
+
+                // There is a 'virtual' registration; use it.
+                if (info.RedirectionTargetRegistration is object)
+                {
+                    serviceData = new ServiceRegistration(info.ServicePipeline, info.RedirectionTargetRegistration);
+                    return true;
+                }
+                else if (info.TryGetRegistration(out var registration))
+                {
+                    serviceData = new ServiceRegistration(info.ServicePipeline, registration);
+                    return true;
+                }
+            }
+
+            serviceData = default;
+            return false;
         }
 
         /// <inheritdoc />
@@ -155,20 +199,29 @@ namespace Autofac.Core.Registration
             }
         }
 
-        /// <inheritdoc />
-        public IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service)
+        public IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            return _decorators.GetOrAdd(service, _decoratorRegistrationsAccessor);
+            lock (_synchRoot)
+            {
+                var info = GetInitializedServiceInfo(service);
+
+                var listAll = new List<ServiceRegistration>();
+
+                AddResolvableConcreteImplementationsOf(info, listAll);
+
+                return listAll;
+            }
         }
 
-        private IReadOnlyList<IComponentRegistration> InternalDecoratorRegistrationsFor(IServiceWithType service)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void AddResolvableConcreteImplementationsOf(ServiceRegistrationInfo serviceInfo, List<ServiceRegistration> set)
         {
-            return RegistrationsFor(new DecoratorService(service.ServiceType))
-                    .Where(r => !r.IsAdapterForIndividualComponent)
-                    .OrderBy(r => r.GetRegistrationOrder())
-                    .ToList();
+            foreach (var implementation in serviceInfo.Implementations)
+            {
+                set.Add(new ServiceRegistration(serviceInfo.ServicePipeline, implementation));
+            }
         }
 
         /// <summary>
@@ -190,7 +243,9 @@ namespace Autofac.Core.Registration
                 return info;
 
             if (!info.IsInitializing)
-                info.BeginInitialization(_dynamicRegistrationSources);
+            {
+                BeginServiceInfoInitialization(service, info, _dynamicRegistrationSources);
+            }
 
             while (info.HasSourcesToQuery)
             {
@@ -205,9 +260,13 @@ namespace Autofac.Core.Registration
                         if (additionalInfo.IsInitialized || additionalInfo == info) continue;
 
                         if (!additionalInfo.IsInitializing)
-                            additionalInfo.BeginInitialization(ExcludeSource(_dynamicRegistrationSources, next));
+                        {
+                            BeginServiceInfoInitialization(additionalService, additionalInfo, ExcludeSource(_dynamicRegistrationSources, next));
+                        }
                         else
+                        {
                             additionalInfo.SkipSource(next);
+                        }
                     }
 
                     AddRegistration(provided, true, true);
@@ -216,6 +275,17 @@ namespace Autofac.Core.Registration
 
             info.CompleteInitialization();
             return info;
+        }
+
+        private void BeginServiceInfoInitialization(Service service, ServiceRegistrationInfo info, IEnumerable<IRegistrationSource> registrationSources)
+        {
+            info.BeginInitialization(registrationSources);
+
+            // Add any additional service pipeline configuration from external sources.
+            foreach (var servicePipelineSource in _servicePipelineSources)
+            {
+                servicePipelineSource.ConfigureServicePipeline(service, this, info);
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

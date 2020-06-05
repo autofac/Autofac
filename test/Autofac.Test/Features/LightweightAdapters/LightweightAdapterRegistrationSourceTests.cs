@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Features.LightweightAdapters;
 using Xunit;
 
@@ -32,7 +33,7 @@ namespace Autofac.Test.Features.LightweightAdapters
                 var rd = new RegistrationData(_to);
                 _subject = new LightweightAdapterRegistrationSource(rd, ad);
 
-                _adaptedTo = _subject.RegistrationsFor(_to, s => _adaptedFrom);
+                _adaptedTo = _subject.RegistrationsFor(_to, s => _adaptedFrom.Select(x => Mocks.GetResolvableImplementation(x)));
             }
 
             [Fact]

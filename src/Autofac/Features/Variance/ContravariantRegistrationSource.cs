@@ -80,7 +80,7 @@ namespace Autofac.Features.Variance
         /// </remarks>
         public IEnumerable<IComponentRegistration> RegistrationsFor(
             Service service,
-            Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+            Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
@@ -108,7 +108,7 @@ namespace Autofac.Features.Variance
             return variantRegistrations
                 .Select(vr => RegistrationBuilder
                     .ForDelegate((c, p) => c.ResolveComponent(new ResolveRequest(service, vr, p)))
-                    .Targeting(vr, IsAdapterForIndividualComponents)
+                    .Targeting(vr.Registration, IsAdapterForIndividualComponents)
                     .As(service)
                     .WithMetadata(IsContravariantAdapter, true)
                     .CreateRegistration());

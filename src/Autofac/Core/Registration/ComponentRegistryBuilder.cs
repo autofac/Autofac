@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 using Autofac.Builder;
-using Autofac.Core.Pipeline;
-using Autofac.Core.Resolving;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -106,6 +105,22 @@ namespace Autofac.Core.Registration
             _registeredServicesTracker.AddRegistration(registration, false);
         }
 
+        /// <inheritdoc/>
+        public void RegisterServiceMiddleware(Service service, IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+        {
+            if (service is null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
+            if (middleware is null)
+            {
+                throw new ArgumentNullException(nameof(middleware));
+            }
+
+            _registeredServicesTracker.AddServiceMiddleware(service, middleware, insertionMode);
+        }
+
         /// <summary>
         /// Register a component.
         /// </summary>
@@ -149,6 +164,10 @@ namespace Autofac.Core.Registration
         {
             _registeredServicesTracker.AddRegistrationSource(source);
         }
+
+        /// <inheritdoc/>
+        public void AddServiceMiddlewareSource(IServiceMiddlewareSource servicePipelineSource)
+            => _registeredServicesTracker.AddServiceMiddlewareSource(servicePipelineSource);
 
         /// <summary>
         /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
