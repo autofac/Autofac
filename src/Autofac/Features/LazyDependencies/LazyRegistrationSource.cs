@@ -24,12 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac.Features.LazyDependencies
 {
@@ -39,49 +34,19 @@ namespace Autofac.Features.LazyDependencies
     /// When a dependency of a lazy type is used, the instantiation of the underlying
     /// component will be delayed until the Value property is first accessed.
     /// </summary>
-    internal class LazyRegistrationSource : IRegistrationSource
+    internal class LazyRegistrationSource : ImplicitRegistrationSource
     {
-        private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateLazyRegistration));
-
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        public LazyRegistrationSource()
+            : base(typeof(Lazy<>))
         {
-            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
-
-            var swt = service as IServiceWithType;
-            if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Lazy<>)))
-                return Enumerable.Empty<IComponentRegistration>();
-
-            var valueType = swt.ServiceType.GetTypeInfo().GenericTypeArguments[0];
-            var valueService = swt.ChangeType(valueType);
-
-            var registrationCreator = CreateLazyRegistrationMethod.MakeGenericMethod(valueType);
-
-            return registrationAccessor(valueService)
-                .Select(v => registrationCreator.Invoke(this, new object[] { service, valueService, v }))
-                .Cast<IComponentRegistration>();
         }
 
-        public bool IsAdapterForIndividualComponents => true;
+        public override string Description => LazyRegistrationSourceResources.LazyRegistrationSourceDescription;
 
-        public override string ToString()
+        protected override object ResolveInstance<T>(IComponentContext context, ResolveRequest request)
         {
-            return LazyRegistrationSourceResources.LazyRegistrationSourceDescription;
-        }
-
-        private IComponentRegistration CreateLazyRegistration<T>(Service providedService, Service valueService, IComponentRegistration valueRegistration)
-        {
-            var rb = RegistrationBuilder.ForDelegate(
-                (c, p) =>
-                {
-                    var context = c.Resolve<IComponentContext>();
-                    var request = new ResolveRequest(valueService, valueRegistration, p);
-                    return new Lazy<T>(() => (T)context.ResolveComponent(request));
-                })
-                .As(providedService)
-                .Targeting(valueRegistration, IsAdapterForIndividualComponents)
-                .InheritRegistrationOrderFrom(valueRegistration);
-
-            return rb.CreateRegistration();
+            var capturedContext = context.Resolve<IComponentContext>();
+            return new Lazy<T>(() => (T)capturedContext.ResolveComponent(request));
         }
     }
 }
