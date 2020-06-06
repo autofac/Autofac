@@ -31,7 +31,7 @@ using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Util;
 
-namespace Autofac.Features
+namespace Autofac.Core
 {
     public abstract class ImplicitRegistrationSource : IRegistrationSource
     {

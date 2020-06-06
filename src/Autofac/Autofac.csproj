@@ -189,7 +189,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>GeneratedFactoryRegistrationSourceResources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Features\ImplicitRegistrationSourceResources.Designer.cs">
+    <Compile Update="Core\ImplicitRegistrationSourceResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ImplicitRegistrationSourceResources.resx</DependentUpon>
@@ -383,7 +383,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>GeneratedFactoryRegistrationSourceResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Features\ImplicitRegistrationSourceResources.resx">
+    <EmbeddedResource Update="Core\ImplicitRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ImplicitRegistrationSourceResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>

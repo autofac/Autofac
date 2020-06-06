@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using Autofac.Core;
 using Autofac.Core.Registration;
-using Autofac.Features;
 using Xunit;
 
-namespace Autofac.Test.Features
+namespace Autofac.Test.Core
 {
     public class ImplicitRegistrationSourceTests
     {
