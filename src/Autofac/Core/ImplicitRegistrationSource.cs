@@ -28,17 +28,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
-using Autofac.Core;
 using Autofac.Util;
 
 namespace Autofac.Core
 {
+    /// <summary>
+    /// Support simple definition of implicit relationships such as <see cref="Lazy{T}"/>.
+    /// </summary>
     public abstract class ImplicitRegistrationSource : IRegistrationSource
     {
         private static readonly MethodInfo CreateRegistrationMethod = typeof(ImplicitRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateRegistration));
 
         private readonly Type _type;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImplicitRegistrationSource"/> class.
+        /// </summary>
+        /// <param name="type">The implicit type. Must be generic with only one type parameter.</param>
         protected ImplicitRegistrationSource(Type type)
         {
             _type = type ?? throw new ArgumentNullException(nameof(type));
@@ -54,6 +60,7 @@ namespace Autofac.Core
             }
         }
 
+        /// <inheritdoc />
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             if (registrationAccessor == null)
@@ -76,15 +83,31 @@ namespace Autofac.Core
                 .Cast<IComponentRegistration>();
         }
 
+        /// <inheritdoc />
         public virtual bool IsAdapterForIndividualComponents => true;
 
+        /// <summary>
+        /// Gets the description of the registration source.
+        /// </summary>
         public virtual string Description => GetType().GetTypeInfo().Name;
 
         public override string ToString() => Description;
 
+        /// <summary>
+        /// Resolves an instance of the implicit type.
+        /// </summary>
+        /// <typeparam name="T">The child type used in the implicit type.</typeparam>
+        /// <param name="ctx">A component context to resolve services.</param>
+        /// <param name="request">A resolve request.</param>
+        /// <returns>An implicit type instance.</returns>
         protected abstract object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
             where T : notnull;
 
+        /// <summary>
+        /// Allows hooking into the registration pipeline of the registration source, useful for such things as marking a registration as externally owned.
+        /// </summary>
+        /// <param name="registration">The registration builder.</param>
+        /// <returns>The updated registration builder.</returns>
         protected virtual IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> BuildRegistration(IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> registration)
             => registration;
 
