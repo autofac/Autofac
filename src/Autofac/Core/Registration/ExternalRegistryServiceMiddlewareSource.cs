@@ -40,7 +40,7 @@ namespace Autofac.Core.Registration
         /// <param name="componentRegistry">The component registry to retrieve middleware from.</param>
         public ExternalRegistryServiceMiddlewareSource(IComponentRegistry componentRegistry)
         {
-            _componentRegistry = componentRegistry;
+            _componentRegistry = componentRegistry ?? throw new System.ArgumentNullException(nameof(componentRegistry));
         }
 
         /// <inheritdoc/>

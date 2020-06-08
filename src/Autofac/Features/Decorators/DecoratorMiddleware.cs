@@ -45,8 +45,8 @@ namespace Autofac.Features.Decorators
         /// <param name="decoratorRegistration">The decorator registration.</param>
         public DecoratorMiddleware(DecoratorService decoratorService, IComponentRegistration decoratorRegistration)
         {
-            _decoratorService = decoratorService;
-            _decoratorRegistration = decoratorRegistration;
+            _decoratorService = decoratorService ?? throw new ArgumentNullException(nameof(decoratorService));
+            _decoratorRegistration = decoratorRegistration ?? throw new ArgumentNullException(nameof(decoratorRegistration));
         }
 
         /// <inheritdoc/>

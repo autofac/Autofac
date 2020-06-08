@@ -46,8 +46,8 @@ namespace Autofac.Core.Registration
         /// <param name="insertionMode">The insertion mode of the middleware.</param>
         public ServiceWithTypeMiddlewareSource(Type serviceType, IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode)
         {
-            _serviceType = serviceType;
-            _middleware = middleware;
+            _serviceType = serviceType ?? throw new ArgumentNullException(nameof(serviceType));
+            _middleware = middleware ?? throw new ArgumentNullException(nameof(middleware));
             _insertionMode = insertionMode;
         }
 

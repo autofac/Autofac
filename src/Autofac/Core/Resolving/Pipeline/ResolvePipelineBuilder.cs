@@ -94,6 +94,11 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <inheritdoc/>
         public IResolvePipelineBuilder UseRange(IEnumerable<IResolveMiddleware> stages, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
         {
+            if (stages is null)
+            {
+                throw new ArgumentNullException(nameof(stages));
+            }
+
             // Use multiple stages.
             // Start at the beginning.
             var currentStage = _first;

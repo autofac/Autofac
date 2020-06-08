@@ -56,6 +56,11 @@ namespace Autofac.Core.Registration
         /// <inheritdoc/>
         public IServiceMiddlewareSourceRegistrar RegisterServiceMiddlewareSource(IServiceMiddlewareSource serviceMiddlewareSource)
         {
+            if (serviceMiddlewareSource is null)
+            {
+                throw new ArgumentNullException(nameof(serviceMiddlewareSource));
+            }
+
             _builder.RegisterCallback(cr => cr.AddServiceMiddlewareSource(serviceMiddlewareSource));
 
             return this;

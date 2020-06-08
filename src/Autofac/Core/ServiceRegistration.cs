@@ -42,8 +42,8 @@ namespace Autofac.Core
         /// <param name="registration">The registration.</param>
         public ServiceRegistration(IResolvePipeline servicePipeline, IComponentRegistration registration)
         {
-            Pipeline = servicePipeline;
-            Registration = registration;
+            Pipeline = servicePipeline ?? throw new ArgumentNullException(nameof(servicePipeline));
+            Registration = registration ?? throw new ArgumentNullException(nameof(registration));
         }
 
         /// <summary>
@@ -82,6 +82,11 @@ namespace Autofac.Core
         /// <inheritdoc/>
         public override int GetHashCode()
         {
+            if (Pipeline is null || Registration is null)
+            {
+                return 0;
+            }
+
             return Pipeline.GetHashCode() ^ Registration.GetHashCode();
         }
 

@@ -25,11 +25,11 @@ namespace Autofac.Features.Decorators
         /// <param name="activatorData">The activator data for the decorator.</param>
         public OpenGenericDecoratorMiddlewareSource(DecoratorService decoratorService, RegistrationData registrationData, ReflectionActivatorData activatorData)
         {
-            OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
+            _decoratorService = decoratorService ?? throw new ArgumentNullException(nameof(decoratorService));
+            _registrationData = registrationData ?? throw new ArgumentNullException(nameof(registrationData));
+            _activatorData = activatorData ?? throw new ArgumentNullException(nameof(activatorData));
 
-            _decoratorService = decoratorService;
-            _registrationData = registrationData;
-            _activatorData = activatorData;
+            OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
         }
 
         /// <inheritdoc/>

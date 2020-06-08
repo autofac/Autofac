@@ -34,7 +34,7 @@ namespace Autofac
     /// </summary>
     public static class PipelineBuilderExtensions
     {
-        private const string AnonymousName = "unnamed";
+        private const string AnonymousDescriptor = "anonymous";
 
         /// <summary>
         /// Use a middleware callback in a resolve pipeline.
@@ -68,7 +68,7 @@ namespace Autofac
         /// <returns>The same builder instance.</returns>
         public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
-            builder.Use(AnonymousName, phase, insertionMode, callback);
+            builder.Use(AnonymousDescriptor, phase, insertionMode, callback);
 
             return builder;
         }
@@ -77,7 +77,7 @@ namespace Autofac
         /// Use a middleware callback in a resolve pipeline.
         /// </summary>
         /// <param name="builder">The container builder.</param>
-        /// <param name="name">A description for the middleware; this will show up in any resolve tracing.</param>
+        /// <param name="descriptor">A description for the middleware; this will show up in any resolve tracing.</param>
         /// <param name="phase">The phase of the pipeline the middleware should run at.</param>
         /// <param name="callback">
         /// A callback invoked to run your middleware.
@@ -85,14 +85,14 @@ namespace Autofac
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, string name, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
+        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, string descriptor, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             if (builder is null)
             {
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            builder.Use(new DelegateMiddleware(name, phase, callback), MiddlewareInsertionMode.EndOfPhase);
+            builder.Use(new DelegateMiddleware(descriptor, phase, callback), MiddlewareInsertionMode.EndOfPhase);
 
             return builder;
         }
@@ -101,7 +101,7 @@ namespace Autofac
         /// Use a middleware callback in a resolve pipeline.
         /// </summary>
         /// <param name="builder">The container builder.</param>
-        /// <param name="name">A description for the middleware; this will show up in any resolve tracing.</param>
+        /// <param name="descriptor">A description for the middleware; this will show up in any resolve tracing.</param>
         /// <param name="phase">The phase of the pipeline the middleware should run at.</param>
         /// <param name="insertionMode">The insertion mode specifying whether to add at the start or end of the phase.</param>
         /// <param name="callback">
@@ -110,16 +110,16 @@ namespace Autofac
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, string name, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
+        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, string descriptor, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             if (builder is null)
             {
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            if (name is null)
+            if (descriptor is null)
             {
-                throw new ArgumentNullException(nameof(name));
+                throw new ArgumentNullException(nameof(descriptor));
             }
 
             if (callback is null)
@@ -127,7 +127,7 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(callback));
             }
 
-            builder.Use(new DelegateMiddleware(name, phase, callback), insertionMode);
+            builder.Use(new DelegateMiddleware(descriptor, phase, callback), insertionMode);
 
             return builder;
         }
