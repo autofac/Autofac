@@ -23,14 +23,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System.Collections.Generic;
+using Autofac.Core.Resolving.Pipeline;
 
-namespace Autofac.Core.Resolving.Pipeline
+namespace Autofac.Core.Registration
 {
-    public interface IServicePipelineBuilder
+    /// <summary>
+    /// Provides middleware from a parent component registry.
+    /// </summary>
+    internal class ExternalRegistryServiceMiddlewareSource : IServiceMiddlewareSource
     {
-        void Use(IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase);
+        private readonly IComponentRegistry _componentRegistry;
 
-        void UseRange(IEnumerable<IResolveMiddleware> middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExternalRegistryServiceMiddlewareSource"/> class.
+        /// </summary>
+        /// <param name="componentRegistry">The component registry to retrieve middleware from.</param>
+        public ExternalRegistryServiceMiddlewareSource(IComponentRegistry componentRegistry)
+        {
+            _componentRegistry = componentRegistry;
+        }
+
+        /// <inheritdoc/>
+        public void ProvideMiddleware(Service service, IComponentRegistryServices availableServices, IResolvePipelineBuilder pipelineBuilder)
+        {
+            pipelineBuilder.UseRange(_componentRegistry.ServiceMiddlewareFor(service));
+        }
     }
 }

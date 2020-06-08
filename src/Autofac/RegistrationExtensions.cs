@@ -1387,7 +1387,9 @@ namespace Autofac
             var rb = RegistrationBuilder.ForType<TDecorator>().As(decoratorService);
 
             var decoratorRegistration = rb.CreateRegistration();
-            builder.RegisterServicePipelineSource(new DecoratorMiddlewareSource(typeof(TService), decoratorService, decoratorRegistration));
+
+            var middleware = new DecoratorMiddleware(decoratorService, decoratorRegistration);
+            builder.RegisterServiceMiddleware<TService>(middleware, MiddlewareInsertionMode.StartOfPhase);
 
             // Add the decorator to the registry so the pipeline gets built.
             builder.RegisterCallback(crb => crb.Register(decoratorRegistration));
@@ -1418,7 +1420,10 @@ namespace Autofac
             var rb = RegistrationBuilder.ForType(decoratorType).As(decoratorService);
 
             var decoratorRegistration = rb.CreateRegistration();
-            builder.RegisterServicePipelineSource(new DecoratorMiddlewareSource(serviceType, decoratorService, decoratorRegistration));
+
+            var middleware = new DecoratorMiddleware(decoratorService, decoratorRegistration);
+
+            builder.RegisterServiceMiddleware(serviceType, middleware, MiddlewareInsertionMode.StartOfPhase);
 
             // Add the decorator to the registry so the pipeline gets built.
             builder.RegisterCallback(crb => crb.Register(decoratorRegistration));
@@ -1461,7 +1466,10 @@ namespace Autofac
             }).As(service);
 
             var decoratorRegistration = rb.CreateRegistration();
-            builder.RegisterServicePipelineSource(new DecoratorMiddlewareSource(typeof(TService), service, decoratorRegistration));
+
+            var middleware = new DecoratorMiddleware(service, decoratorRegistration);
+
+            builder.RegisterServiceMiddleware<TService>(middleware, MiddlewareInsertionMode.StartOfPhase);
 
             // Add the decorator to the registry so the pipeline gets built.
             builder.RegisterCallback(crb => crb.Register(decoratorRegistration));
@@ -1492,7 +1500,7 @@ namespace Autofac
                 .CreateGenericBuilder(decoratorType)
                 .As(decoratorService);
 
-            builder.RegisterServicePipelineSource(new OpenGenericDecoratorMiddlewareSource(decoratorService, genericRegistration.RegistrationData, genericRegistration.ActivatorData));
+            builder.RegisterServiceMiddlewareSource(new OpenGenericDecoratorMiddlewareSource(decoratorService, genericRegistration.RegistrationData, genericRegistration.ActivatorData));
         }
 
         /// <summary>

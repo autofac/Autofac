@@ -66,6 +66,16 @@ namespace Autofac.Features.OpenGenerics
             return false;
         }
 
+        /// <summary>
+        /// Given a closed generic service (that is being requested), creates a closed generic implementation type
+        /// and associated services from the open generic implementation and services.
+        /// </summary>
+        /// <param name="serviceWithType">The closed generic service to bind.</param>
+        /// <param name="configuredOpenGenericServices">The set of configured open generic services.</param>
+        /// <param name="openGenericImplementationType">The implementation type of the open generic.</param>
+        /// <param name="constructedImplementationType">The built closed generic implementation type.</param>
+        /// <param name="constructedServices">The built closed generic services.</param>
+        /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
         public static bool TryBindOpenGenericTypedService(
             IServiceWithType serviceWithType,
             IEnumerable<Service> configuredOpenGenericServices,

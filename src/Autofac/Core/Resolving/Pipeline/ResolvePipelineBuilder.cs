@@ -56,10 +56,9 @@ namespace Autofac.Core.Resolving.Pipeline
     internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IResolveMiddleware>
     {
         /// <summary>
-        /// Termination action for the end of pipelines, that will execute the specified continuation (if there is one).
+        /// Termination action for the end of pipelines.
         /// </summary>
         private static readonly Action<ResolveRequestContextBase> _terminateAction = ctxt => { };
-        private const string AnonymousName = "unnamed";
 
         private MiddlewareDeclaration? _first;
         private MiddlewareDeclaration? _last;
@@ -88,38 +87,6 @@ namespace Autofac.Core.Resolving.Pipeline
             }
 
             AddStage(stage, insertionMode);
-
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IResolvePipelineBuilder Use(PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
-        {
-            Use(phase, MiddlewareInsertionMode.EndOfPhase, callback);
-
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IResolvePipelineBuilder Use(PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
-        {
-            Use(AnonymousName, phase, insertionMode, callback);
-
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IResolvePipelineBuilder Use(string name, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
-        {
-            Use(new DelegateMiddleware(name, phase, callback), MiddlewareInsertionMode.EndOfPhase);
-
-            return this;
-        }
-
-        /// <inheritdoc/>
-        public IResolvePipelineBuilder Use(string name, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
-        {
-            Use(new DelegateMiddleware(name, phase, callback), insertionMode);
 
             return this;
         }

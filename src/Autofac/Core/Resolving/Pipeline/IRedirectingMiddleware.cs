@@ -25,8 +25,27 @@
 
 namespace Autofac.Core.Resolving.Pipeline
 {
+    /// <summary>
+    /// Defines a category of service resolve middleware that can 'redirect' a service to a custom registration.
+    /// </summary>
+    /// <remarks>
+    /// Middleware implementing this interface can 'override' the registration reported for a service when the
+    /// default registration is requested, but not have that registration reported in the set of concrete registrations for the service.
+    ///
+    /// The best use-case for this type of middleware is when you want to add some custom behaviour to a service, and resolve
+    /// a registration that does not implement that service (but might consume it), e.g. composites.
+    ///
+    /// You can also use this mechanism to provide a service that has no 'real' backing registrations, but performs some other behaviour. In this
+    /// case you still need to supply a target registration, but only for metadata and consistency.
+    ///
+    /// A service pipeline containing a <see cref="IRedirectingMiddleware"/> will not invoke the registration's pipeline. It is expected that the implementation
+    /// invokes the required registration pipeline as needed.
+    /// </remarks>
     public interface IRedirectingMiddleware : IResolveMiddleware
     {
+        /// <summary>
+        /// Gets the target registration of the redirect.
+        /// </summary>
         IComponentRegistration TargetRegistration { get; }
     }
 }

@@ -137,6 +137,9 @@ namespace Autofac.Core.Resolving.Pipeline
         /// </summary>
         public event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
 
+        /// <summary>
+        /// Gets or sets the active decorator context for the request.
+        /// </summary>
         public DecoratorContext? DecoratorContext { get; set; }
 
         /// <summary>

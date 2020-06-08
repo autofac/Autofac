@@ -1,12 +1,34 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿// This software is part of the Autofac IoC container
+// Copyright © 2011 Autofac Contributors
+// https://autofac.org
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Autofac.Builder;
 using Autofac.Core.Resolving.Pipeline;
-using Autofac.Features.Decorators;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -130,6 +152,7 @@ namespace Autofac.Core.Registration
             _servicePipelineSources.Add(serviceMiddlewareSource);
         }
 
+        /// <inheritdoc/>
         public IEnumerable<IResolveMiddleware> ServiceMiddlewareFor(Service service)
         {
             lock (_synchRoot)
@@ -151,6 +174,7 @@ namespace Autofac.Core.Registration
             }
         }
 
+        /// <inheritdoc/>
         public bool TryGetServiceRegistration(Service service, out ServiceRegistration serviceData)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
@@ -199,6 +223,7 @@ namespace Autofac.Core.Registration
             }
         }
 
+        /// <inheritdoc/>
         public IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
@@ -209,18 +234,12 @@ namespace Autofac.Core.Registration
 
                 var listAll = new List<ServiceRegistration>();
 
-                AddResolvableConcreteImplementationsOf(info, listAll);
+                foreach (var implementation in info.Implementations)
+                {
+                    listAll.Add(new ServiceRegistration(info.ServicePipeline, implementation));
+                }
 
                 return listAll;
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void AddResolvableConcreteImplementationsOf(ServiceRegistrationInfo serviceInfo, List<ServiceRegistration> set)
-        {
-            foreach (var implementation in serviceInfo.Implementations)
-            {
-                set.Add(new ServiceRegistration(serviceInfo.ServicePipeline, implementation));
             }
         }
 
@@ -284,7 +303,7 @@ namespace Autofac.Core.Registration
             // Add any additional service pipeline configuration from external sources.
             foreach (var servicePipelineSource in _servicePipelineSources)
             {
-                servicePipelineSource.ConfigureServicePipeline(service, this, info);
+                servicePipelineSource.ProvideMiddleware(service, this, info);
             }
         }
 

@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright © 2018 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,30 +23,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using Autofac.Core.Resolving.Pipeline;
-
-namespace Autofac.Core.Resolving.Middleware
+namespace Autofac.Core.Registration
 {
-    internal class DefaultServicePipelineTerminatorMiddleware : IResolveMiddleware
+    /// <summary>
+    /// Interface providing fluent syntax for chaining middleware source registrations.
+    /// </summary>
+    public interface IServiceMiddlewareSourceRegistrar
     {
-        public static DefaultServicePipelineTerminatorMiddleware Instance { get; } = new DefaultServicePipelineTerminatorMiddleware();
-
-        private DefaultServicePipelineTerminatorMiddleware()
-        {
-        }
-
-        public PipelinePhase Phase => PipelinePhase.ServicePipelineEnd;
-
-        public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
-        {
-            // Just invoke the registration's pipeline.
-            if (context.Registration is null)
-            {
-                throw new InvalidOperationException("It should not be possible to get here; the registration is always set if this middleware has been added.");
-            }
-
-            context.Registration.ResolvePipeline.Invoke(context);
-        }
+        /// <summary>
+        /// Adds a middleware source to the container.
+        /// </summary>
+        /// <param name="serviceMiddlewareSource">The middleware source to add.</param>
+        /// <returns>
+        /// The <see cref="IServiceMiddlewareSourceRegistrar"/> to allow additional chained middleware source registrations.
+        /// </returns>
+        IServiceMiddlewareSourceRegistrar RegisterServiceMiddlewareSource(IServiceMiddlewareSource serviceMiddlewareSource);
     }
 }

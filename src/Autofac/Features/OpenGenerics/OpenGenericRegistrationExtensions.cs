@@ -56,6 +56,12 @@ namespace Autofac.Features.OpenGenerics
             return rb;
         }
 
+        /// <summary>
+        /// Creates an un-parameterised generic type, e.g. Repository&lt;&gt;, without registering it.
+        /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
+        /// </summary>
+        /// <param name="implementer">The open generic implementation type.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
             CreateGenericBuilder(Type implementer)
         {

@@ -1,27 +1,58 @@
-﻿using Autofac.Core;
-using Autofac.Core.Resolving.Pipeline;
+﻿// This software is part of the Autofac IoC container
+// Copyright © 2020 Autofac Contributors
+// https://autofac.org
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Autofac.Core;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Features.Decorators
 {
+    /// <summary>
+    /// Service middleware that decorates activated instances of a service.
+    /// </summary>
     internal class DecoratorMiddleware : IResolveMiddleware
     {
-        private readonly IServiceWithType _decoratedService;
         private readonly DecoratorService _decoratorService;
         private readonly IComponentRegistration _decoratorRegistration;
 
-        public DecoratorMiddleware(IServiceWithType decoratedService, DecoratorService decoratorService, IComponentRegistration decoratorRegistration)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DecoratorMiddleware"/> class.
+        /// </summary>
+        /// <param name="decoratorService">The decorator service.</param>
+        /// <param name="decoratorRegistration">The decorator registration.</param>
+        public DecoratorMiddleware(DecoratorService decoratorService, IComponentRegistration decoratorRegistration)
         {
-            _decoratedService = decoratedService;
             _decoratorService = decoratorService;
             _decoratorRegistration = decoratorRegistration;
         }
 
+        /// <inheritdoc/>
         public PipelinePhase Phase => PipelinePhase.Decoration;
 
+        /// <inheritdoc/>
         public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
         {
             // Go down the pipeline first, need that instance.
@@ -33,7 +64,10 @@ namespace Autofac.Features.Decorators
                 return;
             }
 
-            var serviceType = _decoratedService.ServiceType;
+            // This middleware is only ever added to IServiceWithType pipelines, so this cast will always succeed.
+            var swt = (IServiceWithType)context.Service;
+
+            var serviceType = swt.ServiceType;
 
             if (context.DecoratorContext is null)
             {
@@ -71,9 +105,9 @@ namespace Autofac.Features.Decorators
                 resolveParameters[idx++] = contextParameter;
             }
 
-            // We're going to define a service implementation that does not contain any actual service
+            // We're going to define a service registration that does not contain any service
             // pipeline additions.
-            // Adding a service pipeline middleware to a decorator service is not valid.
+            // Adding a service pipeline middleware to a decorator service is not valid anyway.
             var resolveRequest = new ResolveRequest(
                 _decoratorService,
                 new ServiceRegistration(ServicePipelines.DefaultServicePipeline, _decoratorRegistration),
@@ -86,5 +120,8 @@ namespace Autofac.Features.Decorators
 
             context.DecoratorContext = context.DecoratorContext.UpdateContext(decoratedInstance);
         }
+
+        /// <inheritdoc/>
+        public override string ToString() => nameof(DecoratorMiddleware) + " [" + _decoratorRegistration.Activator.LimitType.Name + "]";
     }
 }

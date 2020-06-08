@@ -28,11 +28,11 @@ using System;
 namespace Autofac.Core.Registration
 {
     /// <summary>
-    /// Basic implementation of the <see cref="ISourceRegistrar"/>
-    /// interface allowing registration of registration sources into a <see cref="ContainerBuilder"/>
+    /// Basic implementation of the <see cref="IServiceMiddlewareSourceRegistrar"/>
+    /// interface allowing registration of middleware sources into a <see cref="ContainerBuilder"/>
     /// in a fluent format.
     /// </summary>
-    internal sealed class ServicePipelineSourceRegistrar : IServiceMiddlewareSourceRegistrar
+    internal sealed class ServiceMiddlewareSourceRegistrar : IServiceMiddlewareSourceRegistrar
     {
         /// <summary>
         /// The <see cref="ContainerBuilder"/> into which registrations will be made.
@@ -40,7 +40,7 @@ namespace Autofac.Core.Registration
         private readonly ContainerBuilder _builder;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServicePipelineSourceRegistrar"/> class.
+        /// Initializes a new instance of the <see cref="ServiceMiddlewareSourceRegistrar"/> class.
         /// </summary>
         /// <param name="builder">
         /// The <see cref="ContainerBuilder"/> into which registrations will be made.
@@ -48,11 +48,12 @@ namespace Autofac.Core.Registration
         /// <exception cref="ArgumentNullException">
         /// Thrown if <paramref name="builder" /> is <see langword="null" />.
         /// </exception>
-        public ServicePipelineSourceRegistrar(ContainerBuilder builder)
+        public ServiceMiddlewareSourceRegistrar(ContainerBuilder builder)
         {
             _builder = builder ?? throw new ArgumentNullException(nameof(builder));
         }
 
+        /// <inheritdoc/>
         public IServiceMiddlewareSourceRegistrar RegisterServiceMiddlewareSource(IServiceMiddlewareSource serviceMiddlewareSource)
         {
             _builder.RegisterCallback(cr => cr.AddServiceMiddlewareSource(serviceMiddlewareSource));
