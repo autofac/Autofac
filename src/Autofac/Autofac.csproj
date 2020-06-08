@@ -8,7 +8,6 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);CS1591;IDE0008</NoWarn>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Autofac</AssemblyName>
     <AssemblyOriginatorKeyFile>../../Autofac.snk</AssemblyOriginatorKeyFile>
