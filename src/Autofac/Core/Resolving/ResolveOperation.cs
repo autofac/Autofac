@@ -77,15 +77,5 @@ namespace Autofac.Core.Resolving
         {
             return ExecuteOperation(request);
         }
-
-        /// <inheritdoc/>
-        protected override void ExecuteRequest(ResolveRequestContextBase requestContext)
-        {
-            // Get pipeline from the registration.
-            var registrationPipeline = requestContext.Registration.ResolvePipeline;
-
-            // Invoke the pipeline.
-            registrationPipeline.Invoke(requestContext);
-        }
     }
 }

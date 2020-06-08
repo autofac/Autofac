@@ -68,7 +68,7 @@ namespace Autofac.Features.ResolveAnything
         /// <returns>Registrations providing the service.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(
             Service service,
-            Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+            Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (registrationAccessor == null)
             {

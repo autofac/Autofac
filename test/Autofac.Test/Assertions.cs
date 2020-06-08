@@ -57,6 +57,17 @@ namespace Autofac.Test
             return r;
         }
 
+        public static ServiceRegistration ResolvableImplementationFor<TComponent>(this IComponentContext context)
+        {
+            return ResolvableImplementationFor(context, typeof(TComponent));
+        }
+
+        public static ServiceRegistration ResolvableImplementationFor(this IComponentContext context, Type componentType)
+        {
+            Assert.True(context.ComponentRegistry.TryGetServiceRegistration(new TypedService(componentType), out var r));
+            return r;
+        }
+
         /// <summary>
         /// Looks at all registrations for <typeparamref name="TService"/> and validates that <typeparamref name="TFirstComponent"/> is not overridden by <typeparamref name="TLastComponent"/>.
         /// </summary>

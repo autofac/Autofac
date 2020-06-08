@@ -60,7 +60,7 @@ namespace Autofac.Builder
             ActivatorData = activatorData;
             RegistrationStyle = style;
             RegistrationData = new RegistrationData(defaultService);
-            ResolvePipeline = new ResolvePipelineBuilder();
+            ResolvePipeline = new ResolvePipelineBuilder(PipelineType.Registration);
         }
 
         /// <summary>

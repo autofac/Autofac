@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Registration
 {
@@ -80,6 +81,20 @@ namespace Autofac.Core.Registration
         /// </summary>
         /// <param name="source">The source to register.</param>
         void AddRegistrationSource(IRegistrationSource source);
+
+        /// <summary>
+        /// Add a source of service middleware that will provide service registrations on-the-fly.
+        /// </summary>
+        /// <param name="serviceMiddlewareSource">The source to add.</param>
+        void AddServiceMiddlewareSource(IServiceMiddlewareSource serviceMiddlewareSource);
+
+        /// <summary>
+        /// Register a piece of service middleware that will be invoked for all registrations of a service when they are resolved.
+        /// </summary>
+        /// <param name="service">The service to register middleware for.</param>
+        /// <param name="middleware">The middleware to register.</param>
+        /// <param name="insertionMode">The mode of insertion into the pipeline.</param>
+        void RegisterServiceMiddleware(Service service, IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase);
 
         /// <summary>
         /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.

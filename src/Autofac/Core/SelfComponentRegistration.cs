@@ -23,7 +23,7 @@ namespace Autofac.Core
                 new CurrentScopeLifetime(),
                 InstanceSharing.Shared,
                 InstanceOwnership.ExternallyOwned,
-                new ResolvePipelineBuilder(),
+                new ResolvePipelineBuilder(PipelineType.Registration),
                 new Service[] { new TypedService(typeof(ILifetimeScope)), new TypedService(typeof(IComponentContext)) },
                 new Dictionary<string, object?>())
         {

@@ -28,7 +28,7 @@ namespace Autofac.Builder
                 // a metadata value. If the value is present, we won't re-activate. This helps
                 // in the container update situation.
                 var startableService = new TypedService(typeof(IStartable));
-                foreach (var registration in componentRegistry.RegistrationsFor(startableService).Where(r => !r.Metadata.ContainsKey(MetadataKeys.AutoActivated)))
+                foreach (var registration in componentRegistry.ServiceRegistrationsFor(startableService).Where(r => !r.Metadata.ContainsKey(MetadataKeys.AutoActivated)))
                 {
                     try
                     {
@@ -42,7 +42,7 @@ namespace Autofac.Builder
                 }
 
                 var autoActivateService = new AutoActivateService();
-                foreach (var registration in componentRegistry.RegistrationsFor(autoActivateService).Where(r => !r.Metadata.ContainsKey(MetadataKeys.AutoActivated)))
+                foreach (var registration in componentRegistry.ServiceRegistrationsFor(autoActivateService).Where(r => !r.Metadata.ContainsKey(MetadataKeys.AutoActivated)))
                 {
                     try
                     {

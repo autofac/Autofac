@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Core;
 using Autofac.Core.Diagnostics;
@@ -18,9 +17,9 @@ namespace Autofac.Test.Core.Pipeline
         [Fact]
         public void CanHaveSingleStage()
         {
-            var pipelineBuilder = new ResolvePipelineBuilder();
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
             var order = new List<string>();
-            pipelineBuilder.Use(PipelinePhase.RequestStart, (ctxt, next) =>
+            pipelineBuilder.Use(PipelinePhase.ResolveRequestStart, (ctxt, next) =>
             {
                 order.Add("1");
                 next(ctxt);
@@ -38,9 +37,9 @@ namespace Autofac.Test.Core.Pipeline
         [Fact]
         public void CanAddMiddlewareInPhaseOrder()
         {
-            var pipelineBuilder = new ResolvePipelineBuilder();
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
             var order = new List<string>();
-            pipelineBuilder.Use("1", PipelinePhase.RequestStart, (ctxt, next) =>
+            pipelineBuilder.Use("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
             {
                 order.Add("1");
                 next(ctxt);
@@ -50,7 +49,7 @@ namespace Autofac.Test.Core.Pipeline
                 order.Add("2");
                 next(ctxt);
             });
-            pipelineBuilder.Use("3", PipelinePhase.Activation, (ctxt, next) =>
+            pipelineBuilder.Use("3", PipelinePhase.Sharing, (ctxt, next) =>
             {
                 order.Add("3");
                 next(ctxt);
@@ -70,10 +69,10 @@ namespace Autofac.Test.Core.Pipeline
         [Fact]
         public void CanAddMiddlewareInReversePhaseOrder()
         {
-            var pipelineBuilder = new ResolvePipelineBuilder();
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
 
             var order = new List<string>();
-            pipelineBuilder.Use("3", PipelinePhase.Activation, (ctxt, next) =>
+            pipelineBuilder.Use("3", PipelinePhase.Sharing, (ctxt, next) =>
             {
                 order.Add("3");
                 next(ctxt);
@@ -83,7 +82,7 @@ namespace Autofac.Test.Core.Pipeline
                 order.Add("2");
                 next(ctxt);
             });
-            pipelineBuilder.Use("1", PipelinePhase.RequestStart, (ctxt, next) =>
+            pipelineBuilder.Use("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
             {
                 order.Add("1");
                 next(ctxt);
@@ -103,20 +102,20 @@ namespace Autofac.Test.Core.Pipeline
         [Fact]
         public void CanAddMiddlewareInMixedPhaseOrder()
         {
-            var pipelineBuilder = new ResolvePipelineBuilder();
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
 
             var order = new List<string>();
-            pipelineBuilder.Use("3", PipelinePhase.ParameterSelection, (ctxt, next) =>
+            pipelineBuilder.Use("3", PipelinePhase.Decoration, (ctxt, next) =>
             {
                 order.Add("3");
                 next(ctxt);
             });
-            pipelineBuilder.Use("4", PipelinePhase.Activation, (ctxt, next) =>
+            pipelineBuilder.Use("4", PipelinePhase.Sharing, (ctxt, next) =>
             {
                 order.Add("4");
                 next(ctxt);
             });
-            pipelineBuilder.Use("1", PipelinePhase.RequestStart, (ctxt, next) =>
+            pipelineBuilder.Use("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
             {
                 order.Add("1");
                 next(ctxt);
@@ -142,19 +141,19 @@ namespace Autofac.Test.Core.Pipeline
         [Fact]
         public void CanControlPhaseAddPriority()
         {
-            var pipelineBuilder = new ResolvePipelineBuilder();
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
             var order = new List<string>();
-            pipelineBuilder.Use("2", PipelinePhase.Activation, (ctxt, next) =>
+            pipelineBuilder.Use("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
             {
                 order.Add("2");
                 next(ctxt);
             });
-            pipelineBuilder.Use("1", PipelinePhase.Activation, MiddlewareInsertionMode.StartOfPhase, (ctxt, next) =>
+            pipelineBuilder.Use("1", PipelinePhase.ScopeSelection, MiddlewareInsertionMode.StartOfPhase, (ctxt, next) =>
             {
                 order.Add("1");
                 next(ctxt);
             });
-            pipelineBuilder.Use("3", PipelinePhase.Activation, (ctxt, next) =>
+            pipelineBuilder.Use("3", PipelinePhase.ScopeSelection, (ctxt, next) =>
             {
                 order.Add("3");
                 next(ctxt);
@@ -174,7 +173,7 @@ namespace Autofac.Test.Core.Pipeline
         [Fact]
         public void CanControlPhaseAddPriorityWithPrecedingPhase()
         {
-            var pipelineBuilder = new ResolvePipelineBuilder();
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
 
             var order = new List<string>();
             pipelineBuilder.Use("3", PipelinePhase.ScopeSelection, (ctxt, next) =>
@@ -182,7 +181,7 @@ namespace Autofac.Test.Core.Pipeline
                 order.Add("3");
                 next(ctxt);
             });
-            pipelineBuilder.Use("1", PipelinePhase.RequestStart, (ctxt, next) =>
+            pipelineBuilder.Use("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
             {
                 order.Add("1");
                 next(ctxt);
@@ -207,12 +206,12 @@ namespace Autofac.Test.Core.Pipeline
         [Fact]
         public void CanAddMultipleMiddlewareToEmptyPipeline()
         {
-            var pipelineBuilder = new ResolvePipelineBuilder();
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
             var order = new List<string>();
 
             pipelineBuilder.UseRange(new[]
             {
-                new DelegateMiddleware("1", PipelinePhase.RequestStart, (ctxt, next) =>
+                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
                 {
                     order.Add("1");
                     next(ctxt);
@@ -222,7 +221,7 @@ namespace Autofac.Test.Core.Pipeline
                     order.Add("2");
                     next(ctxt);
                 }),
-                new DelegateMiddleware("4", PipelinePhase.Activation, (ctxt, next) =>
+                new DelegateMiddleware("3", PipelinePhase.Sharing, (ctxt, next) =>
                 {
                     order.Add("3");
                     next(ctxt);
@@ -243,12 +242,12 @@ namespace Autofac.Test.Core.Pipeline
         [Fact]
         public void AddMultipleMiddlewareOutOfOrderThrows()
         {
-            var pipelineBuilder = new ResolvePipelineBuilder();
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
             var order = new List<string>();
 
             pipelineBuilder.UseRange(new[]
             {
-                new DelegateMiddleware("1", PipelinePhase.RequestStart, (ctxt, next) =>
+                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
                 {
                     order.Add("1");
                     next(ctxt);
@@ -258,7 +257,7 @@ namespace Autofac.Test.Core.Pipeline
                     order.Add("2");
                     next(ctxt);
                 }),
-                new DelegateMiddleware("4", PipelinePhase.Activation, (ctxt, next) =>
+                new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
                 {
                     order.Add("3");
                     next(ctxt);
@@ -267,12 +266,12 @@ namespace Autofac.Test.Core.Pipeline
 
             Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
             {
-                new DelegateMiddleware("1", PipelinePhase.RequestStart, (ctxt, next) =>
+                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
                 {
                     order.Add("1");
                     next(ctxt);
                 }),
-                new DelegateMiddleware("4", PipelinePhase.Activation, (ctxt, next) =>
+                new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
                 {
                     order.Add("4");
                     next(ctxt);
@@ -288,17 +287,17 @@ namespace Autofac.Test.Core.Pipeline
         [Fact]
         public void AddMultipleMiddlewareToPopulatedPipelineOutOfOrderThrows()
         {
-            var pipelineBuilder = new ResolvePipelineBuilder();
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
             var order = new List<string>();
 
             Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
             {
-                new DelegateMiddleware("1", PipelinePhase.RequestStart, (ctxt, next) =>
+                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
                 {
                     order.Add("1");
                     next(ctxt);
                 }),
-                new DelegateMiddleware("4", PipelinePhase.Activation, (ctxt, next) =>
+                new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
                 {
                     order.Add("4");
                     next(ctxt);
@@ -314,12 +313,12 @@ namespace Autofac.Test.Core.Pipeline
         [Fact]
         public void CanAddMultipleMiddlewareToPipelineWithExistingMiddleware()
         {
-            var pipelineBuilder = new ResolvePipelineBuilder();
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
             var order = new List<string>();
 
             pipelineBuilder.UseRange(new[]
             {
-                new DelegateMiddleware("1", PipelinePhase.RequestStart, (ctxt, next) =>
+                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
                 {
                     order.Add("1");
                     next(ctxt);
@@ -329,7 +328,7 @@ namespace Autofac.Test.Core.Pipeline
                     order.Add("3");
                     next(ctxt);
                 }),
-                new DelegateMiddleware("5", PipelinePhase.Activation, (ctxt, next) =>
+                new DelegateMiddleware("5", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
                 {
                     order.Add("5");
                     next(ctxt);
@@ -338,7 +337,7 @@ namespace Autofac.Test.Core.Pipeline
 
             pipelineBuilder.UseRange(new[]
             {
-                new DelegateMiddleware("2", PipelinePhase.RequestStart, (ctxt, next) =>
+                new DelegateMiddleware("2", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
                 {
                     order.Add("2");
                     next(ctxt);
@@ -348,7 +347,7 @@ namespace Autofac.Test.Core.Pipeline
                     order.Add("4");
                     next(ctxt);
                 }),
-                new DelegateMiddleware("6", PipelinePhase.Activation, (ctxt, next) =>
+                new DelegateMiddleware("6", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
                 {
                     order.Add("6");
                     next(ctxt);
@@ -369,12 +368,62 @@ namespace Autofac.Test.Core.Pipeline
                 el => Assert.Equal("6", el.ToString()));
         }
 
+        [Fact]
+        public void CannotAddServiceMiddlewareToRegistrationPipeline()
+        {
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Registration);
+            var order = new List<string>();
+            Assert.Throws<InvalidOperationException>(() => pipelineBuilder.Use(PipelinePhase.ResolveRequestStart, (ctxt, next) => { }));
+        }
+
+        [Fact]
+        public void CannotAddRegistrationMiddlewareToServicePipeline()
+        {
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
+            var order = new List<string>();
+            Assert.Throws<InvalidOperationException>(() => pipelineBuilder.Use(PipelinePhase.RegistrationPipelineStart, (ctxt, next) => { }));
+        }
+
+        [Fact]
+        public void CannotAddBadPhaseToPipelineInUseRange()
+        {
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
+            var order = new List<string>();
+            Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
+            {
+                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) => { }),
+                new DelegateMiddleware("4", PipelinePhase.Activation, (ctxt, next) => { }),
+                new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) => { }),
+            }));
+        }
+
+        [Fact]
+        public void CannotAddBadPhaseToPipelineInUseRangeExistingMiddleware()
+        {
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
+            var order = new List<string>();
+
+            pipelineBuilder.UseRange(new[]
+            {
+                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart,  (ctxt, next) => { }),
+                new DelegateMiddleware("3", PipelinePhase.ScopeSelection,  (ctxt, next) => { }),
+                new DelegateMiddleware("5", PipelinePhase.ServicePipelineEnd,  (ctxt, next) => { })
+            });
+
+            Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
+            {
+                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) => { }),
+                new DelegateMiddleware("4", PipelinePhase.Activation, (ctxt, next) => { }),
+                new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) => { }),
+            }));
+        }
+
         private class MockPipelineRequestContext : ResolveRequestContextBase
         {
             public MockPipelineRequestContext()
                 : base(
                       new ResolveOperation(new MockLifetimeScope()),
-                      new ResolveRequest(new TypedService(typeof(int)), Mocks.GetComponentRegistration(), Enumerable.Empty<Parameter>()),
+                      new ResolveRequest(new TypedService(typeof(int)), Mocks.GetResolvableImplementation(), Enumerable.Empty<Parameter>()),
                       new MockLifetimeScope(),
                       null)
             {

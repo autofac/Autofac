@@ -65,14 +65,14 @@ namespace Autofac.Features.OpenGenerics
         }
 
         /// <inheritdoc/>
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
 
             Type? constructedImplementationType;
             Service[]? services;
-            if (OpenGenericServiceBinder.TryBindServiceType(service, _registrationData.Services, _activatorData.ImplementationType, out constructedImplementationType, out services))
+            if (OpenGenericServiceBinder.TryBindOpenGenericService(service, _registrationData.Services, _activatorData.ImplementationType, out constructedImplementationType, out services))
             {
                 // Pass the pipeline builder from the original registration to the 'CreateRegistration'.
                 // So the original registration will contain all of the pipeline stages originally added, plus anything we want to add.

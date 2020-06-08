@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2018 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,20 +23,35 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace Autofac.Core.Registration
+using System;
+using Autofac.Core.Resolving.Pipeline;
+
+namespace Autofac.Core.Resolving.Middleware
 {
     /// <summary>
-    /// Interface providing fluent syntax for chaining registration source registrations.
+    /// Middleware added by default to the end of all service pipelines that invokes the registration's pipeline.
     /// </summary>
-    public interface ISourceRegistrar
+    internal class RegistrationPipelineInvokeMiddleware : IResolveMiddleware
     {
         /// <summary>
-        /// Add a registration source to the container.
+        /// Gets the singleton instance of this middleware.
         /// </summary>
-        /// <param name="registrationSource">The registration source to add.</param>
-        /// <returns>
-        /// The <see cref="ISourceRegistrar"/> to allow additional chained registration source registrations.
-        /// </returns>
-        ISourceRegistrar RegisterSource(IRegistrationSource registrationSource);
+        public static RegistrationPipelineInvokeMiddleware Instance { get; } = new RegistrationPipelineInvokeMiddleware();
+
+        private RegistrationPipelineInvokeMiddleware()
+        {
+        }
+
+        /// <inheritdoc/>
+        public PipelinePhase Phase => PipelinePhase.ServicePipelineEnd;
+
+        /// <inheritdoc/>
+        public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
+        {
+            context.Registration.ResolvePipeline.Invoke(context);
+        }
+
+        /// <inheritdoc/>
+        public override string ToString() => nameof(RegistrationPipelineInvokeMiddleware);
     }
 }

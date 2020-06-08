@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2018 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,20 +23,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-namespace Autofac.Core.Registration
+namespace Autofac.Core.Resolving.Pipeline
 {
     /// <summary>
-    /// Interface providing fluent syntax for chaining registration source registrations.
+    /// Defines the possible pipeline types.
     /// </summary>
-    public interface ISourceRegistrar
+    public enum PipelineType
     {
         /// <summary>
-        /// Add a registration source to the container.
+        /// A service pipeline. Usually invokes a <see cref="Registration"/> pipeline when it is finished.
         /// </summary>
-        /// <param name="registrationSource">The registration source to add.</param>
-        /// <returns>
-        /// The <see cref="ISourceRegistrar"/> to allow additional chained registration source registrations.
-        /// </returns>
-        ISourceRegistrar RegisterSource(IRegistrationSource registrationSource);
+        Service,
+
+        /// <summary>
+        /// A registration pipeline, used for activating a registration.
+        /// </summary>
+        Registration
     }
 }

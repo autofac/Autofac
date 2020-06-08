@@ -58,7 +58,7 @@ namespace Autofac.Core.Resolving.Middleware
         }
 
         /// <inheritdoc/>
-        public PipelinePhase Phase => PipelinePhase.RequestStart;
+        public PipelinePhase Phase => PipelinePhase.ResolveRequestStart;
 
         /// <inheritdoc/>
         public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)

@@ -60,7 +60,7 @@ namespace Autofac.Features.LightweightAdapters
         }
 
         /// <inheritdoc/>
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
@@ -73,8 +73,8 @@ namespace Autofac.Features.LightweightAdapters
                         var rb = RegistrationBuilder
                             .ForDelegate((c, p) => _activatorData.Adapter(
                                 c, Enumerable.Empty<Parameter>(), c.ResolveComponent(new ResolveRequest(_activatorData.FromService, r, p))))
-                            .Targeting(r, IsAdapterForIndividualComponents)
-                            .InheritRegistrationOrderFrom(r);
+                            .Targeting(r.Registration, IsAdapterForIndividualComponents)
+                            .InheritRegistrationOrderFrom(r.Registration);
 
                         rb.RegistrationData.CopyFrom(_registrationData, true);
 
@@ -102,7 +102,7 @@ namespace Autofac.Features.LightweightAdapters
                         var rb = RegistrationBuilder
                             .ForDelegate((c, p) => _activatorData.Adapter(
                                 c, p, c.ResolveComponent(new ResolveRequest(serviceToFind, r, Enumerable.Empty<Parameter>()))))
-                            .Targeting(r, IsAdapterForIndividualComponents);
+                            .Targeting(r.Registration, IsAdapterForIndividualComponents);
 
                         rb.RegistrationData.CopyFrom(_registrationData, true);
 

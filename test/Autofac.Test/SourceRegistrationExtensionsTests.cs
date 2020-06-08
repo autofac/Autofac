@@ -46,7 +46,7 @@ namespace Autofac.Test
 
             public bool IsAdapterForIndividualComponents => false;
 
-            public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+            public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
             {
                 RegistrationsForCalled = true;
                 return Enumerable.Empty<IComponentRegistration>();

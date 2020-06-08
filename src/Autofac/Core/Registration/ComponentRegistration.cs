@@ -44,14 +44,6 @@ namespace Autofac.Core.Registration
         private readonly IResolvePipelineBuilder _lateBuildPipeline;
         private IResolvePipeline? _builtComponentPipeline;
 
-        private static readonly IResolveMiddleware[] _defaultStages = new IResolveMiddleware[]
-        {
-            CircularDependencyDetectorMiddleware.Default,
-            ScopeSelectionMiddleware.Instance,
-            DecoratorMiddleware.Instance,
-            SharingMiddleware.Instance,
-        };
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistration"/> class.
         /// </summary>
@@ -74,7 +66,7 @@ namespace Autofac.Core.Registration
            IDictionary<string, object?> metadata,
            IComponentRegistration target,
            bool isAdapterForIndividualComponents)
-            : this(id, activator, lifetime, sharing, ownership, new ResolvePipelineBuilder(), services, metadata, target, isAdapterForIndividualComponents)
+            : this(id, activator, lifetime, sharing, ownership, new ResolvePipelineBuilder(PipelineType.Registration), services, metadata, target, isAdapterForIndividualComponents)
         {
         }
 
@@ -96,7 +88,7 @@ namespace Autofac.Core.Registration
            InstanceOwnership ownership,
            IEnumerable<Service> services,
            IDictionary<string, object?> metadata)
-            : this(id, activator, lifetime, sharing, ownership, new ResolvePipelineBuilder(), services, metadata)
+            : this(id, activator, lifetime, sharing, ownership, new ResolvePipelineBuilder(PipelineType.Registration), services, metadata)
         {
         }
 
@@ -253,8 +245,6 @@ namespace Autofac.Core.Registration
         /// </remarks>
         protected virtual IResolvePipeline BuildResolvePipeline(IComponentRegistryServices registryServices, IResolvePipelineBuilder pipelineBuilder)
         {
-            _lateBuildPipeline.UseRange(_defaultStages);
-
             if (HasStartableService())
             {
                 _lateBuildPipeline.Use(StartableMiddleware.Instance);

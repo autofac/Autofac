@@ -176,7 +176,7 @@ namespace Autofac.Test.Core.Registration
         {
             public IEnumerable<IComponentRegistration> RegistrationsFor(
                 Service service,
-                Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+                Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
             {
                 registrationAccessor(service);
                 return Enumerable.Empty<IComponentRegistration>();

@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2018 Autofac Contributors
+// Copyright © 2011 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,20 +23,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using Autofac.Core.Resolving.Pipeline;
+
 namespace Autofac.Core.Registration
 {
     /// <summary>
-    /// Interface providing fluent syntax for chaining registration source registrations.
+    /// Provides middleware from a parent component registry.
     /// </summary>
-    public interface ISourceRegistrar
+    internal class ExternalRegistryServiceMiddlewareSource : IServiceMiddlewareSource
     {
+        private readonly IComponentRegistry _componentRegistry;
+
         /// <summary>
-        /// Add a registration source to the container.
+        /// Initializes a new instance of the <see cref="ExternalRegistryServiceMiddlewareSource"/> class.
         /// </summary>
-        /// <param name="registrationSource">The registration source to add.</param>
-        /// <returns>
-        /// The <see cref="ISourceRegistrar"/> to allow additional chained registration source registrations.
-        /// </returns>
-        ISourceRegistrar RegisterSource(IRegistrationSource registrationSource);
+        /// <param name="componentRegistry">The component registry to retrieve middleware from.</param>
+        public ExternalRegistryServiceMiddlewareSource(IComponentRegistry componentRegistry)
+        {
+            _componentRegistry = componentRegistry ?? throw new System.ArgumentNullException(nameof(componentRegistry));
+        }
+
+        /// <inheritdoc/>
+        public void ProvideMiddleware(Service service, IComponentRegistryServices availableServices, IResolvePipelineBuilder pipelineBuilder)
+        {
+            pipelineBuilder.UseRange(_componentRegistry.ServiceMiddlewareFor(service));
+        }
     }
 }

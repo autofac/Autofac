@@ -75,7 +75,11 @@ namespace Autofac.Features.Collections
         /// <param name="service">The service that was requested.</param>
         /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
         /// <returns>Registrations providing the service.</returns>
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "Activator lifetime controlled by registry.")]
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
@@ -117,14 +121,14 @@ namespace Autofac.Features.Collections
                 (c, p) =>
                 {
                     var itemRegistrations = c.ComponentRegistry
-                        .RegistrationsFor(elementTypeService)
-                        .OrderBy(cr => cr.GetRegistrationOrder())
-                        .ToArray();
+                        .ServiceRegistrationsFor(elementTypeService)
+                        .OrderBy(cr => cr.Registration.GetRegistrationOrder())
+                        .ToList();
 
-                    var output = factory(itemRegistrations.Length);
+                    var output = factory(itemRegistrations.Count);
                     var isFixedSize = output.IsFixedSize;
 
-                    for (var i = 0; i < itemRegistrations.Length; i++)
+                    for (var i = 0; i < itemRegistrations.Count; i++)
                     {
                         var itemRegistration = itemRegistrations[i];
                         var resolveRequest = new ResolveRequest(elementTypeService, itemRegistration, p);

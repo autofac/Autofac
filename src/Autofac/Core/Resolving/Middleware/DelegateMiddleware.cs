@@ -29,24 +29,24 @@ using Autofac.Core.Resolving.Pipeline;
 namespace Autofac.Core.Resolving.Middleware
 {
     /// <summary>
-    /// Wraps pipeline delegates from the Use* methods in <see cref="IResolvePipelineBuilder" />.
+    /// Wraps pipeline delegates from the Use* methods in <see cref="PipelineBuilderExtensions" />.
     /// </summary>
     internal class DelegateMiddleware : IResolveMiddleware
     {
-        private readonly string _name;
+        private readonly string _descriptor;
         private readonly Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> _callback;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DelegateMiddleware"/> class.
         /// </summary>
-        /// <param name="description">The middleware description.</param>
+        /// <param name="descriptor">The middleware description.</param>
         /// <param name="phase">The pipeline phase.</param>
         /// <param name="callback">The callback to execute.</param>
-        public DelegateMiddleware(string description, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
+        public DelegateMiddleware(string descriptor, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
-            _name = description;
+            _descriptor = descriptor ?? throw new ArgumentNullException(nameof(descriptor));
             Phase = phase;
-            _callback = callback;
+            _callback = callback ?? throw new ArgumentNullException(nameof(callback));
         }
 
         /// <inheritdoc />
@@ -59,6 +59,6 @@ namespace Autofac.Core.Resolving.Middleware
         }
 
         /// <inheritdoc />
-        public override string ToString() => _name;
+        public override string ToString() => _descriptor;
     }
 }

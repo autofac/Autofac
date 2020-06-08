@@ -32,7 +32,7 @@ namespace Autofac.Test
         public static Func<ILifetimeScope, IEnumerable<Parameter>, T> GetPipelineInvoker<T>(this IInstanceActivator activator, IComponentRegistry registry)
         {
             var services = new RegistryServices(registry);
-            var pipelineBuilder = new ResolvePipelineBuilder();
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Registration);
 
             activator.ConfigurePipeline(services, pipelineBuilder);
 
@@ -45,7 +45,7 @@ namespace Autofac.Test
 
                 var request = new ResolveRequestContext(
                     new ResolveOperation(lifetimeScope),
-                    new ResolveRequest(new TypedService(typeof(T)), Mocks.GetComponentRegistration(), parameters),
+                    new ResolveRequest(new TypedService(typeof(T)), Mocks.GetResolvableImplementation(), parameters),
                     lifetimeScope,
                     null);
 

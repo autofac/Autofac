@@ -26,17 +26,17 @@
 namespace Autofac.Core.Registration
 {
     /// <summary>
-    /// Interface providing fluent syntax for chaining registration source registrations.
+    /// Interface providing fluent syntax for chaining middleware source registrations.
     /// </summary>
-    public interface ISourceRegistrar
+    public interface IServiceMiddlewareSourceRegistrar
     {
         /// <summary>
-        /// Add a registration source to the container.
+        /// Adds a middleware source to the container.
         /// </summary>
-        /// <param name="registrationSource">The registration source to add.</param>
+        /// <param name="serviceMiddlewareSource">The middleware source to add.</param>
         /// <returns>
-        /// The <see cref="ISourceRegistrar"/> to allow additional chained registration source registrations.
+        /// The <see cref="IServiceMiddlewareSourceRegistrar"/> to allow additional chained middleware source registrations.
         /// </returns>
-        ISourceRegistrar RegisterSource(IRegistrationSource registrationSource);
+        IServiceMiddlewareSourceRegistrar RegisterServiceMiddlewareSource(IServiceMiddlewareSource serviceMiddlewareSource);
     }
 }

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Autofac.Core.Diagnostics;
 using Autofac.Core.Registration;
+using Autofac.Features.Decorators;
 
 namespace Autofac.Core.Resolving.Pipeline
 {
@@ -56,7 +57,7 @@ namespace Autofac.Core.Resolving.Pipeline
             Operation = owningOperation;
             ActivationScope = scope;
             Parameters = request.Parameters;
-            PhaseReached = PipelinePhase.RequestStart;
+            PhaseReached = PipelinePhase.ResolveRequestStart;
             Tracer = tracer;
             TracingEnabled = tracer is object;
             _resolveRequest = request;
@@ -127,11 +128,6 @@ namespace Autofac.Core.Resolving.Pipeline
         /// </summary>
         public PipelinePhase PhaseReached { get; internal set; }
 
-        /// <summary>
-        /// Gets or sets an optional pipeline to invoke at the end of the current request's pipeline.
-        /// </summary>
-        public IResolvePipeline? Continuation { get; set; }
-
         /// <inheritdoc />
         public IComponentRegistry ComponentRegistry => ActivationScope.ComponentRegistry;
 
@@ -140,6 +136,11 @@ namespace Autofac.Core.Resolving.Pipeline
         /// Requests will only be considered 'complete' when the overall <see cref="IResolveOperation"/> is completing.
         /// </summary>
         public event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
+
+        /// <summary>
+        /// Gets or sets the active decorator context for the request.
+        /// </summary>
+        public DecoratorContext? DecoratorContext { get; set; }
 
         /// <summary>
         /// Use this method to change the <see cref="ISharingLifetimeScope"/> that is used in this request. Changing this scope will

@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2018 Autofac Contributors
+// Copyright © 2020 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,20 +23,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using Autofac.Core.Resolving.Pipeline;
+
 namespace Autofac.Core.Registration
 {
     /// <summary>
-    /// Interface providing fluent syntax for chaining registration source registrations.
+    /// Interface defining a source of middleware for a service's pipeline.
     /// </summary>
-    public interface ISourceRegistrar
+    public interface IServiceMiddlewareSource
     {
         /// <summary>
-        /// Add a registration source to the container.
+        /// Called when a service is first resolved; implementations can add middleware to the service using the <paramref name="pipelineBuilder"/>.
         /// </summary>
-        /// <param name="registrationSource">The registration source to add.</param>
-        /// <returns>
-        /// The <see cref="ISourceRegistrar"/> to allow additional chained registration source registrations.
-        /// </returns>
-        ISourceRegistrar RegisterSource(IRegistrationSource registrationSource);
+        /// <param name="service">The service being resolved.</param>
+        /// <param name="availableServices">Access to the set of available service registrations.</param>
+        /// <param name="pipelineBuilder">A pipeline builder that can be used to add middleware.</param>
+        void ProvideMiddleware(Service service, IComponentRegistryServices availableServices, IResolvePipelineBuilder pipelineBuilder);
     }
 }

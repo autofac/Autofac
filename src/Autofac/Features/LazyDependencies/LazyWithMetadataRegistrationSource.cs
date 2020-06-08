@@ -45,10 +45,10 @@ namespace Autofac.Features.LazyDependencies
     {
         private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateLazyRegistration));
 
-        private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, IComponentRegistration valueRegistration);
+        private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo);
 
         /// <inheritdoc/>
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (registrationAccessor == null)
                 throw new ArgumentNullException(nameof(registrationAccessor));
@@ -83,7 +83,7 @@ namespace Autofac.Features.LazyDependencies
             return LazyWithMetadataRegistrationSourceResources.LazyWithMetadataRegistrationSourceDescription;
         }
 
-        private IComponentRegistration CreateLazyRegistration<T, TMeta>(Service providedService, Service valueService, IComponentRegistration valueRegistration)
+        private IComponentRegistration CreateLazyRegistration<T, TMeta>(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo)
         {
             var metadataProvider = MetadataViewProvider.GetMetadataViewProvider<TMeta>();
 
@@ -92,13 +92,13 @@ namespace Autofac.Features.LazyDependencies
                 {
                     var context = c.Resolve<IComponentContext>();
                     var lazyType = ((IServiceWithType)providedService).ServiceType;
-                    var request = new ResolveRequest(valueService, valueRegistration, p);
+                    var request = new ResolveRequest(valueService, registrationResolveInfo, p);
                     var valueFactory = new Func<T>(() => (T)context.ResolveComponent(request));
-                    var metadata = metadataProvider(valueRegistration.Target.Metadata);
+                    var metadata = metadataProvider(registrationResolveInfo.Registration.Target.Metadata);
                     return Activator.CreateInstance(lazyType, valueFactory, metadata);
                 })
                 .As(providedService)
-                .Targeting(valueRegistration, IsAdapterForIndividualComponents);
+                .Targeting(registrationResolveInfo.Registration, IsAdapterForIndividualComponents);
 
             return rb.CreateRegistration();
         }

@@ -20,7 +20,7 @@ namespace Autofac.Test.Scenarios.RegistrationSources
             _instance = instance;
         }
 
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             var objectService = new TypedService(typeof(object));
             if (service == objectService)
