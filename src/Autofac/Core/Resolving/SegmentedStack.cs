@@ -35,7 +35,7 @@ namespace Autofac.Core.Resolving
     /// of the stack to be enumerated without including items pushed before the segment.
     /// </summary>
     /// <typeparam name="T">The item type.</typeparam>
-    internal class SegmentedStack<T> : IEnumerable<T>
+    internal sealed class SegmentedStack<T> : IEnumerable<T>
         where T : class
     {
         private T[] _array;
@@ -196,29 +196,32 @@ namespace Autofac.Core.Resolving
 
             public bool MoveNext()
             {
-                if (_index == -2)
+                var index = _index;
+
+                if (index == -2)
                 {
                     // Start the enumerator.
-                    _index = _stack._next - 1;
+                    _index = index = _stack._next - 1;
 
-                    if (_index > _activeSegmentBase)
+                    if (index > _activeSegmentBase)
                     {
-                        _currentElement = _stack._array[_index];
+                        _currentElement = _stack._array[index];
                         return true;
                     }
 
                     return false;
                 }
 
-                if (_index == -1)
+                if (index == -1)
                 {
                     // Finished.
                     return false;
                 }
 
-                if (--_index >= _activeSegmentBase)
+                if (--index >= _activeSegmentBase)
                 {
-                    _currentElement = _stack._array[_index];
+                    _currentElement = _stack._array[index];
+                    _index = index;
                     return true;
                 }
 
