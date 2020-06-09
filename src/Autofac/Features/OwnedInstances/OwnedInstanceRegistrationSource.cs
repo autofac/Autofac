@@ -23,13 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac.Features.OwnedInstances
 {
@@ -37,61 +32,37 @@ namespace Autofac.Features.OwnedInstances
     /// Generates registrations for services of type <see cref="Owned{T}"/> whenever the service
     /// T is available.
     /// </summary>
-    internal class OwnedInstanceRegistrationSource : IRegistrationSource
+    internal class OwnedInstanceRegistrationSource : ImplicitRegistrationSource
     {
         /// <summary>
-        /// Retrieve registrations for an unregistered service, to be used
-        /// by the container.
+        /// Initializes a new instance of the <see cref="OwnedInstanceRegistrationSource"/> class.
         /// </summary>
-        /// <param name="service">The service that was requested.</param>
-        /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
-        /// <returns>Registrations providing the service.</returns>
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
+        public OwnedInstanceRegistrationSource()
+            : base(typeof(Owned<>))
         {
-            if (service == null) throw new ArgumentNullException(nameof(service));
-            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
-
-            var ts = service as IServiceWithType;
-            if (ts == null || !ts.ServiceType.IsGenericTypeDefinedBy(typeof(Owned<>)))
-                return Enumerable.Empty<IComponentRegistration>();
-
-            var ownedInstanceType = ts.ServiceType.GetTypeInfo().GenericTypeArguments.First();
-            var ownedInstanceService = ts.ChangeType(ownedInstanceType);
-
-            return registrationAccessor(ownedInstanceService)
-                .Select(r =>
-                {
-                    var rb = RegistrationBuilder.ForDelegate(ts.ServiceType, (c, p) =>
-                        {
-                            var lifetime = c.Resolve<ILifetimeScope>().BeginLifetimeScope(ownedInstanceService);
-                            try
-                            {
-                                var context = new ResolveRequest(ownedInstanceService, r, p);
-                                var value = lifetime.ResolveComponent(context);
-                                return Activator.CreateInstance(ts.ServiceType, new[] { value, lifetime });
-                            }
-                            catch
-                            {
-                                lifetime.Dispose();
-                                throw;
-                            }
-                        })
-                        .ExternallyOwned()
-                        .As(service)
-                        .Targeting(r.Registration, IsAdapterForIndividualComponents)
-                        .InheritRegistrationOrderFrom(r.Registration);
-
-                    return rb.CreateRegistration();
-                });
         }
 
         /// <inheritdoc/>
-        public bool IsAdapterForIndividualComponents => true;
+        protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
+        {
+            var lifetime = ctx.Resolve<ILifetimeScope>().BeginLifetimeScope(request.Service);
+            try
+            {
+                var value = (T)lifetime.ResolveComponent(request);
+                return new Owned<T>(value, lifetime);
+            }
+            catch
+            {
+                lifetime.Dispose();
+                throw;
+            }
+        }
 
         /// <inheritdoc/>
-        public override string ToString()
-        {
-            return OwnedInstanceRegistrationSourceResources.OwnedInstanceRegistrationSourceDescription;
-        }
+        protected override IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> BuildRegistration(IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> registration)
+            => registration.ExternallyOwned();
+
+        /// <inheritdoc/>
+        public override string Description => OwnedInstanceRegistrationSourceResources.OwnedInstanceRegistrationSourceDescription;
     }
 }

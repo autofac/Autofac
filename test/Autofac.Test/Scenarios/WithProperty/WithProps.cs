@@ -11,5 +11,6 @@
             "SA1401:Fields should be private",
             Justification = "Tests")]
         public string _field;
+#pragma warning restore SA1401 // Fields should be private
     }
 }

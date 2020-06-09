@@ -23,13 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac.Features.Metadata
 {
@@ -38,50 +32,21 @@ namespace Autofac.Features.Metadata
     /// types automatically whenever type T is registered with the container.
     /// Metadata values come from the component registration's metadata.
     /// </summary>
-    internal class MetaRegistrationSource : IRegistrationSource
+    internal class MetaRegistrationSource : ImplicitRegistrationSource
     {
-        private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(MetaRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateMetaRegistration));
-
-        /// <inheritdoc/>
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MetaRegistrationSource"/> class.
+        /// </summary>
+        public MetaRegistrationSource()
+            : base(typeof(Meta<>))
         {
-            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
-
-            var swt = service as IServiceWithType;
-            if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<>)))
-                return Enumerable.Empty<IComponentRegistration>();
-
-            var valueType = swt.ServiceType.GetTypeInfo().GenericTypeArguments.First();
-
-            var valueService = swt.ChangeType(valueType);
-
-            var registrationCreator = CreateMetaRegistrationMethod.MakeGenericMethod(valueType);
-
-            return registrationAccessor(valueService)
-                .Select(v => registrationCreator.Invoke(this, new object[] { service, valueService, v }))
-                .Cast<IComponentRegistration>();
         }
 
         /// <inheritdoc/>
-        public bool IsAdapterForIndividualComponents => true;
+        public override string Description => MetaRegistrationSourceResources.MetaRegistrationSourceDescription;
 
         /// <inheritdoc/>
-        public override string ToString()
-        {
-            return MetaRegistrationSourceResources.MetaRegistrationSourceDescription;
-        }
-
-        private IComponentRegistration CreateMetaRegistration<T>(Service providedService, Service valueService, ServiceRegistration implementation)
-        {
-            var rb = RegistrationBuilder
-                .ForDelegate((c, p) => new Meta<T>(
-                    (T)c.ResolveComponent(new ResolveRequest(valueService, implementation, p)),
-                    implementation.Registration.Target.Metadata))
-                .As(providedService)
-                .Targeting(implementation.Registration, IsAdapterForIndividualComponents)
-                .InheritRegistrationOrderFrom(implementation.Registration);
-
-            return rb.CreateRegistration();
-        }
+        protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
+            => new Meta<T>((T)ctx.ResolveComponent(request), request.Registration.Target.Metadata);
     }
 }
