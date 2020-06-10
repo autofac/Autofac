@@ -111,12 +111,16 @@ namespace Autofac.Specification.Test.Features
 
             var c = cb.Build();
 
+            string capturedTrace = null;
+
             c.AttachTrace((req, trace) =>
             {
+                capturedTrace = trace;
                 _output.WriteLine(trace);
             });
 
-            var de = Assert.Throws<DependencyResolutionException>(() => c.Resolve<DependsByProp>());
+            Assert.Throws<DependencyResolutionException>(() => c.Resolve<DependsByProp>());
+            Assert.NotNull(capturedTrace);
         }
 
         [Fact]
