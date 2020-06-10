@@ -5,11 +5,19 @@ using Autofac.Core;
 using Autofac.Core.Diagnostics;
 using Autofac.Specification.Test.Features.CircularDependency;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Autofac.Specification.Test.Features
 {
     public class CircularDependencyTests
     {
+        private readonly ITestOutputHelper _output;
+
+        public CircularDependencyTests(ITestOutputHelper output)
+        {
+            _output = output;
+        }
+
         private interface IPlugin
         {
         }
@@ -92,6 +100,27 @@ namespace Autofac.Specification.Test.Features
 
             var c = cb.Build();
             var de = Assert.Throws<DependencyResolutionException>(() => c.Resolve<DependsByProp>());
+        }
+
+        [Fact]
+        public void InstancePerDependencyDoesNotAllowCircularDependencies_PropertyOwnerResolved_WithTracerAttached()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterType<DependsByCtor>();
+            cb.RegisterType<DependsByProp>().PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+
+            var c = cb.Build();
+
+            string capturedTrace = null;
+
+            c.AttachTrace((req, trace) =>
+            {
+                capturedTrace = trace;
+                _output.WriteLine(trace);
+            });
+
+            Assert.Throws<DependencyResolutionException>(() => c.Resolve<DependsByProp>());
+            Assert.NotNull(capturedTrace);
         }
 
         [Fact]

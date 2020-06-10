@@ -428,16 +428,6 @@ namespace Autofac.Test.Core.Pipeline
                       null)
             {
             }
-
-            public override object ResolveComponent(ResolveRequest request)
-            {
-                throw new NotImplementedException();
-            }
-
-            public override object ResolveComponentWithNewOperation(ResolveRequest request)
-            {
-                throw new NotImplementedException();
-            }
         }
 
         private class MockLifetimeScope : ISharingLifetimeScope

@@ -267,6 +267,8 @@ namespace Autofac.Core.Resolving.Pipeline
 
             Action<ResolveRequestContextBase> Chain(Action<ResolveRequestContextBase> next, IResolveMiddleware stage)
             {
+                var stagePhase = stage.Phase;
+
                 return (ctxt) =>
                 {
                     // Optimise the path depending on whether a tracer is attached.
@@ -276,7 +278,7 @@ namespace Autofac.Core.Resolving.Pipeline
                         var succeeded = false;
                         try
                         {
-                            ctxt.PhaseReached = stage.Phase;
+                            ctxt.PhaseReached = stagePhase;
                             stage.Execute(ctxt, next);
                             succeeded = true;
                         }
@@ -287,7 +289,7 @@ namespace Autofac.Core.Resolving.Pipeline
                     }
                     else
                     {
-                        ctxt.PhaseReached = stage.Phase;
+                        ctxt.PhaseReached = stagePhase;
                         stage.Execute(ctxt, next);
                     }
                 };

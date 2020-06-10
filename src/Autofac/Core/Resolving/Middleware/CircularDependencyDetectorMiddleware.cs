@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Resolving.Middleware
@@ -67,7 +68,16 @@ namespace Autofac.Core.Resolving.Middleware
 
             if (activationDepth > _maxResolveDepth)
             {
+#if NETSTANDARD2_1
+                // In .NET Standard 2.1 we will try and keep going until we run out of stack space.
+                if (!RuntimeHelpers.TryEnsureSufficientExecutionStack())
+                {
+                    throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorMessages.MaxDepthExceeded, context.Service));
+                }
+#else
+                // Pre .NET Standard 2.1 we just end at 50.
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorMessages.MaxDepthExceeded, context.Service));
+#endif
             }
 
             var requestStack = context.Operation.RequestStack;
@@ -78,7 +88,6 @@ namespace Autofac.Core.Resolving.Middleware
             {
                 var registration = context.Registration;
 
-                // Only check the stack for shared components.
                 foreach (var requestEntry in requestStack)
                 {
                     if (requestEntry.Registration == registration)
