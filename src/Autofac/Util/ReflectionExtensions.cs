@@ -36,6 +36,10 @@ namespace Autofac.Util
     /// </summary>
     internal static class ReflectionExtensions
     {
+        public static TDelegate CreateDelegate<TDelegate>(this MethodInfo method, object target)
+            where TDelegate : Delegate
+            => (TDelegate)method.CreateDelegate(typeof(TDelegate), target);
+
         /// <summary>
         /// Maps from a property-set-value parameter to the declaring property.
         /// </summary>

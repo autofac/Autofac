@@ -153,9 +153,9 @@ namespace Autofac.Core.Activators.Reflection
             // Create a delegate TDeclaringType -> { TDeclaringType.Property = TValue; }
             var propertySetterAsAction = setMethod.CreateDelegate(typeof(Action<,>).MakeGenericType(typeInput, parameterType));
             var callPropertySetterClosedGenericMethod = CallPropertySetterOpenGenericMethod.MakeGenericMethod(typeInput, parameterType);
-            var callPropertySetterDelegate = callPropertySetterClosedGenericMethod.CreateDelegate(typeof(Action<object, object>), propertySetterAsAction);
+            var callPropertySetterDelegate = callPropertySetterClosedGenericMethod.CreateDelegate<Action<object, object?>>(propertySetterAsAction);
 
-            return (Action<object, object?>)callPropertySetterDelegate;
+            return callPropertySetterDelegate;
         }
 
         private static void CallPropertySetter<TDeclaringType, TValue>(
