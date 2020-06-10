@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -47,6 +48,8 @@ namespace Autofac.Features.LazyDependencies
 
         private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, IComponentRegistration valueRegistration);
 
+        private readonly ConcurrentDictionary<(Type ValueType, Type MetaType), RegistrationCreator> _methodCache = new ConcurrentDictionary<(Type, Type), RegistrationCreator>();
+
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
         {
             if (registrationAccessor == null)
@@ -67,7 +70,10 @@ namespace Autofac.Features.LazyDependencies
 
             var valueService = swt.ChangeType(valueType);
 
-            var registrationCreator = (RegistrationCreator)CreateLazyRegistrationMethod.MakeGenericMethod(valueType, metaType).CreateDelegate(typeof(RegistrationCreator), this);
+            var registrationCreator = _methodCache.GetOrAdd((valueType, metaType), types =>
+            {
+                return CreateLazyRegistrationMethod.MakeGenericMethod(types.ValueType, types.MetaType).CreateDelegate<RegistrationCreator>(this);
+            });
 
             return registrationAccessor(valueService)
                 .Select(v => registrationCreator(service, valueService, v));
