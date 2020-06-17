@@ -16,15 +16,9 @@ assignees: ''
 
 <!-- A clear and concise description of what the bug is. -->
 
-## Steps to Reproduce / Failing Unit Test
+## Steps to Reproduce
 
-<!--
-  Tell us how to reproduce the issue. Ideally provide a failing unit test.
-
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+<!-- Tell us how to reproduce the issue. Ideally provide a failing unit test. -->
 
 ```c#
 public class ReproTest
@@ -38,17 +32,14 @@ public class ReproTest
   }
 }
 ```
--->
 
 ## Expected Behavior
 
 <!-- Describe what you expected to happen. -->
 
-## Exception With Stack Trace
+## Exception with Stack Trace
 
-<!--
-  If you see an exception, put the whole thing here.
--->
+<!-- If you see an exception, put the WHOLE THING here. -->
 
 ```text
 Put the exception with stack trace here.
