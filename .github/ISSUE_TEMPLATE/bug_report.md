@@ -1,38 +1,64 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: Bug Report
+about: Create a report to help us improve core Autofac.
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+<!--
+  This is for CORE AUTOFAC ONLY. If you are having trouble with an integration library
+  like Autofac.Integration.Mvc, Autofac.Multitenant, or Autofac.Extensions.DependencyInjection
+  please file in the appropriate repo!
+-->
 
-**To Reproduce**
-Steps to reproduce the behavior:
+## Describe the Bug
+
+<!-- A clear and concise description of what the bug is. -->
+
+## Steps to Reproduce / Failing Unit Test
+
+<!--
+  Tell us how to reproduce the issue. Ideally provide a failing unit test.
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+```c#
+public class ReproTest
+{
+  [Fact]
+  public void Repro()
+  {
+    var builder = new ContainerBuilder();
+    var container = builder.Build();
+    Assert.NotNull(container);
+  }
+}
+```
+-->
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## Expected Behavior
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+<!-- Describe what you expected to happen. -->
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+## Exception With Stack Trace
 
-**Additional context**
-Add any other context about the problem here.
+<!--
+  If you see an exception, put the whole thing here.
+-->
+
+```text
+Put the exception with stack trace here.
+```
+
+## Dependency Versions
+
+Autofac: <!-- Fill in the version of Autofac you're using -->
+<!-- What other dependencies are you using? Names and versions. -->
+
+## Additional Info
+
+<!-- Add any other context about the problem here. -->
