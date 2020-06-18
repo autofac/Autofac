@@ -64,7 +64,7 @@ namespace Autofac.Features.GeneratedFactories
                         .InstancePerLifetimeScope()
                         .ExternallyOwned()
                         .As(service)
-                        .Targeting(r.Registration, IsAdapterForIndividualComponents)
+                        .Targeting(r.Registration)
                         .InheritRegistrationOrderFrom(r.Registration);
 
                     return rb.CreateRegistration();

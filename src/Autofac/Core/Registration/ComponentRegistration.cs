@@ -47,10 +47,9 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Defines the options copied from a target registration onto this one.
         /// </summary>
-        private static readonly RegistrationOptions OptionsCopiedFromTargetRegistration =
-            RegistrationOptions.Fixed |
-            RegistrationOptions.ExcludeFromCollections |
-            RegistrationOptions.DisableDecoration;
+        private const RegistrationOptions OptionsCopiedFromTargetRegistration = RegistrationOptions.Fixed |
+                                                                                RegistrationOptions.ExcludeFromCollections |
+                                                                                RegistrationOptions.DisableDecoration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistration"/> class.
@@ -113,6 +112,7 @@ namespace Autofac.Core.Registration
         /// <param name="pipelineBuilder">The resolve pipeline builder for the registration.</param>
         /// <param name="services">Services the component provides.</param>
         /// <param name="metadata">Data associated with the component.</param>
+        /// <param name="options">The additional registration options.</param>
         public ComponentRegistration(
             Guid id,
             IInstanceActivator activator,
@@ -232,6 +232,7 @@ namespace Autofac.Core.Registration
             protected set => _builtComponentPipeline = value;
         }
 
+        /// <inheritdoc/>
         public bool HasOption(RegistrationOptions option)
         {
             return Options.HasFlag(option);

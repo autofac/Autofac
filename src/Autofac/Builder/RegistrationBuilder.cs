@@ -170,7 +170,6 @@ namespace Autofac.Builder
         /// <param name="pipelineBuilder">The component registration's resolve pipeline builder.</param>
         /// <param name="services">Services provided by the registration.</param>
         /// <param name="target">Optional; target registration.</param>
-        /// <param name="options">Additional options for the registration.</param>
         /// <returns>An IComponentRegistration.</returns>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="activator" /> or <paramref name="data" /> is <see langword="null" />.

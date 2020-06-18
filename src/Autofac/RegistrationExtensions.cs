@@ -966,7 +966,6 @@ namespace Autofac
         /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set target for.</param>
         /// <param name="target">The target.</param>
-        /// <param name="isAdapterForIndividualComponent">Optional; whether the registration is a 1:1 adapter on top of another component.</param>
         /// <returns>
         /// Registration builder allowing the registration to be configured.
         /// </returns>
@@ -976,23 +975,13 @@ namespace Autofac
         public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
             Targeting<TLimit, TActivatorData, TSingleRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
-                IComponentRegistration target,
-                bool isAdapterForIndividualComponent)
+                IComponentRegistration target)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (target == null) throw new ArgumentNullException(nameof(target));
 
             registration.RegistrationStyle.Target = target.Target;
-
-            //if (isAdapterForIndividualComponent)
-            //{
-            //    registration.RegistrationData.Options |= RegistrationOptions.IsAdapterForIndividualComponent;
-            //}
-            //else
-            //{
-            //    registration.RegistrationData.Options ^= RegistrationOptions.IsAdapterForIndividualComponent;
-            //}
 
             return registration;
         }
