@@ -45,7 +45,7 @@ namespace Autofac.Core.Registration
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "The _service field is useful in debugging and diagnostics.")]
         private readonly Service _service;
 
-        private IComponentRegistration? _serviceOverride = null;
+        private IComponentRegistration? _fixedRegistration = null;
 
         /// <summary>
         ///  List of implicit default service implementations. Overriding default implementations are appended to the end,
@@ -113,9 +113,9 @@ namespace Autofac.Core.Registration
             {
                 RequiresInitialization();
 
-                if (_serviceOverride is object)
+                if (_fixedRegistration is object)
                 {
-                    yield return _serviceOverride;
+                    yield return _fixedRegistration;
                 }
 
                 foreach (var item in _registeredImplementations!.Value)
@@ -180,11 +180,11 @@ namespace Autofac.Core.Registration
         /// <param name="originatedFromSource">Whether the registration originated from a dynamic source.</param>
         public void AddImplementation(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource)
         {
-            if (registration.IsServiceOverride)
+            if (registration.HasOption(RegistrationOptions.Fixed))
             {
-                if (_serviceOverride is null || !originatedFromSource)
+                if (_fixedRegistration is null || !originatedFromSource)
                 {
-                    _serviceOverride = registration;
+                    _fixedRegistration = registration;
                 }
             }
             else if (preserveDefaults)
@@ -266,7 +266,7 @@ namespace Autofac.Core.Registration
         {
             RequiresInitialization();
 
-            registration = _defaultImplementation ??= _serviceOverride ??
+            registration = _defaultImplementation ??= _fixedRegistration ??
                                                       _defaultImplementations.LastOrDefault() ??
                                                       _sourceImplementations?.First() ??
                                                       _preserveDefaultImplementations?.First();

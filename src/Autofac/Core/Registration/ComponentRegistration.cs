@@ -45,6 +45,14 @@ namespace Autofac.Core.Registration
         private IResolvePipeline? _builtComponentPipeline;
 
         /// <summary>
+        /// Defines the options copied from a target registration onto this one.
+        /// </summary>
+        private static readonly RegistrationOptions OptionsCopiedFromTargetRegistration =
+            RegistrationOptions.Fixed |
+            RegistrationOptions.ExcludeFromCollections |
+            RegistrationOptions.DisableDecoration;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ComponentRegistration"/> class.
         /// </summary>
         /// <param name="id">The registration id.</param>
@@ -55,7 +63,7 @@ namespace Autofac.Core.Registration
         /// <param name="services">The set of services provided by the registration.</param>
         /// <param name="metadata">Any metadata associated with the registration.</param>
         /// <param name="target">The target/inner registration.</param>
-        /// <param name="isAdapterForIndividualComponents">Indicates whether this registration is an adapter for individual components (Meta, Func, etc).</param>
+        /// <param name="options">Contains options for the registration.</param>
         public ComponentRegistration(
            Guid id,
            IInstanceActivator activator,
@@ -65,8 +73,8 @@ namespace Autofac.Core.Registration
            IEnumerable<Service> services,
            IDictionary<string, object?> metadata,
            IComponentRegistration target,
-           bool isAdapterForIndividualComponents)
-            : this(id, activator, lifetime, sharing, ownership, new ResolvePipelineBuilder(PipelineType.Registration), services, metadata, target, isAdapterForIndividualComponents)
+           RegistrationOptions options = RegistrationOptions.None)
+            : this(id, activator, lifetime, sharing, ownership, new ResolvePipelineBuilder(PipelineType.Registration), services, metadata, target, options)
         {
         }
 
@@ -80,7 +88,7 @@ namespace Autofac.Core.Registration
         /// <param name="ownership">Whether the component instances are disposed at the end of their lifetimes.</param>
         /// <param name="services">Services the component provides.</param>
         /// <param name="metadata">Data associated with the component.</param>
-        /// <param name="isServiceOverride">Indicates whether this registration is a service override.</param>
+        /// <param name="options">Contains options for the registration.</param>
         public ComponentRegistration(
            Guid id,
            IInstanceActivator activator,
@@ -89,8 +97,8 @@ namespace Autofac.Core.Registration
            InstanceOwnership ownership,
            IEnumerable<Service> services,
            IDictionary<string, object?> metadata,
-           bool isServiceOverride = false)
-            : this(id, activator, lifetime, sharing, ownership, new ResolvePipelineBuilder(PipelineType.Registration), services, metadata, isServiceOverride)
+           RegistrationOptions options = RegistrationOptions.None)
+            : this(id, activator, lifetime, sharing, ownership, new ResolvePipelineBuilder(PipelineType.Registration), services, metadata, options)
         {
         }
 
@@ -105,7 +113,6 @@ namespace Autofac.Core.Registration
         /// <param name="pipelineBuilder">The resolve pipeline builder for the registration.</param>
         /// <param name="services">Services the component provides.</param>
         /// <param name="metadata">Data associated with the component.</param>
-        /// <param name="isServiceOverride">Indicates whether this registration is a service override.</param>
         public ComponentRegistration(
             Guid id,
             IInstanceActivator activator,
@@ -115,7 +122,7 @@ namespace Autofac.Core.Registration
             IResolvePipelineBuilder pipelineBuilder,
             IEnumerable<Service> services,
             IDictionary<string, object?> metadata,
-            bool isServiceOverride = false)
+            RegistrationOptions options = RegistrationOptions.None)
         {
             if (activator == null) throw new ArgumentNullException(nameof(activator));
             if (lifetime == null) throw new ArgumentNullException(nameof(lifetime));
@@ -132,8 +139,7 @@ namespace Autofac.Core.Registration
 
             Services = Enforce.ArgumentElementNotNull(services, nameof(services));
             Metadata = metadata;
-            IsAdapterForIndividualComponent = false;
-            IsServiceOverride = isServiceOverride;
+            Options = options;
         }
 
         /// <summary>
@@ -148,7 +154,7 @@ namespace Autofac.Core.Registration
         /// <param name="services">Services the component provides.</param>
         /// <param name="metadata">Data associated with the component.</param>
         /// <param name="target">The component registration upon which this registration is based.</param>
-        /// <param name="isAdapterForIndividualComponents">Whether the registration is a 1:1 adapters on top of another component.</param>
+        /// <param name="options">Registration options.</param>
         public ComponentRegistration(
             Guid id,
             IInstanceActivator activator,
@@ -159,13 +165,14 @@ namespace Autofac.Core.Registration
             IEnumerable<Service> services,
             IDictionary<string, object?> metadata,
             IComponentRegistration target,
-            bool isAdapterForIndividualComponents)
-            : this(id, activator, lifetime, sharing, ownership, pipelineBuilder, services, metadata)
+            RegistrationOptions options = RegistrationOptions.None)
+            : this(id, activator, lifetime, sharing, ownership, pipelineBuilder, services, metadata, options)
         {
             if (target == null) throw new ArgumentNullException(nameof(target));
             _target = target;
-            IsAdapterForIndividualComponent = isAdapterForIndividualComponents;
-            IsServiceOverride = _target.IsServiceOverride;
+
+            // Certain flags carry over from the target.
+            Options = options | (_target.Options & OptionsCopiedFromTargetRegistration);
         }
 
         /// <summary>
@@ -210,8 +217,10 @@ namespace Autofac.Core.Registration
         /// </summary>
         public IDictionary<string, object?> Metadata { get; }
 
-        /// <inheritdoc/>
-        public bool IsServiceOverride { get; }
+        /// <summary>
+        /// Gets the options for the registration.
+        /// </summary>
+        public RegistrationOptions Options { get; }
 
         /// <inheritdoc />
         public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding;
@@ -223,8 +232,10 @@ namespace Autofac.Core.Registration
             protected set => _builtComponentPipeline = value;
         }
 
-        /// <inheritdoc />
-        public bool IsAdapterForIndividualComponent { get; }
+        public bool HasOption(RegistrationOptions option)
+        {
+            return Options.HasFlag(option);
+        }
 
         /// <inheritdoc />
         public void BuildResolvePipeline(IComponentRegistryServices registryServices)

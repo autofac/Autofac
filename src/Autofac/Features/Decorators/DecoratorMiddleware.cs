@@ -26,6 +26,7 @@
 using System;
 using System.Linq;
 using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Features.Decorators
@@ -64,9 +65,9 @@ namespace Autofac.Features.Decorators
                 return;
             }
 
-            if (context.Registration.IsServiceOverride)
+            // Check if decoration is disabled.
+            if (context.Registration.HasOption(RegistrationOptions.DisableDecoration))
             {
-                // We don't decorate service overrides.
                 return;
             }
 

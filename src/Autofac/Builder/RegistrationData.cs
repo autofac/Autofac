@@ -138,12 +138,9 @@ namespace Autofac.Builder
         public IDictionary<string, object?> Metadata { get; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this registration forms a 'Service Override', which forces itself as the default
-        /// registration for all service it provides.
-        /// Registrations with <see cref="IsServiceOverride"/> set to true will not be included when resolving a collection of a service
-        /// to get all implementations.
+        /// Gets or sets the options for the registration.
         /// </summary>
-        public bool IsServiceOverride { get; set; }
+        public RegistrationOptions Options { get; set; }
 
         /// <summary>
         /// Gets or sets the callback used to register this component.

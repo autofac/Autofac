@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Features.Metadata;
 using Autofac.Features.OwnedInstances;
 using Autofac.Specification.Test.Lifetime;
@@ -597,7 +598,7 @@ namespace Autofac.Specification.Test.Features
                 {
                     var rb = RegistrationBuilder.ForType<MyComposite>().As<I1>();
 
-                    rb.RegistrationData.IsServiceOverride = true;
+                    rb.RegistrationData.Options |= RegistrationOptions.Composite;
 
                     yield return rb.CreateRegistration();
                 }

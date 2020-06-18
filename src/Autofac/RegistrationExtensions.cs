@@ -984,7 +984,16 @@ namespace Autofac
             if (target == null) throw new ArgumentNullException(nameof(target));
 
             registration.RegistrationStyle.Target = target.Target;
-            registration.RegistrationStyle.IsAdapterForIndividualComponent = isAdapterForIndividualComponent;
+
+            //if (isAdapterForIndividualComponent)
+            //{
+            //    registration.RegistrationData.Options |= RegistrationOptions.IsAdapterForIndividualComponent;
+            //}
+            //else
+            //{
+            //    registration.RegistrationData.Options ^= RegistrationOptions.IsAdapterForIndividualComponent;
+            //}
+
             return registration;
         }
 
@@ -1837,8 +1846,8 @@ namespace Autofac
 
         private static void ApplyCompositeConfiguration<TLimit, TActivatorData, TStyle>(ContainerBuilder builder, IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration)
         {
-            // This is a service override registration.
-            registration.RegistrationData.IsServiceOverride = true;
+            // Set the options for a composite.
+            registration.RegistrationData.Options |= RegistrationOptions.Composite;
 
             builder.RegisterCallback(crb =>
             {

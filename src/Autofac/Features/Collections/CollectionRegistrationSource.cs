@@ -122,7 +122,7 @@ namespace Autofac.Features.Collections
                 {
                     var itemRegistrations = c.ComponentRegistry
                         .ServiceRegistrationsFor(elementTypeService)
-                        .Where(cr => !cr.IsServiceOverride)
+                        .Where(cr => !cr.Registration.HasOption(RegistrationOptions.ExcludeFromCollections))
                         .OrderBy(cr => cr.Registration.GetRegistrationOrder())
                         .ToList();
 

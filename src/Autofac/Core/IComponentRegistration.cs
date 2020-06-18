@@ -83,18 +83,16 @@ namespace Autofac.Core
         IResolvePipeline ResolvePipeline { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the registration is a 1:1 adapter on top
-        /// of another component (e.g., Meta, Func, or Owned).
+        /// Gets the options for the registration.
         /// </summary>
-        bool IsAdapterForIndividualComponent { get; }
+        RegistrationOptions Options { get; }
 
         /// <summary>
-        /// Gets a value indicating whether this registration forms a 'Service Override', which forces itself as the default
-        /// registration for all service it provides.
-        /// Registrations with <see cref="IsServiceOverride"/> set to true will not be included when resolving a collection of a service
-        /// to get all implementations.
+        /// Tests whether a given option (or combined set of options) is enabled for the registration.
         /// </summary>
-        bool IsServiceOverride { get; }
+        /// <param name="option">The option.</param>
+        /// <returns>True if the option (or options) is enabled for the registration.</returns>
+        bool HasOption(RegistrationOptions option);
 
         /// <summary>
         /// Provides an event that will be invoked just before a pipeline is built, and can be used to add additional middleware

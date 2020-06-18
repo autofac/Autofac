@@ -57,12 +57,6 @@ namespace Autofac.Core
         public IComponentRegistration Registration { get; }
 
         /// <summary>
-        /// Gets a value indicating whether this registration is a service override registrations.
-        /// Service override registrations should generally be skipped when resolving a collection of any type of service.
-        /// </summary>
-        public bool IsServiceOverride => Registration.IsServiceOverride;
-
-        /// <summary>
         /// Gets additional data associated with the component.
         /// </summary>
         public IDictionary<string, object?> Metadata => Registration.Metadata;

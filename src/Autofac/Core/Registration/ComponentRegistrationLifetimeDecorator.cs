@@ -75,13 +75,10 @@ namespace Autofac.Core.Registration
         public IComponentRegistration Target => _inner.IsAdapting() ? _inner.Target : this;
 
         /// <inheritdoc/>
-        public bool IsAdapterForIndividualComponent => _inner.IsAdapterForIndividualComponent;
-
-        /// <inheritdoc/>
         public IResolvePipeline ResolvePipeline => _inner.ResolvePipeline;
 
         /// <inheritdoc/>
-        public bool IsServiceOverride => _inner.IsServiceOverride;
+        public RegistrationOptions Options => _inner.Options;
 
         /// <inheritdoc/>
         public event EventHandler<IResolvePipelineBuilder> PipelineBuilding
@@ -95,6 +92,10 @@ namespace Autofac.Core.Registration
         {
             _inner.BuildResolvePipeline(registryServices);
         }
+
+        /// <inheritdoc/>
+        public bool HasOption(RegistrationOptions option)
+            => _inner.HasOption(option);
 
         /// <inheritdoc/>
         protected override void Dispose(bool disposing)
