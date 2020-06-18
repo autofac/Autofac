@@ -89,6 +89,14 @@ namespace Autofac.Core
         bool IsAdapterForIndividualComponent { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this registration forms a 'Service Override', which forces itself as the default
+        /// registration for all service it provides.
+        /// Registrations with <see cref="IsServiceOverride"/> set to true will not be included when resolving a collection of a service
+        /// to get all implementations.
+        /// </summary>
+        bool IsServiceOverride { get; }
+
+        /// <summary>
         /// Provides an event that will be invoked just before a pipeline is built, and can be used to add additional middleware
         /// at that point.
         /// </summary>

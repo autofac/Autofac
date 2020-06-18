@@ -183,13 +183,7 @@ namespace Autofac.Core.Registration
             {
                 var info = GetInitializedServiceInfo(service);
 
-                // There is a 'virtual' registration; use it.
-                if (info.RedirectionTargetRegistration is object)
-                {
-                    serviceData = new ServiceRegistration(info.ServicePipeline, info.RedirectionTargetRegistration);
-                    return true;
-                }
-                else if (info.TryGetRegistration(out var registration))
+                if (info.TryGetRegistration(out var registration))
                 {
                     serviceData = new ServiceRegistration(info.ServicePipeline, registration);
                     return true;

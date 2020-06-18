@@ -224,7 +224,8 @@ namespace Autofac.Builder
                     data.Ownership,
                     clonedPipelineBuilder,
                     services,
-                    data.Metadata);
+                    data.Metadata,
+                    data.IsServiceOverride);
             }
             else
             {

@@ -93,6 +93,8 @@ namespace Autofac.Test
 
             public IResolvePipeline ResolvePipeline { get; } = new ResolvePipelineBuilder(PipelineType.Registration).Build();
 
+            public bool IsServiceOverride { get; set; }
+
             public void BuildResolvePipeline(IComponentRegistryServices registryServices)
             {
                 PipelineBuilding?.Invoke(this, new ResolvePipelineBuilder(PipelineType.Registration));

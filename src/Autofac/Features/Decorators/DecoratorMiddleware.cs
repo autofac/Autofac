@@ -64,6 +64,12 @@ namespace Autofac.Features.Decorators
                 return;
             }
 
+            if (context.Registration.IsServiceOverride)
+            {
+                // We don't decorate service overrides.
+                return;
+            }
+
             // This middleware is only ever added to IServiceWithType pipelines, so this cast will always succeed.
             var swt = (IServiceWithType)context.Service;
 

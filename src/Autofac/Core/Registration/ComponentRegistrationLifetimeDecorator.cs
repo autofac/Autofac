@@ -81,6 +81,9 @@ namespace Autofac.Core.Registration
         public IResolvePipeline ResolvePipeline => _inner.ResolvePipeline;
 
         /// <inheritdoc/>
+        public bool IsServiceOverride => _inner.IsServiceOverride;
+
+        /// <inheritdoc/>
         public event EventHandler<IResolvePipelineBuilder> PipelineBuilding
         {
             add => _inner.PipelineBuilding += value;

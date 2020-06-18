@@ -80,6 +80,7 @@ namespace Autofac.Core.Registration
         /// <param name="ownership">Whether the component instances are disposed at the end of their lifetimes.</param>
         /// <param name="services">Services the component provides.</param>
         /// <param name="metadata">Data associated with the component.</param>
+        /// <param name="isServiceOverride">Indicates whether this registration is a service override.</param>
         public ComponentRegistration(
            Guid id,
            IInstanceActivator activator,
@@ -87,8 +88,9 @@ namespace Autofac.Core.Registration
            InstanceSharing sharing,
            InstanceOwnership ownership,
            IEnumerable<Service> services,
-           IDictionary<string, object?> metadata)
-            : this(id, activator, lifetime, sharing, ownership, new ResolvePipelineBuilder(PipelineType.Registration), services, metadata)
+           IDictionary<string, object?> metadata,
+           bool isServiceOverride = false)
+            : this(id, activator, lifetime, sharing, ownership, new ResolvePipelineBuilder(PipelineType.Registration), services, metadata, isServiceOverride)
         {
         }
 
@@ -103,6 +105,7 @@ namespace Autofac.Core.Registration
         /// <param name="pipelineBuilder">The resolve pipeline builder for the registration.</param>
         /// <param name="services">Services the component provides.</param>
         /// <param name="metadata">Data associated with the component.</param>
+        /// <param name="isServiceOverride">Indicates whether this registration is a service override.</param>
         public ComponentRegistration(
             Guid id,
             IInstanceActivator activator,
@@ -111,7 +114,8 @@ namespace Autofac.Core.Registration
             InstanceOwnership ownership,
             IResolvePipelineBuilder pipelineBuilder,
             IEnumerable<Service> services,
-            IDictionary<string, object?> metadata)
+            IDictionary<string, object?> metadata,
+            bool isServiceOverride = false)
         {
             if (activator == null) throw new ArgumentNullException(nameof(activator));
             if (lifetime == null) throw new ArgumentNullException(nameof(lifetime));
@@ -129,6 +133,7 @@ namespace Autofac.Core.Registration
             Services = Enforce.ArgumentElementNotNull(services, nameof(services));
             Metadata = metadata;
             IsAdapterForIndividualComponent = false;
+            IsServiceOverride = isServiceOverride;
         }
 
         /// <summary>
@@ -160,6 +165,7 @@ namespace Autofac.Core.Registration
             if (target == null) throw new ArgumentNullException(nameof(target));
             _target = target;
             IsAdapterForIndividualComponent = isAdapterForIndividualComponents;
+            IsServiceOverride = _target.IsServiceOverride;
         }
 
         /// <summary>
@@ -203,6 +209,9 @@ namespace Autofac.Core.Registration
         /// Gets additional data associated with the component.
         /// </summary>
         public IDictionary<string, object?> Metadata { get; }
+
+        /// <inheritdoc/>
+        public bool IsServiceOverride { get; }
 
         /// <inheritdoc />
         public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding;
