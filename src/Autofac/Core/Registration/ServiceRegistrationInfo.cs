@@ -182,7 +182,10 @@ namespace Autofac.Core.Registration
         {
             if (registration.IsServiceOverride)
             {
-                _serviceOverride = registration;
+                if (_serviceOverride is null || !originatedFromSource)
+                {
+                    _serviceOverride = registration;
+                }
             }
             else if (preserveDefaults)
             {
