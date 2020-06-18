@@ -225,6 +225,29 @@ namespace Autofac.Specification.Test.Features
         }
 
         [Fact]
+        public void CompositeCanNestAdaptersOnResolvedImplementations()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(ctx => new S1()).As<I1>();
+            builder.Register(ctx => new S2()).As<I1>();
+
+            builder.RegisterComposite<MyComposite<Func<Meta<I1>>>, I1>();
+
+            var container = builder.Build();
+
+            var comp = container.Resolve<I1>();
+
+            Assert.IsType<MyComposite<Func<Meta<I1>>>>(comp);
+
+            var actualComp = (MyComposite<Func<Meta<I1>>>)comp;
+
+            Assert.Collection(
+                actualComp.Implementations,
+                i => Assert.IsType<S1>(i().Value),
+                i => Assert.IsType<S2>(i().Value));
+        }
+
+        [Fact]
         public void CompositeCanHaveOwnMeta()
         {
             var builder = new ContainerBuilder();
