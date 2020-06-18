@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -44,6 +45,8 @@ namespace Autofac.Features.Metadata
 
         private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration valueRegistration);
 
+        private readonly ConcurrentDictionary<(Type ValueType, Type MetaType), RegistrationCreator> _methodCache = new ConcurrentDictionary<(Type, Type), RegistrationCreator>();
+
         /// <inheritdoc/>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
@@ -61,9 +64,11 @@ namespace Autofac.Features.Metadata
                 return Enumerable.Empty<IComponentRegistration>();
 
             var valueService = swt.ChangeType(valueType);
-            var methodInfo = CreateMetaRegistrationMethod.MakeGenericMethod(valueType, metaType);
-            var registrationCreator = (RegistrationCreator)methodInfo.CreateDelegate(
-                typeof(RegistrationCreator), this);
+
+            var registrationCreator = _methodCache.GetOrAdd((valueType, metaType), t =>
+            {
+                return CreateMetaRegistrationMethod.MakeGenericMethod(t.ValueType, t.MetaType).CreateDelegate<RegistrationCreator>(this);
+            });
 
             return registrationAccessor(valueService)
                 .Select(v => registrationCreator.Invoke(service, valueService, v));

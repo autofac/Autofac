@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -37,9 +38,12 @@ namespace Autofac.Core
     /// </summary>
     public abstract class ImplicitRegistrationSource : IRegistrationSource
     {
+        private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration valueRegistration);
+
         private static readonly MethodInfo CreateRegistrationMethod = typeof(ImplicitRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateRegistration));
 
         private readonly Type _type;
+        private readonly ConcurrentDictionary<Type, RegistrationCreator> _methodCache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImplicitRegistrationSource"/> class.
@@ -58,6 +62,8 @@ namespace Autofac.Core
             {
                 throw new InvalidOperationException(ImplicitRegistrationSourceResources.GenericTypeMustBeUnary);
             }
+
+            _methodCache = new ConcurrentDictionary<Type, RegistrationCreator>();
         }
 
         /// <inheritdoc />
@@ -75,12 +81,13 @@ namespace Autofac.Core
 
             var valueType = swt.ServiceType.GetTypeInfo().GenericTypeArguments[0];
             var valueService = swt.ChangeType(valueType);
-
-            var registrationCreator = CreateRegistrationMethod.MakeGenericMethod(valueType);
+            var registrationCreator = _methodCache.GetOrAdd(valueType, t =>
+            {
+                return CreateRegistrationMethod.MakeGenericMethod(t).CreateDelegate<RegistrationCreator>(this);
+            });
 
             return registrationAccessor(valueService)
-                .Select(v => registrationCreator.Invoke(this, new object[] { service, valueService, v }))
-                .Cast<IComponentRegistration>();
+                .Select(v => registrationCreator(service, valueService, v));
         }
 
         /// <inheritdoc />
