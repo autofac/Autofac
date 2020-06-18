@@ -182,7 +182,7 @@ namespace Autofac.Specification.Test.Features
         }
 
         [Fact]
-        public void CompositeForNamedScopeResolvedInDifferentScope()
+        public void CompositeForNamedScopeResolvedInNestedScope()
         {
             var builder = new ContainerBuilder();
             builder.Register(ctx => new S1()).As<I1>();
