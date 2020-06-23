@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright © 2020 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -25,36 +25,39 @@
 
 using System;
 using System.Collections.Generic;
-using Autofac.Core;
-using Autofac.Core.Registration;
 
-namespace Autofac.Builder
+namespace Autofac.Core.Registration
 {
     /// <summary>
-    /// Registration style for individual components.
+    /// Defines options for a registration.
     /// </summary>
-    public class SingleRegistrationStyle
+    [Flags]
+    public enum RegistrationOptions
     {
         /// <summary>
-        /// Gets or sets the ID used for the registration.
+        /// No special options; default behaviour.
         /// </summary>
-        public Guid Id { get; set; } = Guid.NewGuid();
+        None = 0,
 
         /// <summary>
-        /// Gets the handlers to notify of the component registration event.
+        /// Indicates that this registration is 'fixed' as the default, ignoring all other registrations when determining the default registration for
+        /// a service.
         /// </summary>
-        public ICollection<EventHandler<ComponentRegisteredEventArgs>> RegisteredHandlers { get; } = new List<EventHandler<ComponentRegisteredEventArgs>>();
+        Fixed = 2,
 
         /// <summary>
-        /// Gets or sets a value indicating whether default registrations should be preserved.
-        /// By default, new registrations override existing registrations as defaults.
-        /// If set to true, new registrations will not change existing defaults.
+        /// Registrations with this flag will not be decorated.
         /// </summary>
-        public bool PreserveDefaults { get; set; }
+        DisableDecoration = 4,
 
         /// <summary>
-        /// Gets or sets the component upon which this registration is based.
+        /// Registrations with this flag will not be included in any collection resolves (i.e. <see cref="IEnumerable{TService}" /> and other collection types).
         /// </summary>
-        public IComponentRegistration? Target { get; set; }
+        ExcludeFromCollections = 8,
+
+        /// <summary>
+        /// Flag combination for composite registrations.
+        /// </summary>
+        Composite = Fixed | DisableDecoration | ExcludeFromCollections,
     }
 }

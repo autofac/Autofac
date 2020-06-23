@@ -73,7 +73,7 @@ namespace Autofac.Features.LazyDependencies
 
             var registrationCreator = _methodCache.GetOrAdd((valueType, metaType), types =>
             {
-                return CreateLazyRegistrationMethod.MakeGenericMethod(types.ValueType, types.MetaType).CreateDelegate<RegistrationCreator>(this);
+                return CreateLazyRegistrationMethod.MakeGenericMethod(types.ValueType, types.MetaType).CreateDelegate<RegistrationCreator>(null);
             });
 
             return registrationAccessor(valueService)
@@ -89,7 +89,7 @@ namespace Autofac.Features.LazyDependencies
             return LazyWithMetadataRegistrationSourceResources.LazyWithMetadataRegistrationSourceDescription;
         }
 
-        private IComponentRegistration CreateLazyRegistration<T, TMeta>(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo)
+        private static IComponentRegistration CreateLazyRegistration<T, TMeta>(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo)
         {
             var metadataProvider = MetadataViewProvider.GetMetadataViewProvider<TMeta>();
 
@@ -104,7 +104,7 @@ namespace Autofac.Features.LazyDependencies
                     return Activator.CreateInstance(lazyType, valueFactory, metadata);
                 })
                 .As(providedService)
-                .Targeting(registrationResolveInfo.Registration, IsAdapterForIndividualComponents);
+                .Targeting(registrationResolveInfo.Registration);
 
             return rb.CreateRegistration();
         }

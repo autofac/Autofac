@@ -19,7 +19,7 @@ namespace Autofac {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class RegistrationExtensionsResources {
@@ -61,6 +61,15 @@ namespace Autofac {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A composite registration ({0}) is registered against multiple services. Composites can only be registered as providing a single service..
+        /// </summary>
+        internal static string CompositesCannotProvideMultipleServices {
+            get {
+                return ResourceManager.GetString("CompositesCannotProvideMultipleServices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A decorator for &apos;{0}&apos; was not provided with an instance parameter..
         /// </summary>
         internal static string DecoratorRequiresInstanceParameter {
@@ -70,7 +79,7 @@ namespace Autofac {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expression does not refer to a property.
+        ///   Looks up a localized string similar to Expression does not refer to a property..
         /// </summary>
         internal static string ExpressionDoesNotReferToProperty {
             get {

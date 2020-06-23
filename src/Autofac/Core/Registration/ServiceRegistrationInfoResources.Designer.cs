@@ -79,15 +79,6 @@ namespace Autofac.Core.Registration {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Service middleware &apos;{0}&apos; implements IRedirectingMiddleware but returns a null value for TargetRegistration..
-        /// </summary>
-        internal static string RedirectingMiddlewareHasNullRegistration {
-            get {
-                return ResourceManager.GetString("RedirectingMiddlewareHasNullRegistration", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The service pipeline cannot be built until the service has finished initialization..
         /// </summary>
         internal static string ServicePipelineCannotBeBuilt {

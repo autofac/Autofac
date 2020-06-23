@@ -39,7 +39,7 @@ namespace Autofac.Core.Registration
         /// <param name="service">The service to register for.</param>
         /// <param name="target">The target registration ID.</param>
         public ExternalComponentRegistration(Service service, IComponentRegistration target)
-            : base(target.Id, new NoOpActivator(target.Activator.LimitType), target.Lifetime, target.Sharing, target.Ownership, new[] { service }, target.Metadata, target, false)
+            : base(target.Id, new NoOpActivator(target.Activator.LimitType), target.Lifetime, target.Sharing, target.Ownership, new[] { service }, target.Metadata, target)
         {
         }
 

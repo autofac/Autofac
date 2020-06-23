@@ -75,10 +75,10 @@ namespace Autofac.Core.Registration
         public IComponentRegistration Target => _inner.IsAdapting() ? _inner.Target : this;
 
         /// <inheritdoc/>
-        public bool IsAdapterForIndividualComponent => _inner.IsAdapterForIndividualComponent;
+        public IResolvePipeline ResolvePipeline => _inner.ResolvePipeline;
 
         /// <inheritdoc/>
-        public IResolvePipeline ResolvePipeline => _inner.ResolvePipeline;
+        public RegistrationOptions Options => _inner.Options;
 
         /// <inheritdoc/>
         public event EventHandler<IResolvePipelineBuilder> PipelineBuilding

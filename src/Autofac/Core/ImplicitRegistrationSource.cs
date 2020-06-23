@@ -132,7 +132,7 @@ namespace Autofac.Core
 
             var rb = BuildRegistration(registrationDelegate)
                 .As(providedService)
-                .Targeting(serviceRegistration.Registration, IsAdapterForIndividualComponents)
+                .Targeting(serviceRegistration.Registration)
                 .InheritRegistrationOrderFrom(serviceRegistration.Registration);
 
             return rb.CreateRegistration();

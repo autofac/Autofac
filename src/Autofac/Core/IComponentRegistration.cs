@@ -83,10 +83,9 @@ namespace Autofac.Core
         IResolvePipeline ResolvePipeline { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the registration is a 1:1 adapter on top
-        /// of another component (e.g., Meta, Func, or Owned).
+        /// Gets the options for the registration.
         /// </summary>
-        bool IsAdapterForIndividualComponent { get; }
+        RegistrationOptions Options { get; }
 
         /// <summary>
         /// Provides an event that will be invoked just before a pipeline is built, and can be used to add additional middleware

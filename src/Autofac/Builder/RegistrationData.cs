@@ -138,6 +138,11 @@ namespace Autofac.Builder
         public IDictionary<string, object?> Metadata { get; }
 
         /// <summary>
+        /// Gets or sets the options for the registration.
+        /// </summary>
+        public RegistrationOptions Options { get; set; }
+
+        /// <summary>
         /// Gets or sets the callback used to register this component.
         /// </summary>
         /// <value>

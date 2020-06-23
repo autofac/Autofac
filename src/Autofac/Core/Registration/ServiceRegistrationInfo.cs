@@ -45,6 +45,8 @@ namespace Autofac.Core.Registration
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "The _service field is useful in debugging and diagnostics.")]
         private readonly Service _service;
 
+        private IComponentRegistration? _fixedRegistration = null;
+
         /// <summary>
         ///  List of implicit default service implementations. Overriding default implementations are appended to the end,
         ///  so the enumeration should begin from the end too, and the most default implementation comes last.
@@ -111,7 +113,15 @@ namespace Autofac.Core.Registration
             {
                 RequiresInitialization();
 
-                return _registeredImplementations!.Value;
+                if (_fixedRegistration is object)
+                {
+                    yield return _fixedRegistration;
+                }
+
+                foreach (var item in _registeredImplementations!.Value)
+                {
+                    yield return item;
+                }
             }
         }
 
@@ -170,7 +180,14 @@ namespace Autofac.Core.Registration
         /// <param name="originatedFromSource">Whether the registration originated from a dynamic source.</param>
         public void AddImplementation(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource)
         {
-            if (preserveDefaults)
+            if (registration.Options.HasOption(RegistrationOptions.Fixed))
+            {
+                if (_fixedRegistration is null || !originatedFromSource)
+                {
+                    _fixedRegistration = registration;
+                }
+            }
+            else if (preserveDefaults)
             {
                 if (originatedFromSource)
                 {
@@ -218,23 +235,6 @@ namespace Autofac.Core.Registration
             }
 
             _customPipelineBuilder.Use(middleware, insertionMode);
-
-            if (middleware is IRedirectingMiddleware redirectMiddleware)
-            {
-                var target = redirectMiddleware.TargetRegistration;
-
-                if (target is null)
-                {
-                    throw new InvalidOperationException(
-                        string.Format(
-                            CultureInfo.CurrentCulture,
-                            ServiceRegistrationInfoResources.RedirectingMiddlewareHasNullRegistration,
-                            redirectMiddleware.ToString()));
-                }
-
-                // This middleware provides a redirect registration for the registration. Store it.
-                RedirectionTargetRegistration = redirectMiddleware.TargetRegistration;
-            }
         }
 
         /// <summary>
@@ -266,7 +266,8 @@ namespace Autofac.Core.Registration
         {
             RequiresInitialization();
 
-            registration = _defaultImplementation ??= _defaultImplementations.LastOrDefault() ??
+            registration = _defaultImplementation ??= _fixedRegistration ??
+                                                      _defaultImplementations.LastOrDefault() ??
                                                       _sourceImplementations?.First() ??
                                                       _preserveDefaultImplementations?.First();
 

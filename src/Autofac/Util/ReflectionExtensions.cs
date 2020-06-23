@@ -43,7 +43,7 @@ namespace Autofac.Util
         /// <param name="method">The method.</param>
         /// <param name="target">The target object for the delegate.</param>
         /// <returns>A constructed delegate.</returns>
-        public static TDelegate CreateDelegate<TDelegate>(this MethodInfo method, object target)
+        public static TDelegate CreateDelegate<TDelegate>(this MethodInfo method, object? target)
             where TDelegate : Delegate
             => (TDelegate)method.CreateDelegate(typeof(TDelegate), target);
 

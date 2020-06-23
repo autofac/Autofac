@@ -26,6 +26,7 @@
 using System;
 using System.Linq;
 using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Features.Decorators
@@ -60,6 +61,12 @@ namespace Autofac.Features.Decorators
 
             // Don't do this if we didn't activate an instance (for example because of decorator instance sharing).
             if (context.Instance is null)
+            {
+                return;
+            }
+
+            // Check if decoration is disabled.
+            if (context.Registration.Options.HasOption(RegistrationOptions.DisableDecoration))
             {
                 return;
             }

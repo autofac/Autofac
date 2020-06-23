@@ -67,7 +67,7 @@ namespace Autofac.Features.Metadata
 
             var registrationCreator = _methodCache.GetOrAdd((valueType, metaType), t =>
             {
-                return CreateMetaRegistrationMethod.MakeGenericMethod(t.ValueType, t.MetaType).CreateDelegate<RegistrationCreator>(this);
+                return CreateMetaRegistrationMethod.MakeGenericMethod(t.ValueType, t.MetaType).CreateDelegate<RegistrationCreator>(null);
             });
 
             return registrationAccessor(valueService)
@@ -83,7 +83,7 @@ namespace Autofac.Features.Metadata
             return MetaRegistrationSourceResources.StronglyTypedMetaRegistrationSourceDescription;
         }
 
-        private IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, Service valueService, ServiceRegistration implementation)
+        private static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, Service valueService, ServiceRegistration implementation)
         {
             var metadataProvider = MetadataViewProvider.GetMetadataViewProvider<TMetadata>();
 
@@ -94,7 +94,7 @@ namespace Autofac.Features.Metadata
                     return new Meta<T, TMetadata>((T)c.ResolveComponent(new ResolveRequest(valueService, implementation, p)), metadata);
                 })
                 .As(providedService)
-                .Targeting(implementation.Registration, IsAdapterForIndividualComponents);
+                .Targeting(implementation.Registration);
 
             return rb.CreateRegistration();
         }
