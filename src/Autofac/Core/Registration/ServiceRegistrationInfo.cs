@@ -180,7 +180,7 @@ namespace Autofac.Core.Registration
         /// <param name="originatedFromSource">Whether the registration originated from a dynamic source.</param>
         public void AddImplementation(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource)
         {
-            if (registration.HasOption(RegistrationOptions.Fixed))
+            if (registration.Options.HasOption(RegistrationOptions.Fixed))
             {
                 if (_fixedRegistration is null || !originatedFromSource)
                 {

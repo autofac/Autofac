@@ -23,41 +23,23 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-
 namespace Autofac.Core.Registration
 {
     /// <summary>
-    /// Defines options for a registration.
+    /// Extension methods for registration options.
     /// </summary>
-    [Flags]
-    public enum RegistrationOptions
+    public static class RegistrationOptionsExtensions
     {
         /// <summary>
-        /// No special options; default behaviour.
+        /// Tests whether a given flag (or combined set of flags) is present in the specified
+        /// options enumeration.
         /// </summary>
-        None = 0,
-
-        /// <summary>
-        /// Indicates that this registration is 'fixed' as the default, ignoring all other registrations when determining the default registration for
-        /// a service.
-        /// </summary>
-        Fixed = 2,
-
-        /// <summary>
-        /// Registrations with this flag will not be decorated.
-        /// </summary>
-        DisableDecoration = 4,
-
-        /// <summary>
-        /// Registrations with this flag will not be included in any collection resolves (i.e. <see cref="IEnumerable{TService}" /> and other collection types).
-        /// </summary>
-        ExcludeFromCollections = 8,
-
-        /// <summary>
-        /// Flag combination for composite registrations.
-        /// </summary>
-        Composite = Fixed | DisableDecoration | ExcludeFromCollections,
+        /// <param name="options">The option to test.</param>
+        /// <param name="flag">The flag (or flags) to test for.</param>
+        /// <returns>True if the specified flag (or flags) are enabled for the registration.</returns>
+        public static bool HasOption(this RegistrationOptions options, RegistrationOptions flag)
+        {
+            return (options & flag) == flag;
+        }
     }
 }

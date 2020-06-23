@@ -94,10 +94,6 @@ namespace Autofac.Core.Registration
         }
 
         /// <inheritdoc/>
-        public bool HasOption(RegistrationOptions option)
-            => _inner.HasOption(option);
-
-        /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
             _inner.Dispose();

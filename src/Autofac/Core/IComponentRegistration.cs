@@ -88,13 +88,6 @@ namespace Autofac.Core
         RegistrationOptions Options { get; }
 
         /// <summary>
-        /// Tests whether a given option (or combined set of options) is enabled for the registration.
-        /// </summary>
-        /// <param name="option">The option.</param>
-        /// <returns>True if the option (or options) is enabled for the registration.</returns>
-        bool HasOption(RegistrationOptions option);
-
-        /// <summary>
         /// Provides an event that will be invoked just before a pipeline is built, and can be used to add additional middleware
         /// at that point.
         /// </summary>

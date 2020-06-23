@@ -232,12 +232,6 @@ namespace Autofac.Core.Registration
             protected set => _builtComponentPipeline = value;
         }
 
-        /// <inheritdoc/>
-        public bool HasOption(RegistrationOptions option)
-        {
-            return Options.HasFlag(option);
-        }
-
         /// <inheritdoc />
         public void BuildResolvePipeline(IComponentRegistryServices registryServices)
         {

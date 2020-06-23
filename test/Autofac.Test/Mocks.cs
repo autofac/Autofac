@@ -102,8 +102,6 @@ namespace Autofac.Test
             {
                 PipelineBuilding?.Invoke(this, new ResolvePipelineBuilder(PipelineType.Registration));
             }
-
-            public bool HasOption(RegistrationOptions option) => Options.HasFlag(option);
         }
 
         internal class MockTracer : IResolvePipelineTracer

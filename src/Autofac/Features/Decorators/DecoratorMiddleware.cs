@@ -66,7 +66,7 @@ namespace Autofac.Features.Decorators
             }
 
             // Check if decoration is disabled.
-            if (context.Registration.HasOption(RegistrationOptions.DisableDecoration))
+            if (context.Registration.Options.HasOption(RegistrationOptions.DisableDecoration))
             {
                 return;
             }
