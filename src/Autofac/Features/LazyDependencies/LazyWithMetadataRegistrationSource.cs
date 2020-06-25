@@ -44,7 +44,7 @@ namespace Autofac.Features.LazyDependencies
     /// </summary>
     internal class LazyWithMetadataRegistrationSource : IRegistrationSource
     {
-        private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateLazyRegistration));
+        private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetDeclaredMethod(nameof(CreateLazyRegistration));
 
         private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo);
 
@@ -62,11 +62,11 @@ namespace Autofac.Features.LazyDependencies
             if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var genericTypeArguments = swt.ServiceType.GetTypeInfo().GenericTypeArguments.ToArray();
+            var genericTypeArguments = swt.ServiceType.GenericTypeArguments;
             var valueType = genericTypeArguments[0];
             var metaType = genericTypeArguments[1];
 
-            if (!metaType.GetTypeInfo().IsClass)
+            if (!metaType.IsClass)
                 return Enumerable.Empty<IComponentRegistration>();
 
             var valueService = swt.ChangeType(valueType);

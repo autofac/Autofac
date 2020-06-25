@@ -164,11 +164,11 @@ namespace Autofac.Core.Activators.Reflection
                 var parameterType = paramsInfo[paramIndex].ParameterType;
 
                 var parameterIndexExpression = Expression.ArrayIndex(parametersExpression, indexExpression);
-                var convertExpression = parameterType.GetTypeInfo().IsPrimitive
+                var convertExpression = parameterType.IsPrimitive
                     ? Expression.Convert(ConvertPrimitiveType(parameterIndexExpression, parameterType), parameterType)
                     : Expression.Convert(parameterIndexExpression, parameterType);
 
-                if (!parameterType.GetTypeInfo().IsValueType)
+                if (!parameterType.IsValueType)
                 {
                     argumentsExpression[paramIndex] = convertExpression;
                     continue;

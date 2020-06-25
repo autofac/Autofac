@@ -458,11 +458,11 @@ namespace Autofac
 
             return registration.WithMetadata(t =>
             {
-                var attrs = t.GetTypeInfo().GetCustomAttributes(true).OfType<TAttribute>().ToArray();
+                var attrs = t.GetCustomAttributes(true).OfType<TAttribute>().ToList();
 
-                if (attrs.Length == 0)
+                if (attrs.Count == 0)
                     throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MetadataAttributeNotFound, typeof(TAttribute), t));
-                if (attrs.Length != 1)
+                if (attrs.Count != 1)
                     throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MultipleMetadataAttributesSameType, typeof(TAttribute), t));
                 var attr = attrs[0];
                 return metadataProperties.Select(p => new KeyValuePair<string, object?>(p.Name, p.GetValue(attr, null)));
@@ -620,8 +620,8 @@ namespace Autofac
 
         private static Type[] GetImplementedInterfaces(Type type)
         {
-            var interfaces = type.GetTypeInfo().ImplementedInterfaces.Where(i => i != typeof(IDisposable));
-            return type.GetTypeInfo().IsInterface ? interfaces.AppendItem(type).ToArray() : interfaces.ToArray();
+            var interfaces = type.GetInterfaces().Where(i => i != typeof(IDisposable));
+            return type.IsInterface ? interfaces.AppendItem(type).ToArray() : interfaces.ToArray();
         }
 
         /// <summary>

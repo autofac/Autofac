@@ -92,7 +92,7 @@ namespace Autofac.Features.Scanning
         {
             rb.ActivatorData.Filters.Add(t =>
                 rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
-                    swt.ServiceType.GetTypeInfo().IsAssignableFrom(t.GetTypeInfo())));
+                    swt.ServiceType.IsAssignableFrom(t)));
 
             // Issue #897: For back compat reasons we can't filter out
             // non-public types here. Folks use assembly scanning on their
@@ -100,9 +100,9 @@ namespace Autofac.Features.Scanning
             // If people want only public types, a LINQ Where clause can be used.
             foreach (var t in types
                 .Where(t =>
-                    t.GetTypeInfo().IsClass &&
-                    !t.GetTypeInfo().IsAbstract &&
-                    !t.GetTypeInfo().IsGenericTypeDefinition &&
+                    t.IsClass &&
+                    !t.IsAbstract &&
+                    !t.IsGenericTypeDefinition &&
                     !t.IsDelegate() &&
                     rb.ActivatorData.Filters.All(p => p(t)) &&
                     !t.IsCompilerGenerated()))
@@ -215,7 +215,7 @@ namespace Autofac.Features.Scanning
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
 
-            registration.ActivatorData.Filters.Add(t => type.GetTypeInfo().IsAssignableFrom(t.GetTypeInfo()));
+            registration.ActivatorData.Filters.Add(t => type.IsAssignableFrom(t));
             return registration;
         }
 
@@ -245,7 +245,7 @@ namespace Autofac.Features.Scanning
                     {
                         if (s is IServiceWithType c)
                         {
-                            return c.ServiceType.GetTypeInfo().IsAssignableFrom(impl.GetTypeInfo());
+                            return c.ServiceType.IsAssignableFrom(impl);
                         }
 
                         return s != null;

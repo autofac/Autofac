@@ -56,7 +56,7 @@ namespace Autofac.Core.Activators.Reflection
             try
             {
                 // Workaround for https://github.com/dotnet/corefx/issues/17943
-                if (pi.Member.DeclaringType?.GetTypeInfo().Assembly.IsDynamic ?? true)
+                if (pi.Member.DeclaringType?.Assembly.IsDynamic ?? true)
                 {
                     hasDefaultValue = pi.DefaultValue != null && pi.HasDefaultValue;
                 }
@@ -86,7 +86,7 @@ namespace Autofac.Core.Activators.Reflection
                     var defaultValue = pi.DefaultValue;
 
                     // Workaround for https://github.com/dotnet/corefx/issues/11797
-                    if (defaultValue == null && pi.ParameterType.GetTypeInfo().IsValueType)
+                    if (defaultValue == null && pi.ParameterType.IsValueType)
                     {
                         defaultValue = Activator.CreateInstance(pi.ParameterType);
                     }
