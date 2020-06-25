@@ -41,7 +41,7 @@ namespace Autofac.Features.Metadata
     /// </summary>
     internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
     {
-        private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateMetaRegistration));
+        private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetDeclaredMethod(nameof(CreateMetaRegistration));
 
         private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration valueRegistration);
 
@@ -56,11 +56,11 @@ namespace Autofac.Features.Metadata
             if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<,>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var genericArguments = swt.ServiceType.GetTypeInfo().GenericTypeArguments.ToArray();
+            var genericArguments = swt.ServiceType.GenericTypeArguments.ToArray();
             var valueType = genericArguments[0];
             var metaType = genericArguments[1];
 
-            if (!metaType.GetTypeInfo().IsClass)
+            if (!metaType.IsClass)
                 return Enumerable.Empty<IComponentRegistration>();
 
             var valueService = swt.ChangeType(valueType);

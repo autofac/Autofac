@@ -49,7 +49,7 @@ namespace Autofac.Core.Activators.Reflection
             new ConcurrentDictionary<Type, PropertyInfo[]>();
 
         private static readonly MethodInfo CallPropertySetterOpenGenericMethod =
-            typeof(AutowiringPropertyInjector).GetTypeInfo().GetDeclaredMethod(nameof(CallPropertySetter));
+            typeof(AutowiringPropertyInjector).GetDeclaredMethod(nameof(CallPropertySetter));
 
         /// <summary>
         /// Inject properties onto an instance, filtered by a property selector.
@@ -132,17 +132,17 @@ namespace Autofac.Core.Activators.Reflection
 
                 var propertyType = property.PropertyType;
 
-                if (propertyType.GetTypeInfo().IsValueType && !propertyType.GetTypeInfo().IsEnum)
+                if (propertyType.IsValueType && !propertyType.IsEnum)
                 {
                     continue;
                 }
 
-                if (propertyType.IsArray && propertyType.GetElementType().GetTypeInfo().IsValueType)
+                if (propertyType.IsArray && propertyType.GetElementType().IsValueType)
                 {
                     continue;
                 }
 
-                if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GetTypeInfo().GenericTypeArguments[0].GetTypeInfo().IsValueType)
+                if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GenericTypeArguments[0].IsValueType)
                 {
                     continue;
                 }

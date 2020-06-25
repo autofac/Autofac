@@ -58,7 +58,7 @@ namespace Autofac.Util
             var mi = pi.Member as MethodInfo;
             if (mi != null && mi.IsSpecialName && mi.Name.StartsWith("set_", StringComparison.Ordinal) && mi.DeclaringType != null)
             {
-                prop = mi.DeclaringType.GetTypeInfo().GetDeclaredProperty(mi.Name.Substring(4));
+                prop = mi.DeclaringType.GetDeclaredProperty(mi.Name.Substring(4));
                 return true;
             }
 

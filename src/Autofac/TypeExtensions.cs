@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -37,6 +38,9 @@ namespace Autofac
     /// </summary>
     public static class TypeExtensions
     {
+        private const BindingFlags DeclaredOnlyPublicFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
+        private const BindingFlags DeclaredOnlyFlags = DeclaredOnlyPublicFlags | BindingFlags.NonPublic;
+
         /// <summary>
         /// Returns true if this type is in the <paramref name="namespace"/> namespace
         /// or one of its sub-namespaces.
@@ -96,7 +100,83 @@ namespace Autofac
         {
             if (@this == null) throw new ArgumentNullException(nameof(@this));
 
-            return typeof(T).GetTypeInfo().IsAssignableFrom(@this.GetTypeInfo());
+            return typeof(T).IsAssignableFrom(@this);
+        }
+
+        /// <summary>
+        /// Returns an object that represents the specified method declared by the
+        /// current type.
+        /// </summary>
+        /// <param name="this">The type.</param>
+        /// <param name="methodName">The name of the method.</param>
+        /// <returns>An object that represents the specified method, if found; otherwise, null.</returns>
+        public static MethodInfo GetDeclaredMethod(this Type @this, string methodName)
+        {
+            if (@this is null)
+            {
+                throw new ArgumentNullException(nameof(@this));
+            }
+
+            if (methodName is null)
+            {
+                throw new ArgumentNullException(nameof(methodName));
+            }
+
+            return @this.GetMethod(methodName, DeclaredOnlyFlags);
+        }
+
+        /// <summary>
+        /// Returns an object that represents the specified property declared by the
+        /// current type.
+        /// </summary>
+        /// <param name="this">The type.</param>
+        /// <param name="propertyName">The name of the property.</param>
+        /// <returns>An object that represents the specified property, if found; otherwise, null.</returns>
+        public static PropertyInfo GetDeclaredProperty(this Type @this, string propertyName)
+        {
+            if (@this is null)
+            {
+                throw new ArgumentNullException(nameof(@this));
+            }
+
+            if (propertyName is null)
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+
+            return @this.GetProperty(propertyName, DeclaredOnlyFlags);
+        }
+
+        /// <summary>
+        /// Returns a collection of constructor infomration that represents the declared constructors
+        /// for the type (public and private).
+        /// </summary>
+        /// <param name="this">The type.</param>
+        /// <returns>A collection of constructors.</returns>
+        public static ConstructorInfo[] GetDeclaredConstructors(this Type @this)
+        {
+            if (@this is null)
+            {
+                throw new ArgumentNullException(nameof(@this));
+            }
+
+            return @this.GetConstructors(DeclaredOnlyFlags);
+        }
+
+        /// <summary>
+        /// Returns a collection of constructor infomration that represents the declared constructors
+        /// for the type (public only).
+        /// </summary>
+        /// <param name="this">The type.</param>
+        /// <returns>A collection of constructors.</returns>
+        public static ConstructorInfo[] GetDeclaredPublicConstructors(this Type @this)
+        {
+            if (@this is null)
+            {
+                throw new ArgumentNullException(nameof(@this));
+            }
+
+            return @this.GetConstructors(DeclaredOnlyPublicFlags);
         }
 
         /// <summary>
@@ -107,7 +187,7 @@ namespace Autofac
         /// <returns>The <see cref="ConstructorInfo"/> is a match is found; otherwise, <c>null</c>.</returns>
         public static ConstructorInfo GetMatchingConstructor(this Type type, Type[] constructorParameterTypes)
         {
-            return type.GetTypeInfo().DeclaredConstructors.FirstOrDefault(
+            return type.GetDeclaredConstructors().FirstOrDefault(
                 c => c.GetParameters().Select(p => p.ParameterType).SequenceEqual(constructorParameterTypes));
         }
     }

@@ -98,7 +98,7 @@ namespace Autofac.Util
         {
             if (delegateType == null) throw new ArgumentNullException(nameof(delegateType));
 
-            MethodInfo invoke = delegateType.GetTypeInfo().GetDeclaredMethod("Invoke");
+            MethodInfo invoke = delegateType.GetDeclaredMethod("Invoke");
 
             if (invoke == null)
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.NotDelegate, delegateType));

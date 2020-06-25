@@ -136,7 +136,7 @@ namespace Autofac.Features.GeneratedFactories
             var activatorParamsParam = Expression.Parameter(typeof(IEnumerable<Parameter>), "p");
             var activatorParams = new[] { activatorContextParam, activatorParamsParam };
 
-            var invoke = delegateType.GetTypeInfo().GetDeclaredMethod("Invoke");
+            var invoke = delegateType.GetDeclaredMethod("Invoke");
 
             // [dps]*
             var creatorParams = invoke
@@ -150,7 +150,7 @@ namespace Autofac.Features.GeneratedFactories
                 // Issue #269:
                 // If we're resolving a Func<X1...XN>() and there are duplicate input parameter types
                 // and the parameter mapping is by type, we shouldn't be able to resolve it.
-                var arguments = delegateType.GetTypeInfo().GenericTypeArguments;
+                var arguments = delegateType.GenericTypeArguments;
                 var returnType = arguments.Last();
 
                 // Remove the return type to check the list of input types only.
