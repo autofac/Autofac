@@ -2,6 +2,7 @@
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Test.Scenarios.Graph1;
 using Xunit;
 
 namespace Autofac.Test.Core.Activators.Reflection
@@ -23,9 +24,9 @@ namespace Autofac.Test.Core.Activators.Reflection
             }
         }
 
-        private readonly ConstructorParameterBinding[] _ctors = typeof(ThreeConstructors)
+        private readonly BoundConstructor[] _ctors = typeof(ThreeConstructors)
             .GetTypeInfo().DeclaredConstructors
-            .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
+            .Select(ci => new ConstructorBinder(ci).TryBind(Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
             .ToArray();
 
         [Fact]
@@ -33,7 +34,6 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var target0 = new MatchingSignatureConstructorSelector();
             var c0 = target0.SelectConstructorBinding(_ctors, Enumerable.Empty<Parameter>());
-            Assert.NotNull(c0);
             Assert.Empty(c0.TargetConstructor.GetParameters());
         }
 
@@ -42,7 +42,6 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var target2 = new MatchingSignatureConstructorSelector(typeof(int), typeof(string));
             var c2 = target2.SelectConstructorBinding(_ctors, Enumerable.Empty<Parameter>());
-            Assert.NotNull(c2);
             Assert.Equal(2, c2.TargetConstructor.GetParameters().Length);
         }
 

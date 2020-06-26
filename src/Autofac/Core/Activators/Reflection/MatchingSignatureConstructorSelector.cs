@@ -54,7 +54,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <param name="constructorBindings">Available constructors.</param>
         /// <param name="parameters">Parameters to the instance being resolved.</param>
         /// <returns>The best constructor.</returns>
-        public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings, IEnumerable<Parameter> parameters)
+        public BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters)
         {
             if (constructorBindings == null) throw new ArgumentNullException(nameof(constructorBindings));
 

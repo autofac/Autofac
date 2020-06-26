@@ -42,13 +42,15 @@ namespace Autofac.Core.Activators.Reflection
         /// <param name="parameters">Parameters to the instance being resolved.</param>
         /// <returns>The best constructor.</returns>
         /// <exception cref='DependencyResolutionException'>A single unambiguous match could not be chosen.</exception>
-        public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings, IEnumerable<Parameter> parameters)
+        public BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters)
         {
             if (constructorBindings == null) throw new ArgumentNullException(nameof(constructorBindings));
             if (constructorBindings.Length == 0) throw new ArgumentOutOfRangeException(nameof(constructorBindings));
 
             if (constructorBindings.Length == 1)
+            {
                 return constructorBindings[0];
+            }
 
             var withLength = constructorBindings
                 .Select(binding => new { Binding = binding, ConstructorParameterLength = binding.TargetConstructor.GetParameters().Length });

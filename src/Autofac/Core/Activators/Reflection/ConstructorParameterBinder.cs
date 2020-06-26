@@ -24,36 +24,42 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Autofac.Core.Activators.Reflection
 {
-
-    /// <summary>
-    /// Binds a constructor to the parameters that will be used when it is invoked.
-    /// </summary>
-    public class ConstructorParameterBinding
+    public readonly struct BoundConstructor
     {
-        private readonly ConstructorInfo _ci;
-        private readonly Func<object?>[] _valueRetrievers;
-
-        private static readonly ConcurrentDictionary<ConstructorInfo, Func<object?[], object>> ConstructorInvokers = new ConcurrentDictionary<ConstructorInfo, Func<object?[], object>>();
-
-        // We really need to report all non-bindable parameters, howevers some refactoring
-        // will be necessary before this is possible. Adding this now to ease the
-        // pain of working with the preview builds.
+        private readonly Func<object?[], object>? _factory;
+        private readonly Func<object?>[]? _valueRetrievers;
         private readonly ParameterInfo? _firstNonBindableParameter;
+
+        public BoundConstructor(ConstructorInfo constructor, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
+        {
+            CanInstantiate = true;
+            TargetConstructor = constructor;
+            _factory = factory;
+            _valueRetrievers = valueRetrievers;
+            _firstNonBindableParameter = null;
+        }
+
+        public BoundConstructor(ConstructorInfo constructor, ParameterInfo firstNonBindableParameter)
+        {
+            CanInstantiate = false;
+            TargetConstructor = constructor;
+            _firstNonBindableParameter = firstNonBindableParameter;
+            _factory = null;
+            _valueRetrievers = null;
+        }
 
         /// <summary>
         /// Gets the constructor on the target type. The actual constructor used
         /// might differ, e.g. if using a dynamic proxy.
         /// </summary>
-        public ConstructorInfo TargetConstructor => _ci;
+        public ConstructorInfo TargetConstructor { get; }
 
         /// <summary>
         /// Gets a value indicating whether the binding is valid.
@@ -61,72 +67,25 @@ namespace Autofac.Core.Activators.Reflection
         public bool CanInstantiate { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConstructorParameterBinding"/> class.
-        /// </summary>
-        /// <param name="ci">ConstructorInfo to bind.</param>
-        /// <param name="availableParameters">Available parameters.</param>
-        /// <param name="context">Context in which to construct instance.</param>
-        public ConstructorParameterBinding(
-            ConstructorInfo ci,
-            IEnumerable<Parameter> availableParameters,
-            IComponentContext context)
-        {
-            if (ci == null) throw new ArgumentNullException(nameof(ci));
-            if (availableParameters == null) throw new ArgumentNullException(nameof(availableParameters));
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            CanInstantiate = true;
-            _ci = ci;
-            var parameters = ci.GetParameters();
-            _valueRetrievers = new Func<object?>[parameters.Length];
-
-            for (int i = 0; i < parameters.Length; ++i)
-            {
-                var pi = parameters[i];
-                bool foundValue = false;
-                foreach (var param in availableParameters)
-                {
-                    if (param.CanSupplyValue(pi, context, out var valueRetriever))
-                    {
-                        _valueRetrievers[i] = valueRetriever;
-                        foundValue = true;
-                        break;
-                    }
-                }
-
-                if (!foundValue)
-                {
-                    CanInstantiate = false;
-                    _firstNonBindableParameter = pi;
-                    break;
-                }
-            }
-        }
-
-        /// <summary>
         /// Invoke the constructor with the parameter bindings.
         /// </summary>
         /// <returns>The constructed instance.</returns>
-        [SuppressMessage("CA1031", "CA1031", Justification = "General exception gets rethrown in a DependencyResolutionException.")]
         public object Instantiate()
         {
             if (!CanInstantiate)
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.CannotInstantitate, this.Description));
-
-            var values = new object?[_valueRetrievers.Length];
-            for (var i = 0; i < _valueRetrievers.Length; ++i)
-                values[i] = _valueRetrievers[i]();
-
-            Func<object?[], object> constructorInvoker;
-            if (!ConstructorInvokers.TryGetValue(TargetConstructor, out constructorInvoker))
             {
-                constructorInvoker = GetConstructorInvoker(TargetConstructor);
-                ConstructorInvokers[TargetConstructor] = constructorInvoker;
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.CannotInstantitate, this.Description));
+            }
+
+            var values = new object?[_valueRetrievers!.Length];
+            for (var i = 0; i < _valueRetrievers.Length; ++i)
+            {
+                values[i] = _valueRetrievers[i]();
             }
 
             try
             {
-                return constructorInvoker(values);
+                return _factory!(values);
             }
             catch (TargetInvocationException ex)
             {
@@ -142,14 +101,103 @@ namespace Autofac.Core.Activators.Reflection
         /// Gets a description of the constructor parameter binding.
         /// </summary>
         public string Description => CanInstantiate
-            ? string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.BoundConstructor, _ci)
-            : string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.NonBindableConstructor, _ci, _firstNonBindableParameter);
+            ? string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.BoundConstructor, TargetConstructor)
+            : string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.NonBindableConstructor, TargetConstructor, _firstNonBindableParameter);
 
         /// <summary>Returns a System.String that represents the current System.Object.</summary>
         /// <returns>A System.String that represents the current System.Object.</returns>
         public override string ToString()
         {
             return Description;
+        }
+    }
+
+    public class ConstructorBinder
+    {
+        private readonly ConstructorInfo _constructor;
+        private readonly ParameterInfo[] _constructorArgs;
+        private readonly Func<object?[], object>? _factory;
+        private readonly ParameterInfo? _illegalParameter;
+
+        public ConstructorBinder(ConstructorInfo constructorInfo)
+        {
+            _constructor = constructorInfo ?? throw new ArgumentNullException(nameof(constructorInfo));
+            _constructorArgs = constructorInfo.GetParameters();
+
+            // If any of the parameters are unsafe, do not create an invoker, and store the parameter
+            // that broke the rule.
+            _illegalParameter = DetectIllegalParameter(_constructorArgs);
+
+            if (_illegalParameter is null)
+            {
+                // Build the invoker.
+                _factory = GetConstructorInvoker(constructorInfo);
+            }
+        }
+
+        private static ParameterInfo? DetectIllegalParameter(ParameterInfo[] constructorArgs)
+        {
+            for (var idx = 0; idx < constructorArgs.Length; idx++)
+            {
+                if (constructorArgs[idx].ParameterType.IsPointer)
+                {
+                    // Boo.
+                    return constructorArgs[idx];
+                }
+            }
+
+            return null;
+        }
+
+        public BoundConstructor TryBind(IEnumerable<Parameter> availableParameters, IComponentContext context)
+        {
+            if (availableParameters is null)
+            {
+                throw new ArgumentNullException(nameof(availableParameters));
+            }
+
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            var constructorArgs = _constructorArgs;
+
+            if (_constructorArgs.Length == 0)
+            {
+                // No args, auto-bind with an empty value-retriever array to avoid the allocation.
+                return new BoundConstructor(_constructor, _factory, Array.Empty<Func<object?>>());
+            }
+
+            if (_illegalParameter is object)
+            {
+                return new BoundConstructor(_constructor, _illegalParameter);
+            }
+
+            var valueRetrievers = new Func<object?>[constructorArgs.Length];
+
+            for (var idx = 0; idx < constructorArgs.Length; idx++)
+            {
+                var pi = constructorArgs[idx];
+                var foundValue = false;
+
+                foreach (var param in availableParameters)
+                {
+                    if (param.CanSupplyValue(pi, context, out var valueRetriever))
+                    {
+                        valueRetrievers[idx] = valueRetriever;
+                        foundValue = true;
+                        break;
+                    }
+                }
+
+                if (!foundValue)
+                {
+                    return new BoundConstructor(_constructor, pi);
+                }
+            }
+
+            return new BoundConstructor(_constructor, _factory, valueRetrievers);
         }
 
         private static Func<object?[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)
@@ -165,6 +213,14 @@ namespace Autofac.Core.Activators.Reflection
                 var parameterType = paramsInfo[paramIndex].ParameterType;
 
                 var parameterIndexExpression = Expression.ArrayIndex(parametersExpression, indexExpression);
+
+                if (parameterType.IsPointer)
+                {
+                    // We can't do anything with pointer arguments.
+                    argumentsExpression[paramIndex] = Expression.Default(parameterType);
+                    continue;
+                }
+
                 var convertExpression = parameterType.IsPrimitive
                     ? Expression.Convert(ConvertPrimitiveType(parameterIndexExpression, parameterType), parameterType)
                     : Expression.Convert(parameterIndexExpression, parameterType);

@@ -20,7 +20,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void DoesNotAcceptEmptyBindings()
         {
             var target = new MostParametersConstructorSelector();
-            Assert.Throws<ArgumentOutOfRangeException>(() => target.SelectConstructorBinding(new ConstructorParameterBinding[] { }, Enumerable.Empty<Parameter>()));
+            Assert.Throws<ArgumentOutOfRangeException>(() => target.SelectConstructorBinding(new BoundConstructor[] { }, Enumerable.Empty<Parameter>()));
         }
 
         public class ThreeConstructors
@@ -46,7 +46,6 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var chosen = target.SelectConstructorBinding(constructors, Enumerable.Empty<Parameter>());
 
-            Assert.NotNull(chosen);
             Assert.Equal(2, chosen.TargetConstructor.GetParameters().Length);
         }
 
@@ -70,10 +69,10 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Throws<DependencyResolutionException>(() => target.SelectConstructorBinding(constructors, Enumerable.Empty<Parameter>()));
         }
 
-        private static ConstructorParameterBinding[] GetBindingsForAllConstructorsOf<TTarget>()
+        private static BoundConstructor[] GetBindingsForAllConstructorsOf<TTarget>()
         {
             return typeof(TTarget).GetTypeInfo().DeclaredConstructors
-                .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
+                .Select(ci => new ConstructorBinder(ci).TryBind(Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
                 .ToArray();
         }
     }
