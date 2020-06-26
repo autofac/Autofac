@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -35,6 +36,10 @@ namespace Autofac.Core.Activators.Reflection
     /// </summary>
     public class ConstructorBinder
     {
+        private static readonly Func<ConstructorInfo, Func<object?[], object>> _factoryBuilder = GetConstructorInvoker;
+
+        private static ConcurrentDictionary<ConstructorInfo, Func<object?[], object>> _factoryCache = new ConcurrentDictionary<ConstructorInfo, Func<object?[], object>>();
+
         private readonly ConstructorInfo _constructor;
         private readonly ParameterInfo[] _constructorArgs;
         private readonly Func<object?[], object>? _factory;
@@ -56,7 +61,7 @@ namespace Autofac.Core.Activators.Reflection
             if (_illegalParameter is null)
             {
                 // Build the invoker.
-                _factory = GetConstructorInvoker(constructorInfo);
+                _factory = _factoryCache.GetOrAdd(constructorInfo, _factoryBuilder);
             }
         }
 
