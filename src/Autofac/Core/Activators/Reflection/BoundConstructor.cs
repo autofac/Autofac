@@ -37,14 +37,14 @@ namespace Autofac.Core.Activators.Reflection
         "Performance",
         "CA1815:Override equals and operator equals on value types",
         Justification = "Comparison of two BoundConstructor instances has no meaning.")]
-    public readonly struct BoundConstructor
+    public class BoundConstructor
     {
         private readonly Func<object?[], object>? _factory;
         private readonly Func<object?>[]? _valueRetrievers;
         private readonly ParameterInfo? _firstNonBindableParameter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BoundConstructor"/> struct for a successful bind.
+        /// Initializes a new instance of the <see cref="BoundConstructor"/> class for a successful bind.
         /// </summary>
         /// <param name="constructor">The constructor.</param>
         /// <param name="factory">The instance factory.</param>
@@ -59,7 +59,7 @@ namespace Autofac.Core.Activators.Reflection
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BoundConstructor"/> struct, for an unsuccessful bind.
+        /// Initializes a new instance of the <see cref="BoundConstructor"/> class, for an unsuccessful bind.
         /// </summary>
         /// <param name="constructor">The constructor.</param>
         /// <param name="firstNonBindableParameter">The first parameter that prevented binding.</param>
