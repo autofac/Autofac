@@ -72,7 +72,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         private static BoundConstructor[] GetBindingsForAllConstructorsOf<TTarget>()
         {
             return typeof(TTarget).GetTypeInfo().DeclaredConstructors
-                .Select(ci => new ConstructorBinder(ci).TryBind(Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
+                .Select(ci => new ConstructorBinder(ci).Bind(Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
                 .ToArray();
         }
     }

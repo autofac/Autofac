@@ -26,7 +26,7 @@ namespace Autofac.Test.Core.Activators.Reflection
 
         private readonly BoundConstructor[] _ctors = typeof(ThreeConstructors)
             .GetTypeInfo().DeclaredConstructors
-            .Select(ci => new ConstructorBinder(ci).TryBind(Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
+            .Select(ci => new ConstructorBinder(ci).Bind(Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
             .ToArray();
 
         [Fact]

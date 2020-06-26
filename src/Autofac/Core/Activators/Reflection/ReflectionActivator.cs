@@ -155,7 +155,7 @@ namespace Autofac.Core.Activators.Reflection
 
             for (var idx = 0; idx < availableConstructors.Length; idx++)
             {
-                boundConstructors[idx] = availableConstructors[idx].TryBind(prioritisedParameters, context);
+                boundConstructors[idx] = availableConstructors[idx].Bind(prioritisedParameters, context);
             }
 
             // Copy-on-write; 99% of components will have a single constructor that can be instantiated.

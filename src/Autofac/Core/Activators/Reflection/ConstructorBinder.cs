@@ -25,93 +25,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Autofac.Core.Activators.Reflection
 {
-    public readonly struct BoundConstructor
-    {
-        private readonly Func<object?[], object>? _factory;
-        private readonly Func<object?>[]? _valueRetrievers;
-        private readonly ParameterInfo? _firstNonBindableParameter;
-
-        public BoundConstructor(ConstructorInfo constructor, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
-        {
-            CanInstantiate = true;
-            TargetConstructor = constructor;
-            _factory = factory;
-            _valueRetrievers = valueRetrievers;
-            _firstNonBindableParameter = null;
-        }
-
-        public BoundConstructor(ConstructorInfo constructor, ParameterInfo firstNonBindableParameter)
-        {
-            CanInstantiate = false;
-            TargetConstructor = constructor;
-            _firstNonBindableParameter = firstNonBindableParameter;
-            _factory = null;
-            _valueRetrievers = null;
-        }
-
-        /// <summary>
-        /// Gets the constructor on the target type. The actual constructor used
-        /// might differ, e.g. if using a dynamic proxy.
-        /// </summary>
-        public ConstructorInfo TargetConstructor { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether the binding is valid.
-        /// </summary>
-        public bool CanInstantiate { get; }
-
-        /// <summary>
-        /// Invoke the constructor with the parameter bindings.
-        /// </summary>
-        /// <returns>The constructed instance.</returns>
-        public object Instantiate()
-        {
-            if (!CanInstantiate)
-            {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.CannotInstantitate, this.Description));
-            }
-
-            var values = new object?[_valueRetrievers!.Length];
-            for (var i = 0; i < _valueRetrievers.Length; ++i)
-            {
-                values[i] = _valueRetrievers[i]();
-            }
-
-            try
-            {
-                return _factory!(values);
-            }
-            catch (TargetInvocationException ex)
-            {
-                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex.InnerException);
-            }
-            catch (Exception ex)
-            {
-                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex);
-            }
-        }
-
-        /// <summary>
-        /// Gets a description of the constructor parameter binding.
-        /// </summary>
-        public string Description => CanInstantiate
-            ? string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.BoundConstructor, TargetConstructor)
-            : string.Format(CultureInfo.CurrentCulture, ConstructorParameterBindingResources.NonBindableConstructor, TargetConstructor, _firstNonBindableParameter);
-
-        /// <summary>Returns a System.String that represents the current System.Object.</summary>
-        /// <returns>A System.String that represents the current System.Object.</returns>
-        public override string ToString()
-        {
-            return Description;
-        }
-    }
-
+    /// <summary>
+    /// Provides the functionality to bind a single constructor at resolve time.
+    /// </summary>
     public class ConstructorBinder
     {
         private readonly ConstructorInfo _constructor;
@@ -119,6 +40,10 @@ namespace Autofac.Core.Activators.Reflection
         private readonly Func<object?[], object>? _factory;
         private readonly ParameterInfo? _illegalParameter;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConstructorBinder"/> class.
+        /// </summary>
+        /// <param name="constructorInfo">The constructor.</param>
         public ConstructorBinder(ConstructorInfo constructorInfo)
         {
             _constructor = constructorInfo ?? throw new ArgumentNullException(nameof(constructorInfo));
@@ -149,7 +74,13 @@ namespace Autofac.Core.Activators.Reflection
             return null;
         }
 
-        public BoundConstructor TryBind(IEnumerable<Parameter> availableParameters, IComponentContext context)
+        /// <summary>
+        /// Binds the set of parameters to the constructor. <see cref="BoundConstructor.CanInstantiate"/> indicates success.
+        /// </summary>
+        /// <param name="availableParameters">The set of all parameters.</param>
+        /// <param name="context">The current component context.</param>
+        /// <returns>The bind result.</returns>
+        public BoundConstructor Bind(IEnumerable<Parameter> availableParameters, IComponentContext context)
         {
             if (availableParameters is null)
             {
@@ -166,7 +97,7 @@ namespace Autofac.Core.Activators.Reflection
             if (_constructorArgs.Length == 0)
             {
                 // No args, auto-bind with an empty value-retriever array to avoid the allocation.
-                return new BoundConstructor(_constructor, _factory, Array.Empty<Func<object?>>());
+                return new BoundConstructor(_constructor, _factory!, Array.Empty<Func<object?>>());
             }
 
             if (_illegalParameter is object)
@@ -197,7 +128,7 @@ namespace Autofac.Core.Activators.Reflection
                 }
             }
 
-            return new BoundConstructor(_constructor, _factory, valueRetrievers);
+            return new BoundConstructor(_constructor, _factory!, valueRetrievers);
         }
 
         private static Func<object?[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)

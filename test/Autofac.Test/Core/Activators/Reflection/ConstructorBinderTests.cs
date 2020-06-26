@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Autofac.Test.Core.Activators.Reflection
 {
-    public class ConstructorParameterBindingTests
+    public class ConstructorBinderTests
     {
         public class ThrowsInCtor
         {
@@ -49,8 +49,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void WhenAnExceptionIsThrownFromAConstructor_TheInnerExceptionIsWrapped()
         {
             var ci = typeof(ThrowsInCtor).GetTypeInfo().DeclaredConstructors.Single();
-            var cpb = new ConstructorParameterBinding(
-                ci, Enumerable.Empty<Parameter>(), new ContainerBuilder().Build());
+            var cpb = new ConstructorBinder(ci).Bind(Enumerable.Empty<Parameter>(), new ContainerBuilder().Build());
             var dx = Assert.Throws<DependencyResolutionException>(() =>
                 cpb.Instantiate());
 
@@ -62,8 +61,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void WhenPrimitiveTypeIsProvidedForPrimitiveParameterConversionWillBeAttempted()
         {
             var ci = typeof(CtorWithDoubleParam).GetTypeInfo().DeclaredConstructors.Single();
-            var cpb = new ConstructorParameterBinding(
-                ci, new[] { new PositionalParameter(0, 1), }, new ContainerBuilder().Build());
+            var cpb = new ConstructorBinder(ci).Bind(new[] { new PositionalParameter(0, 1), }, new ContainerBuilder().Build());
             var instance = (CtorWithDoubleParam)cpb.Instantiate();
 
             Assert.Equal(1d, instance.Value);
@@ -73,8 +71,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void WhenEnumTypeIsProvidedForIntParameterConversionWillBeAttempted()
         {
             var ci = typeof(CtorWithInt).GetTypeInfo().DeclaredConstructors.Single();
-            var cpb = new ConstructorParameterBinding(
-                ci, new[] { new PositionalParameter(0, Foo.B), }, new ContainerBuilder().Build());
+            var cpb = new ConstructorBinder(ci).Bind(new[] { new PositionalParameter(0, Foo.B), }, new ContainerBuilder().Build());
             var instance = (CtorWithInt)cpb.Instantiate();
 
             Assert.Equal(1, instance.Value);
