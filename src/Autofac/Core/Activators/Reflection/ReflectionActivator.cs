@@ -147,7 +147,7 @@ namespace Autofac.Core.Activators.Reflection
         private BoundConstructor[] GetValidConstructorBindings(ConstructorBinder[] availableConstructors, IComponentContext context, IEnumerable<Parameter> parameters)
         {
             // Most often, there will be no `parameters` and/or no `_defaultParameters`; in both of those cases we can avoid allocating.
-            var prioritisedParameters = EnumerateParameters(parameters);
+            var prioritisedParameters = parameters.Any() ? EnumerateParameters(parameters) : _defaultParameters;
 
             var boundConstructors = new BoundConstructor[availableConstructors.Length];
 
