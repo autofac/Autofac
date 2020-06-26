@@ -226,10 +226,14 @@ namespace Autofac.Core.Registration
             {
                 var info = GetInitializedServiceInfo(service);
 
+                var list = new List<ServiceRegistration>();
+
                 foreach (var implementation in info.Implementations)
                 {
-                    yield return new ServiceRegistration(info.ServicePipeline, implementation);
+                    list.Add(new ServiceRegistration(info.ServicePipeline, implementation));
                 }
+
+                return list;
             }
         }
 
