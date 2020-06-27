@@ -99,15 +99,15 @@ namespace Autofac.Core.Activators.Reflection
 
             var constructorArgs = _constructorArgs;
 
-            if (_constructorArgs.Length == 0)
+            if (constructorArgs.Length == 0)
             {
                 // No args, auto-bind with an empty value-retriever array to avoid the allocation.
-                return new BoundConstructor(_constructor, _factory!, Array.Empty<Func<object?>>());
+                return BoundConstructor.ForBindSuccess(_constructor, _factory!, Array.Empty<Func<object?>>());
             }
 
             if (_illegalParameter is object)
             {
-                return new BoundConstructor(_constructor, _illegalParameter);
+                return BoundConstructor.ForBindFailure(_constructor, _illegalParameter);
             }
 
             var valueRetrievers = new Func<object?>[constructorArgs.Length];
@@ -129,11 +129,11 @@ namespace Autofac.Core.Activators.Reflection
 
                 if (!foundValue)
                 {
-                    return new BoundConstructor(_constructor, pi);
+                    return BoundConstructor.ForBindFailure(_constructor, pi);
                 }
             }
 
-            return new BoundConstructor(_constructor, _factory!, valueRetrievers);
+            return BoundConstructor.ForBindSuccess(_constructor, _factory!, valueRetrievers);
         }
 
         private static Func<object?[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)
@@ -149,13 +149,6 @@ namespace Autofac.Core.Activators.Reflection
                 var parameterType = paramsInfo[paramIndex].ParameterType;
 
                 var parameterIndexExpression = Expression.ArrayIndex(parametersExpression, indexExpression);
-
-                if (parameterType.IsPointer)
-                {
-                    // We can't do anything with pointer arguments.
-                    argumentsExpression[paramIndex] = Expression.Default(parameterType);
-                    continue;
-                }
 
                 var convertExpression = parameterType.IsPrimitive
                     ? Expression.Convert(ConvertPrimitiveType(parameterIndexExpression, parameterType), parameterType)

@@ -49,7 +49,24 @@ namespace Autofac.Core.Activators.Reflection
         /// <param name="constructor">The constructor.</param>
         /// <param name="factory">The instance factory.</param>
         /// <param name="valueRetrievers">The set of value-retrieval functions.</param>
-        public BoundConstructor(ConstructorInfo constructor, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
+        public static BoundConstructor ForBindSuccess(ConstructorInfo constructor, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
+            => new BoundConstructor(constructor, factory, valueRetrievers);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BoundConstructor"/> class, for an unsuccessful bind.
+        /// </summary>
+        /// <param name="constructor">The constructor.</param>
+        /// <param name="firstNonBindableParameter">The first parameter that prevented binding.</param>
+        public static BoundConstructor ForBindFailure(ConstructorInfo constructor, ParameterInfo firstNonBindableParameter) =>
+            new BoundConstructor(constructor, firstNonBindableParameter);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BoundConstructor"/> class for a successful bind.
+        /// </summary>
+        /// <param name="constructor">The constructor.</param>
+        /// <param name="factory">The instance factory.</param>
+        /// <param name="valueRetrievers">The set of value-retrieval functions.</param>
+        internal BoundConstructor(ConstructorInfo constructor, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
         {
             CanInstantiate = true;
             TargetConstructor = constructor;
@@ -63,7 +80,7 @@ namespace Autofac.Core.Activators.Reflection
         /// </summary>
         /// <param name="constructor">The constructor.</param>
         /// <param name="firstNonBindableParameter">The first parameter that prevented binding.</param>
-        public BoundConstructor(ConstructorInfo constructor, ParameterInfo firstNonBindableParameter)
+        internal BoundConstructor(ConstructorInfo constructor, ParameterInfo firstNonBindableParameter)
         {
             CanInstantiate = false;
             TargetConstructor = constructor;
