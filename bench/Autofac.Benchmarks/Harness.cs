@@ -92,6 +92,9 @@ namespace Autofac.Benchmarks
         [Fact]
         public void OpenGeneric() => RunBenchmark<OpenGenericBenchmark>();
 
+        [Fact]
+        public void MultiConstructor() => RunBenchmark<MultiConstructorBenchmark>();
+
         /// <remarks>
         /// This method is used to enforce that benchmark types are added to <see cref="Benchmarks.All"/>
         /// so that they can be used directly from the command line in <see cref="Program.Main"/> as well.
