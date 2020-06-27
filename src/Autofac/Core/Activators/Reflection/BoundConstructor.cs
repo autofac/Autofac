@@ -49,6 +49,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <param name="constructor">The constructor.</param>
         /// <param name="factory">The instance factory.</param>
         /// <param name="valueRetrievers">The set of value-retrieval functions.</param>
+        [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Validated in constructor.")]
         public static BoundConstructor ForBindSuccess(ConstructorInfo constructor, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
             => new BoundConstructor(constructor, factory, valueRetrievers);
 
@@ -56,9 +57,10 @@ namespace Autofac.Core.Activators.Reflection
         /// Initializes a new instance of the <see cref="BoundConstructor"/> class, for an unsuccessful bind.
         /// </summary>
         /// <param name="constructor">The constructor.</param>
+        /// <param name="totalArgumentCount">The total count of arguments to the constructor.</param>
         /// <param name="firstNonBindableParameter">The first parameter that prevented binding.</param>
-        public static BoundConstructor ForBindFailure(ConstructorInfo constructor, ParameterInfo firstNonBindableParameter) =>
-            new BoundConstructor(constructor, firstNonBindableParameter);
+        public static BoundConstructor ForBindFailure(ConstructorInfo constructor, int totalArgumentCount, ParameterInfo firstNonBindableParameter) =>
+            new BoundConstructor(constructor, totalArgumentCount, firstNonBindableParameter);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BoundConstructor"/> class for a successful bind.
@@ -69,9 +71,10 @@ namespace Autofac.Core.Activators.Reflection
         internal BoundConstructor(ConstructorInfo constructor, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
         {
             CanInstantiate = true;
-            TargetConstructor = constructor;
-            _factory = factory;
-            _valueRetrievers = valueRetrievers;
+            TargetConstructor = constructor ?? throw new ArgumentNullException(nameof(constructor));
+            ArgumentCount = valueRetrievers.Length;
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+            _valueRetrievers = valueRetrievers ?? throw new ArgumentNullException(nameof(valueRetrievers));
             _firstNonBindableParameter = null;
         }
 
@@ -79,12 +82,14 @@ namespace Autofac.Core.Activators.Reflection
         /// Initializes a new instance of the <see cref="BoundConstructor"/> class, for an unsuccessful bind.
         /// </summary>
         /// <param name="constructor">The constructor.</param>
+        /// <param name="totalArgumentCount">The total count of arguments to the constructor.</param>
         /// <param name="firstNonBindableParameter">The first parameter that prevented binding.</param>
-        internal BoundConstructor(ConstructorInfo constructor, ParameterInfo firstNonBindableParameter)
+        internal BoundConstructor(ConstructorInfo constructor, int totalArgumentCount, ParameterInfo firstNonBindableParameter)
         {
             CanInstantiate = false;
-            TargetConstructor = constructor;
-            _firstNonBindableParameter = firstNonBindableParameter;
+            TargetConstructor = constructor ?? throw new ArgumentNullException(nameof(constructor));
+            ArgumentCount = totalArgumentCount;
+            _firstNonBindableParameter = firstNonBindableParameter ?? throw new ArgumentNullException(nameof(firstNonBindableParameter));
             _factory = null;
             _valueRetrievers = null;
         }
@@ -94,6 +99,11 @@ namespace Autofac.Core.Activators.Reflection
         /// might differ, e.g. if using a dynamic proxy.
         /// </summary>
         public ConstructorInfo TargetConstructor { get; }
+
+        /// <summary>
+        /// Gets the total number of arguments for the bound constructor.
+        /// </summary>
+        public int ArgumentCount { get; }
 
         /// <summary>
         /// Gets a value indicating whether the binding is valid.

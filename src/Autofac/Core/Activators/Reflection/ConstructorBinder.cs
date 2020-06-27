@@ -98,8 +98,9 @@ namespace Autofac.Core.Activators.Reflection
             }
 
             var constructorArgs = _constructorArgs;
+            var constructorArgLength = constructorArgs.Length;
 
-            if (constructorArgs.Length == 0)
+            if (constructorArgLength == 0)
             {
                 // No args, auto-bind with an empty value-retriever array to avoid the allocation.
                 return BoundConstructor.ForBindSuccess(_constructor, _factory!, Array.Empty<Func<object?>>());
@@ -107,12 +108,12 @@ namespace Autofac.Core.Activators.Reflection
 
             if (_illegalParameter is object)
             {
-                return BoundConstructor.ForBindFailure(_constructor, _illegalParameter);
+                return BoundConstructor.ForBindFailure(_constructor, constructorArgLength, _illegalParameter);
             }
 
-            var valueRetrievers = new Func<object?>[constructorArgs.Length];
+            var valueRetrievers = new Func<object?>[constructorArgLength];
 
-            for (var idx = 0; idx < constructorArgs.Length; idx++)
+            for (var idx = 0; idx < constructorArgLength; idx++)
             {
                 var pi = constructorArgs[idx];
                 var foundValue = false;
@@ -129,7 +130,7 @@ namespace Autofac.Core.Activators.Reflection
 
                 if (!foundValue)
                 {
-                    return BoundConstructor.ForBindFailure(_constructor, pi);
+                    return BoundConstructor.ForBindFailure(_constructor, constructorArgLength, pi);
                 }
             }
 

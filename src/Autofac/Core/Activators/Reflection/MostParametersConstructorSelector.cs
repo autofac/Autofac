@@ -52,24 +52,37 @@ namespace Autofac.Core.Activators.Reflection
                 return constructorBindings[0];
             }
 
-            var withLength = constructorBindings
-                .Select(binding => new { Binding = binding, ConstructorParameterLength = binding.TargetConstructor.GetParameters().Length });
+            var highestArgCount = -1;
+            var countAtHighest = 0;
+            BoundConstructor? chosen = null;
 
-            var maxLength = withLength.Max(binding => binding.ConstructorParameterLength);
+            for (var idx = 0; idx < constructorBindings.Length; idx++)
+            {
+                var binding = constructorBindings[idx];
+                var count = binding.ArgumentCount;
 
-            var maximal = withLength
-                .Where(binding => binding.ConstructorParameterLength == maxLength)
-                .Select(ctor => ctor.Binding)
-                .ToArray();
+                if (count > highestArgCount)
+                {
+                    highestArgCount = count;
+                    countAtHighest = 1;
+                    chosen = binding;
+                }
+                else if (count == highestArgCount)
+                {
+                    countAtHighest++;
+                }
+            }
 
-            if (maximal.Length == 1)
-                return maximal[0];
+            if (countAtHighest == 1)
+            {
+                return chosen!;
+            }
 
             throw new DependencyResolutionException(string.Format(
                 CultureInfo.CurrentCulture,
                 MostParametersConstructorSelectorResources.UnableToChooseFromMultipleConstructors,
-                maxLength,
-                maximal[0].TargetConstructor.DeclaringType));
+                highestArgCount,
+                chosen!.TargetConstructor.DeclaringType));
         }
     }
 }
