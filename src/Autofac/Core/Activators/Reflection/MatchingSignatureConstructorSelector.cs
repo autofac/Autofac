@@ -58,21 +58,45 @@ namespace Autofac.Core.Activators.Reflection
         {
             if (constructorBindings == null) throw new ArgumentNullException(nameof(constructorBindings));
 
-            var result = constructorBindings
-                .Where(b => b.TargetConstructor.GetParameters().Select(p => p.ParameterType).SequenceEqual(_signature))
-                .ToArray();
+            var matchingCount = 0;
+            var validCount = 0;
+            BoundConstructor? chosen = null;
 
-            if (result.Length == 1)
-                return result[0];
+            for (var idx = 0; idx < constructorBindings.Length; idx++)
+            {
+                var binding = constructorBindings[idx];
 
-            if (constructorBindings.Length == 0)
+                if (binding.CanInstantiate)
+                {
+                    validCount++;
+
+                    // Concievably could store the set of parameter types in the binder as well, but
+                    // that's yet more memory up-front, for a less used constructor selector.
+                    if (binding.Binder.Parameters.Select(p => p.ParameterType).SequenceEqual(_signature))
+                    {
+                        chosen = binding;
+                        matchingCount++;
+                    }
+                }
+            }
+
+            if (matchingCount == 1)
+            {
+                return chosen!;
+            }
+
+            if (validCount == 0)
+            {
                 throw new ArgumentException(MatchingSignatureConstructorSelectorResources.AtLeastOneBindingRequired);
+            }
 
             var targetTypeName = constructorBindings[0].TargetConstructor.DeclaringType.Name;
             var signature = string.Join(", ", _signature.Select(t => t.Name).ToArray());
 
-            if (result.Length == 0)
+            if (matchingCount == 0)
+            {
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, MatchingSignatureConstructorSelectorResources.RequiredConstructorNotAvailable, targetTypeName, signature));
+            }
 
             throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, MatchingSignatureConstructorSelectorResources.TooManyConstructorsMatch, signature));
         }

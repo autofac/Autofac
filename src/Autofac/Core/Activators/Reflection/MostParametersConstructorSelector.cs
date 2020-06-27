@@ -61,6 +61,11 @@ namespace Autofac.Core.Activators.Reflection
                 var binding = constructorBindings[idx];
                 var count = binding.ArgumentCount;
 
+                if (!binding.CanInstantiate)
+                {
+                    continue;
+                }
+
                 if (count > highestArgCount)
                 {
                     highestArgCount = count;

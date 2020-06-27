@@ -40,7 +40,6 @@ namespace Autofac.Core.Activators.Reflection
 
         private static ConcurrentDictionary<ConstructorInfo, Func<object?[], object>> _factoryCache = new ConcurrentDictionary<ConstructorInfo, Func<object?[], object>>();
 
-        private readonly ConstructorInfo _constructor;
         private readonly ParameterInfo[] _constructorArgs;
         private readonly Func<object?[], object>? _factory;
         private readonly ParameterInfo? _illegalParameter;
@@ -51,7 +50,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <param name="constructorInfo">The constructor.</param>
         public ConstructorBinder(ConstructorInfo constructorInfo)
         {
-            _constructor = constructorInfo ?? throw new ArgumentNullException(nameof(constructorInfo));
+            Constructor = constructorInfo ?? throw new ArgumentNullException(nameof(constructorInfo));
             _constructorArgs = constructorInfo.GetParameters();
 
             // If any of the parameters are unsafe, do not create an invoker, and store the parameter
@@ -65,19 +64,20 @@ namespace Autofac.Core.Activators.Reflection
             }
         }
 
-        private static ParameterInfo? DetectIllegalParameter(ParameterInfo[] constructorArgs)
-        {
-            for (var idx = 0; idx < constructorArgs.Length; idx++)
-            {
-                if (constructorArgs[idx].ParameterType.IsPointer)
-                {
-                    // Boo.
-                    return constructorArgs[idx];
-                }
-            }
+        /// <summary>
+        /// Gets the constructor this binder is responsible for binding.
+        /// </summary>
+        public ConstructorInfo Constructor { get; }
 
-            return null;
-        }
+        /// <summary>
+        /// Gets the set of parameters to bind against.
+        /// </summary>
+        public IReadOnlyList<ParameterInfo> Parameters => _constructorArgs;
+
+        /// <summary>
+        /// Gets the number of parameters.
+        /// </summary>
+        public int ParameterCount => _constructorArgs.Length;
 
         /// <summary>
         /// Binds the set of parameters to the constructor. <see cref="BoundConstructor.CanInstantiate"/> indicates success.
@@ -103,12 +103,12 @@ namespace Autofac.Core.Activators.Reflection
             if (constructorArgLength == 0)
             {
                 // No args, auto-bind with an empty value-retriever array to avoid the allocation.
-                return BoundConstructor.ForBindSuccess(_constructor, _factory!, Array.Empty<Func<object?>>());
+                return BoundConstructor.ForBindSuccess(this, _factory!, Array.Empty<Func<object?>>());
             }
 
             if (_illegalParameter is object)
             {
-                return BoundConstructor.ForBindFailure(_constructor, constructorArgLength, _illegalParameter);
+                return BoundConstructor.ForBindFailure(this, _illegalParameter);
             }
 
             var valueRetrievers = new Func<object?>[constructorArgLength];
@@ -130,11 +130,11 @@ namespace Autofac.Core.Activators.Reflection
 
                 if (!foundValue)
                 {
-                    return BoundConstructor.ForBindFailure(_constructor, constructorArgLength, pi);
+                    return BoundConstructor.ForBindFailure(this, pi);
                 }
             }
 
-            return BoundConstructor.ForBindSuccess(_constructor, _factory!, valueRetrievers);
+            return BoundConstructor.ForBindSuccess(this, _factory!, valueRetrievers);
         }
 
         private static Func<object?[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)
@@ -177,6 +177,20 @@ namespace Autofac.Core.Activators.Reflection
         {
             var changeTypeMethod = typeof(Convert).GetRuntimeMethod(nameof(Convert.ChangeType), new[] { typeof(object), typeof(Type) });
             return Expression.Call(changeTypeMethod, valueExpression, Expression.Constant(conversionType));
+        }
+
+        private static ParameterInfo? DetectIllegalParameter(ParameterInfo[] constructorArgs)
+        {
+            for (var idx = 0; idx < constructorArgs.Length; idx++)
+            {
+                if (constructorArgs[idx].ParameterType.IsPointer)
+                {
+                    // Boo.
+                    return constructorArgs[idx];
+                }
+            }
+
+            return null;
         }
     }
 }

@@ -30,6 +30,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Autofac.Builder;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 
@@ -133,9 +134,17 @@ namespace Autofac.Core.Activators.Reflection
 
             CheckNotDisposed();
 
-            var validBindings = GetValidConstructorBindings(_constructorBinders!, context, parameters);
+            var allBindings = GetAllBindings(_constructorBinders!, context, parameters);
 
-            var selectedBinding = ConstructorSelector.SelectConstructorBinding(validBindings, parameters);
+            var selectedBinding = ConstructorSelector.SelectConstructorBinding(allBindings, parameters);
+
+            if (!selectedBinding.CanInstantiate)
+            {
+                throw new InvalidOperationException(string.Format(
+                    CultureInfo.CurrentCulture,
+                    ReflectionActivatorResources.ConstructorSelectorCannotSelectAnInvalidBinding,
+                    ConstructorSelector.GetType().Name));
+            }
 
             var instance = selectedBinding.Instantiate();
 
@@ -144,37 +153,32 @@ namespace Autofac.Core.Activators.Reflection
             return instance;
         }
 
-        private BoundConstructor[] GetValidConstructorBindings(ConstructorBinder[] availableConstructors, IComponentContext context, IEnumerable<Parameter> parameters)
+        private BoundConstructor[] GetAllBindings(ConstructorBinder[] availableConstructors, IComponentContext context, IEnumerable<Parameter> parameters)
         {
             // Most often, there will be no `parameters` and/or no `_defaultParameters`; in both of those cases we can avoid allocating.
             var prioritisedParameters = parameters.Any() ? EnumerateParameters(parameters) : _defaultParameters;
 
             var boundConstructors = new BoundConstructor[availableConstructors.Length];
+            var validBindings = availableConstructors.Length;
 
             for (var idx = 0; idx < availableConstructors.Length; idx++)
             {
-                boundConstructors[idx] = availableConstructors[idx].Bind(prioritisedParameters, context);
-            }
+                var bound = availableConstructors[idx].Bind(prioritisedParameters, context);
 
-            // Copy-on-write; 99% of components will have a single constructor that can be instantiated.
-            var validBindings = boundConstructors;
-            for (var i = 0; i < boundConstructors.Length; ++i)
-            {
-                if (!boundConstructors[i].CanInstantiate)
+                boundConstructors[idx] = bound;
+
+                if (!bound.CanInstantiate)
                 {
-                    // Further optimisation opportunity here
-                    validBindings = FilterToValidBindings(boundConstructors).ToArray();
-
-                    break;
+                    validBindings--;
                 }
             }
 
-            if (validBindings.Length == 0)
+            if (validBindings == 0)
             {
                 throw new DependencyResolutionException(GetBindingFailureMessage(boundConstructors));
             }
 
-            return validBindings;
+            return boundConstructors;
         }
 
         private IEnumerable<Parameter> EnumerateParameters(IEnumerable<Parameter> parameters)
