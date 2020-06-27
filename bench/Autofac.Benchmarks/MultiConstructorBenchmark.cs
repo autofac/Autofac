@@ -16,6 +16,7 @@ namespace Autofac.Benchmarks
             builder.RegisterType<OneConstructor>();
             builder.RegisterType<TwoConstructors>();
             builder.RegisterType<ThreeConstructors>();
+            builder.RegisterType<TwoValidConstructorsOneInvalid>();
             builder.RegisterType<FourConstructors>();
             builder.RegisterType<D1>();
             builder.RegisterType<D2>();
@@ -35,6 +36,12 @@ namespace Autofac.Benchmarks
         public void Two()
         {
             container.Resolve<TwoConstructors>();
+        }
+
+        [Benchmark]
+        public void TwoValidOneInvalid()
+        {
+            container.Resolve<TwoValidConstructorsOneInvalid>();
         }
 
         [Benchmark]
@@ -63,6 +70,21 @@ namespace Autofac.Benchmarks
             }
 
             public TwoConstructors(D1 d1, D2 d2)
+            {
+            }
+        }
+
+        private class TwoValidConstructorsOneInvalid
+        {
+            public TwoValidConstructorsOneInvalid(D1 d1)
+            {
+            }
+
+            public TwoValidConstructorsOneInvalid(D1 d1, D2 d2)
+            {
+            }
+
+            public TwoValidConstructorsOneInvalid(D1 d1, D2 d2, object notRegistered)
             {
             }
         }
