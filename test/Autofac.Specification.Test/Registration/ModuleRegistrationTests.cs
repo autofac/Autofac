@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using Autofac.Test.Scenarios.ScannedAssembly;
 using Xunit;
@@ -101,6 +103,28 @@ namespace Autofac.Specification.Test.Registration
             Assert.True(container.IsRegistered<object>());
         }
 
+        [Fact]
+        public void ModuleCanContainDecorators()
+        {
+            var mod = new DecoratingModule();
+            var target = new ContainerBuilder();
+            target.RegisterType<S1>().As<I1>();
+            target.RegisterModule(mod);
+            var container = target.Build();
+            Assert.IsType<Decorator1>(container.Resolve<I1>());
+        }
+
+        [Fact]
+        public void ModuleCanContainComposites()
+        {
+            var mod = new CompositingModule();
+            var target = new ContainerBuilder();
+            target.RegisterType<S1>().As<I1>();
+            target.RegisterModule(mod);
+            var container = target.Build();
+            Assert.IsType<Composite1>(container.Resolve<I1>());
+        }
+
         private class Module1 : Module
         {
             protected override void Load(ContainerBuilder builder)
@@ -114,6 +138,44 @@ namespace Autofac.Specification.Test.Registration
             protected override void Load(ContainerBuilder builder)
             {
                 builder.RegisterModule<Module1>();
+            }
+        }
+
+        private class DecoratingModule : Module
+        {
+            protected override void Load(ContainerBuilder builder)
+            {
+                builder.RegisterDecorator<Decorator1, I1>();
+            }
+        }
+
+        private class CompositingModule : Module
+        {
+            protected override void Load(ContainerBuilder builder)
+            {
+                builder.RegisterComposite<Composite1, I1>();
+            }
+        }
+
+        private interface I1
+        {
+        }
+
+        private class S1 : I1
+        {
+        }
+
+        private class Decorator1 : I1
+        {
+            public Decorator1(I1 instance)
+            {
+            }
+        }
+
+        private class Composite1 : I1
+        {
+            public Composite1(IEnumerable<I1> instance)
+            {
             }
         }
 

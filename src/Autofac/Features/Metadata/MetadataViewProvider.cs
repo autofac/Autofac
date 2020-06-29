@@ -39,7 +39,7 @@ namespace Autofac.Features.Metadata
     /// </summary>
     internal static class MetadataViewProvider
     {
-        private static readonly MethodInfo GetMetadataValueMethod = typeof(MetadataViewProvider).GetTypeInfo().GetDeclaredMethod("GetMetadataValue");
+        private static readonly MethodInfo GetMetadataValueMethod = typeof(MetadataViewProvider).GetDeclaredMethod("GetMetadataValue");
 
         /// <summary>
         /// Generate a provider function that takes a dictionary of metadata, and outputs a typed metadata object.
@@ -51,17 +51,19 @@ namespace Autofac.Features.Metadata
             if (typeof(TMetadata) == typeof(IDictionary<string, object>))
                 return m => (TMetadata)m;
 
-            if (!typeof(TMetadata).GetTypeInfo().IsClass)
+            if (!typeof(TMetadata).IsClass)
             {
                 throw new DependencyResolutionException(
                     string.Format(CultureInfo.CurrentCulture, MetadataViewProviderResources.InvalidViewImplementation, typeof(TMetadata).Name));
             }
 
             var ti = typeof(TMetadata);
-            var dictionaryConstructor = ti.GetTypeInfo().DeclaredConstructors.SingleOrDefault(ci =>
+            var publicConstructors = ti.GetDeclaredPublicConstructors();
+
+            var dictionaryConstructor = publicConstructors.SingleOrDefault(ci =>
             {
                 var ps = ci.GetParameters();
-                return ci.IsPublic && ps.Length == 1 && ps[0].ParameterType == typeof(IDictionary<string, object>);
+                return ps.Length == 1 && ps[0].ParameterType == typeof(IDictionary<string, object>);
             });
 
             if (dictionaryConstructor != null)
@@ -73,7 +75,7 @@ namespace Autofac.Features.Metadata
                     .Compile();
             }
 
-            var parameterlessConstructor = ti.GetTypeInfo().DeclaredConstructors.SingleOrDefault(ci => ci.IsPublic && ci.GetParameters().Length == 0);
+            var parameterlessConstructor = publicConstructors.SingleOrDefault(ci => ci.GetParameters().Length == 0);
             if (parameterlessConstructor != null)
             {
                 var providerArg = Expression.Parameter(typeof(IDictionary<string, object>), "metadata");

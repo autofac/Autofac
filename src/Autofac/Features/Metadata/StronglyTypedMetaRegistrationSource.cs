@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -40,9 +41,11 @@ namespace Autofac.Features.Metadata
     /// </summary>
     internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
     {
-        private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateMetaRegistration));
+        private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetDeclaredMethod(nameof(CreateMetaRegistration));
 
         private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration valueRegistration);
+
+        private readonly ConcurrentDictionary<(Type ValueType, Type MetaType), RegistrationCreator> _methodCache = new ConcurrentDictionary<(Type, Type), RegistrationCreator>();
 
         /// <inheritdoc/>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
@@ -53,17 +56,19 @@ namespace Autofac.Features.Metadata
             if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<,>)))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var genericArguments = swt.ServiceType.GetTypeInfo().GenericTypeArguments.ToArray();
+            var genericArguments = swt.ServiceType.GenericTypeArguments.ToArray();
             var valueType = genericArguments[0];
             var metaType = genericArguments[1];
 
-            if (!metaType.GetTypeInfo().IsClass)
+            if (!metaType.IsClass)
                 return Enumerable.Empty<IComponentRegistration>();
 
             var valueService = swt.ChangeType(valueType);
-            var methodInfo = CreateMetaRegistrationMethod.MakeGenericMethod(valueType, metaType);
-            var registrationCreator = (RegistrationCreator)methodInfo.CreateDelegate(
-                typeof(RegistrationCreator), this);
+
+            var registrationCreator = _methodCache.GetOrAdd((valueType, metaType), t =>
+            {
+                return CreateMetaRegistrationMethod.MakeGenericMethod(t.ValueType, t.MetaType).CreateDelegate<RegistrationCreator>(null);
+            });
 
             return registrationAccessor(valueService)
                 .Select(v => registrationCreator.Invoke(service, valueService, v));
@@ -78,7 +83,7 @@ namespace Autofac.Features.Metadata
             return MetaRegistrationSourceResources.StronglyTypedMetaRegistrationSourceDescription;
         }
 
-        private IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, Service valueService, ServiceRegistration implementation)
+        private static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, Service valueService, ServiceRegistration implementation)
         {
             var metadataProvider = MetadataViewProvider.GetMetadataViewProvider<TMetadata>();
 
@@ -89,7 +94,7 @@ namespace Autofac.Features.Metadata
                     return new Meta<T, TMetadata>((T)c.ResolveComponent(new ResolveRequest(valueService, implementation, p)), metadata);
                 })
                 .As(providedService)
-                .Targeting(implementation.Registration, IsAdapterForIndividualComponents);
+                .Targeting(implementation.Registration);
 
             return rb.CreateRegistration();
         }

@@ -139,8 +139,7 @@ namespace Autofac.Builder
                 builder.ActivatorData.Activator,
                 builder.ResolvePipeline,
                 builder.RegistrationData.Services.ToArray(),
-                builder.RegistrationStyle.Target,
-                builder.RegistrationStyle.IsAdapterForIndividualComponent);
+                builder.RegistrationStyle.Target);
         }
 
         /// <summary>
@@ -171,7 +170,6 @@ namespace Autofac.Builder
         /// <param name="pipelineBuilder">The component registration's resolve pipeline builder.</param>
         /// <param name="services">Services provided by the registration.</param>
         /// <param name="target">Optional; target registration.</param>
-        /// <param name="isAdapterForIndividualComponent">Optional; whether the registration is a 1:1 adapters on top of another component.</param>
         /// <returns>An IComponentRegistration.</returns>
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="activator" /> or <paramref name="data" /> is <see langword="null" />.
@@ -182,8 +180,7 @@ namespace Autofac.Builder
             IInstanceActivator activator,
             IResolvePipelineBuilder pipelineBuilder,
             Service[] services,
-            IComponentRegistration? target,
-            bool isAdapterForIndividualComponent = false)
+            IComponentRegistration? target)
         {
             if (activator == null) throw new ArgumentNullException(nameof(activator));
             if (data == null) throw new ArgumentNullException(nameof(data));
@@ -201,7 +198,7 @@ namespace Autofac.Builder
                         continue;
                     }
 
-                    if (!asServiceWithType.ServiceType.GetTypeInfo().IsAssignableFrom(limitType.GetTypeInfo()))
+                    if (!asServiceWithType.ServiceType.IsAssignableFrom(limitType))
                     {
                         throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationBuilderResources.ComponentDoesNotSupportService, limitType, ts));
                     }
@@ -224,7 +221,8 @@ namespace Autofac.Builder
                     data.Ownership,
                     clonedPipelineBuilder,
                     services,
-                    data.Metadata);
+                    data.Metadata,
+                    data.Options);
             }
             else
             {
@@ -238,7 +236,7 @@ namespace Autofac.Builder
                     services,
                     data.Metadata,
                     target,
-                    isAdapterForIndividualComponent);
+                    data.Options);
             }
 
             return registration;

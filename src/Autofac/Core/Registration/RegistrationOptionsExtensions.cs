@@ -1,5 +1,5 @@
 ﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
+// Copyright © 2020 Autofac Contributors
 // https://autofac.org
 //
 // Permission is hereby granted, free of charge, to any person
@@ -23,38 +23,23 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using Autofac.Core;
-using Autofac.Core.Registration;
-
-namespace Autofac.Builder
+namespace Autofac.Core.Registration
 {
     /// <summary>
-    /// Registration style for individual components.
+    /// Extension methods for registration options.
     /// </summary>
-    public class SingleRegistrationStyle
+    public static class RegistrationOptionsExtensions
     {
         /// <summary>
-        /// Gets or sets the ID used for the registration.
+        /// Tests whether a given flag (or combined set of flags) is present in the specified
+        /// options enumeration.
         /// </summary>
-        public Guid Id { get; set; } = Guid.NewGuid();
-
-        /// <summary>
-        /// Gets the handlers to notify of the component registration event.
-        /// </summary>
-        public ICollection<EventHandler<ComponentRegisteredEventArgs>> RegisteredHandlers { get; } = new List<EventHandler<ComponentRegisteredEventArgs>>();
-
-        /// <summary>
-        /// Gets or sets a value indicating whether default registrations should be preserved.
-        /// By default, new registrations override existing registrations as defaults.
-        /// If set to true, new registrations will not change existing defaults.
-        /// </summary>
-        public bool PreserveDefaults { get; set; }
-
-        /// <summary>
-        /// Gets or sets the component upon which this registration is based.
-        /// </summary>
-        public IComponentRegistration? Target { get; set; }
+        /// <param name="options">The option to test.</param>
+        /// <param name="flag">The flag (or flags) to test for.</param>
+        /// <returns>True if the specified flag (or flags) are enabled for the registration.</returns>
+        public static bool HasOption(this RegistrationOptions options, RegistrationOptions flag)
+        {
+            return (options & flag) == flag;
+        }
     }
 }

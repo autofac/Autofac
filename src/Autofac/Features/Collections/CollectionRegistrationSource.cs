@@ -94,7 +94,7 @@ namespace Autofac.Features.Collections
 
             if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
             {
-                elementType = serviceType.GetTypeInfo().GenericTypeArguments[0];
+                elementType = serviceType.GenericTypeArguments[0];
                 limitType = elementType.MakeArrayType();
                 factory = GenerateArrayFactory(elementType);
             }
@@ -106,7 +106,7 @@ namespace Autofac.Features.Collections
             }
             else if (serviceType.IsGenericListOrCollectionInterfaceType())
             {
-                elementType = serviceType.GetTypeInfo().GenericTypeArguments[0];
+                elementType = serviceType.GenericTypeArguments[0];
                 limitType = typeof(List<>).MakeGenericType(elementType);
                 factory = GenerateListFactory(elementType);
             }
@@ -122,6 +122,7 @@ namespace Autofac.Features.Collections
                 {
                     var itemRegistrations = c.ComponentRegistry
                         .ServiceRegistrationsFor(elementTypeService)
+                        .Where(cr => !cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections))
                         .OrderBy(cr => cr.Registration.GetRegistrationOrder())
                         .ToList();
 

@@ -67,7 +67,7 @@ namespace Autofac.Features.OpenGenerics
         {
             if (implementer == null) throw new ArgumentNullException(nameof(implementer));
 
-            if (!implementer.GetTypeInfo().IsGenericTypeDefinition)
+            if (!implementer.IsGenericTypeDefinition)
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericRegistrationExtensionsResources.ImplementorMustBeOpenGenericType, implementer));
 
             var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(

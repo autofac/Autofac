@@ -4,6 +4,7 @@ using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Diagnostics;
+using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
@@ -92,6 +93,10 @@ namespace Autofac.Test
             public event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
 
             public IResolvePipeline ResolvePipeline { get; } = new ResolvePipelineBuilder(PipelineType.Registration).Build();
+
+            public bool IsServiceOverride { get; set; }
+
+            public RegistrationOptions Options { get; set; }
 
             public void BuildResolvePipeline(IComponentRegistryServices registryServices)
             {

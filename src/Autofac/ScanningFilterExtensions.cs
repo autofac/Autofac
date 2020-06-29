@@ -53,7 +53,7 @@ namespace Autofac
             // from being found by default, but this convenience method will allow
             // people to opt in.
             if (registration == null) throw new ArgumentNullException(nameof(registration));
-            return registration.Where(t => t.GetTypeInfo().IsPublic || t.GetTypeInfo().IsNestedPublic);
+            return registration.Where(t => t.IsPublic || t.IsNestedPublic);
         }
     }
 }
