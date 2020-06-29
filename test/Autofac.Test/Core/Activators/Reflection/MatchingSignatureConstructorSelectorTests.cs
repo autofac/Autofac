@@ -2,38 +2,39 @@
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Test.Scenarios.Graph1;
 using Xunit;
 
 namespace Autofac.Test.Core.Activators.Reflection
 {
     public class MatchingSignatureConstructorSelectorTests
     {
-        public class ThreeConstructors
+        public class FourConstructors
         {
-            public ThreeConstructors()
+            public FourConstructors()
             {
             }
 
-            public ThreeConstructors(int i)
+            public FourConstructors(int i)
             {
             }
 
-            public ThreeConstructors(int i, string s)
+            public FourConstructors(int i, string s)
+            {
+            }
+
+            public FourConstructors(int i, string s, double d)
             {
             }
         }
 
-        private readonly ConstructorParameterBinding[] _ctors = typeof(ThreeConstructors)
-            .GetTypeInfo().DeclaredConstructors
-            .Select(ci => new ConstructorParameterBinding(ci, Enumerable.Empty<Parameter>(), new ContainerBuilder().Build()))
-            .ToArray();
+        private readonly BoundConstructor[] _ctors = GetConstructors();
 
         [Fact]
         public void SelectsEmptyConstructor()
         {
             var target0 = new MatchingSignatureConstructorSelector();
             var c0 = target0.SelectConstructorBinding(_ctors, Enumerable.Empty<Parameter>());
-            Assert.NotNull(c0);
             Assert.Empty(c0.TargetConstructor.GetParameters());
         }
 
@@ -42,8 +43,14 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var target2 = new MatchingSignatureConstructorSelector(typeof(int), typeof(string));
             var c2 = target2.SelectConstructorBinding(_ctors, Enumerable.Empty<Parameter>());
-            Assert.NotNull(c2);
             Assert.Equal(2, c2.TargetConstructor.GetParameters().Length);
+        }
+
+        [Fact]
+        public void IgnoresInvalidBindings()
+        {
+            var target2 = new MatchingSignatureConstructorSelector(typeof(int), typeof(string), typeof(double));
+            Assert.Throws<DependencyResolutionException>(() => target2.SelectConstructorBinding(_ctors, Enumerable.Empty<Parameter>()));
         }
 
         [Fact]
@@ -54,8 +61,21 @@ namespace Autofac.Test.Core.Activators.Reflection
             var dx = Assert.Throws<DependencyResolutionException>(() =>
                 target.SelectConstructorBinding(_ctors, Enumerable.Empty<Parameter>()));
 
-            Assert.Contains(typeof(ThreeConstructors).Name, dx.Message);
+            Assert.Contains(typeof(FourConstructors).Name, dx.Message);
             Assert.Contains(typeof(string).Name, dx.Message);
+        }
+
+        private static BoundConstructor[] GetConstructors()
+        {
+            var builder = new ContainerBuilder();
+            builder.Register(ctx => 1);
+            builder.Register(ctx => "test");
+            var container = builder.Build();
+
+            return typeof(FourConstructors)
+           .GetTypeInfo().DeclaredConstructors
+           .Select(ci => new ConstructorBinder(ci).Bind(new[] { new AutowiringParameter() }, container))
+           .ToArray();
         }
     }
 }

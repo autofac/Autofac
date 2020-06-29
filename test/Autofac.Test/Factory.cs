@@ -82,6 +82,16 @@ namespace Autofac.Test
                 properties);
         }
 
+        public static ReflectionActivator CreateReflectionActivator(Type implementation, IConstructorSelector customSelector)
+        {
+            return new ReflectionActivator(
+                implementation,
+                new DefaultConstructorFinder(),
+                customSelector,
+                NoParameters,
+                NoProperties);
+        }
+
         public static ProvidedInstanceActivator CreateProvidedInstanceActivator(object instance)
         {
             return new ProvidedInstanceActivator(instance);
