@@ -61,7 +61,7 @@ namespace Autofac.Core.Activators.Reflection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The constructor selector provided by &apos;{0}&apos; selected a binding that cannot be instantiate. Selectors must return a constructor where &apos;CanInstantiate&apos; is true..
+        ///   Looks up a localized string similar to The constructor selector provided by &apos;{0}&apos; selected a binding that cannot be instantiated. Selectors must return a constructor where &apos;CanInstantiate&apos; is true..
         /// </summary>
         internal static string ConstructorSelectorCannotSelectAnInvalidBinding {
             get {
