@@ -57,9 +57,9 @@ namespace Autofac.Test
 
         internal class MockConstructorSelector : IConstructorSelector
         {
-            public ConstructorParameterBinding SelectConstructorBinding(ConstructorParameterBinding[] constructorBindings, IEnumerable<Parameter> parameters)
+            public BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters)
             {
-                return null;
+                return default;
             }
         }
 

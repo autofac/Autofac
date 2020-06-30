@@ -30,6 +30,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Autofac.Builder;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 
@@ -44,7 +45,8 @@ namespace Autofac.Core.Activators.Reflection
         private readonly Type _implementationType;
         private readonly Parameter[] _configuredProperties;
         private readonly Parameter[] _defaultParameters;
-        private ConstructorInfo[]? _availableConstructors;
+
+        private ConstructorBinder[]? _constructorBinders;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReflectionActivator"/> class.
@@ -91,12 +93,21 @@ namespace Autofac.Core.Activators.Reflection
             if (pipelineBuilder is null) throw new ArgumentNullException(nameof(pipelineBuilder));
 
             // Locate the possible constructors at container build time.
-            _availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
+            var availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
 
-            if (_availableConstructors.Length == 0)
+            if (availableConstructors.Length == 0)
             {
                 throw new NoConstructorsFoundException(_implementationType, string.Format(CultureInfo.CurrentCulture, ReflectionActivatorResources.NoConstructorsAvailable, _implementationType, ConstructorFinder));
             }
+
+            var binders = new ConstructorBinder[availableConstructors.Length];
+
+            for (var idx = 0; idx < availableConstructors.Length; idx++)
+            {
+                binders[idx] = new ConstructorBinder(availableConstructors[idx]);
+            }
+
+            _constructorBinders = binders;
 
             pipelineBuilder.Use(this.ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
             {
@@ -123,9 +134,17 @@ namespace Autofac.Core.Activators.Reflection
 
             CheckNotDisposed();
 
-            var validBindings = GetValidConstructorBindings(_availableConstructors!, context, parameters);
+            var allBindings = GetAllBindings(_constructorBinders!, context, parameters);
 
-            var selectedBinding = ConstructorSelector.SelectConstructorBinding(validBindings, parameters);
+            var selectedBinding = ConstructorSelector.SelectConstructorBinding(allBindings, parameters);
+
+            if (!selectedBinding.CanInstantiate)
+            {
+                throw new InvalidOperationException(string.Format(
+                    CultureInfo.CurrentCulture,
+                    ReflectionActivatorResources.ConstructorSelectorCannotSelectAnInvalidBinding,
+                    ConstructorSelector.GetType().Name));
+            }
 
             var instance = selectedBinding.Instantiate();
 
@@ -134,41 +153,59 @@ namespace Autofac.Core.Activators.Reflection
             return instance;
         }
 
-        private ConstructorParameterBinding[] GetValidConstructorBindings(ConstructorInfo[] availableConstructors, IComponentContext context, IEnumerable<Parameter> parameters)
+        private BoundConstructor[] GetAllBindings(ConstructorBinder[] availableConstructors, IComponentContext context, IEnumerable<Parameter> parameters)
         {
             // Most often, there will be no `parameters` and/or no `_defaultParameters`; in both of those cases we can avoid allocating.
-            var prioritisedParameters = parameters.Any() ?
-                (_defaultParameters.Length == 0 ? parameters : parameters.Concat(_defaultParameters)) :
-                _defaultParameters;
+            var prioritisedParameters = parameters.Any() ? EnumerateParameters(parameters) : _defaultParameters;
 
-            var constructorBindings = new ConstructorParameterBinding[availableConstructors.Length];
-            for (var i = 0; i < availableConstructors.Length; ++i)
-            {
-                constructorBindings[i] = new ConstructorParameterBinding(availableConstructors[i], prioritisedParameters, context);
-            }
+            var boundConstructors = new BoundConstructor[availableConstructors.Length];
+            var validBindings = availableConstructors.Length;
 
-            // Copy-on-write; 99% of components will have a single constructor that can be instantiated.
-            var validBindings = constructorBindings;
-            for (var i = 0; i < constructorBindings.Length; ++i)
+            for (var idx = 0; idx < availableConstructors.Length; idx++)
             {
-                if (!constructorBindings[i].CanInstantiate)
+                var bound = availableConstructors[idx].Bind(prioritisedParameters, context);
+
+                boundConstructors[idx] = bound;
+
+                if (!bound.CanInstantiate)
                 {
-                    // Further optimisation opportunity here
-                    validBindings = constructorBindings
-                        .Where(cb => cb.CanInstantiate)
-                        .ToArray();
-
-                    break;
+                    validBindings--;
                 }
             }
 
-            if (validBindings.Length == 0)
-                throw new DependencyResolutionException(GetBindingFailureMessage(constructorBindings));
+            if (validBindings == 0)
+            {
+                throw new DependencyResolutionException(GetBindingFailureMessage(boundConstructors));
+            }
 
-            return validBindings;
+            return boundConstructors;
         }
 
-        private string GetBindingFailureMessage(IEnumerable<ConstructorParameterBinding> constructorBindings)
+        private IEnumerable<Parameter> EnumerateParameters(IEnumerable<Parameter> parameters)
+        {
+            foreach (var param in parameters)
+            {
+                yield return param;
+            }
+
+            foreach (var defaultParam in _defaultParameters)
+            {
+                yield return defaultParam;
+            }
+        }
+
+        private static IEnumerable<BoundConstructor> FilterToValidBindings(IEnumerable<BoundConstructor> allBindings)
+        {
+            foreach (var binding in allBindings)
+            {
+                if (binding.CanInstantiate)
+                {
+                    yield return binding;
+                }
+            }
+        }
+
+        private string GetBindingFailureMessage(BoundConstructor[] constructorBindings)
         {
             var reasons = new StringBuilder();
 
