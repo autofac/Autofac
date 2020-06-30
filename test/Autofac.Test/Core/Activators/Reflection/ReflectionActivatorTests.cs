@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac.Core;
@@ -326,6 +327,25 @@ namespace Autofac.Test.Core.Activators.Reflection
             var typedInstance = (AcceptsIntParameter)instance;
 
             Assert.Equal(i, typedInstance.I);
+        }
+
+        [Fact]
+        public void ConstructorSelectorCannotReturnInvalidBinding()
+        {
+            var target = Factory.CreateReflectionActivator(typeof(ThreeConstructors), new MisbehavingConstructorSelector());
+
+            var container = Factory.CreateEmptyContainer();
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+            Assert.Throws<InvalidOperationException>(() => invoker(container, Factory.NoParameters));
+        }
+
+        private class MisbehavingConstructorSelector : IConstructorSelector
+        {
+            public BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters)
+            {
+                return constructorBindings.First(x => !x.CanInstantiate);
+            }
         }
 
         public class AcceptsIntParameter

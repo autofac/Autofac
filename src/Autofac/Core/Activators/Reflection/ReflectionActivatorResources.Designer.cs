@@ -10,7 +10,6 @@
 
 namespace Autofac.Core.Activators.Reflection {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace Autofac.Core.Activators.Reflection {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ReflectionActivatorResources {
@@ -40,7 +39,7 @@ namespace Autofac.Core.Activators.Reflection {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Reflection.ReflectionActivatorResources", typeof(ReflectionActivatorResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Activators.Reflection.ReflectionActivatorResources", typeof(ReflectionActivatorResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -58,6 +57,15 @@ namespace Autofac.Core.Activators.Reflection {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The constructor selector provided by &apos;{0}&apos; selected a binding that cannot be instantiated. Selectors must return a constructor where &apos;CanInstantiate&apos; is true..
+        /// </summary>
+        internal static string ConstructorSelectorCannotSelectAnInvalidBinding {
+            get {
+                return ResourceManager.GetString("ConstructorSelectorCannotSelectAnInvalidBinding", resourceCulture);
             }
         }
         
