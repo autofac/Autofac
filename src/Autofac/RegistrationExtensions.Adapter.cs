@@ -38,7 +38,6 @@ namespace Autofac
     [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     public static partial class RegistrationExtensions
     {
-
         /// <summary>
         /// Adapt all components implementing service <typeparamref name="TFrom"/>
         /// to provide <typeparamref name="TTo"/> using the provided <paramref name="adapter"/>
