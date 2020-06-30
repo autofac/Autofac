@@ -98,10 +98,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ProvidedInstanceActivatorResources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Core\Activators\Reflection\ConstructorParameterBindingResources.Designer.cs">
+    <Compile Update="Core\Activators\Reflection\BoundConstructorResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>ConstructorParameterBindingResources.resx</DependentUpon>
+      <DependentUpon>BoundConstructorResources.resx</DependentUpon>
     </Compile>
     <Compile Update="Core\Activators\Reflection\MatchingSignatureConstructorSelectorResources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -330,9 +330,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvidedInstanceActivatorResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Core\Activators\Reflection\ConstructorParameterBindingResources.resx">
+    <EmbeddedResource Update="Core\Activators\Reflection\BoundConstructorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ConstructorParameterBindingResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>BoundConstructorResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\Activators\Reflection\MatchingSignatureConstructorSelectorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

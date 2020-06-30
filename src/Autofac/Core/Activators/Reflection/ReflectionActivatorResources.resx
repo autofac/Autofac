@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ConstructorSelectorCannotSelectAnInvalidBinding" xml:space="preserve">
+    <value>The constructor selector provided by '{0}' selected a binding that cannot be instantiated. Selectors must return a constructor where 'CanInstantiate' is true.</value>
+  </data>
   <data name="NoConstructorsAvailable" xml:space="preserve">
     <value>No constructors on type '{0}' can be found with the constructor finder '{1}'.</value>
   </data>
