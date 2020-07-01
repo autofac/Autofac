@@ -33,6 +33,11 @@ namespace Autofac.Core.Lifetime
     public class CurrentScopeLifetime : IComponentLifetime
     {
         /// <summary>
+        /// Gets the singleton instance of the <see cref="CurrentScopeLifetime"/> behaviour.
+        /// </summary>
+        public static IComponentLifetime Instance { get; } = new CurrentScopeLifetime();
+
+        /// <summary>
         /// Given the most nested scope visible within the resolve operation, find
         /// the scope for the component.
         /// </summary>

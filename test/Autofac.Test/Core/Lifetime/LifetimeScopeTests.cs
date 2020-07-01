@@ -188,7 +188,7 @@ namespace Autofac.Test.Core.Lifetime
                 new ComponentRegistration(
                     Guid.NewGuid(),
                     new DelegateActivator(serviceType, factory),
-                    new CurrentScopeLifetime(),
+                    CurrentScopeLifetime.Instance,
                     InstanceSharing.None,
                     InstanceOwnership.OwnedByLifetimeScope,
                     new[] { service },

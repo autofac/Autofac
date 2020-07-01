@@ -15,7 +15,7 @@ namespace Autofac.Test
     {
         public static IComponentRegistration CreateSingletonRegistration(IEnumerable<Service> services, IInstanceActivator activator)
         {
-            return CreateRegistration(services, activator, new RootScopeLifetime(), InstanceSharing.Shared);
+            return CreateRegistration(services, activator, RootScopeLifetime.Instance, InstanceSharing.Shared);
         }
 
         public static IComponentRegistration CreateSingletonRegistration(Type implementation)

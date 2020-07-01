@@ -45,7 +45,7 @@ namespace Autofac.Builder
 
         private readonly ICollection<Service> _services = new HashSet<Service>();
 
-        private IComponentLifetime _lifetime = new CurrentScopeLifetime();
+        private IComponentLifetime _lifetime = CurrentScopeLifetime.Instance;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RegistrationData"/> class.
