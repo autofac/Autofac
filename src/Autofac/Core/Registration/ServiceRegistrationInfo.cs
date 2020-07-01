@@ -100,9 +100,9 @@ namespace Autofac.Core.Registration
         public IComponentRegistration? RedirectionTargetRegistration { get; private set; }
 
         /// <summary>
-        /// Gets or sets a value representing the current initialisation depth. Will always be zero for initialised service blocks.
+        /// Gets or sets a value representing the current initialization depth. Will always be zero for initialized service blocks.
         /// </summary>
-        public int InitialisationDepth { get; set; }
+        public int InitializationDepth { get; set; }
 
         /// <summary>
         /// Gets the known implementations. The first implementation is a default one.
@@ -170,7 +170,7 @@ namespace Autofac.Core.Registration
             // Implementations can be read by consumers while we are inside an initialisation window,
             // even when the initialisation hasn't finished yet.
             // The InitialisationDepth property is always 0 outside of the lock-protected initialisation block.
-            if (InitialisationDepth == 0 && !IsInitialized)
+            if (InitializationDepth == 0 && !IsInitialized)
             {
                 throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
             }

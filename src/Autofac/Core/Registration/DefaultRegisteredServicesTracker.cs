@@ -253,7 +253,7 @@ namespace Autofac.Core.Registration
                     BeginServiceInfoInitialization(service, info, _dynamicRegistrationSources);
                 }
 
-                info.InitialisationDepth++;
+                info.InitializationDepth++;
 
                 while (info.HasSourcesToQuery)
                 {
@@ -285,9 +285,9 @@ namespace Autofac.Core.Registration
             }
             finally
             {
-                info.InitialisationDepth--;
+                info.InitializationDepth--;
 
-                if (info.InitialisationDepth == 0 && succeeded)
+                if (info.InitializationDepth == 0 && succeeded)
                 {
                     info.CompleteInitialization();
                 }
