@@ -20,7 +20,7 @@ namespace Autofac.Core
             : base(
                 LifetimeScope.SelfRegistrationId,
                 new DelegateActivator(typeof(LifetimeScope), (c, p) => { throw new InvalidOperationException(ContainerResources.SelfRegistrationCannotBeActivated); }),
-                new CurrentScopeLifetime(),
+                CurrentScopeLifetime.Instance,
                 InstanceSharing.Shared,
                 InstanceOwnership.ExternallyOwned,
                 new ResolvePipelineBuilder(PipelineType.Registration),

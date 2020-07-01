@@ -116,7 +116,7 @@ namespace Autofac.Builder
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerDependency()
         {
             RegistrationData.Sharing = InstanceSharing.None;
-            RegistrationData.Lifetime = new CurrentScopeLifetime();
+            RegistrationData.Lifetime = CurrentScopeLifetime.Instance;
             return this;
         }
 
@@ -128,7 +128,7 @@ namespace Autofac.Builder
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> SingleInstance()
         {
             RegistrationData.Sharing = InstanceSharing.Shared;
-            RegistrationData.Lifetime = new RootScopeLifetime();
+            RegistrationData.Lifetime = RootScopeLifetime.Instance;
             return this;
         }
 
@@ -141,7 +141,7 @@ namespace Autofac.Builder
         public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> InstancePerLifetimeScope()
         {
             RegistrationData.Sharing = InstanceSharing.Shared;
-            RegistrationData.Lifetime = new CurrentScopeLifetime();
+            RegistrationData.Lifetime = CurrentScopeLifetime.Instance;
             return this;
         }
 

@@ -146,7 +146,7 @@ namespace Autofac.Features.Collections
             var registration = new ComponentRegistration(
                 Guid.NewGuid(),
                 activator,
-                new CurrentScopeLifetime(),
+                CurrentScopeLifetime.Instance,
                 InstanceSharing.None,
                 InstanceOwnership.ExternallyOwned,
                 new[] { service },
