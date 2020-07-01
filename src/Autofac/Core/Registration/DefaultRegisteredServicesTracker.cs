@@ -24,10 +24,12 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
 
@@ -38,12 +40,14 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredServicesTracker
     {
+        private static readonly Func<Service, ServiceRegistrationInfo> regInfoFactory = srv => new ServiceRegistrationInfo(srv);
+
         private readonly Func<Service, IEnumerable<ServiceRegistration>> _registrationAccessor;
 
         /// <summary>
         /// Keeps track of the status of registered services.
         /// </summary>
-        private readonly Dictionary<Service, ServiceRegistrationInfo> _serviceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
+        private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new ConcurrentDictionary<Service, ServiceRegistrationInfo>();
 
         /// <summary>
         /// External registration sources.
@@ -53,14 +57,9 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// All registrations.
         /// </summary>
-        private readonly List<IComponentRegistration> _registrations = new List<IComponentRegistration>();
+        private readonly ConcurrentBag<IComponentRegistration> _registrations = new ConcurrentBag<IComponentRegistration>();
 
         private readonly List<IServiceMiddlewareSource> _servicePipelineSources = new List<IServiceMiddlewareSource>();
-
-        /// <summary>
-        /// Protects instance variables from concurrent access.
-        /// </summary>
-        private readonly object _synchRoot = new object();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker"/> class.
@@ -86,8 +85,7 @@ namespace Autofac.Core.Registration
         {
             get
             {
-                lock (_synchRoot)
-                    return _registrations.ToList();
+                return _registrations.ToList();
             }
         }
 
@@ -155,11 +153,8 @@ namespace Autofac.Core.Registration
         /// <inheritdoc/>
         public IEnumerable<IResolveMiddleware> ServiceMiddlewareFor(Service service)
         {
-            lock (_synchRoot)
-            {
-                var info = GetInitializedServiceInfo(service);
-                return info.ServiceMiddleware;
-            }
+            var info = GetInitializedServiceInfo(service);
+            return info.ServiceMiddleware;
         }
 
         /// <inheritdoc />
@@ -167,11 +162,8 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            lock (_synchRoot)
-            {
-                var info = GetInitializedServiceInfo(service);
-                return info.TryGetRegistration(out registration);
-            }
+            var info = GetInitializedServiceInfo(service);
+            return info.TryGetRegistration(out registration);
         }
 
         /// <inheritdoc/>
@@ -179,15 +171,12 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            lock (_synchRoot)
-            {
-                var info = GetInitializedServiceInfo(service);
+            var info = GetInitializedServiceInfo(service);
 
-                if (info.TryGetRegistration(out var registration))
-                {
-                    serviceData = new ServiceRegistration(info.ServicePipeline, registration);
-                    return true;
-                }
+            if (info.TryGetRegistration(out var registration))
+            {
+                serviceData = new ServiceRegistration(info.ServicePipeline, registration);
+                return true;
             }
 
             serviceData = default;
@@ -199,10 +188,7 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            lock (_synchRoot)
-            {
-                return GetInitializedServiceInfo(service).IsRegistered;
-            }
+            return GetInitializedServiceInfo(service).IsRegistered;
         }
 
         /// <inheritdoc />
@@ -210,11 +196,8 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            lock (_synchRoot)
-            {
-                var info = GetInitializedServiceInfo(service);
-                return info.Implementations.ToList();
-            }
+            var info = GetInitializedServiceInfo(service);
+            return info.Implementations.ToList();
         }
 
         /// <inheritdoc/>
@@ -222,19 +205,16 @@ namespace Autofac.Core.Registration
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
 
-            lock (_synchRoot)
+            var info = GetInitializedServiceInfo(service);
+
+            var list = new List<ServiceRegistration>();
+
+            foreach (var implementation in info.Implementations)
             {
-                var info = GetInitializedServiceInfo(service);
-
-                var list = new List<ServiceRegistration>();
-
-                foreach (var implementation in info.Implementations)
-                {
-                    list.Add(new ServiceRegistration(info.ServicePipeline, implementation));
-                }
-
-                return list;
+                list.Add(new ServiceRegistration(info.ServicePipeline, implementation));
             }
+
+            return list;
         }
 
         /// <summary>
@@ -253,52 +233,80 @@ namespace Autofac.Core.Registration
         {
             var info = GetServiceInfo(service);
             if (info.IsInitialized)
+            {
                 return info;
-
-            if (!info.IsInitializing)
-            {
-                BeginServiceInfoInitialization(service, info, _dynamicRegistrationSources);
             }
 
-            while (info.HasSourcesToQuery)
+            var succeeded = false;
+
+            Monitor.Enter(info);
+
+            try
             {
-                var next = info.DequeueNextSource();
-                foreach (var provided in next.RegistrationsFor(service, _registrationAccessor))
+                if (info.IsInitialized)
                 {
-                    // This ensures that multiple services provided by the same
-                    // component share a single component (we don't re-query for them)
-                    foreach (var additionalService in provided.Services)
-                    {
-                        var additionalInfo = GetServiceInfo(additionalService);
-                        if (additionalInfo.IsInitialized || additionalInfo == info) continue;
-
-                        if (!additionalInfo.IsInitializing)
-                        {
-                            BeginServiceInfoInitialization(additionalService, additionalInfo, ExcludeSource(_dynamicRegistrationSources, next));
-                        }
-                        else
-                        {
-                            additionalInfo.SkipSource(next);
-                        }
-                    }
-
-                    AddRegistration(provided, true, true);
+                    return info;
                 }
+
+                if (!info.IsInitializing)
+                {
+                    BeginServiceInfoInitialization(service, info, _dynamicRegistrationSources);
+                }
+
+                info.InitialisationDepth++;
+
+                while (info.HasSourcesToQuery)
+                {
+                    var next = info.DequeueNextSource();
+                    foreach (var provided in next.RegistrationsFor(service, _registrationAccessor))
+                    {
+                        // This ensures that multiple services provided by the same
+                        // component share a single component (we don't re-query for them)
+                        foreach (var additionalService in provided.Services)
+                        {
+                            var additionalInfo = GetServiceInfo(additionalService);
+                            if (additionalInfo.IsInitialized || additionalInfo == info) continue;
+
+                            if (!additionalInfo.IsInitializing)
+                            {
+                                BeginServiceInfoInitialization(additionalService, additionalInfo, ExcludeSource(_dynamicRegistrationSources, next));
+                            }
+                            else
+                            {
+                                additionalInfo.SkipSource(next);
+                            }
+                        }
+
+                        AddRegistration(provided, true, true);
+                    }
+                }
+
+                succeeded = true;
+            }
+            finally
+            {
+                info.InitialisationDepth--;
+
+                if (info.InitialisationDepth == 0 && succeeded)
+                {
+                    info.CompleteInitialization();
+                }
+
+                Monitor.Exit(info);
             }
 
-            info.CompleteInitialization();
             return info;
         }
 
         private void BeginServiceInfoInitialization(Service service, ServiceRegistrationInfo info, IEnumerable<IRegistrationSource> registrationSources)
         {
-            info.BeginInitialization(registrationSources);
-
             // Add any additional service pipeline configuration from external sources.
             foreach (var servicePipelineSource in _servicePipelineSources)
             {
                 servicePipelineSource.ProvideMiddleware(service, this, info);
             }
+
+            info.BeginInitialization(registrationSources);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -316,12 +324,7 @@ namespace Autofac.Core.Registration
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ServiceRegistrationInfo GetServiceInfo(Service service)
         {
-            if (_serviceInfo.TryGetValue(service, out var existing))
-                return existing;
-
-            var info = new ServiceRegistrationInfo(service);
-            _serviceInfo.Add(service, info);
-            return info;
+            return _serviceInfo.GetOrAdd(service, regInfoFactory);
         }
     }
 }

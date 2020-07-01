@@ -104,6 +104,8 @@ namespace Autofac.Core.Registration
         /// </summary>
         public IComponentRegistration? RedirectionTargetRegistration { get; private set; }
 
+        public int InitialisationDepth { get; set; }
+
         /// <summary>
         /// Gets the known implementations. The first implementation is a default one.
         /// </summary>
@@ -118,9 +120,27 @@ namespace Autofac.Core.Registration
                     yield return _fixedRegistration;
                 }
 
-                foreach (var item in _registeredImplementations!.Value)
+                var defaultImpls = _defaultImplementations;
+
+                for (var defaultReverseIdx = defaultImpls.Count - 1; defaultReverseIdx >= 0; defaultReverseIdx--)
                 {
-                    yield return item;
+                    yield return defaultImpls[defaultReverseIdx];
+                }
+
+                if (_sourceImplementations is object)
+                {
+                    foreach (var item in _sourceImplementations)
+                    {
+                        yield return item;
+                    }
+                }
+
+                if (_preserveDefaultImplementations is object)
+                {
+                    foreach (var item in _preserveDefaultImplementations)
+                    {
+                        yield return item;
+                    }
                 }
             }
         }
@@ -128,8 +148,7 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Gets the service pipeline. Will throw if not initialized.
         /// </summary>
-        public IResolvePipeline ServicePipeline => IsInitialized ? _resolvePipeline!
-                                                                 : throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
+        public IResolvePipeline ServicePipeline => _resolvePipeline ?? throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
 
         /// <summary>
         /// Gets the set of all middleware registered against the service (excluding the default middleware).
@@ -150,8 +169,13 @@ namespace Autofac.Core.Registration
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RequiresInitialization()
         {
-            if (!IsInitialized)
+            // Implementations can be read by consumers while we are inside an initialisation window,
+            // even when the initialisation hasn't finished yet.
+            // The InitialisationDepth property is always 0 outside of the lock-protected initialisation block.
+            if (InitialisationDepth == 0 && !IsInitialized)
+            {
                 throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
+            }
         }
 
         /// <summary>
@@ -217,9 +241,6 @@ namespace Autofac.Core.Registration
             }
 
             _defaultImplementation = null;
-
-            if (IsInitialized)
-                _registeredImplementations = new Lazy<IList<IComponentRegistration>>(InitializeComponentRegistrations);
         }
 
         /// <summary>
@@ -293,6 +314,13 @@ namespace Autofac.Core.Registration
             IsInitialized = false;
             _registeredImplementations = new Lazy<IList<IComponentRegistration>>(InitializeComponentRegistrations);
             _sourcesToQuery = new Queue<IRegistrationSource>(sources);
+
+            // Build the pipeline during service info initialisation, so that sources can access it
+            // while getting a registration recursively.
+            if (_resolvePipeline is null)
+            {
+                _resolvePipeline = BuildPipeline();
+            }
         }
 
         /// <summary>
@@ -335,27 +363,26 @@ namespace Autofac.Core.Registration
             // began it.
             IsInitialized = true;
             _sourcesToQuery = null;
-
-            if (_resolvePipeline is null)
-            {
-                _resolvePipeline = BuildPipeline();
-            }
         }
 
         private IList<IComponentRegistration> InitializeComponentRegistrations()
         {
-            var resultingCollection = Enumerable.Reverse(_defaultImplementations);
+            // Set an initial larger capacity.
+            var resultList = new List<IComponentRegistration>(8);
+
+            resultList.AddRange(Enumerable.Reverse(_defaultImplementations));
+
             if (_sourceImplementations != null)
             {
-                resultingCollection = resultingCollection.Concat(_sourceImplementations);
+                resultList.AddRange(_sourceImplementations);
             }
 
             if (_preserveDefaultImplementations != null)
             {
-                resultingCollection = resultingCollection.Concat(_preserveDefaultImplementations);
+                resultList.AddRange(_preserveDefaultImplementations);
             }
 
-            return resultingCollection.ToList();
+            return resultList;
         }
 
         private IResolvePipeline BuildPipeline()
