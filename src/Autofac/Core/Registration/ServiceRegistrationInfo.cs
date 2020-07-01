@@ -355,9 +355,8 @@ namespace Autofac.Core.Registration
         /// </summary>
         public void CompleteInitialization()
         {
-            // Does not EnforceDuringInitialization() because the recursive algorithm
-            // sometimes completes initialisation at a deeper level than that which
-            // began it.
+            EnforceDuringInitialization();
+
             IsInitialized = true;
             _sourcesToQuery = null;
         }
