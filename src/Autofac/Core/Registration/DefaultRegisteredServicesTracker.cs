@@ -40,7 +40,7 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredServicesTracker
     {
-        private static readonly Func<Service, ServiceRegistrationInfo> regInfoFactory = srv => new ServiceRegistrationInfo(srv);
+        private static readonly Func<Service, ServiceRegistrationInfo> RegInfoFactory = srv => new ServiceRegistrationInfo(srv);
 
         private readonly Func<Service, IEnumerable<ServiceRegistration>> _registrationAccessor;
 
@@ -324,7 +324,7 @@ namespace Autofac.Core.Registration
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ServiceRegistrationInfo GetServiceInfo(Service service)
         {
-            return _serviceInfo.GetOrAdd(service, regInfoFactory);
+            return _serviceInfo.GetOrAdd(service, RegInfoFactory);
         }
     }
 }

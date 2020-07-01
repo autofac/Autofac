@@ -73,11 +73,6 @@ namespace Autofac.Core.Registration
         /// </summary>
         private Queue<IRegistrationSource>? _sourcesToQuery;
 
-        /// <summary>
-        /// The combined list of registered implementations. The value will be calculated lazily by <see cref="InitializeComponentRegistrations" />.
-        /// </summary>
-        private Lazy<IList<IComponentRegistration>>? _registeredImplementations;
-
         private IResolvePipeline? _resolvePipeline;
 
         private IResolvePipelineBuilder? _customPipelineBuilder;
@@ -104,6 +99,9 @@ namespace Autofac.Core.Registration
         /// </summary>
         public IComponentRegistration? RedirectionTargetRegistration { get; private set; }
 
+        /// <summary>
+        /// Gets or sets a value representing the current initialisation depth. Will always be zero for initialised service blocks.
+        /// </summary>
         public int InitialisationDepth { get; set; }
 
         /// <summary>
@@ -312,7 +310,6 @@ namespace Autofac.Core.Registration
         public void BeginInitialization(IEnumerable<IRegistrationSource> sources)
         {
             IsInitialized = false;
-            _registeredImplementations = new Lazy<IList<IComponentRegistration>>(InitializeComponentRegistrations);
             _sourcesToQuery = new Queue<IRegistrationSource>(sources);
 
             // Build the pipeline during service info initialisation, so that sources can access it
@@ -363,26 +360,6 @@ namespace Autofac.Core.Registration
             // began it.
             IsInitialized = true;
             _sourcesToQuery = null;
-        }
-
-        private IList<IComponentRegistration> InitializeComponentRegistrations()
-        {
-            // Set an initial larger capacity.
-            var resultList = new List<IComponentRegistration>(8);
-
-            resultList.AddRange(Enumerable.Reverse(_defaultImplementations));
-
-            if (_sourceImplementations != null)
-            {
-                resultList.AddRange(_sourceImplementations);
-            }
-
-            if (_preserveDefaultImplementations != null)
-            {
-                resultList.AddRange(_preserveDefaultImplementations);
-            }
-
-            return resultList;
         }
 
         private IResolvePipeline BuildPipeline()
