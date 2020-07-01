@@ -238,11 +238,11 @@ namespace Autofac.Core.Registration
             }
 
             var succeeded = false;
-
-            Monitor.Enter(info);
-
+            var lockTaken = false;
             try
             {
+                Monitor.Enter(info, ref lockTaken);
+
                 if (info.IsInitialized)
                 {
                     return info;
@@ -292,7 +292,10 @@ namespace Autofac.Core.Registration
                     info.CompleteInitialization();
                 }
 
-                Monitor.Exit(info);
+                if (lockTaken)
+                {
+                    Monitor.Exit(info);
+                }
             }
 
             return info;
