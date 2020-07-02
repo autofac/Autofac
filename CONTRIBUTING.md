@@ -40,9 +40,18 @@ We use [semantic versioning](https://semver.org/) for our package versions.
 
 ### Developer Environment
 
-- Visual Studio 2019
+**Windows**:
+
+- Visual Studio 2019 or VS Code
 - .NET Core SDK (each repo has a `global.json` with the version required)
-- PowerShell 5+
+- PowerShell 5+ / PowerShell Core
+
+**Mac**:
+
+- VS Code
+- .NET Core SDK (each repo has a `global.json` with the version required)
+- PowerShell 5+ / PowerShell Core
+- Mono - install the latest "Visual Studio channel" version; the standalone version or the one from Homebrew won't work.
 
 ### Build / Test
 
@@ -50,7 +59,7 @@ Project codelines with scripted builds generally have a `build.ps1` script. This
 
 Some project codelines rely on convention-based builds so do not have a specific script. In these cases you will not see a `.ps1` or `.proj` file to execute. In these cases...
 
-- The build is executed by running it in Visual Studio or by executing `msbuild Solution.sln` on the solution in the codeline root.
+- The build is executed by running it in Visual Studio or by executing `dotnet msbuild Solution.sln` on the solution in the codeline root.
 - Unit tests can be run from the Visual Studio test explorer or by manually executing the command-line unit test runner from the `packages` folder against the built unit test assembly.
 
 Unit tests are written in XUnit and Moq. **Code contributions should include tests that exercise/demonstrate the contribution.**
