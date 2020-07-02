@@ -24,30 +24,29 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
+using Autofac.Builder;
+using Autofac.Features.OpenGenerics;
 
-namespace Autofac.Core.Lifetime
+namespace Autofac
 {
     /// <summary>
-    /// Attaches the instance's lifetime to the current lifetime scope.
+    /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
     /// </summary>
-    public class CurrentScopeLifetime : IComponentLifetime
+    [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
+    public static partial class RegistrationExtensions
     {
         /// <summary>
-        /// Gets the singleton instance of the <see cref="CurrentScopeLifetime"/> behaviour.
+        /// Register an un-parameterised generic type, e.g. Repository&lt;&gt;.
+        /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
         /// </summary>
-        public static IComponentLifetime Instance { get; } = new CurrentScopeLifetime();
-
-        /// <summary>
-        /// Given the most nested scope visible within the resolve operation, find
-        /// the scope for the component.
-        /// </summary>
-        /// <param name="mostNestedVisibleScope">The most nested visible scope.</param>
-        /// <returns>The scope for the component.</returns>
-        public ISharingLifetimeScope FindScope(ISharingLifetimeScope mostNestedVisibleScope)
+        /// <param name="builder">Container builder.</param>
+        /// <param name="implementer">The open generic implementation type.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
+            RegisterGeneric(this ContainerBuilder builder, Type implementer)
         {
-            if (mostNestedVisibleScope == null) throw new ArgumentNullException(nameof(mostNestedVisibleScope));
-
-            return mostNestedVisibleScope;
+            return OpenGenericRegistrationExtensions.RegisterGeneric(builder, implementer);
         }
     }
 }
