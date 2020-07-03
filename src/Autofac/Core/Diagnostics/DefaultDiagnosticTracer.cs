@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Autofac.Core.Resolving;
@@ -23,6 +24,15 @@ namespace Autofac.Core.Diagnostics
         /// Event raised when a resolve operation completes, and trace data is available.
         /// </summary>
         public event EventHandler<OperationTraceCompletedArgs>? OperationCompleted;
+
+        /// <summary>
+        /// Gets the number of operations in progress being traced.
+        /// </summary>
+        /// <value>
+        /// An <see cref="int"/> with the number of trace IDs associated
+        /// with in-progress operations being traced by this tracer.
+        /// </value>
+        public int OperationsInProgress => this._operationBuilders.Count;
 
         /// <inheritdoc/>
         void IResolvePipelineTracer.OperationStart(ResolveOperationBase operation, ResolveRequest initiatingRequest)
@@ -125,14 +135,21 @@ namespace Autofac.Core.Diagnostics
         {
             if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
             {
-                builder.Outdent();
-                builder.AppendLine(TracerMessages.ExitBrace);
-                builder.AppendException(TracerMessages.OperationFailed, operationException);
-
-                // If we're completing the root operation, raise the event.
-                if (operation.IsTopLevelOperation)
+                try
                 {
-                    OperationCompleted?.Invoke(this, new OperationTraceCompletedArgs(operation, builder.ToString()));
+                    builder.Outdent();
+                    builder.AppendLine(TracerMessages.ExitBrace);
+                    builder.AppendException(TracerMessages.OperationFailed, operationException);
+
+                    // If we're completing the root operation, raise the event.
+                    if (operation.IsTopLevelOperation)
+                    {
+                        OperationCompleted?.Invoke(this, new OperationTraceCompletedArgs(operation, builder.ToString()));
+                    }
+                }
+                finally
+                {
+                    _operationBuilders.TryRemove(operation.TracingId, out var _);
                 }
             }
         }
@@ -142,14 +159,21 @@ namespace Autofac.Core.Diagnostics
         {
             if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
             {
-                builder.Outdent();
-                builder.AppendLine(TracerMessages.ExitBrace);
-                builder.AppendFormattedLine(TracerMessages.OperationSucceeded, resolvedInstance);
-
-                // If we're completing the root operation, raise the event.
-                if (operation.IsTopLevelOperation)
+                try
                 {
-                    OperationCompleted?.Invoke(this, new OperationTraceCompletedArgs(operation, builder.ToString()));
+                    builder.Outdent();
+                    builder.AppendLine(TracerMessages.ExitBrace);
+                    builder.AppendFormattedLine(TracerMessages.OperationSucceeded, resolvedInstance);
+
+                    // If we're completing the root operation, raise the event.
+                    if (operation.IsTopLevelOperation)
+                    {
+                        OperationCompleted?.Invoke(this, new OperationTraceCompletedArgs(operation, builder.ToString()));
+                    }
+                }
+                finally
+                {
+                    _operationBuilders.TryRemove(operation.TracingId, out var _);
                 }
             }
         }

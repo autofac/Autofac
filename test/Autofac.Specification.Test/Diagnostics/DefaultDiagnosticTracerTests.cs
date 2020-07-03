@@ -92,6 +92,25 @@ namespace Autofac.Specification.Test.Diagnostics
             Assert.Contains("Decorator", lastOpResult);
         }
 
+        [Fact]
+        public void DiagnosticTracerDoesNotLeakMemory()
+        {
+            var tracer = new DefaultDiagnosticTracer();
+
+            var containerBuilder = new ContainerBuilder();
+            containerBuilder.RegisterType<Implementor>().As<IService>();
+            containerBuilder.RegisterDecorator<Decorator, IService>();
+
+            var container = containerBuilder.Build();
+
+            container.AttachTrace(tracer);
+            container.Resolve<IService>();
+
+            // The dictionary of tracked trace IDs and
+            // string builders should be empty.
+            Assert.Equal(0, tracer.OperationsInProgress);
+        }
+
         private interface IService
         {
         }
