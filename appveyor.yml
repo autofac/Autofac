@@ -1,13 +1,13 @@
-version: '5.2.0.{build}'
+image: Ubuntu
+
+version: '6.0.0.{build}'
 
 dotnet_csproj:
-  version_prefix: '5.2.0'
+  version_prefix: '6.0.0'
   patch: true
   file: 'src\**\*.csproj'
 
 configuration: Release
-
-image: Visual Studio 2019
 
 environment:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
@@ -23,7 +23,7 @@ clone_depth: 1
 test: off
 
 build_script:
-- ps: .\build.ps1
+  - pwsh: .\build.ps1
 
 artifacts:
 - path: artifacts\packages\**\*.nupkg
