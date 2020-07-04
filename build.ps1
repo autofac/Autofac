@@ -7,7 +7,7 @@
  )
 
 Push-Location $PSScriptRoot
-Import-Module $PSScriptRoot\Build\Autofac.Build.psd1 -Force
+Import-Module $PSScriptRoot\build\Autofac.Build.psd1 -Force
 
 $artifactsPath = "$PSScriptRoot\artifacts"
 $packagesPath = "$artifactsPath\packages"
@@ -20,8 +20,10 @@ if (Test-Path $artifactsPath) {
 }
 
 # Install dotnet CLI
-Write-Message "Installing .NET Core SDK version $sdkVersion"
-Install-DotNetCli -Version $sdkVersion
+if ($isWindows) {
+    Write-Message "Installing .NET Core SDK version $sdkVersion"
+    Install-DotNetCli -Version $sdkVersion
+}
 
 # Write out dotnet information
 & dotnet --info
