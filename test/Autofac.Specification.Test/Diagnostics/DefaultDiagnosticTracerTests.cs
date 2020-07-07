@@ -16,7 +16,7 @@ namespace Autofac.Specification.Test.Diagnostics
 
             var container = containerBuilder.Build();
 
-            container.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
 
             string lastOpResult = null;
 
@@ -41,7 +41,7 @@ namespace Autofac.Specification.Test.Diagnostics
 
             var container = containerBuilder.Build();
 
-            container.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
 
             string lastOpResult = null;
 
@@ -73,7 +73,7 @@ namespace Autofac.Specification.Test.Diagnostics
 
             var container = containerBuilder.Build();
 
-            container.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
 
             int traceCount = 0;
             string lastOpResult = null;
@@ -103,7 +103,7 @@ namespace Autofac.Specification.Test.Diagnostics
 
             var container = containerBuilder.Build();
 
-            container.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
             container.Resolve<IService>();
 
             // The dictionary of tracked trace IDs and

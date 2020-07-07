@@ -24,6 +24,7 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics;
 using Autofac.Core.Diagnostics;
 
 namespace Autofac
@@ -43,20 +44,30 @@ namespace Autofac
         /// Only one tracer is supported at once, so calling this will replace any prior tracer on this scope. Existing nested scopes
         /// will continue to retain their original trace behaviour.
         /// </remarks>
-        public static void AttachTrace(this ILifetimeScope scope, Action<ResolveRequest, string> newTraceCallback)
+        public static void SubscribeToDiagnostics(this ILifetimeScope scope, DiagnosticTracerBase tracer)
         {
             if (scope is null) throw new ArgumentNullException(nameof(scope));
-            if (newTraceCallback is null) throw new ArgumentNullException(nameof(newTraceCallback));
+            if (tracer is null) throw new ArgumentNullException(nameof(tracer));
+            scope.DiagnosticSource.Subscribe(tracer, tracer.IsEnabled);
+        }
 
-            // Create a new default tracer and attach the callback.
-            var tracer = new DefaultDiagnosticTracer();
-            tracer.OperationCompleted += (sender, args) =>
-            {
-                // The initiating request will always be non-null by the time an operation completes.
-                newTraceCallback(args.Operation.InitiatingRequest!, args.TraceContent);
-            };
-
-            scope.AttachTrace(tracer);
+        /// <summary>
+        /// Enable tracing on this scope, routing trace events to the specified tracer.
+        /// All lifetime scopes created from this one will inherit this tracer as well.
+        /// </summary>
+        /// <param name="scope">The lifetime scope.</param>
+        /// <param name="newTraceCallback">A callback that will receive the trace output.</param>
+        /// <remarks>
+        /// Only one tracer is supported at once, so calling this will replace any prior tracer on this scope. Existing nested scopes
+        /// will continue to retain their original trace behaviour.
+        /// </remarks>
+        public static T SubscribeToDiagnostics<T>(this ILifetimeScope scope)
+            where T : DiagnosticTracerBase, new()
+        {
+            if (scope is null) throw new ArgumentNullException(nameof(scope));
+            var tracer = new T();
+            scope.SubscribeToDiagnostics(tracer);
+            return tracer;
         }
     }
 }

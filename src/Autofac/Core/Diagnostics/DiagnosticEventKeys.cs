@@ -1,4 +1,4 @@
-﻿// This software is part of the Autofac IoC container
+// This software is part of the Autofac IoC container
 // Copyright © 2020 Autofac Contributors
 // https://autofac.org
 //
@@ -23,34 +23,27 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Autofac.Core.Resolving;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Diagnostics
 {
     /// <summary>
-    /// Event data for the <see cref="DefaultDiagnosticTracer.OperationCompleted"/> event.
+    /// Names of the events raised in diagnostics.
     /// </summary>
-    public sealed class OperationTraceCompletedArgs
+    internal static class DiagnosticEventKeys
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OperationTraceCompletedArgs"/> class.
-        /// </summary>
-        /// <param name="operation">The operation for which a trace has completed.</param>
-        /// <param name="traceContent">The content of the trace.</param>
-        public OperationTraceCompletedArgs(ResolveOperationBase operation, string traceContent)
-        {
-            Operation = operation;
-            TraceContent = traceContent;
-        }
-
-        /// <summary>
-        /// Gets the operation for which a trace is available.
-        /// </summary>
-        public ResolveOperationBase Operation { get; }
-
-        /// <summary>
-        /// Gets the content of the trace.
-        /// </summary>
-        public string TraceContent { get; }
+        public const string MiddlewareEntry = "Autofac.Middleware.Entry";
+        public const string MiddlewareFailure = "Autofac.Middleware.Failure";
+        public const string MiddlewareSuccess = "Autofac.Middleware.Success";
+        public const string OperationFailure = "Autofac.Operation.Failure";
+        public const string OperationStart = "Autofac.Operation.Start";
+        public const string OperationSuccess = "Autofac.Operation.Success";
+        public const string RequestFailure = "Autofac.Request.Failure";
+        public const string RequestStart = "Autofac.Request.Start";
+        public const string RequestSuccess = "Autofac.Request.Success";
     }
 }

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Autofac.Core.Resolving;
-using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Diagnostics
 {
@@ -12,7 +10,7 @@ namespace Autofac.Core.Diagnostics
     /// Provides a default resolve pipeline tracer that builds a multi-line string describing the end-to-end operation flow.
     /// Attach to the <see cref="OperationCompleted"/> event to receive notifications when new trace content is available.
     /// </summary>
-    public class DefaultDiagnosticTracer
+    public class DefaultDiagnosticTracer : DiagnosticTracerBase
     {
         private const string RequestExceptionTraced = "__RequestException";
 
@@ -35,9 +33,9 @@ namespace Autofac.Core.Diagnostics
         public int OperationsInProgress => this._operationBuilders.Count;
 
         /// <inheritdoc/>
-        public void OperationStart(ResolveOperationBase operation, ResolveRequest initiatingRequest)
+        public override void OnOperationStart(OperationStartDiagnosticData data)
         {
-            var builder = _operationBuilders.GetOrAdd(operation.TracingId, k => new IndentingStringBuilder());
+            var builder = _operationBuilders.GetOrAdd(data.Operation.TracingId, k => new IndentingStringBuilder());
 
             builder.AppendFormattedLine(TracerMessages.ResolveOperationStarting);
             builder.AppendLine(TracerMessages.EntryBrace);
@@ -45,19 +43,19 @@ namespace Autofac.Core.Diagnostics
         }
 
         /// <inheritdoc/>
-        public void RequestStart(ResolveOperationBase operation, ResolveRequestContextBase requestContext)
+        public override void OnRequestStart(RequestDiagnosticData data)
         {
-            if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 builder.AppendFormattedLine(TracerMessages.ResolveRequestStarting);
                 builder.AppendLine(TracerMessages.EntryBrace);
                 builder.Indent();
-                builder.AppendFormattedLine(TracerMessages.ServiceDisplay, requestContext.Service);
-                builder.AppendFormattedLine(TracerMessages.ComponentDisplay, requestContext.Registration.Activator.DisplayName());
+                builder.AppendFormattedLine(TracerMessages.ServiceDisplay, data.RequestContext.Service);
+                builder.AppendFormattedLine(TracerMessages.ComponentDisplay, data.RequestContext.Registration.Activator.DisplayName());
 
-                if (requestContext.DecoratorTarget is object)
+                if (data.RequestContext.DecoratorTarget is object)
                 {
-                    builder.AppendFormattedLine(TracerMessages.TargetDisplay, requestContext.DecoratorTarget.Activator.DisplayName());
+                    builder.AppendFormattedLine(TracerMessages.TargetDisplay, data.RequestContext.DecoratorTarget.Activator.DisplayName());
                 }
 
                 builder.AppendLine();
@@ -66,40 +64,43 @@ namespace Autofac.Core.Diagnostics
         }
 
         /// <inheritdoc/>
-        public void MiddlewareEntry(ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+        public override void OnMiddlewareEntry(MiddlewareDiagnosticData data)
         {
-            if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
-                builder.AppendFormattedLine(TracerMessages.EnterMiddleware, middleware.ToString());
+                builder.AppendFormattedLine(TracerMessages.EnterMiddleware, data.Middleware.ToString());
                 builder.Indent();
             }
         }
 
         /// <inheritdoc/>
-        public void MiddlewareExit(ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware, bool succeeded)
+        public override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
         {
-            if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 builder.Outdent();
-
-                if (succeeded)
-                {
-                    builder.AppendFormattedLine(TracerMessages.ExitMiddlewareSuccess, middleware.ToString());
-                }
-                else
-                {
-                    builder.AppendFormattedLine(TracerMessages.ExitMiddlewareFailure, middleware.ToString());
-                }
+                builder.AppendFormattedLine(TracerMessages.ExitMiddlewareFailure, data.Middleware.ToString());
             }
         }
 
         /// <inheritdoc/>
-        public void RequestFailure(ResolveOperationBase operation, ResolveRequestContextBase requestContext, Exception requestException)
+        public override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
         {
-            if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            {
+                builder.Outdent();
+                builder.AppendFormattedLine(TracerMessages.ExitMiddlewareSuccess, data.Middleware.ToString());
+            }
+        }
+
+        /// <inheritdoc/>
+        public override void OnRequestFailure(RequestFailureDiagnosticData data)
+        {
+            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 builder.Outdent();
                 builder.AppendLine(TracerMessages.ExitBrace);
+                var requestException = data.RequestException;
 
                 if (requestException is DependencyResolutionException && requestException.InnerException is object)
                 {
@@ -120,60 +121,60 @@ namespace Autofac.Core.Diagnostics
         }
 
         /// <inheritdoc/>
-        public void RequestSuccess(ResolveOperationBase operation, ResolveRequestContextBase requestContext)
+        public override void OnRequestSuccess(RequestDiagnosticData data)
         {
-            if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 builder.Outdent();
                 builder.AppendLine(TracerMessages.ExitBrace);
-                builder.AppendFormattedLine(TracerMessages.ResolveRequestSucceeded, requestContext.Instance);
+                builder.AppendFormattedLine(TracerMessages.ResolveRequestSucceeded, data.RequestContext.Instance);
             }
         }
 
         /// <inheritdoc/>
-        public void OperationFailure(ResolveOperationBase operation, Exception operationException)
+        public override void OnOperationFailure(OperationFailureDiagnosticData data)
         {
-            if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 try
                 {
                     builder.Outdent();
                     builder.AppendLine(TracerMessages.ExitBrace);
-                    builder.AppendException(TracerMessages.OperationFailed, operationException);
+                    builder.AppendException(TracerMessages.OperationFailed, data.OperationException);
 
                     // If we're completing the root operation, raise the event.
-                    if (operation.IsTopLevelOperation)
+                    if (data.Operation.IsTopLevelOperation)
                     {
-                        OperationCompleted?.Invoke(this, new OperationTraceCompletedArgs(operation, builder.ToString()));
+                        OperationCompleted?.Invoke(this, new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
                     }
                 }
                 finally
                 {
-                    _operationBuilders.TryRemove(operation.TracingId, out var _);
+                    _operationBuilders.TryRemove(data.Operation.TracingId, out var _);
                 }
             }
         }
 
         /// <inheritdoc/>
-        public void OperationSuccess(ResolveOperationBase operation, object resolvedInstance)
+        public override void OnOperationSuccess(OperationSuccessDiagnosticData data)
         {
-            if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 try
                 {
                     builder.Outdent();
                     builder.AppendLine(TracerMessages.ExitBrace);
-                    builder.AppendFormattedLine(TracerMessages.OperationSucceeded, resolvedInstance);
+                    builder.AppendFormattedLine(TracerMessages.OperationSucceeded, data.ResolvedInstance);
 
                     // If we're completing the root operation, raise the event.
-                    if (operation.IsTopLevelOperation)
+                    if (data.Operation.IsTopLevelOperation)
                     {
-                        OperationCompleted?.Invoke(this, new OperationTraceCompletedArgs(operation, builder.ToString()));
+                        OperationCompleted?.Invoke(this, new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
                     }
                 }
                 finally
                 {
-                    _operationBuilders.TryRemove(operation.TracingId, out var _);
+                    _operationBuilders.TryRemove(data.Operation.TracingId, out var _);
                 }
             }
         }

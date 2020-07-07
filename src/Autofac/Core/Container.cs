@@ -100,10 +100,7 @@ namespace Autofac.Core
         }
 
         /// <inheritdoc/>
-        public void AttachTrace(IResolvePipelineTracer tracer)
-        {
-            _rootLifetimeScope.AttachTrace(tracer);
-        }
+        public DiagnosticListener DiagnosticSource => this._rootLifetimeScope.DiagnosticSource;
 
         /// <summary>
         /// Gets the disposer associated with this container. Instances can be associated

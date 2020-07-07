@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Autofac.Core.Diagnostics;
 using Autofac.Core.Pipeline;
 using Autofac.Core.Resolving.Middleware;
 
@@ -271,10 +272,10 @@ namespace Autofac.Core.Resolving.Pipeline
 
                 return (ctxt) =>
                 {
-                    // Optimise the path depending on whether a tracer is attached.
-                    if (ctxt.TracingEnabled)
+                    // Optimise the path depending on whether diagnostics are enabled.
+                    if (ctxt.DiagnosticSource.MiddlewareDiagnosticsEnabled())
                     {
-                        ctxt.Tracer!.MiddlewareEntry(ctxt.Operation, ctxt, stage);
+                        ctxt.DiagnosticSource.MiddlewareEntry(ctxt.Operation, ctxt, stage);
                         var succeeded = false;
                         try
                         {
@@ -284,7 +285,7 @@ namespace Autofac.Core.Resolving.Pipeline
                         }
                         finally
                         {
-                            ctxt.Tracer.MiddlewareExit(ctxt.Operation, ctxt, stage, succeeded);
+                            ctxt.DiagnosticSource.MiddlewareExit(ctxt.Operation, ctxt, stage, succeeded);
                         }
                     }
                     else

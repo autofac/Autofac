@@ -50,21 +50,9 @@ namespace Autofac.Core.Resolving
         /// </summary>
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
         /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
-        /// <param name="pipelineTracer">A pipeline tracer for the operation.</param>
-        public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope, IResolvePipelineTracer? pipelineTracer)
-            : base(mostNestedLifetimeScope, pipelineTracer)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResolveOperation"/> class.
-        /// </summary>
-        /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
-        /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
-        /// <param name="pipelineTracer">An optional pipeline tracer.</param>
         /// <param name="parentOperation">A parent resolve operation, used to maintain tracing between related operations.</param>
-        public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope, IResolvePipelineTracer? pipelineTracer, ResolveOperationBase parentOperation)
-            : base(mostNestedLifetimeScope, pipelineTracer, parentOperation)
+        public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope, ResolveOperationBase parentOperation)
+            : base(mostNestedLifetimeScope, parentOperation)
         {
         }
 

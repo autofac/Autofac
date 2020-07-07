@@ -53,7 +53,6 @@ namespace Autofac.Core.Lifetime
         private readonly ConcurrentDictionary<(Guid, Guid), object> _sharedQualifiedInstances = new ConcurrentDictionary<(Guid, Guid), object>();
         private object? _anonymousTag;
         private LifetimeScope? _parentScope;
-        private IResolvePipelineTracer? _tracer;
 
         /// <summary>
         /// Gets the id of the lifetime scope self-registration.
@@ -75,23 +74,14 @@ namespace Autofac.Core.Lifetime
         /// <param name="componentRegistry">Components used in the scope.</param>
         /// <param name="parent">Parent scope.</param>
         protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent, object tag)
-            : this(componentRegistry, parent, null, tag)
         {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LifetimeScope"/> class.
-        /// </summary>
-        /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
-        /// <param name="componentRegistry">Components used in the scope.</param>
-        /// <param name="parent">Parent scope.</param>
-        /// <param name="tracer">A tracer instance for this scope.</param>
-        protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent, IResolvePipelineTracer? tracer, object tag)
-            : this(componentRegistry, tag)
-        {
-            _tracer = tracer;
+            ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
+            Tag = tag ?? throw new ArgumentNullException(nameof(tag));
             _parentScope = parent ?? throw new ArgumentNullException(nameof(parent));
+
+            _sharedInstances[SelfRegistrationId] = this;
             RootLifetimeScope = _parentScope.RootLifetimeScope;
+            this.DiagnosticSource = _parentScope.DiagnosticSource;
         }
 
         /// <summary>
@@ -101,10 +91,12 @@ namespace Autofac.Core.Lifetime
         /// <param name="componentRegistry">Components used in the scope.</param>
         public LifetimeScope(IComponentRegistry componentRegistry, object tag)
         {
-            _sharedInstances[SelfRegistrationId] = this;
             ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
             Tag = tag ?? throw new ArgumentNullException(nameof(tag));
+
+            _sharedInstances[SelfRegistrationId] = this;
             RootLifetimeScope = this;
+            this.DiagnosticSource = new DiagnosticListener("Autofac");
         }
 
         /// <summary>
@@ -137,7 +129,7 @@ namespace Autofac.Core.Lifetime
             CheckNotDisposed();
             CheckTagIsUnique(tag);
 
-            var scope = new LifetimeScope(ComponentRegistry, this, _tracer, tag);
+            var scope = new LifetimeScope(ComponentRegistry, this, tag);
             RaiseBeginning(scope);
             return scope;
         }
@@ -168,11 +160,8 @@ namespace Autofac.Core.Lifetime
             handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
         }
 
-        /// <inheritdoc />
-        public void AttachTrace(IResolvePipelineTracer tracer)
-        {
-            _tracer = tracer ?? throw new ArgumentNullException(nameof(tracer));
-        }
+        /// <inheritdoc/>
+        public DiagnosticListener DiagnosticSource { get; }
 
         /// <summary>
         /// Begin a new anonymous sub-scope, with additional components available to it.
@@ -226,7 +215,7 @@ namespace Autofac.Core.Lifetime
             CheckTagIsUnique(tag);
 
             var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction);
-            var scope = new LifetimeScope(localsBuilder.Build(), this, _tracer, tag);
+            var scope = new LifetimeScope(localsBuilder.Build(), this, tag);
             scope.Disposer.AddInstanceForDisposal(localsBuilder);
 
             if (localsBuilder.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options)
@@ -303,7 +292,7 @@ namespace Autofac.Core.Lifetime
 
             CheckNotDisposed();
 
-            var operation = new ResolveOperation(this, _tracer);
+            var operation = new ResolveOperation(this);
             var handler = ResolveOperationBeginning;
             handler?.Invoke(this, new ResolveOperationBeginningEventArgs(operation));
             return operation.Execute(request);

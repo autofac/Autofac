@@ -1,3 +1,28 @@
+// This software is part of the Autofac IoC container
+// Copyright © 2020 Autofac Contributors
+// https://autofac.org
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -72,11 +97,11 @@ namespace Autofac.Core.Diagnostics
         {
             if (succeeded && diagnosticSource.IsEnabled(MiddlewareSuccessKey))
             {
-                diagnosticSource.Write(MiddlewareSuccessKey, new { operation, requestContext, middleware });
+                diagnosticSource.Write(MiddlewareSuccessKey, new MiddlewareDiagnosticData(operation, requestContext, middleware));
             }
             else if (!succeeded && diagnosticSource.IsEnabled(MiddlewareFailureKey))
             {
-                diagnosticSource.Write(MiddlewareFailureKey, new { operation, requestContext, middleware });
+                diagnosticSource.Write(MiddlewareFailureKey, new MiddlewareDiagnosticData(operation, requestContext, middleware));
             }
         }
 
@@ -104,7 +129,7 @@ namespace Autofac.Core.Diagnostics
         {
             if (diagnosticSource.IsEnabled(OperationStartKey))
             {
-                diagnosticSource.Write(OperationStartKey, new { operation, initiatingRequest });
+                diagnosticSource.Write(OperationStartKey, new OperationStartDiagnosticData(operation, initiatingRequest));
             }
         }
 
@@ -118,7 +143,7 @@ namespace Autofac.Core.Diagnostics
         {
             if (diagnosticSource.IsEnabled(OperationStartKey))
             {
-                diagnosticSource.Write(OperationStartKey, new { operation, operationException });
+                diagnosticSource.Write(OperationStartKey, new OperationFailureDiagnosticData(operation, operationException));
             }
         }
 
@@ -133,8 +158,18 @@ namespace Autofac.Core.Diagnostics
         {
             if (diagnosticSource.IsEnabled(OperationStartKey))
             {
-                diagnosticSource.Write(OperationStartKey, new { operation, resolvedInstance });
+                diagnosticSource.Write(OperationStartKey, new OperationSuccessDiagnosticData(operation, resolvedInstance));
             }
+        }
+
+        /// <summary>
+        /// Determines if diagnostics for resolve requests is enabled.
+        /// </summary>
+        /// <param name="diagnosticSource">The diagnostic source to check for diagnostic settings.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool RequestDiagnosticsEnabled(this DiagnosticSource diagnosticSource)
+        {
+            return diagnosticSource.IsEnabled(RequestStartKey) || diagnosticSource.IsEnabled(RequestSuccessKey) || diagnosticSource.IsEnabled(RequestFailureKey);
         }
 
         /// <summary>
@@ -147,7 +182,7 @@ namespace Autofac.Core.Diagnostics
         {
             if (diagnosticSource.IsEnabled(RequestStartKey))
             {
-                diagnosticSource.Write(RequestStartKey, new { operation, requestContext });
+                diagnosticSource.Write(RequestStartKey, new RequestDiagnosticData(operation, requestContext));
             }
         }
 
@@ -162,7 +197,7 @@ namespace Autofac.Core.Diagnostics
         {
             if (diagnosticSource.IsEnabled(RequestFailureKey))
             {
-                diagnosticSource.Write(RequestFailureKey, new { operation, requestContext, requestException });
+                diagnosticSource.Write(RequestFailureKey, new RequestFailureDiagnosticData(operation, requestContext, requestException));
             }
         }
 
@@ -176,7 +211,7 @@ namespace Autofac.Core.Diagnostics
         {
             if (diagnosticSource.IsEnabled(RequestSuccessKey))
             {
-                diagnosticSource.Write(RequestSuccessKey, new { operation, requestContext });
+                diagnosticSource.Write(RequestSuccessKey, new RequestDiagnosticData(operation, requestContext));
             }
         }
     }

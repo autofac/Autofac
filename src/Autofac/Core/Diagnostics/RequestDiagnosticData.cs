@@ -1,4 +1,4 @@
-﻿// This software is part of the Autofac IoC container
+// This software is part of the Autofac IoC container
 // Copyright © 2020 Autofac Contributors
 // https://autofac.org
 //
@@ -24,33 +24,20 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using Autofac.Core.Resolving;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Diagnostics
 {
-    /// <summary>
-    /// Event data for the <see cref="DefaultDiagnosticTracer.OperationCompleted"/> event.
-    /// </summary>
-    public sealed class OperationTraceCompletedArgs
+    public class RequestDiagnosticData
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OperationTraceCompletedArgs"/> class.
-        /// </summary>
-        /// <param name="operation">The operation for which a trace has completed.</param>
-        /// <param name="traceContent">The content of the trace.</param>
-        public OperationTraceCompletedArgs(ResolveOperationBase operation, string traceContent)
+        public RequestDiagnosticData(ResolveOperationBase operation, ResolveRequestContextBase requestContext)
         {
-            Operation = operation;
-            TraceContent = traceContent;
+            this.Operation = operation;
+            this.RequestContext = requestContext;
         }
 
-        /// <summary>
-        /// Gets the operation for which a trace is available.
-        /// </summary>
-        public ResolveOperationBase Operation { get; }
+        public ResolveOperationBase Operation { get; private set; }
 
-        /// <summary>
-        /// Gets the content of the trace.
-        /// </summary>
-        public string TraceContent { get; }
+        public ResolveRequestContextBase RequestContext { get; private set; }
     }
 }

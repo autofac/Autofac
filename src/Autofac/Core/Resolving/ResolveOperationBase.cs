@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Autofac.Core.Diagnostics;
 using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
@@ -39,7 +40,6 @@ namespace Autofac.Core.Resolving
         private const int SuccessListInitialCapacity = 32;
 
         private bool _ended;
-        private IResolvePipelineTracer? _pipelineTracer;
         private List<ResolveRequestContext> _successfulRequests = new List<ResolveRequestContext>(SuccessListInitialCapacity);
         private int _nextCompleteSuccessfulRequestStartPos = 0;
 
@@ -48,24 +48,14 @@ namespace Autofac.Core.Resolving
         /// </summary>
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
         /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
-        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope)
-            : this(mostNestedLifetimeScope, null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResolveOperationBase"/> class.
-        /// </summary>
-        /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
-        /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
         /// <param name="pipelineTracer">A pipeline tracer for the operation.</param>
-        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope, IResolvePipelineTracer? pipelineTracer)
+        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope)
         {
             TracingId = this;
             IsTopLevelOperation = true;
             CurrentScope = mostNestedLifetimeScope;
-            _pipelineTracer = pipelineTracer;
             IsTopLevelOperation = true;
+            this.DiagnosticSource = mostNestedLifetimeScope.DiagnosticSource;
         }
 
         /// <summary>
@@ -73,10 +63,9 @@ namespace Autofac.Core.Resolving
         /// </summary>
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
         /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
-        /// <param name="pipelineTracer">A pipeline tracer for the operation.</param>
         /// <param name="tracingId">A tracing ID for the operation.</param>
-        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope, IResolvePipelineTracer? pipelineTracer, ITracingIdentifer tracingId)
-            : this(mostNestedLifetimeScope, pipelineTracer)
+        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope, ITracingIdentifer tracingId)
+            : this(mostNestedLifetimeScope)
         {
             TracingId = tracingId;
             IsTopLevelOperation = false;
@@ -101,6 +90,11 @@ namespace Autofac.Core.Resolving
         /// Gets the tracing identifier for the operation.
         /// </summary>
         public ITracingIdentifer TracingId { get; }
+
+        /// <summary>
+        /// Gets the <see cref="System.Diagnostics.DiagnosticSource"/> for the operation.
+        /// </summary>
+        public DiagnosticSource DiagnosticSource { get; }
 
         /// <summary>
         /// Gets or sets the current request depth.
@@ -155,26 +149,40 @@ namespace Autofac.Core.Resolving
             {
                 InitiatingRequest = request;
 
-                _pipelineTracer?.OperationStart(this, request);
+                if (this.DiagnosticSource.OperationDiagnosticsEnabled())
+                {
+                    this.DiagnosticSource.OperationStart(this, request);
+                }
 
                 result = GetOrCreateInstance(CurrentScope, request);
             }
             catch (ObjectDisposedException disposeException)
             {
-                _pipelineTracer?.OperationFailure(this, disposeException);
+                if (this.DiagnosticSource.OperationDiagnosticsEnabled())
+                {
+                    this.DiagnosticSource.OperationFailure(this, disposeException);
+                }
 
                 throw;
             }
             catch (DependencyResolutionException dependencyResolutionException)
             {
-                _pipelineTracer?.OperationFailure(this, dependencyResolutionException);
+                if (this.DiagnosticSource.OperationDiagnosticsEnabled())
+                {
+                    this.DiagnosticSource.OperationFailure(this, dependencyResolutionException);
+                }
+
                 End(dependencyResolutionException);
                 throw;
             }
             catch (Exception exception)
             {
                 End(exception);
-                _pipelineTracer?.OperationFailure(this, exception);
+                if (this.DiagnosticSource.OperationDiagnosticsEnabled())
+                {
+                    this.DiagnosticSource.OperationFailure(this, exception);
+                }
+
                 throw new DependencyResolutionException(ResolveOperationResources.ExceptionDuringResolve, exception);
             }
             finally
@@ -184,7 +192,10 @@ namespace Autofac.Core.Resolving
 
             End();
 
-            _pipelineTracer?.OperationSuccess(this, result);
+            if (this.DiagnosticSource.OperationDiagnosticsEnabled())
+            {
+                this.DiagnosticSource.OperationSuccess(this, result);
+            }
 
             return result;
         }
@@ -195,7 +206,7 @@ namespace Autofac.Core.Resolving
             if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
 
             // Create a new request context.
-            var requestContext = new ResolveRequestContext(this, request, currentOperationScope, _pipelineTracer);
+            var requestContext = new ResolveRequestContext(this, request, currentOperationScope);
 
             // Raise our request-beginning event.
             var handler = ResolveRequestBeginning;
@@ -212,7 +223,10 @@ namespace Autofac.Core.Resolving
 
             try
             {
-                _pipelineTracer?.RequestStart(this, requestContext);
+                if (this.DiagnosticSource.RequestDiagnosticsEnabled())
+                {
+                    this.DiagnosticSource.RequestStart(this, requestContext);
+                }
 
                 // Invoke the resolve pipeline.
                 request.ResolvePipeline.Invoke(requestContext);
@@ -224,11 +238,18 @@ namespace Autofac.Core.Resolving
                 }
 
                 _successfulRequests.Add(requestContext);
-                _pipelineTracer?.RequestSuccess(this, requestContext);
+                if (this.DiagnosticSource.RequestDiagnosticsEnabled())
+                {
+                    this.DiagnosticSource.RequestSuccess(this, requestContext);
+                }
             }
             catch (Exception ex)
             {
-                _pipelineTracer?.RequestFailure(this, requestContext, ex);
+                if (this.DiagnosticSource.RequestDiagnosticsEnabled())
+                {
+                    this.DiagnosticSource.RequestFailure(this, requestContext, ex);
+                }
+
                 throw;
             }
             finally
