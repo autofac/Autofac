@@ -46,8 +46,7 @@ namespace Autofac.Test
                 var request = new ResolveRequestContext(
                     new ResolveOperation(lifetimeScope),
                     new ResolveRequest(new TypedService(typeof(T)), Mocks.GetResolvableImplementation(), parameters),
-                    lifetimeScope,
-                    null);
+                    lifetimeScope);
 
                 built.Invoke(request);
 

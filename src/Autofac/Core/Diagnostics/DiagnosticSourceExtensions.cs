@@ -77,7 +77,7 @@ namespace Autofac.Core.Diagnostics
         {
             if (diagnosticSource.IsEnabled(MiddlewareEntryKey))
             {
-                diagnosticSource.Write(MiddlewareEntryKey, new { operation, requestContext, middleware });
+                diagnosticSource.Write(MiddlewareEntryKey, new MiddlewareDiagnosticData(operation, requestContext, middleware));
             }
         }
 
@@ -141,9 +141,9 @@ namespace Autofac.Core.Diagnostics
         /// <param name="operationException">The exception that caused the operation failure.</param>
         public static void OperationFailure(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, Exception operationException)
         {
-            if (diagnosticSource.IsEnabled(OperationStartKey))
+            if (diagnosticSource.IsEnabled(OperationFailureKey))
             {
-                diagnosticSource.Write(OperationStartKey, new OperationFailureDiagnosticData(operation, operationException));
+                diagnosticSource.Write(OperationFailureKey, new OperationFailureDiagnosticData(operation, operationException));
             }
         }
 
@@ -156,9 +156,9 @@ namespace Autofac.Core.Diagnostics
         /// <param name="resolvedInstance">The resolved instance providing the requested service.</param>
         public static void OperationSuccess(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, object resolvedInstance)
         {
-            if (diagnosticSource.IsEnabled(OperationStartKey))
+            if (diagnosticSource.IsEnabled(OperationSuccessKey))
             {
-                diagnosticSource.Write(OperationStartKey, new OperationSuccessDiagnosticData(operation, resolvedInstance));
+                diagnosticSource.Write(OperationSuccessKey, new OperationSuccessDiagnosticData(operation, resolvedInstance));
             }
         }
 

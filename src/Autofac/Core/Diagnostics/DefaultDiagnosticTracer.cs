@@ -18,6 +18,21 @@ namespace Autofac.Core.Diagnostics
 
         private static readonly string[] NewLineSplit = new[] { Environment.NewLine };
 
+        public DefaultDiagnosticTracer()
+        {
+            this.EnableAll();
+        }
+
+        public override void Enable(string diagnosticName)
+        {
+            // Do nothing. Default is always enabled for everything.
+        }
+
+        public override void Disable(string diagnosticName)
+        {
+            // Do nothing. Default is always enabled for everything.
+        }
+
         /// <summary>
         /// Event raised when a resolve operation completes, and trace data is available.
         /// </summary>

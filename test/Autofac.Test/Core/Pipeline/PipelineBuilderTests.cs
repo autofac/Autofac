@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac.Core;
@@ -424,8 +425,7 @@ namespace Autofac.Test.Core.Pipeline
                 : base(
                       new ResolveOperation(new MockLifetimeScope()),
                       new ResolveRequest(new TypedService(typeof(int)), Mocks.GetResolvableImplementation(), Enumerable.Empty<Parameter>()),
-                      new MockLifetimeScope(),
-                      null)
+                      new MockLifetimeScope())
             {
             }
         }
@@ -441,6 +441,8 @@ namespace Autofac.Test.Core.Pipeline
             public object Tag => throw new NotImplementedException();
 
             public IComponentRegistry ComponentRegistry => throw new NotImplementedException();
+
+            public DiagnosticListener DiagnosticSource { get; } = new DiagnosticListener("Autofac");
 
             public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning
             {
@@ -458,11 +460,6 @@ namespace Autofac.Test.Core.Pipeline
             {
                 add { }
                 remove { }
-            }
-
-            public void AttachTrace(IResolvePipelineTracer tracer)
-            {
-                throw new NotImplementedException();
             }
 
             public ILifetimeScope BeginLifetimeScope()

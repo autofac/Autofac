@@ -31,7 +31,7 @@ namespace Autofac.Specification.Test.Lifetime
                 _output.WriteLine(args.TraceContent);
             };
 
-            lifetime.AttachTrace(tracer);
+            lifetime.SubscribeToDiagnostics(tracer);
 
             var ctxA = lifetime.Resolve<A>();
             var ctxA2 = lifetime.Resolve<A>();

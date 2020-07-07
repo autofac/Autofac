@@ -113,11 +113,13 @@ namespace Autofac.Specification.Test.Features
 
             string capturedTrace = null;
 
-            c.AttachTrace((req, trace) =>
+            var tracer = new DefaultDiagnosticTracer();
+            tracer.OperationCompleted += (sender, args) =>
             {
-                capturedTrace = trace;
-                _output.WriteLine(trace);
-            });
+                capturedTrace = args.TraceContent;
+                _output.WriteLine(capturedTrace);
+            };
+            c.SubscribeToDiagnostics(tracer);
 
             Assert.Throws<DependencyResolutionException>(() => c.Resolve<DependsByProp>());
             Assert.NotNull(capturedTrace);

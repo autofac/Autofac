@@ -34,12 +34,12 @@ namespace Autofac.Test.Core.Resolving
             builder.RegisterInstance("Hello");
 
             var container = builder.Build();
+            var mockTracer = Mocks.GetTracer();
+            container.SubscribeToDiagnostics(mockTracer);
 
             var scope = container.Resolve<ILifetimeScope>() as ISharingLifetimeScope;
 
-            var mockTracer = Mocks.GetTracer();
-
-            var resolveOp = new ResolveOperation(scope, mockTracer);
+            var resolveOp = new ResolveOperation(scope);
 
             var raisedEvents = new List<string>();
 
@@ -84,12 +84,12 @@ namespace Autofac.Test.Core.Resolving
             builder.Register<string>(ctxt => throw new InvalidOperationException());
 
             var container = builder.Build();
+            var mockTracer = Mocks.GetTracer();
+            container.SubscribeToDiagnostics(mockTracer);
 
             var scope = container.Resolve<ILifetimeScope>() as ISharingLifetimeScope;
 
-            var mockTracer = Mocks.GetTracer();
-
-            var resolveOp = new ResolveOperation(scope, mockTracer);
+            var resolveOp = new ResolveOperation(scope);
 
             var raisedEvents = new List<string>();
 

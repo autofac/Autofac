@@ -217,7 +217,7 @@ namespace Autofac.Test.Features.Decorators
 
             var tracer = new DefaultDiagnosticTracer();
 
-            container.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
 
             tracer.OperationCompleted += (sender, args) =>
             {
@@ -253,7 +253,7 @@ namespace Autofac.Test.Features.Decorators
 
             var tracer = new DefaultDiagnosticTracer();
 
-            container.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
 
             tracer.OperationCompleted += (sender, args) =>
             {

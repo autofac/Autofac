@@ -104,10 +104,11 @@ namespace Autofac.Test
             }
         }
 
-        internal class MockTracer : IResolvePipelineTracer
+        internal class MockTracer : DiagnosticTracerBase
         {
             public MockTracer()
             {
+                this.EnableAll();
             }
 
             public event Action<ResolveOperationBase, ResolveRequest> OperationStarting;
@@ -126,44 +127,49 @@ namespace Autofac.Test
 
             public event Action<ResolveOperationBase, object> OperationSucceeding;
 
-            public void OperationStart(ResolveOperationBase operation, ResolveRequest initiatingRequest)
+            public override void OnOperationStart(OperationStartDiagnosticData data)
             {
-                OperationStarting?.Invoke(operation, initiatingRequest);
+                OperationStarting?.Invoke(data.Operation, data.InitiatingRequest);
             }
 
-            public void RequestStart(ResolveOperationBase operation, ResolveRequestContextBase requestContext)
+            public override void OnRequestStart(RequestDiagnosticData data)
             {
-                RequestStarting?.Invoke(operation, requestContext);
+                RequestStarting?.Invoke(data.Operation, data.RequestContext);
             }
 
-            public void MiddlewareEntry(ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+            public override void OnMiddlewareEntry(MiddlewareDiagnosticData data)
             {
-                EnteringMiddleware?.Invoke(operation, requestContext, middleware);
+                EnteringMiddleware?.Invoke(data.Operation, data.RequestContext, data.Middleware);
             }
 
-            public void MiddlewareExit(ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware, bool succeeded)
+            public override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
             {
-                ExitingMiddleware?.Invoke(operation, requestContext, middleware, succeeded);
+                ExitingMiddleware?.Invoke(data.Operation, data.RequestContext, data.Middleware, false);
             }
 
-            public void RequestFailure(ResolveOperationBase operation, ResolveRequestContextBase requestContext, Exception requestException)
+            public override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
             {
-                RequestFailing?.Invoke(operation, requestContext, requestException);
+                ExitingMiddleware?.Invoke(data.Operation, data.RequestContext, data.Middleware, true);
             }
 
-            public void RequestSuccess(ResolveOperationBase operation, ResolveRequestContextBase requestContext)
+            public override void OnRequestFailure(RequestFailureDiagnosticData data)
             {
-                RequestSucceeding?.Invoke(operation, requestContext);
+                RequestFailing?.Invoke(data.Operation, data.RequestContext, data.RequestException);
             }
 
-            public void OperationFailure(ResolveOperationBase operation, Exception operationException)
+            public override void OnRequestSuccess(RequestDiagnosticData data)
             {
-                OperationFailing?.Invoke(operation, operationException);
+                RequestSucceeding?.Invoke(data.Operation, data.RequestContext);
             }
 
-            public void OperationSuccess(ResolveOperationBase operation, object resolvedInstance)
+            public override void OnOperationFailure(OperationFailureDiagnosticData data)
             {
-                OperationSucceeding?.Invoke(operation, resolvedInstance);
+                OperationFailing?.Invoke(data.Operation, data.OperationException);
+            }
+
+            public override void OnOperationSuccess(OperationSuccessDiagnosticData data)
+            {
+                OperationSucceeding?.Invoke(data.Operation, data.ResolvedInstance);
             }
         }
     }
