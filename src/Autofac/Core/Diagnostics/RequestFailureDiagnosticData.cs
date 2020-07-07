@@ -33,9 +33,9 @@ namespace Autofac.Core.Diagnostics
     {
         public RequestFailureDiagnosticData(ResolveOperationBase operation, ResolveRequestContextBase requestContext, Exception requestException)
         {
-            this.Operation = operation;
-            this.RequestContext = requestContext;
-            this.RequestException = requestException;
+            Operation = operation;
+            RequestContext = requestContext;
+            RequestException = requestException;
         }
 
         public ResolveOperationBase Operation { get; private set; }

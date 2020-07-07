@@ -55,7 +55,7 @@ namespace Autofac.Core.Resolving
             IsTopLevelOperation = true;
             CurrentScope = mostNestedLifetimeScope;
             IsTopLevelOperation = true;
-            this.DiagnosticSource = mostNestedLifetimeScope.DiagnosticSource;
+            DiagnosticSource = mostNestedLifetimeScope.DiagnosticSource;
         }
 
         /// <summary>
@@ -149,27 +149,27 @@ namespace Autofac.Core.Resolving
             {
                 InitiatingRequest = request;
 
-                if (this.DiagnosticSource.OperationDiagnosticsEnabled())
+                if (DiagnosticSource.OperationDiagnosticsEnabled())
                 {
-                    this.DiagnosticSource.OperationStart(this, request);
+                    DiagnosticSource.OperationStart(this, request);
                 }
 
                 result = GetOrCreateInstance(CurrentScope, request);
             }
             catch (ObjectDisposedException disposeException)
             {
-                if (this.DiagnosticSource.OperationDiagnosticsEnabled())
+                if (DiagnosticSource.OperationDiagnosticsEnabled())
                 {
-                    this.DiagnosticSource.OperationFailure(this, disposeException);
+                    DiagnosticSource.OperationFailure(this, disposeException);
                 }
 
                 throw;
             }
             catch (DependencyResolutionException dependencyResolutionException)
             {
-                if (this.DiagnosticSource.OperationDiagnosticsEnabled())
+                if (DiagnosticSource.OperationDiagnosticsEnabled())
                 {
-                    this.DiagnosticSource.OperationFailure(this, dependencyResolutionException);
+                    DiagnosticSource.OperationFailure(this, dependencyResolutionException);
                 }
 
                 End(dependencyResolutionException);
@@ -178,9 +178,9 @@ namespace Autofac.Core.Resolving
             catch (Exception exception)
             {
                 End(exception);
-                if (this.DiagnosticSource.OperationDiagnosticsEnabled())
+                if (DiagnosticSource.OperationDiagnosticsEnabled())
                 {
-                    this.DiagnosticSource.OperationFailure(this, exception);
+                    DiagnosticSource.OperationFailure(this, exception);
                 }
 
                 throw new DependencyResolutionException(ResolveOperationResources.ExceptionDuringResolve, exception);
@@ -192,9 +192,9 @@ namespace Autofac.Core.Resolving
 
             End();
 
-            if (this.DiagnosticSource.OperationDiagnosticsEnabled())
+            if (DiagnosticSource.OperationDiagnosticsEnabled())
             {
-                this.DiagnosticSource.OperationSuccess(this, result);
+                DiagnosticSource.OperationSuccess(this, result);
             }
 
             return result;
@@ -223,9 +223,9 @@ namespace Autofac.Core.Resolving
 
             try
             {
-                if (this.DiagnosticSource.RequestDiagnosticsEnabled())
+                if (DiagnosticSource.RequestDiagnosticsEnabled())
                 {
-                    this.DiagnosticSource.RequestStart(this, requestContext);
+                    DiagnosticSource.RequestStart(this, requestContext);
                 }
 
                 // Invoke the resolve pipeline.
@@ -238,16 +238,16 @@ namespace Autofac.Core.Resolving
                 }
 
                 _successfulRequests.Add(requestContext);
-                if (this.DiagnosticSource.RequestDiagnosticsEnabled())
+                if (DiagnosticSource.RequestDiagnosticsEnabled())
                 {
-                    this.DiagnosticSource.RequestSuccess(this, requestContext);
+                    DiagnosticSource.RequestSuccess(this, requestContext);
                 }
             }
             catch (Exception ex)
             {
-                if (this.DiagnosticSource.RequestDiagnosticsEnabled())
+                if (DiagnosticSource.RequestDiagnosticsEnabled())
                 {
-                    this.DiagnosticSource.RequestFailure(this, requestContext, ex);
+                    DiagnosticSource.RequestFailure(this, requestContext, ex);
                 }
 
                 throw;

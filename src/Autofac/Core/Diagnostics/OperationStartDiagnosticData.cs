@@ -31,8 +31,8 @@ namespace Autofac.Core.Diagnostics
     {
         public OperationStartDiagnosticData(ResolveOperationBase operation, ResolveRequest initiatingRequest)
         {
-            this.Operation = operation;
-            this.InitiatingRequest = initiatingRequest;
+            Operation = operation;
+            InitiatingRequest = initiatingRequest;
         }
 
         public ResolveOperationBase Operation { get; private set; }

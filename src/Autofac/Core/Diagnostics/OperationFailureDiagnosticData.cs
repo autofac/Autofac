@@ -32,8 +32,8 @@ namespace Autofac.Core.Diagnostics
     {
         public OperationFailureDiagnosticData(ResolveOperationBase operation, Exception operationException)
         {
-            this.Operation = operation;
-            this.OperationException = operationException;
+            Operation = operation;
+            OperationException = operationException;
         }
 
         public ResolveOperationBase Operation { get; private set; }

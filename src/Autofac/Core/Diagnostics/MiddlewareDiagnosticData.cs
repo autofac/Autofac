@@ -32,9 +32,9 @@ namespace Autofac.Core.Diagnostics
     {
         public MiddlewareDiagnosticData(ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
         {
-            this.Operation = operation;
-            this.RequestContext = requestContext;
-            this.Middleware = middleware;
+            Operation = operation;
+            RequestContext = requestContext;
+            Middleware = middleware;
         }
 
         public ResolveOperationBase Operation { get; private set; }

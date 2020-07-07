@@ -32,8 +32,8 @@ namespace Autofac.Core.Diagnostics
     {
         public RequestDiagnosticData(ResolveOperationBase operation, ResolveRequestContextBase requestContext)
         {
-            this.Operation = operation;
-            this.RequestContext = requestContext;
+            Operation = operation;
+            RequestContext = requestContext;
         }
 
         public ResolveOperationBase Operation { get; private set; }

@@ -34,38 +34,38 @@ namespace Autofac.Core.Diagnostics
 
         public virtual void Enable(string diagnosticName)
         {
-            if (!this._subscriptions.Contains(diagnosticName))
+            if (!_subscriptions.Contains(diagnosticName))
             {
-                this._subscriptions.Add(diagnosticName);
+                _subscriptions.Add(diagnosticName);
             }
         }
 
         public void EnableAll()
         {
-            this._subscriptions.Add(DiagnosticEventKeys.MiddlewareEntry);
-            this._subscriptions.Add(DiagnosticEventKeys.MiddlewareFailure);
-            this._subscriptions.Add(DiagnosticEventKeys.MiddlewareSuccess);
-            this._subscriptions.Add(DiagnosticEventKeys.OperationFailure);
-            this._subscriptions.Add(DiagnosticEventKeys.OperationStart);
-            this._subscriptions.Add(DiagnosticEventKeys.OperationSuccess);
-            this._subscriptions.Add(DiagnosticEventKeys.RequestFailure);
-            this._subscriptions.Add(DiagnosticEventKeys.RequestStart);
-            this._subscriptions.Add(DiagnosticEventKeys.RequestSuccess);
+            _subscriptions.Add(DiagnosticEventKeys.MiddlewareEntry);
+            _subscriptions.Add(DiagnosticEventKeys.MiddlewareFailure);
+            _subscriptions.Add(DiagnosticEventKeys.MiddlewareSuccess);
+            _subscriptions.Add(DiagnosticEventKeys.OperationFailure);
+            _subscriptions.Add(DiagnosticEventKeys.OperationStart);
+            _subscriptions.Add(DiagnosticEventKeys.OperationSuccess);
+            _subscriptions.Add(DiagnosticEventKeys.RequestFailure);
+            _subscriptions.Add(DiagnosticEventKeys.RequestStart);
+            _subscriptions.Add(DiagnosticEventKeys.RequestSuccess);
         }
 
         public virtual void Disable(string diagnosticName)
         {
-            this._subscriptions.Remove(diagnosticName);
+            _subscriptions.Remove(diagnosticName);
         }
 
         public virtual bool IsEnabled(string diagnosticName)
         {
-            if (this._subscriptions.Count == 0)
+            if (_subscriptions.Count == 0)
             {
                 return false;
             }
 
-            return this._subscriptions.Contains(diagnosticName);
+            return _subscriptions.Contains(diagnosticName);
         }
 
         void IObserver<KeyValuePair<string, object>>.OnCompleted()
@@ -80,7 +80,7 @@ namespace Autofac.Core.Diagnostics
 
         void IObserver<KeyValuePair<string, object>>.OnNext(KeyValuePair<string, object> value)
         {
-            this.Write(value.Key, value.Value);
+            Write(value.Key, value.Value);
         }
 
         public virtual void OnMiddlewareEntry(MiddlewareDiagnosticData data)
@@ -121,7 +121,7 @@ namespace Autofac.Core.Diagnostics
 
         public virtual void Write(string diagnosticName, object parameters)
         {
-            if (parameters == null || !this.IsEnabled(diagnosticName))
+            if (parameters == null || !IsEnabled(diagnosticName))
             {
                 return;
             }
@@ -129,31 +129,31 @@ namespace Autofac.Core.Diagnostics
             switch (diagnosticName)
             {
                 case DiagnosticEventKeys.MiddlewareEntry:
-                    this.OnMiddlewareEntry((MiddlewareDiagnosticData)parameters);
+                    OnMiddlewareEntry((MiddlewareDiagnosticData)parameters);
                     break;
                 case DiagnosticEventKeys.MiddlewareFailure:
-                    this.OnMiddlewareFailure((MiddlewareDiagnosticData)parameters);
+                    OnMiddlewareFailure((MiddlewareDiagnosticData)parameters);
                     break;
                 case DiagnosticEventKeys.MiddlewareSuccess:
-                    this.OnMiddlewareSuccess((MiddlewareDiagnosticData)parameters);
+                    OnMiddlewareSuccess((MiddlewareDiagnosticData)parameters);
                     break;
                 case DiagnosticEventKeys.OperationFailure:
-                    this.OnOperationFailure((OperationFailureDiagnosticData)parameters);
+                    OnOperationFailure((OperationFailureDiagnosticData)parameters);
                     break;
                 case DiagnosticEventKeys.OperationStart:
-                    this.OnOperationStart((OperationStartDiagnosticData)parameters);
+                    OnOperationStart((OperationStartDiagnosticData)parameters);
                     break;
                 case DiagnosticEventKeys.OperationSuccess:
-                    this.OnOperationSuccess((OperationSuccessDiagnosticData)parameters);
+                    OnOperationSuccess((OperationSuccessDiagnosticData)parameters);
                     break;
                 case DiagnosticEventKeys.RequestFailure:
-                    this.OnRequestFailure((RequestFailureDiagnosticData)parameters);
+                    OnRequestFailure((RequestFailureDiagnosticData)parameters);
                     break;
                 case DiagnosticEventKeys.RequestStart:
-                    this.OnRequestStart((RequestDiagnosticData)parameters);
+                    OnRequestStart((RequestDiagnosticData)parameters);
                     break;
                 case DiagnosticEventKeys.RequestSuccess:
-                    this.OnRequestSuccess((RequestDiagnosticData)parameters);
+                    OnRequestSuccess((RequestDiagnosticData)parameters);
                     break;
                 default:
                     break;

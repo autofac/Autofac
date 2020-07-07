@@ -20,7 +20,7 @@ namespace Autofac.Core.Diagnostics
 
         public DefaultDiagnosticTracer()
         {
-            this.EnableAll();
+            EnableAll();
         }
 
         public override void Enable(string diagnosticName)
@@ -45,7 +45,7 @@ namespace Autofac.Core.Diagnostics
         /// An <see cref="int"/> with the number of trace IDs associated
         /// with in-progress operations being traced by this tracer.
         /// </value>
-        public int OperationsInProgress => this._operationBuilders.Count;
+        public int OperationsInProgress => _operationBuilders.Count;
 
         /// <inheritdoc/>
         public override void OnOperationStart(OperationStartDiagnosticData data)

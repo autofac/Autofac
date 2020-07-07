@@ -119,7 +119,7 @@ namespace Autofac.Specification.Test.Diagnostics
         {
             public Decorator(IService decorated)
             {
-                this.Decorated = decorated;
+                Decorated = decorated;
             }
 
             public IService Decorated { get; }

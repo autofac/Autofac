@@ -31,8 +31,8 @@ namespace Autofac.Core.Diagnostics
     {
         public OperationSuccessDiagnosticData(ResolveOperationBase operation, object resolvedInstance)
         {
-            this.Operation = operation;
-            this.ResolvedInstance = resolvedInstance;
+            Operation = operation;
+            ResolvedInstance = resolvedInstance;
         }
 
         public ResolveOperationBase Operation { get; private set; }
