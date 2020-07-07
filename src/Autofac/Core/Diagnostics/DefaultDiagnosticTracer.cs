@@ -12,13 +12,13 @@ namespace Autofac.Core.Diagnostics
     /// Provides a default resolve pipeline tracer that builds a multi-line string describing the end-to-end operation flow.
     /// Attach to the <see cref="OperationCompleted"/> event to receive notifications when new trace content is available.
     /// </summary>
-    public class DefaultDiagnosticTracer : IResolvePipelineTracer
+    public class DefaultDiagnosticTracer
     {
         private const string RequestExceptionTraced = "__RequestException";
 
         private readonly ConcurrentDictionary<ITracingIdentifer, IndentingStringBuilder> _operationBuilders = new ConcurrentDictionary<ITracingIdentifer, IndentingStringBuilder>();
 
-        private static readonly string[] _newLineSplit = new[] { Environment.NewLine };
+        private static readonly string[] NewLineSplit = new[] { Environment.NewLine };
 
         /// <summary>
         /// Event raised when a resolve operation completes, and trace data is available.
@@ -35,7 +35,7 @@ namespace Autofac.Core.Diagnostics
         public int OperationsInProgress => this._operationBuilders.Count;
 
         /// <inheritdoc/>
-        void IResolvePipelineTracer.OperationStart(ResolveOperationBase operation, ResolveRequest initiatingRequest)
+        public void OperationStart(ResolveOperationBase operation, ResolveRequest initiatingRequest)
         {
             var builder = _operationBuilders.GetOrAdd(operation.TracingId, k => new IndentingStringBuilder());
 
@@ -45,7 +45,7 @@ namespace Autofac.Core.Diagnostics
         }
 
         /// <inheritdoc/>
-        void IResolvePipelineTracer.RequestStart(ResolveOperationBase operation, ResolveRequestContextBase requestContext)
+        public void RequestStart(ResolveOperationBase operation, ResolveRequestContextBase requestContext)
         {
             if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
             {
@@ -66,7 +66,7 @@ namespace Autofac.Core.Diagnostics
         }
 
         /// <inheritdoc/>
-        void IResolvePipelineTracer.MiddlewareEntry(ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+        public void MiddlewareEntry(ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
         {
             if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
             {
@@ -76,7 +76,7 @@ namespace Autofac.Core.Diagnostics
         }
 
         /// <inheritdoc/>
-        void IResolvePipelineTracer.MiddlewareExit(ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware, bool succeeded)
+        public void MiddlewareExit(ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware, bool succeeded)
         {
             if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
             {
@@ -94,7 +94,7 @@ namespace Autofac.Core.Diagnostics
         }
 
         /// <inheritdoc/>
-        void IResolvePipelineTracer.RequestFailure(ResolveOperationBase operation, ResolveRequestContextBase requestContext, Exception requestException)
+        public void RequestFailure(ResolveOperationBase operation, ResolveRequestContextBase requestContext, Exception requestException)
         {
             if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
             {
@@ -120,7 +120,7 @@ namespace Autofac.Core.Diagnostics
         }
 
         /// <inheritdoc/>
-        void IResolvePipelineTracer.RequestSuccess(ResolveOperationBase operation, ResolveRequestContextBase requestContext)
+        public void RequestSuccess(ResolveOperationBase operation, ResolveRequestContextBase requestContext)
         {
             if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
             {
@@ -131,7 +131,7 @@ namespace Autofac.Core.Diagnostics
         }
 
         /// <inheritdoc/>
-        void IResolvePipelineTracer.OperationFailure(ResolveOperationBase operation, Exception operationException)
+        public void OperationFailure(ResolveOperationBase operation, Exception operationException)
         {
             if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
             {
@@ -155,7 +155,7 @@ namespace Autofac.Core.Diagnostics
         }
 
         /// <inheritdoc/>
-        void IResolvePipelineTracer.OperationSuccess(ResolveOperationBase operation, object resolvedInstance)
+        public void OperationSuccess(ResolveOperationBase operation, object resolvedInstance)
         {
             if (_operationBuilders.TryGetValue(operation.TracingId, out var builder))
             {
@@ -220,7 +220,7 @@ namespace Autofac.Core.Diagnostics
                 AppendIndent();
                 _builder.AppendLine(message);
 
-                var exceptionBody = ex.ToString().Split(_newLineSplit, StringSplitOptions.None);
+                var exceptionBody = ex.ToString().Split(NewLineSplit, StringSplitOptions.None);
 
                 Indent();
 
