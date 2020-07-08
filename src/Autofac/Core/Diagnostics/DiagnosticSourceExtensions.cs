@@ -31,31 +31,11 @@ using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Diagnostics
 {
-    // TODO: Create a common DiagnosticSource instance (a DiagnosticListener) that will be used for handling all events. This should be what gets passed from parent to child instead of a tracer object.
-    // https://github.com/dotnet/aspnetcore/blob/f3f9a1cdbcd06b298035b523732b9f45b1408461/src/Hosting/Hosting/src/WebHostBuilder.cs
-    // TODO: Each child lifetime scope should write to the DiagnosticSource using the same event IDs. Maybe we need this to be an extension method class on DiagnosticSource? ASP.NET has a wrapper class instead.
-    // https://github.com/dotnet/aspnetcore/blob/16be9a264e48560e10a3ee9683ecaed342d4ca11/src/Hosting/Hosting/src/Internal/HostingApplication.cs#L29
-    // TODO: Write messages to the DiagnosticSource if it's enabled for different events.
-    // https://github.com/dotnet/aspnetcore/blob/c97a0020d8bab6d895bf821f6e47ee8722aa17d5/src/Hosting/Hosting/src/Internal/HostingApplicationDiagnostics.cs
-    // https://github.com/dotnet/aspnetcore/blob/28157e62597bf0e043bc7e937e44c5ec81946b83/src/Middleware/MiddlewareAnalysis/src/AnalysisMiddleware.cs
-    // TODO: Update the default diagnostic tracer so it uses a DiagnosticListener subscription.
-    // https://andrewlock.net/logging-using-diagnosticsource-in-asp-net-core/
-
     /// <summary>
     /// Extension methods for writing diagnostic messages.
     /// </summary>
     internal static class DiagnosticSourceExtensions
     {
-        private const string MiddlewareEntryKey = "Autofac.Middleware.Entry";
-        private const string MiddlewareFailureKey = "Autofac.Middleware.Failure";
-        private const string MiddlewareSuccessKey = "Autofac.Middleware.Success";
-        private const string OperationFailureKey = "Autofac.Operation.Failure";
-        private const string OperationStartKey = "Autofac.Operation.Start";
-        private const string OperationSuccessKey = "Autofac.Operation.Success";
-        private const string RequestFailureKey = "Autofac.Request.Failure";
-        private const string RequestStartKey = "Autofac.Request.Start";
-        private const string RequestSuccessKey = "Autofac.Request.Success";
-
         /// <summary>
         /// Determines if diagnostics for middleware events is enabled.
         /// </summary>
@@ -63,45 +43,51 @@ namespace Autofac.Core.Diagnostics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool MiddlewareDiagnosticsEnabled(this DiagnosticSource diagnosticSource)
         {
-            return diagnosticSource.IsEnabled(MiddlewareEntryKey) || diagnosticSource.IsEnabled(MiddlewareSuccessKey) || diagnosticSource.IsEnabled(MiddlewareFailureKey);
+            return diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareStart) || diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareSuccess) || diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareFailure);
         }
 
         /// <summary>
-        /// Invoked when an individual middleware item is about to execute (just before the <see cref="IResolveMiddleware.Execute"/> method executes).
+        /// Writes a diagnostic event indicating an individual middleware item is about to execute (just before the <see cref="IResolveMiddleware.Execute"/> method executes).
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that is running.</param>
         /// <param name="middleware">The middleware that is about to run.</param>
-        public static void MiddlewareEntry(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+        public static void MiddlewareStart(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
         {
-            if (diagnosticSource.IsEnabled(MiddlewareEntryKey))
+            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareStart))
             {
-                diagnosticSource.Write(MiddlewareEntryKey, new MiddlewareDiagnosticData(operation, requestContext, middleware));
+                diagnosticSource.Write(DiagnosticEventKeys.MiddlewareStart, new MiddlewareDiagnosticData(operation, requestContext, middleware));
             }
         }
 
         /// <summary>
-        /// Invoked when an individual middleware item has finished executing (when the <see cref="IResolveMiddleware.Execute"/> method returns).
+        /// Writes a diagnostic event indicating an individual middleware item has finished in an error state (when the <see cref="IResolveMiddleware.Execute"/> method returns).
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that is running.</param>
         /// <param name="middleware">The middleware that just ran.</param>
-        /// <param name="succeeded">
-        /// Indicates whether the given middleware succeeded. The exception that
-        /// caused the middleware to fail is not available here, but will be
-        /// available in the next request failure event.
-        /// </param>
-        public static void MiddlewareExit(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware, bool succeeded)
+        public static void MiddlewareFailure(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
         {
-            if (succeeded && diagnosticSource.IsEnabled(MiddlewareSuccessKey))
+            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareFailure))
             {
-                diagnosticSource.Write(MiddlewareSuccessKey, new MiddlewareDiagnosticData(operation, requestContext, middleware));
+                diagnosticSource.Write(DiagnosticEventKeys.MiddlewareFailure, new MiddlewareDiagnosticData(operation, requestContext, middleware));
             }
-            else if (!succeeded && diagnosticSource.IsEnabled(MiddlewareFailureKey))
+        }
+
+        /// <summary>
+        /// Writes a diagnostic event indicating an individual middleware item has finished successfully (when the <see cref="IResolveMiddleware.Execute"/> method returns).
+        /// </summary>
+        /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
+        /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
+        /// <param name="requestContext">The context for the resolve request that is running.</param>
+        /// <param name="middleware">The middleware that just ran.</param>
+        public static void MiddlewareSuccess(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+        {
+            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareSuccess))
             {
-                diagnosticSource.Write(MiddlewareFailureKey, new MiddlewareDiagnosticData(operation, requestContext, middleware));
+                diagnosticSource.Write(DiagnosticEventKeys.MiddlewareSuccess, new MiddlewareDiagnosticData(operation, requestContext, middleware));
             }
         }
 
@@ -112,11 +98,11 @@ namespace Autofac.Core.Diagnostics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool OperationDiagnosticsEnabled(this DiagnosticSource diagnosticSource)
         {
-            return diagnosticSource.IsEnabled(OperationStartKey) || diagnosticSource.IsEnabled(OperationSuccessKey) || diagnosticSource.IsEnabled(OperationFailureKey);
+            return diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationStart) || diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationSuccess) || diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationFailure);
         }
 
         /// <summary>
-        /// Invoked at operation start.
+        /// Writes a diagnostic event indicating a resolve operation has started.
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that is about to run.</param>
@@ -127,38 +113,45 @@ namespace Autofac.Core.Diagnostics
         /// </remarks>
         public static void OperationStart(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequest initiatingRequest)
         {
-            if (diagnosticSource.IsEnabled(OperationStartKey))
+            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationStart))
             {
-                diagnosticSource.Write(OperationStartKey, new OperationStartDiagnosticData(operation, initiatingRequest));
+                diagnosticSource.Write(DiagnosticEventKeys.OperationStart, new OperationStartDiagnosticData(operation, initiatingRequest));
             }
         }
 
         /// <summary>
-        /// Invoked when a resolve operation fails.
+        /// Writes a diagnostic event indicating a resolve operation has failed.
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The resolve operation that failed.</param>
         /// <param name="operationException">The exception that caused the operation failure.</param>
+        /// <remarks>
+        /// A single operation can in turn invoke other full operations (as opposed to requests). Check <see cref="ResolveOperationBase.IsTopLevelOperation"/>
+        /// to know if you're looking at the entry operation.
+        /// </remarks>
         public static void OperationFailure(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, Exception operationException)
         {
-            if (diagnosticSource.IsEnabled(OperationFailureKey))
+            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationFailure))
             {
-                diagnosticSource.Write(OperationFailureKey, new OperationFailureDiagnosticData(operation, operationException));
+                diagnosticSource.Write(DiagnosticEventKeys.OperationFailure, new OperationFailureDiagnosticData(operation, operationException));
             }
         }
 
         /// <summary>
-        /// Invoked when a resolve operation succeeds. You can check whether this operation was the top-level entry operation using
-        /// <see cref="ResolveOperationBase.IsTopLevelOperation"/>.
+        /// Writes a diagnostic event indicating a resolve operation has succeeded.
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The resolve operation that succeeded.</param>
         /// <param name="resolvedInstance">The resolved instance providing the requested service.</param>
+        /// <remarks>
+        /// A single operation can in turn invoke other full operations (as opposed to requests). Check <see cref="ResolveOperationBase.IsTopLevelOperation"/>
+        /// to know if you're looking at the entry operation.
+        /// </remarks>
         public static void OperationSuccess(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, object resolvedInstance)
         {
-            if (diagnosticSource.IsEnabled(OperationSuccessKey))
+            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationSuccess))
             {
-                diagnosticSource.Write(OperationSuccessKey, new OperationSuccessDiagnosticData(operation, resolvedInstance));
+                diagnosticSource.Write(DiagnosticEventKeys.OperationSuccess, new OperationSuccessDiagnosticData(operation, resolvedInstance));
             }
         }
 
@@ -169,25 +162,25 @@ namespace Autofac.Core.Diagnostics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool RequestDiagnosticsEnabled(this DiagnosticSource diagnosticSource)
         {
-            return diagnosticSource.IsEnabled(RequestStartKey) || diagnosticSource.IsEnabled(RequestSuccessKey) || diagnosticSource.IsEnabled(RequestFailureKey);
+            return diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestStart) || diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestSuccess) || diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestFailure);
         }
 
         /// <summary>
-        /// Invoked at the start of a single resolve request initiated from within an operation.
+        /// Writes a diagnostic event indicating a resolve request has started inside an operation.
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
-        /// <param name="requestContext">The context for the resolve request  that is about to start.</param>
+        /// <param name="requestContext">The context for the resolve request that is about to start.</param>
         public static void RequestStart(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext)
         {
-            if (diagnosticSource.IsEnabled(RequestStartKey))
+            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestStart))
             {
-                diagnosticSource.Write(RequestStartKey, new RequestDiagnosticData(operation, requestContext));
+                diagnosticSource.Write(DiagnosticEventKeys.RequestStart, new RequestDiagnosticData(operation, requestContext));
             }
         }
 
         /// <summary>
-        /// Invoked when a resolve request fails.
+        /// Writes a diagnostic event indicating a resolve request inside an operation has failed.
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
@@ -195,23 +188,23 @@ namespace Autofac.Core.Diagnostics
         /// <param name="requestException">The exception that caused the failure.</param>
         public static void RequestFailure(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext, Exception requestException)
         {
-            if (diagnosticSource.IsEnabled(RequestFailureKey))
+            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestFailure))
             {
-                diagnosticSource.Write(RequestFailureKey, new RequestFailureDiagnosticData(operation, requestContext, requestException));
+                diagnosticSource.Write(DiagnosticEventKeys.RequestFailure, new RequestFailureDiagnosticData(operation, requestContext, requestException));
             }
         }
 
         /// <summary>
-        /// Invoked when a resolve request succeeds.
+        /// Writes a diagnostic event indicating a resolve request inside an operation has succeeded.
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that failed.</param>
         public static void RequestSuccess(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext)
         {
-            if (diagnosticSource.IsEnabled(RequestSuccessKey))
+            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestSuccess))
             {
-                diagnosticSource.Write(RequestSuccessKey, new RequestDiagnosticData(operation, requestContext));
+                diagnosticSource.Write(DiagnosticEventKeys.RequestSuccess, new RequestDiagnosticData(operation, requestContext));
             }
         }
     }

@@ -48,12 +48,11 @@ namespace Autofac.Core.Resolving
         /// </summary>
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
         /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
-        /// <param name="pipelineTracer">A pipeline tracer for the operation.</param>
         protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope)
         {
             TracingId = this;
             IsTopLevelOperation = true;
-            CurrentScope = mostNestedLifetimeScope;
+            CurrentScope = mostNestedLifetimeScope ?? throw new ArgumentNullException(nameof(mostNestedLifetimeScope));
             IsTopLevelOperation = true;
             DiagnosticSource = mostNestedLifetimeScope.DiagnosticSource;
         }

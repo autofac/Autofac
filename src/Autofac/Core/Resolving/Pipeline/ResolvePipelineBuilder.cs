@@ -275,7 +275,7 @@ namespace Autofac.Core.Resolving.Pipeline
                     // Optimise the path depending on whether diagnostics are enabled.
                     if (ctxt.DiagnosticSource.MiddlewareDiagnosticsEnabled())
                     {
-                        ctxt.DiagnosticSource.MiddlewareEntry(ctxt.Operation, ctxt, stage);
+                        ctxt.DiagnosticSource.MiddlewareStart(ctxt.Operation, ctxt, stage);
                         var succeeded = false;
                         try
                         {
@@ -285,7 +285,14 @@ namespace Autofac.Core.Resolving.Pipeline
                         }
                         finally
                         {
-                            ctxt.DiagnosticSource.MiddlewareExit(ctxt.Operation, ctxt, stage, succeeded);
+                            if (succeeded)
+                            {
+                                ctxt.DiagnosticSource.MiddlewareSuccess(ctxt.Operation, ctxt, stage);
+                            }
+                            else
+                            {
+                                ctxt.DiagnosticSource.MiddlewareFailure(ctxt.Operation, ctxt, stage);
+                            }
                         }
                     }
                     else

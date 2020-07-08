@@ -137,7 +137,7 @@ namespace Autofac.Test
                 RequestStarting?.Invoke(data.Operation, data.RequestContext);
             }
 
-            public override void OnMiddlewareEntry(MiddlewareDiagnosticData data)
+            public override void OnMiddlewareStart(MiddlewareDiagnosticData data)
             {
                 EnteringMiddleware?.Invoke(data.Operation, data.RequestContext, data.Middleware);
             }

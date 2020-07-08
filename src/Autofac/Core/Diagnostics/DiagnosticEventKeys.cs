@@ -36,14 +36,49 @@ namespace Autofac.Core.Diagnostics
     /// </summary>
     internal static class DiagnosticEventKeys
     {
-        public const string MiddlewareEntry = "Autofac.Middleware.Entry";
+        /// <summary>
+        /// ID for the event raised when middleware starts.
+        /// </summary>
+        public const string MiddlewareStart = "Autofac.Middleware.Start";
+
+        /// <summary>
+        /// ID for the event raised when middleware encounters an error.
+        /// </summary>
         public const string MiddlewareFailure = "Autofac.Middleware.Failure";
+
+        /// <summary>
+        /// ID for the event raised when middleware exits successfully.
+        /// </summary>
         public const string MiddlewareSuccess = "Autofac.Middleware.Success";
+
+        /// <summary>
+        /// ID for the event raised when a resolve operation encounters an error.
+        /// </summary>
         public const string OperationFailure = "Autofac.Operation.Failure";
+
+        /// <summary>
+        /// ID for the event raised when a resolve operation starts.
+        /// </summary>
         public const string OperationStart = "Autofac.Operation.Start";
+
+        /// <summary>
+        /// ID for the event raised when a resolve operation completes successfully.
+        /// </summary>
         public const string OperationSuccess = "Autofac.Operation.Success";
+
+        /// <summary>
+        /// ID for the event raised when a resolve request encounters an error.
+        /// </summary>
         public const string RequestFailure = "Autofac.Request.Failure";
+
+        /// <summary>
+        /// ID for the event raised when a resolve request starts.
+        /// </summary>
         public const string RequestStart = "Autofac.Request.Start";
+
+        /// <summary>
+        /// ID for the event raised when a resolve request completes successfully.
+        /// </summary>
         public const string RequestSuccess = "Autofac.Request.Success";
     }
 }

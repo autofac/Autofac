@@ -7,9 +7,18 @@ using Autofac.Core.Resolving;
 namespace Autofac.Core.Diagnostics
 {
     /// <summary>
-    /// Provides a default resolve pipeline tracer that builds a multi-line string describing the end-to-end operation flow.
-    /// Attach to the <see cref="OperationCompleted"/> event to receive notifications when new trace content is available.
+    /// Provides a default resolve pipeline tracer that builds a multi-line
+    /// string describing the end-to-end operation flow. Attach to the
+    /// <see cref="OperationCompleted"/> event to receive notifications when
+    /// new trace content is available.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The tracer subscribes to all Autofac diagnostic events and can't be
+    /// unsubscribed. This is required to ensure beginning and end of each
+    /// logical activity can be captured.
+    /// </para>
+    /// </remarks>
     public class DefaultDiagnosticTracer : DiagnosticTracerBase
     {
         private const string RequestExceptionTraced = "__RequestException";
@@ -18,23 +27,28 @@ namespace Autofac.Core.Diagnostics
 
         private static readonly string[] NewLineSplit = new[] { Environment.NewLine };
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultDiagnosticTracer"/> class.
+        /// </summary>
         public DefaultDiagnosticTracer()
         {
             EnableAll();
         }
 
+        /// <inheritdoc/>
         public override void Enable(string diagnosticName)
         {
             // Do nothing. Default is always enabled for everything.
         }
 
+        /// <inheritdoc/>
         public override void Disable(string diagnosticName)
         {
             // Do nothing. Default is always enabled for everything.
         }
 
         /// <summary>
-        /// Event raised when a resolve operation completes, and trace data is available.
+        /// Event raised when a resolve operation completes and trace data is available.
         /// </summary>
         public event EventHandler<OperationTraceCompletedArgs>? OperationCompleted;
 
@@ -50,6 +64,11 @@ namespace Autofac.Core.Diagnostics
         /// <inheritdoc/>
         public override void OnOperationStart(OperationStartDiagnosticData data)
         {
+            if (data is null)
+            {
+                return;
+            }
+
             var builder = _operationBuilders.GetOrAdd(data.Operation.TracingId, k => new IndentingStringBuilder());
 
             builder.AppendFormattedLine(TracerMessages.ResolveOperationStarting);
@@ -60,6 +79,11 @@ namespace Autofac.Core.Diagnostics
         /// <inheritdoc/>
         public override void OnRequestStart(RequestDiagnosticData data)
         {
+            if (data is null)
+            {
+                return;
+            }
+
             if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 builder.AppendFormattedLine(TracerMessages.ResolveRequestStarting);
@@ -79,8 +103,13 @@ namespace Autofac.Core.Diagnostics
         }
 
         /// <inheritdoc/>
-        public override void OnMiddlewareEntry(MiddlewareDiagnosticData data)
+        public override void OnMiddlewareStart(MiddlewareDiagnosticData data)
         {
+            if (data is null)
+            {
+                return;
+            }
+
             if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 builder.AppendFormattedLine(TracerMessages.EnterMiddleware, data.Middleware.ToString());
@@ -91,6 +120,11 @@ namespace Autofac.Core.Diagnostics
         /// <inheritdoc/>
         public override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
         {
+            if (data is null)
+            {
+                return;
+            }
+
             if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 builder.Outdent();
@@ -101,6 +135,11 @@ namespace Autofac.Core.Diagnostics
         /// <inheritdoc/>
         public override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
         {
+            if (data is null)
+            {
+                return;
+            }
+
             if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 builder.Outdent();
@@ -111,6 +150,11 @@ namespace Autofac.Core.Diagnostics
         /// <inheritdoc/>
         public override void OnRequestFailure(RequestFailureDiagnosticData data)
         {
+            if (data is null)
+            {
+                return;
+            }
+
             if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 builder.Outdent();
@@ -138,6 +182,11 @@ namespace Autofac.Core.Diagnostics
         /// <inheritdoc/>
         public override void OnRequestSuccess(RequestDiagnosticData data)
         {
+            if (data is null)
+            {
+                return;
+            }
+
             if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 builder.Outdent();
@@ -149,6 +198,11 @@ namespace Autofac.Core.Diagnostics
         /// <inheritdoc/>
         public override void OnOperationFailure(OperationFailureDiagnosticData data)
         {
+            if (data is null)
+            {
+                return;
+            }
+
             if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 try
@@ -173,6 +227,11 @@ namespace Autofac.Core.Diagnostics
         /// <inheritdoc/>
         public override void OnOperationSuccess(OperationSuccessDiagnosticData data)
         {
+            if (data is null)
+            {
+                return;
+            }
+
             if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
             {
                 try
