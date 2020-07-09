@@ -110,7 +110,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.RequestContext.Operation.TracingId, out var builder))
             {
                 builder.AppendFormattedLine(TracerMessages.EnterMiddleware, data.Middleware.ToString());
                 builder.Indent();
@@ -125,7 +125,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.RequestContext.Operation.TracingId, out var builder))
             {
                 builder.Outdent();
                 builder.AppendFormattedLine(TracerMessages.ExitMiddlewareFailure, data.Middleware.ToString());
@@ -140,7 +140,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.RequestContext.Operation.TracingId, out var builder))
             {
                 builder.Outdent();
                 builder.AppendFormattedLine(TracerMessages.ExitMiddlewareSuccess, data.Middleware.ToString());

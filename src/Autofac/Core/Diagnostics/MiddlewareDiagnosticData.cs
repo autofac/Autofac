@@ -23,7 +23,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Diagnostics
@@ -36,20 +35,13 @@ namespace Autofac.Core.Diagnostics
         /// <summary>
         /// Initializes a new instance of the <see cref="MiddlewareDiagnosticData"/> class.
         /// </summary>
-        /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that is running.</param>
         /// <param name="middleware">The middleware that is running.</param>
-        public MiddlewareDiagnosticData(ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+        public MiddlewareDiagnosticData(ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
         {
-            Operation = operation;
             RequestContext = requestContext;
             Middleware = middleware;
         }
-
-        /// <summary>
-        /// Gets the pipeline resolve operation that this request is running within.
-        /// </summary>
-        public ResolveOperationBase Operation { get; private set; }
 
         /// <summary>
         /// Gets the context for the resolve request that is running.

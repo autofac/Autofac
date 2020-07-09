@@ -115,9 +115,9 @@ namespace Autofac.Test
 
             public event Action<ResolveOperationBase, ResolveRequestContextBase> RequestStarting;
 
-            public event Action<ResolveOperationBase, ResolveRequestContextBase, IResolveMiddleware> EnteringMiddleware;
+            public event Action<ResolveRequestContextBase, IResolveMiddleware> EnteringMiddleware;
 
-            public event Action<ResolveOperationBase, ResolveRequestContextBase, IResolveMiddleware, bool> ExitingMiddleware;
+            public event Action<ResolveRequestContextBase, IResolveMiddleware, bool> ExitingMiddleware;
 
             public event Action<ResolveOperationBase, ResolveRequestContextBase, Exception> RequestFailing;
 
@@ -139,17 +139,17 @@ namespace Autofac.Test
 
             public override void OnMiddlewareStart(MiddlewareDiagnosticData data)
             {
-                EnteringMiddleware?.Invoke(data.Operation, data.RequestContext, data.Middleware);
+                EnteringMiddleware?.Invoke(data.RequestContext, data.Middleware);
             }
 
             public override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
             {
-                ExitingMiddleware?.Invoke(data.Operation, data.RequestContext, data.Middleware, false);
+                ExitingMiddleware?.Invoke(data.RequestContext, data.Middleware, false);
             }
 
             public override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
             {
-                ExitingMiddleware?.Invoke(data.Operation, data.RequestContext, data.Middleware, true);
+                ExitingMiddleware?.Invoke(data.RequestContext, data.Middleware, true);
             }
 
             public override void OnRequestFailure(RequestFailureDiagnosticData data)

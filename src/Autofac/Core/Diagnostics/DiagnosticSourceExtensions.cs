@@ -50,14 +50,13 @@ namespace Autofac.Core.Diagnostics
         /// Writes a diagnostic event indicating an individual middleware item is about to execute (just before the <see cref="IResolveMiddleware.Execute"/> method executes).
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
-        /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that is running.</param>
         /// <param name="middleware">The middleware that is about to run.</param>
-        public static void MiddlewareStart(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+        public static void MiddlewareStart(this DiagnosticSource diagnosticSource, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareStart))
             {
-                diagnosticSource.Write(DiagnosticEventKeys.MiddlewareStart, new MiddlewareDiagnosticData(operation, requestContext, middleware));
+                diagnosticSource.Write(DiagnosticEventKeys.MiddlewareStart, new MiddlewareDiagnosticData(requestContext, middleware));
             }
         }
 
@@ -65,14 +64,13 @@ namespace Autofac.Core.Diagnostics
         /// Writes a diagnostic event indicating an individual middleware item has finished in an error state (when the <see cref="IResolveMiddleware.Execute"/> method returns).
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
-        /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that is running.</param>
         /// <param name="middleware">The middleware that just ran.</param>
-        public static void MiddlewareFailure(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+        public static void MiddlewareFailure(this DiagnosticSource diagnosticSource, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareFailure))
             {
-                diagnosticSource.Write(DiagnosticEventKeys.MiddlewareFailure, new MiddlewareDiagnosticData(operation, requestContext, middleware));
+                diagnosticSource.Write(DiagnosticEventKeys.MiddlewareFailure, new MiddlewareDiagnosticData(requestContext, middleware));
             }
         }
 
@@ -80,14 +78,13 @@ namespace Autofac.Core.Diagnostics
         /// Writes a diagnostic event indicating an individual middleware item has finished successfully (when the <see cref="IResolveMiddleware.Execute"/> method returns).
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
-        /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that is running.</param>
         /// <param name="middleware">The middleware that just ran.</param>
-        public static void MiddlewareSuccess(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+        public static void MiddlewareSuccess(this DiagnosticSource diagnosticSource, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareSuccess))
             {
-                diagnosticSource.Write(DiagnosticEventKeys.MiddlewareSuccess, new MiddlewareDiagnosticData(operation, requestContext, middleware));
+                diagnosticSource.Write(DiagnosticEventKeys.MiddlewareSuccess, new MiddlewareDiagnosticData(requestContext, middleware));
             }
         }
 
