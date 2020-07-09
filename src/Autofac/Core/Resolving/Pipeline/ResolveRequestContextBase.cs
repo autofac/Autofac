@@ -162,10 +162,8 @@ namespace Autofac.Core.Resolving.Pipeline
         }
 
         /// <inheritdoc />
-        public virtual object ResolveComponent(ResolveRequest request)
-        {
-            return Operation.GetOrCreateInstance(ActivationScope, request);
-        }
+        public virtual object ResolveComponent(ResolveRequest request) =>
+            Operation.GetOrCreateInstance(ActivationScope, request);
 
         /// <summary>
         /// Complete the request, raising any appropriate events.

@@ -39,8 +39,8 @@ namespace Autofac.Core.Resolving
         private const int SuccessListInitialCapacity = 32;
 
         private bool _ended;
-        private IResolvePipelineTracer? _pipelineTracer;
-        private List<ResolveRequestContext> _successfulRequests = new List<ResolveRequestContext>(SuccessListInitialCapacity);
+        private readonly IResolvePipelineTracer? _pipelineTracer;
+        private readonly List<ResolveRequestContext> _successfulRequests = new List<ResolveRequestContext>(SuccessListInitialCapacity);
         private int _nextCompleteSuccessfulRequestStartPos = 0;
 
         /// <summary>
@@ -48,23 +48,13 @@ namespace Autofac.Core.Resolving
         /// </summary>
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
         /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
-        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope)
-            : this(mostNestedLifetimeScope, null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResolveOperationBase"/> class.
-        /// </summary>
-        /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
-        /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
         /// <param name="pipelineTracer">A pipeline tracer for the operation.</param>
-        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope, IResolvePipelineTracer? pipelineTracer)
+        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope, IResolvePipelineTracer? pipelineTracer = null)
         {
+            _pipelineTracer = pipelineTracer;
             TracingId = this;
             IsTopLevelOperation = true;
             CurrentScope = mostNestedLifetimeScope;
-            _pipelineTracer = pipelineTracer;
             IsTopLevelOperation = true;
         }
 
@@ -81,6 +71,15 @@ namespace Autofac.Core.Resolving
             TracingId = tracingId;
             IsTopLevelOperation = false;
         }
+
+        /// <summary>
+        /// Gets the modifiable active request stack.
+        /// </summary>
+        /// <remarks>
+        /// Don't want this exposed to the outside world, but we do want it available in the <see cref="CircularDependencyDetectorMiddleware"/>,
+        /// hence it's internal.
+        /// </remarks>
+        internal SegmentedStack<ResolveRequestContextBase> RequestStack { get; } = new SegmentedStack<ResolveRequestContextBase>();
 
         /// <summary>
         /// Gets the active resolve request.
@@ -103,9 +102,9 @@ namespace Autofac.Core.Resolving
         public ITracingIdentifer TracingId { get; }
 
         /// <summary>
-        /// Gets or sets the current request depth.
+        /// Gets the current request depth.
         /// </summary>
-        public int RequestDepth { get; protected set; }
+        public int RequestDepth { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether this operation is a top-level operation (as opposed to one initiated from inside an existing operation).
@@ -113,18 +112,9 @@ namespace Autofac.Core.Resolving
         public bool IsTopLevelOperation { get; }
 
         /// <summary>
-        /// Gets or sets the <see cref="ResolveRequest"/> that initiated the operation. Other nested requests may have been issued as a result of this one.
+        /// Gets the <see cref="ResolveRequest"/> that initiated the operation. Other nested requests may have been issued as a result of this one.
         /// </summary>
-        public ResolveRequest? InitiatingRequest { get; protected set; }
-
-        /// <summary>
-        /// Gets the modifiable active request stack.
-        /// </summary>
-        /// <remarks>
-        /// Don't want this exposed to the outside world, but we do want it available in the <see cref="CircularDependencyDetectorMiddleware"/>,
-        /// hence it's internal.
-        /// </remarks>
-        internal SegmentedStack<ResolveRequestContextBase> RequestStack { get; } = new SegmentedStack<ResolveRequestContextBase>();
+        public ResolveRequest? InitiatingRequest { get; private set; }
 
         /// <summary>
         /// Enter a new dependency chain block where subsequent requests inside the operation are allowed to repeat
@@ -251,11 +241,11 @@ namespace Autofac.Core.Resolving
         private void CompleteRequests()
         {
             var completed = _successfulRequests;
-            int count = completed.Count;
+            var count = completed.Count;
             var startPosition = _nextCompleteSuccessfulRequestStartPos;
             ResetSuccessfulRequests();
 
-            for (int i = startPosition; i < count; i++)
+            for (var i = startPosition; i < count; i++)
             {
                 completed[i].Complete();
             }
