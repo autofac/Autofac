@@ -9,8 +9,8 @@ namespace Autofac.Core.Diagnostics
     /// <summary>
     /// Provides a default resolve pipeline tracer that builds a multi-line
     /// string describing the end-to-end operation flow. Attach to the
-    /// <see cref="OperationCompleted"/> event to receive notifications when
-    /// new trace content is available.
+    /// <see cref="FullOperationDiagnosticTracerBase.OperationCompleted"/>
+    /// event to receive notifications when new trace content is available.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -19,7 +19,7 @@ namespace Autofac.Core.Diagnostics
     /// logical activity can be captured.
     /// </para>
     /// </remarks>
-    public class DefaultDiagnosticTracer : DiagnosticTracerBase
+    public class DefaultDiagnosticTracer : FullOperationDiagnosticTracerBase
     {
         private const string RequestExceptionTraced = "__RequestException";
 
@@ -31,26 +31,9 @@ namespace Autofac.Core.Diagnostics
         /// Initializes a new instance of the <see cref="DefaultDiagnosticTracer"/> class.
         /// </summary>
         public DefaultDiagnosticTracer()
+            : base()
         {
-            EnableAll();
         }
-
-        /// <inheritdoc/>
-        public override void Enable(string diagnosticName)
-        {
-            // Do nothing. Default is always enabled for everything.
-        }
-
-        /// <inheritdoc/>
-        public override void Disable(string diagnosticName)
-        {
-            // Do nothing. Default is always enabled for everything.
-        }
-
-        /// <summary>
-        /// Event raised when a resolve operation completes and trace data is available.
-        /// </summary>
-        public event EventHandler<OperationTraceCompletedArgs>? OperationCompleted;
 
         /// <summary>
         /// Gets the number of operations in progress being traced.
@@ -59,7 +42,7 @@ namespace Autofac.Core.Diagnostics
         /// An <see cref="int"/> with the number of trace IDs associated
         /// with in-progress operations being traced by this tracer.
         /// </value>
-        public int OperationsInProgress => _operationBuilders.Count;
+        public override int OperationsInProgress => _operationBuilders.Count;
 
         /// <inheritdoc/>
         public override void OnOperationStart(OperationStartDiagnosticData data)
@@ -214,7 +197,7 @@ namespace Autofac.Core.Diagnostics
                     // If we're completing the root operation, raise the event.
                     if (data.Operation.IsTopLevelOperation)
                     {
-                        OperationCompleted?.Invoke(this, new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
+                        OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
                     }
                 }
                 finally
@@ -243,7 +226,7 @@ namespace Autofac.Core.Diagnostics
                     // If we're completing the root operation, raise the event.
                     if (data.Operation.IsTopLevelOperation)
                     {
-                        OperationCompleted?.Invoke(this, new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
+                        OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
                     }
                 }
                 finally

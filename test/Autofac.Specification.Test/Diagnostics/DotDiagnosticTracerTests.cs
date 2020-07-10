@@ -1,4 +1,4 @@
-﻿// This software is part of the Autofac IoC container
+// This software is part of the Autofac IoC container
 // Copyright © 2020 Autofac Contributors
 // https://autofac.org
 //
@@ -29,12 +29,12 @@ using Xunit;
 
 namespace Autofac.Specification.Test.Diagnostics
 {
-    public class DefaultDiagnosticTracerTests
+    public class DotDiagnosticTracerTests
     {
         [Fact]
         public void DiagnosticTracerRaisesEvents()
         {
-            var tracer = new DefaultDiagnosticTracer();
+            var tracer = new DotDiagnosticTracer();
 
             var containerBuilder = new ContainerBuilder();
             containerBuilder.Register(ctxt => "Hello");
@@ -59,7 +59,7 @@ namespace Autofac.Specification.Test.Diagnostics
         [Fact]
         public void DiagnosticTracerRaisesEventsOnError()
         {
-            var tracer = new DefaultDiagnosticTracer();
+            var tracer = new DotDiagnosticTracer();
 
             var containerBuilder = new ContainerBuilder();
             containerBuilder.Register<string>(ctxt => throw new InvalidOperationException());
@@ -90,7 +90,7 @@ namespace Autofac.Specification.Test.Diagnostics
         [Fact]
         public void DiagnosticTracerDoesNotRaiseAnEventOnNestedOperations()
         {
-            var tracer = new DefaultDiagnosticTracer();
+            var tracer = new DotDiagnosticTracer();
 
             var containerBuilder = new ContainerBuilder();
             containerBuilder.RegisterType<Implementor>().As<IService>();
@@ -120,7 +120,7 @@ namespace Autofac.Specification.Test.Diagnostics
         [Fact]
         public void DiagnosticTracerDoesNotLeakMemory()
         {
-            var tracer = new DefaultDiagnosticTracer();
+            var tracer = new DotDiagnosticTracer();
 
             var containerBuilder = new ContainerBuilder();
             containerBuilder.RegisterType<Implementor>().As<IService>();
