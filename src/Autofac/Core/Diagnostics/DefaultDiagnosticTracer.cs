@@ -23,7 +23,7 @@ namespace Autofac.Core.Diagnostics
     {
         private const string RequestExceptionTraced = "__RequestException";
 
-        private readonly ConcurrentDictionary<ITracingIdentifer, IndentingStringBuilder> _operationBuilders = new ConcurrentDictionary<ITracingIdentifer, IndentingStringBuilder>();
+        private readonly ConcurrentDictionary<ResolveOperationBase, IndentingStringBuilder> _operationBuilders = new ConcurrentDictionary<ResolveOperationBase, IndentingStringBuilder>();
 
         private static readonly string[] NewLineSplit = new[] { Environment.NewLine };
 
@@ -52,7 +52,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            var builder = _operationBuilders.GetOrAdd(data.Operation.TracingId, k => new IndentingStringBuilder());
+            var builder = _operationBuilders.GetOrAdd(data.Operation, k => new IndentingStringBuilder());
 
             builder.AppendFormattedLine(TracerMessages.ResolveOperationStarting);
             builder.AppendLine(TracerMessages.EntryBrace);
@@ -67,7 +67,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
             {
                 builder.AppendFormattedLine(TracerMessages.ResolveRequestStarting);
                 builder.AppendLine(TracerMessages.EntryBrace);
@@ -93,7 +93,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.RequestContext.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
             {
                 builder.AppendFormattedLine(TracerMessages.EnterMiddleware, data.Middleware.ToString());
                 builder.Indent();
@@ -108,7 +108,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.RequestContext.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
             {
                 builder.Outdent();
                 builder.AppendFormattedLine(TracerMessages.ExitMiddlewareFailure, data.Middleware.ToString());
@@ -123,7 +123,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.RequestContext.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
             {
                 builder.Outdent();
                 builder.AppendFormattedLine(TracerMessages.ExitMiddlewareSuccess, data.Middleware.ToString());
@@ -138,7 +138,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
             {
                 builder.Outdent();
                 builder.AppendLine(TracerMessages.ExitBrace);
@@ -170,7 +170,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
             {
                 builder.Outdent();
                 builder.AppendLine(TracerMessages.ExitBrace);
@@ -186,7 +186,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
             {
                 try
                 {
@@ -194,15 +194,11 @@ namespace Autofac.Core.Diagnostics
                     builder.AppendLine(TracerMessages.ExitBrace);
                     builder.AppendException(TracerMessages.OperationFailed, data.OperationException);
 
-                    // If we're completing the root operation, raise the event.
-                    if (data.Operation.IsTopLevelOperation)
-                    {
-                        OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
-                    }
+                    OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
                 }
                 finally
                 {
-                    _operationBuilders.TryRemove(data.Operation.TracingId, out var _);
+                    _operationBuilders.TryRemove(data.Operation, out var _);
                 }
             }
         }
@@ -215,7 +211,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
             {
                 try
                 {
@@ -223,15 +219,11 @@ namespace Autofac.Core.Diagnostics
                     builder.AppendLine(TracerMessages.ExitBrace);
                     builder.AppendFormattedLine(TracerMessages.OperationSucceeded, data.ResolvedInstance);
 
-                    // If we're completing the root operation, raise the event.
-                    if (data.Operation.IsTopLevelOperation)
-                    {
-                        OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
-                    }
+                    OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
                 }
                 finally
                 {
-                    _operationBuilders.TryRemove(data.Operation.TracingId, out var _);
+                    _operationBuilders.TryRemove(data.Operation, out var _);
                 }
             }
         }
