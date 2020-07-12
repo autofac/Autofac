@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
@@ -24,7 +24,7 @@ namespace Autofac.Core.Diagnostics
     {
         private const string RequestExceptionTraced = "__RequestException";
 
-        private readonly ConcurrentDictionary<ITracingIdentifer, DotGraphBuilder> _operationBuilders = new ConcurrentDictionary<ITracingIdentifer, DotGraphBuilder>();
+        private readonly ConcurrentDictionary<ResolveOperationBase, DotGraphBuilder> _operationBuilders = new ConcurrentDictionary<ResolveOperationBase, DotGraphBuilder>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DotDiagnosticTracer"/> class.
@@ -51,7 +51,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            var builder = _operationBuilders.GetOrAdd(data.Operation.TracingId, k => new DotGraphBuilder());
+            var builder = _operationBuilders.GetOrAdd(data.Operation, k => new DotGraphBuilder());
         }
 
         /// <inheritdoc/>
@@ -62,7 +62,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
             {
                 builder.OnRequestStart(
                     data.RequestContext.Service.ToString(),
@@ -79,7 +79,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.RequestContext.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
             {
                 builder.OnMiddlewareStart(data.Middleware.ToString());
             }
@@ -93,7 +93,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.RequestContext.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
             {
                 builder.OnMiddlewareFailure();
             }
@@ -107,7 +107,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.RequestContext.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
             {
                 builder.OnMiddlewareSuccess();
             }
@@ -121,7 +121,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
             {
                 var requestException = data.RequestException;
                 if (requestException is DependencyResolutionException && requestException.InnerException is object)
@@ -150,7 +150,7 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
             {
                 builder.OnRequestSuccess(data.RequestContext.Instance?.GetType().ToString());
             }
@@ -164,21 +164,17 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
             {
                 try
                 {
                     builder.OnOperationFailure(data.OperationException);
 
-                    // If we're completing the root operation, raise the event.
-                    if (data.Operation.IsTopLevelOperation)
-                    {
-                        OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
-                    }
+                    OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
                 }
                 finally
                 {
-                    _operationBuilders.TryRemove(data.Operation.TracingId, out var _);
+                    _operationBuilders.TryRemove(data.Operation, out var _);
                 }
             }
         }
@@ -191,21 +187,17 @@ namespace Autofac.Core.Diagnostics
                 return;
             }
 
-            if (_operationBuilders.TryGetValue(data.Operation.TracingId, out var builder))
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
             {
                 try
                 {
                     builder.OnOperationSuccess(data.ResolvedInstance?.GetType().ToString());
 
-                    // If we're completing the root operation, raise the event.
-                    if (data.Operation.IsTopLevelOperation)
-                    {
-                        OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
-                    }
+                    OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
                 }
                 finally
                 {
-                    _operationBuilders.TryRemove(data.Operation.TracingId, out var _);
+                    _operationBuilders.TryRemove(data.Operation, out var _);
                 }
             }
         }

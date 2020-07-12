@@ -35,7 +35,7 @@ namespace Autofac.Core.Resolving
     /// <summary>
     /// Defines the base properties and behaviour of a resolve operation.
     /// </summary>
-    public abstract class ResolveOperationBase : IResolveOperation, ITracingIdentifer
+    public abstract class ResolveOperationBase : IResolveOperation
     {
         private const int SuccessListInitialCapacity = 32;
 
@@ -50,24 +50,8 @@ namespace Autofac.Core.Resolving
         /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
         protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope)
         {
-            TracingId = this;
-            IsTopLevelOperation = true;
             CurrentScope = mostNestedLifetimeScope ?? throw new ArgumentNullException(nameof(mostNestedLifetimeScope));
-            IsTopLevelOperation = true;
             DiagnosticSource = mostNestedLifetimeScope.DiagnosticSource;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResolveOperationBase"/> class.
-        /// </summary>
-        /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
-        /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
-        /// <param name="tracingId">A tracing ID for the operation.</param>
-        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope, ITracingIdentifer tracingId)
-            : this(mostNestedLifetimeScope)
-        {
-            TracingId = tracingId;
-            IsTopLevelOperation = false;
         }
 
         /// <summary>
@@ -86,11 +70,6 @@ namespace Autofac.Core.Resolving
         public IEnumerable<ResolveRequestContextBase> InProgressRequests => RequestStack;
 
         /// <summary>
-        /// Gets the tracing identifier for the operation.
-        /// </summary>
-        public ITracingIdentifer TracingId { get; }
-
-        /// <summary>
         /// Gets the <see cref="System.Diagnostics.DiagnosticSource"/> for the operation.
         /// </summary>
         public DiagnosticSource DiagnosticSource { get; }
@@ -99,11 +78,6 @@ namespace Autofac.Core.Resolving
         /// Gets or sets the current request depth.
         /// </summary>
         public int RequestDepth { get; protected set; }
-
-        /// <summary>
-        /// Gets a value indicating whether this operation is a top-level operation (as opposed to one initiated from inside an existing operation).
-        /// </summary>
-        public bool IsTopLevelOperation { get; }
 
         /// <summary>
         /// Gets or sets the <see cref="ResolveRequest"/> that initiated the operation. Other nested requests may have been issued as a result of this one.

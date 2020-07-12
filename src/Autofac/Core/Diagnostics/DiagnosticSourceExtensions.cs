@@ -1,4 +1,4 @@
-// This software is part of the Autofac IoC container
+﻿// This software is part of the Autofac IoC container
 // Copyright © 2020 Autofac Contributors
 // https://autofac.org
 //
@@ -104,10 +104,6 @@ namespace Autofac.Core.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that is about to run.</param>
         /// <param name="initiatingRequest">The request that is responsible for starting this operation.</param>
-        /// <remarks>
-        /// A single operation can in turn invoke other full operations (as opposed to requests). Check <see cref="ResolveOperationBase.IsTopLevelOperation"/>
-        /// to know if you're looking at the entry operation.
-        /// </remarks>
         public static void OperationStart(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequest initiatingRequest)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationStart))
@@ -122,10 +118,6 @@ namespace Autofac.Core.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The resolve operation that failed.</param>
         /// <param name="operationException">The exception that caused the operation failure.</param>
-        /// <remarks>
-        /// A single operation can in turn invoke other full operations (as opposed to requests). Check <see cref="ResolveOperationBase.IsTopLevelOperation"/>
-        /// to know if you're looking at the entry operation.
-        /// </remarks>
         public static void OperationFailure(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, Exception operationException)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationFailure))
@@ -140,10 +132,6 @@ namespace Autofac.Core.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The resolve operation that succeeded.</param>
         /// <param name="resolvedInstance">The resolved instance providing the requested service.</param>
-        /// <remarks>
-        /// A single operation can in turn invoke other full operations (as opposed to requests). Check <see cref="ResolveOperationBase.IsTopLevelOperation"/>
-        /// to know if you're looking at the entry operation.
-        /// </remarks>
         public static void OperationSuccess(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, object resolvedInstance)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationSuccess))

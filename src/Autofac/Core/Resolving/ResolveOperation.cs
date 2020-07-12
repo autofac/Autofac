@@ -46,17 +46,6 @@ namespace Autofac.Core.Resolving
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ResolveOperation"/> class.
-        /// </summary>
-        /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
-        /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
-        /// <param name="parentOperation">A parent resolve operation, used to maintain tracing between related operations.</param>
-        public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope, ResolveOperationBase parentOperation)
-            : base(mostNestedLifetimeScope, parentOperation)
-        {
-        }
-
-        /// <summary>
         /// Execute the complete resolve operation.
         /// </summary>
         /// <param name="request">The resolution context.</param>
