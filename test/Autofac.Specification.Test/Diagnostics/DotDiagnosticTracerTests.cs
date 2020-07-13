@@ -32,7 +32,7 @@ namespace Autofac.Specification.Test.Diagnostics
     public class DotDiagnosticTracerTests
     {
         [Fact]
-        public void DiagnosticTracerRaisesEvents()
+        public void DiagnosticTracerRaisesEventsOnSuccess()
         {
             var tracer = new DotDiagnosticTracer();
 
@@ -54,6 +54,8 @@ namespace Autofac.Specification.Test.Diagnostics
             container.Resolve<string>();
 
             Assert.Contains("λ:System.String", lastOpResult);
+            Assert.StartsWith("digraph G {", lastOpResult);
+            Assert.EndsWith("}", lastOpResult.Trim());
         }
 
         [Fact]
@@ -85,6 +87,8 @@ namespace Autofac.Specification.Test.Diagnostics
             }
 
             Assert.Contains(nameof(InvalidOperationException), lastOpResult);
+            Assert.StartsWith("digraph G {", lastOpResult);
+            Assert.EndsWith("}", lastOpResult.Trim());
         }
 
         [Fact]

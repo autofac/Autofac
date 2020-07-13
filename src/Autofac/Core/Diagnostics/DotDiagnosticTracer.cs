@@ -49,6 +49,9 @@ namespace Autofac.Core.Diagnostics
     /// </remarks>
     public class DotDiagnosticTracer : FullOperationDiagnosticTracerBase
     {
+        /// <summary>
+        /// Metadata flag to help deduplicate the number of places where the exception is traced.
+        /// </summary>
         private const string RequestExceptionTraced = "__RequestException";
 
         private readonly ConcurrentDictionary<ResolveOperationBase, DotGraphBuilder> _operationBuilders = new ConcurrentDictionary<ResolveOperationBase, DotGraphBuilder>();
@@ -407,6 +410,12 @@ namespace Autofac.Core.Diagnostics
 
             public void OnRequestFailure(Exception? requestException)
             {
+                if (ResolveRequests.Count == 0)
+                {
+                    // OnRequestFailure happened without a corresponding OnRequestStart.
+                    return;
+                }
+
                 var request = ResolveRequests.Pop();
                 request.Success = false;
                 request.Exception = requestException;
@@ -414,6 +423,12 @@ namespace Autofac.Core.Diagnostics
 
             public void OnRequestSuccess(string? instanceType)
             {
+                if (ResolveRequests.Count == 0)
+                {
+                    // OnRequestSuccess happened without a corresponding OnRequestStart.
+                    return;
+                }
+
                 var request = ResolveRequests.Pop();
                 request.Success = true;
                 request.InstanceType = instanceType;
@@ -421,6 +436,12 @@ namespace Autofac.Core.Diagnostics
 
             public void OnMiddlewareStart(string middleware)
             {
+                if (ResolveRequests.Count == 0)
+                {
+                    // Middleware only happens in context of a request.
+                    return;
+                }
+
                 var mw = new MiddlewareNode(middleware);
                 ResolveRequests.Peek().Middleware.Add(mw);
                 Middlewares.Push(mw);
@@ -428,12 +449,24 @@ namespace Autofac.Core.Diagnostics
 
             public void OnMiddlewareFailure()
             {
+                if (Middlewares.Count == 0)
+                {
+                    // We somehow missed the start event.
+                    return;
+                }
+
                 var mw = Middlewares.Pop();
                 mw.Success = false;
             }
 
             public void OnMiddlewareSuccess()
             {
+                if (Middlewares.Count == 0)
+                {
+                    // We somehow missed the start event.
+                    return;
+                }
+
                 var mw = Middlewares.Pop();
                 mw.Success = true;
             }
