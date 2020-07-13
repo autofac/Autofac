@@ -234,18 +234,6 @@ namespace Autofac.Core.Diagnostics
             public string Id { get; } = "n" + Guid.NewGuid().ToString("N");
 
             public bool Success { get; set; }
-
-            protected static string NewlineReplace(string input, string newlineReplacement)
-            {
-                // Pretty stoked the StringComparison overload is only in one of our
-                // target frameworks. :(
-#if NETSTANDARD2_0
-                return input.Replace(Environment.NewLine, newlineReplacement);
-#endif
-#if !NETSTANDARD2_0
-                return input.Replace(Environment.NewLine, newlineReplacement, StringComparison.Ordinal);
-#endif
-            }
         }
 
         private class ResolveRequestNode : DotGraphNode
@@ -269,72 +257,42 @@ namespace Autofac.Core.Diagnostics
 
             public List<MiddlewareNode> Middleware { get; }
 
-            private const string NodeStartFormat = @"{0} [
-shape=plaintext,label=<
-<table border='1' cellborder='0' cellpadding='5' cellspacing='0'>
-";
-
-            private const string MiddlewareStartFormat = @"{0} [
-shape=plaintext,label=<
-<table border='0' cellborder='1' cellpadding='5' cellspacing='0'>
-";
-
-            private const string NodeEndFormat = "</table>>];";
-
-            private static void AppendRowFormat(StringBuilder stringBuilder, string format, params object[] args)
-            {
-                stringBuilder.Append("<tr><td align='left'>");
-                stringBuilder.AppendFormat(CultureInfo.CurrentCulture, format, args);
-                stringBuilder.Append("</td></tr>");
-            }
-
             public void ToString(StringBuilder stringBuilder)
             {
-                stringBuilder.AppendFormat(CultureInfo.CurrentCulture, NodeStartFormat, Id);
-                AppendRowFormat(stringBuilder, TracerMessages.ServiceDisplay, HttpUtility.HtmlEncode(Service));
-                AppendRowFormat(stringBuilder, TracerMessages.ComponentDisplay, HttpUtility.HtmlEncode(Component));
+                stringBuilder.StartTableNode(Id, border: 1)
+                    .AppendTableRow(TracerMessages.ServiceDisplay, Service)
+                    .AppendTableRow(TracerMessages.ComponentDisplay, Component);
 
                 if (DecoratorTarget is object)
                 {
-                    AppendRowFormat(stringBuilder, TracerMessages.TargetDisplay, HttpUtility.HtmlEncode(DecoratorTarget));
+                    stringBuilder.AppendTableRow(TracerMessages.TargetDisplay, DecoratorTarget);
                 }
 
                 if (InstanceType is object)
                 {
-                    AppendRowFormat(stringBuilder, TracerMessages.InstanceDisplay, HttpUtility.HtmlEncode(InstanceType));
+                    stringBuilder.AppendTableRow(TracerMessages.InstanceDisplay, InstanceType);
                 }
 
                 if (Exception is object)
                 {
-                    AppendRowFormat(stringBuilder, TracerMessages.ExceptionDisplay, NewlineReplace(HttpUtility.HtmlEncode(Exception.ToString()), "<br/>"));
+                    stringBuilder.AppendTableRow(TracerMessages.ExceptionDisplay, Exception.ToString());
                 }
 
-                stringBuilder.Append(NodeEndFormat);
-                stringBuilder.AppendLine();
+                stringBuilder.EndTableNode();
 
                 if (Middleware.Count != 0)
                 {
                     var middlewareSubgraphId = "mw" + Id;
-                    stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} -> {1}", Id, middlewareSubgraphId);
-                    if (Middleware.Any(mw => !mw.Success))
-                    {
-                        stringBuilder.Append(" [penwidth=3]");
-                    }
+                    stringBuilder
+                        .ConnectNodes(Id, middlewareSubgraphId, Middleware.Any(mw => !mw.Success))
+                        .StartTableNode(middlewareSubgraphId, cellBorder: 1);
 
-                    stringBuilder.AppendLine();
-
-                    stringBuilder.AppendFormat(CultureInfo.CurrentCulture, MiddlewareStartFormat, middlewareSubgraphId);
                     foreach (var mw in Middleware)
                     {
-                        stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "<tr><td port='{0}' align='left'>", mw.Id);
-                        stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0}{1}{2}", mw.Success ? "" : "<b>", mw.Name, mw.Success ? "" : "</b>");
-                        stringBuilder.Append("</td></tr>");
-                        stringBuilder.AppendLine();
+                        stringBuilder.AppendTableRow(!mw.Success, mw.Id, "{0}", mw.Name);
                     }
 
-                    stringBuilder.Append(NodeEndFormat);
-                    stringBuilder.AppendLine();
-
+                    stringBuilder.EndTableNode();
                     foreach (var mw in Middleware)
                     {
                         mw.ToString(stringBuilder, middlewareSubgraphId);
@@ -362,7 +320,7 @@ shape=plaintext,label=<
                 }
                 else if (Exception is object)
                 {
-                    stringBuilder.Append(NewlineReplace(HttpUtility.HtmlEncode(Exception.ToString()), "\\l"));
+                    stringBuilder.Append(HttpUtility.HtmlEncode(Exception.ToString()).NewlineReplace("\\l"));
                     stringBuilder.Append("\\l");
                 }
 
@@ -371,14 +329,7 @@ shape=plaintext,label=<
                 foreach (var request in ResolveRequests)
                 {
                     request.ToString(stringBuilder);
-
-                    stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} -> {1}", Id, request.Id);
-                    if (!request.Success)
-                    {
-                        stringBuilder.Append(" [penwidth=3]");
-                    }
-
-                    stringBuilder.AppendLine();
+                    stringBuilder.ConnectNodes(Id, request.Id, !request.Success);
                 }
             }
         }
@@ -397,15 +348,10 @@ shape=plaintext,label=<
 
             public void ToString(StringBuilder stringBuilder, string middlewareSubgraphId)
             {
+                var fullId = string.Format(CultureInfo.CurrentCulture, "{0}:{1}", middlewareSubgraphId, Id);
                 foreach (var request in ResolveRequests)
                 {
-                    stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0}:{1} -> {2}", middlewareSubgraphId, Id, request.Id);
-                    if (!request.Success)
-                    {
-                        stringBuilder.Append(" [penwidth=3]");
-                    }
-
-                    stringBuilder.AppendLine();
+                    stringBuilder.ConnectNodes(fullId, request.Id, !request.Success);
                     request.ToString(stringBuilder);
                 }
             }
