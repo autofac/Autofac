@@ -1,8 +1,35 @@
-﻿using System;
+﻿// This software is part of the Autofac IoC container
+// Copyright © 2020 Autofac Contributors
+// https://autofac.org
+//
+// Permission is hereby granted, free of charge, to any person
+// obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without
+// restriction, including without limitation the rights to use,
+// copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following
+// conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Web;
 using Autofac.Core.Resolving;
 
 namespace Autofac.Core.Diagnostics
@@ -204,25 +231,20 @@ namespace Autofac.Core.Diagnostics
 
         private abstract class DotGraphNode
         {
-            private const int IndentSize = 2;
-
             public string Id { get; } = "n" + Guid.NewGuid().ToString("N");
-
-            public List<DotGraphNode> Children { get; } = new List<DotGraphNode>();
 
             public bool Success { get; set; }
 
-            protected static void AppendIndent(int indent, StringBuilder stringBuilder)
+            protected static string NewlineReplace(string input, string newlineReplacement)
             {
-                stringBuilder.Append(' ', indent * IndentSize);
-            }
-
-            public virtual void ToString(int indent, StringBuilder stringBuilder)
-            {
-                foreach (var child in Children)
-                {
-                    child.ToString(indent + 1, stringBuilder);
-                }
+                // Pretty stoked the StringComparison overload is only in one of our
+                // target frameworks. :(
+#if NETSTANDARD2_0
+                return input.Replace(Environment.NewLine, newlineReplacement);
+#endif
+#if !NETSTANDARD2_0
+                return input.Replace(Environment.NewLine, newlineReplacement, StringComparison.Ordinal);
+#endif
             }
         }
 
@@ -232,6 +254,7 @@ namespace Autofac.Core.Diagnostics
             {
                 Service = service;
                 Component = component;
+                Middleware = new List<MiddlewareNode>();
             }
 
             public string Service { get; private set; }
@@ -244,19 +267,79 @@ namespace Autofac.Core.Diagnostics
 
             public string? InstanceType { get; set; }
 
-            public override void ToString(int indent, StringBuilder stringBuilder)
+            public List<MiddlewareNode> Middleware { get; }
+
+            private const string NodeStartFormat = @"{0} [
+shape=plaintext,label=<
+<table border='1' cellborder='0' cellpadding='5' cellspacing='0'>
+";
+
+            private const string MiddlewareStartFormat = @"{0} [
+shape=plaintext,label=<
+<table border='0' cellborder='1' cellpadding='5' cellspacing='0'>
+";
+
+            private const string NodeEndFormat = "</table>>];";
+
+            private static void AppendRowFormat(StringBuilder stringBuilder, string format, params object[] args)
             {
-                AppendIndent(indent, stringBuilder);
-                stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} [label=\"Resolve Request\"]", Id);
-                stringBuilder.AppendLine();
-                foreach (var child in Children)
+                stringBuilder.Append("<tr><td align='left'>");
+                stringBuilder.AppendFormat(CultureInfo.CurrentCulture, format, args);
+                stringBuilder.Append("</td></tr>");
+            }
+
+            public void ToString(StringBuilder stringBuilder)
+            {
+                stringBuilder.AppendFormat(CultureInfo.CurrentCulture, NodeStartFormat, Id);
+                AppendRowFormat(stringBuilder, TracerMessages.ServiceDisplay, HttpUtility.HtmlEncode(Service));
+                AppendRowFormat(stringBuilder, TracerMessages.ComponentDisplay, HttpUtility.HtmlEncode(Component));
+
+                if (DecoratorTarget is object)
                 {
-                    AppendIndent(indent, stringBuilder);
-                    stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} -> {1}", Id, child.Id);
-                    stringBuilder.AppendLine();
+                    AppendRowFormat(stringBuilder, TracerMessages.TargetDisplay, HttpUtility.HtmlEncode(DecoratorTarget));
                 }
 
-                base.ToString(indent, stringBuilder);
+                if (InstanceType is object)
+                {
+                    AppendRowFormat(stringBuilder, TracerMessages.InstanceDisplay, HttpUtility.HtmlEncode(InstanceType));
+                }
+
+                if (Exception is object)
+                {
+                    AppendRowFormat(stringBuilder, TracerMessages.ExceptionDisplay, NewlineReplace(HttpUtility.HtmlEncode(Exception.ToString()), "<br/>"));
+                }
+
+                stringBuilder.Append(NodeEndFormat);
+                stringBuilder.AppendLine();
+
+                if (Middleware.Count != 0)
+                {
+                    var middlewareSubgraphId = "mw" + Id;
+                    stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} -> {1}", Id, middlewareSubgraphId);
+                    if (Middleware.Any(mw => !mw.Success))
+                    {
+                        stringBuilder.Append(" [penwidth=3]");
+                    }
+
+                    stringBuilder.AppendLine();
+
+                    stringBuilder.AppendFormat(CultureInfo.CurrentCulture, MiddlewareStartFormat, middlewareSubgraphId);
+                    foreach (var mw in Middleware)
+                    {
+                        stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "<tr><td port='{0}' align='left'>", mw.Id);
+                        stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0}{1}{2}", mw.Success ? "" : "<b>", mw.Name, mw.Success ? "" : "</b>");
+                        stringBuilder.Append("</td></tr>");
+                        stringBuilder.AppendLine();
+                    }
+
+                    stringBuilder.Append(NodeEndFormat);
+                    stringBuilder.AppendLine();
+
+                    foreach (var mw in Middleware)
+                    {
+                        mw.ToString(stringBuilder, middlewareSubgraphId);
+                    }
+                }
             }
         }
 
@@ -266,19 +349,37 @@ namespace Autofac.Core.Diagnostics
 
             public string? InstanceType { get; set; }
 
-            public override void ToString(int indent, StringBuilder stringBuilder)
+            public List<ResolveRequestNode> ResolveRequests { get; } = new List<ResolveRequestNode>();
+
+            public void ToString(StringBuilder stringBuilder)
             {
-                AppendIndent(indent, stringBuilder);
-                stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} [label=\"Operation\"]", Id);
-                stringBuilder.AppendLine();
-                foreach (var child in Children)
+                stringBuilder.Append(Id);
+                stringBuilder.Append(" [label=\"");
+
+                if (InstanceType is object)
                 {
-                    AppendIndent(indent, stringBuilder);
-                    stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} -> {1}", Id, child.Id);
-                    stringBuilder.AppendLine();
+                    stringBuilder.Append(InstanceType);
+                }
+                else if (Exception is object)
+                {
+                    stringBuilder.Append(NewlineReplace(HttpUtility.HtmlEncode(Exception.ToString()), "\\l"));
+                    stringBuilder.Append("\\l");
                 }
 
-                base.ToString(indent, stringBuilder);
+                stringBuilder.Append("\"]");
+                stringBuilder.AppendLine();
+                foreach (var request in ResolveRequests)
+                {
+                    request.ToString(stringBuilder);
+
+                    stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} -> {1}", Id, request.Id);
+                    if (!request.Success)
+                    {
+                        stringBuilder.Append(" [penwidth=3]");
+                    }
+
+                    stringBuilder.AppendLine();
+                }
             }
         }
 
@@ -287,23 +388,26 @@ namespace Autofac.Core.Diagnostics
             public MiddlewareNode(string name)
             {
                 Name = name;
+                ResolveRequests = new List<ResolveRequestNode>();
             }
 
             public string Name { get; }
 
-            public override void ToString(int indent, StringBuilder stringBuilder)
-            {
-                AppendIndent(indent, stringBuilder);
-                stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} [label=\"Middleware\"]", Id);
-                stringBuilder.AppendLine();
-                foreach (var child in Children)
-                {
-                    AppendIndent(indent, stringBuilder);
-                    stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} -> {1}", Id, child.Id);
-                    stringBuilder.AppendLine();
-                }
+            public List<ResolveRequestNode> ResolveRequests { get; }
 
-                base.ToString(indent, stringBuilder);
+            public void ToString(StringBuilder stringBuilder, string middlewareSubgraphId)
+            {
+                foreach (var request in ResolveRequests)
+                {
+                    stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0}:{1} -> {2}", middlewareSubgraphId, Id, request.Id);
+                    if (!request.Success)
+                    {
+                        stringBuilder.Append(" [penwidth=3]");
+                    }
+
+                    stringBuilder.AppendLine();
+                    request.ToString(stringBuilder);
+                }
             }
         }
 
@@ -312,15 +416,7 @@ namespace Autofac.Core.Diagnostics
         /// </summary>
         private class DotGraphBuilder
         {
-            // https://www.graphviz.org/pdf/dotguide.pdf
-            // TODO: Wrong tree structure - middleware calls middleware, not request calls all middleware.
-            // TODO: Try to render the middleware as a stack that can spawn other requests.
-            // TODO: Bold on failure paths.
-            // TODO: Actually put real info into the graph (errors, names)
-            // TODO: Different shapes per thing - operation, request, MW.
             public OperationNode Root { get; private set; }
-
-            public Stack<OperationNode> Operations { get; } = new Stack<OperationNode>();
 
             public Stack<ResolveRequestNode> ResolveRequests { get; } = new Stack<ResolveRequestNode>();
 
@@ -329,21 +425,18 @@ namespace Autofac.Core.Diagnostics
             public DotGraphBuilder()
             {
                 Root = new OperationNode();
-                Operations.Push(Root);
             }
 
             public void OnOperationFailure(Exception? operationException)
             {
-                var operation = Operations.Pop();
-                operation.Success = false;
-                operation.Exception = operationException;
+                Root.Success = false;
+                Root.Exception = operationException;
             }
 
             public void OnOperationSuccess(string? instanceType)
             {
-                var operation = Operations.Pop();
-                operation.Success = true;
-                operation.InstanceType = instanceType;
+                Root.Success = true;
+                Root.InstanceType = instanceType;
             }
 
             public void OnRequestStart(string service, string component, string? decoratorTarget)
@@ -354,7 +447,15 @@ namespace Autofac.Core.Diagnostics
                     request.DecoratorTarget = decoratorTarget;
                 }
 
-                Operations.Peek().Children.Add(request);
+                if (Middlewares.Count != 0)
+                {
+                    Middlewares.Peek().ResolveRequests.Add(request);
+                }
+                else
+                {
+                    Root.ResolveRequests.Add(request);
+                }
+
                 ResolveRequests.Push(request);
             }
 
@@ -375,7 +476,7 @@ namespace Autofac.Core.Diagnostics
             public void OnMiddlewareStart(string middleware)
             {
                 var mw = new MiddlewareNode(middleware);
-                ResolveRequests.Peek().Children.Add(mw);
+                ResolveRequests.Peek().Middleware.Add(mw);
                 Middlewares.Push(mw);
             }
 
@@ -395,7 +496,7 @@ namespace Autofac.Core.Diagnostics
             {
                 var builder = new StringBuilder();
                 builder.AppendLine("digraph G {");
-                Root.ToString(1, builder);
+                Root.ToString(builder);
                 builder.AppendLine("}");
                 return builder.ToString();
             }
