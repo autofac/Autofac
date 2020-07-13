@@ -88,7 +88,7 @@ namespace Autofac.Specification.Test.Diagnostics
         }
 
         [Fact]
-        public void DiagnosticTracerDoesNotRaiseAnEventOnNestedOperations()
+        public void DiagnosticTracerHandlesDecorators()
         {
             var tracer = new DefaultDiagnosticTracer();
 
@@ -100,20 +100,16 @@ namespace Autofac.Specification.Test.Diagnostics
 
             container.SubscribeToDiagnostics(tracer);
 
-            int traceCount = 0;
             string lastOpResult = null;
 
             tracer.OperationCompleted += (sender, args) =>
             {
                 Assert.Same(tracer, sender);
                 lastOpResult = args.TraceContent;
-                traceCount++;
             };
 
             container.Resolve<IService>();
 
-            // Only a single trace (despite the nested operations).
-            Assert.Equal(1, traceCount);
             Assert.Contains("Decorator", lastOpResult);
         }
 
@@ -131,7 +127,7 @@ namespace Autofac.Specification.Test.Diagnostics
             container.SubscribeToDiagnostics(tracer);
             container.Resolve<IService>();
 
-            // The dictionary of tracked trace IDs and
+            // The dictionary of tracked operations and
             // string builders should be empty.
             Assert.Equal(0, tracer.OperationsInProgress);
         }
