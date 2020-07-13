@@ -354,6 +354,10 @@
     <EmbeddedResource Update="Core\Diagnostics\TracerMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TracerMessages.Designer.cs</LastGenOutput>
+      <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+      <StronglyTypedFileName>Core\Diagnostics\TracerMessages.Designer.cs</StronglyTypedFileName>
+      <StronglyTypedClassName>TracerMessages</StronglyTypedClassName>
+      <StronglyTypedNamespace>Autofac.Core.Diagnostics</StronglyTypedNamespace>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\Lifetime\LifetimeScopeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
