@@ -23,12 +23,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Collections.Generic;
 using Autofac.Core.Diagnostics;
 using Xunit;
 
 namespace Autofac.Test.Core.Diagnostics
 {
-    public class FullOperationDiagnosticTracerBaseTests
+    public class OperationDiagnosticTracerBaseTests
     {
         [InlineData(DiagnosticEventKeys.MiddlewareStart)]
         [InlineData(DiagnosticEventKeys.MiddlewareFailure)]
@@ -40,16 +41,33 @@ namespace Autofac.Test.Core.Diagnostics
         [InlineData(DiagnosticEventKeys.RequestStart)]
         [InlineData(DiagnosticEventKeys.RequestSuccess)]
         [Theory]
-        public void Ctor_SubscribesToAllEvents(string key)
+        public void Ctor_DefaultSubscribesToAllEvents(string key)
         {
             var tracer = new TestTracer();
             Assert.True(tracer.IsEnabled(key));
         }
 
-        private class TestTracer : FullOperationDiagnosticTracerBase
+        [Fact]
+        public void Ctor_SpecifySubscriptions()
+        {
+            var tracer = new TestTracer(new string[] { DiagnosticEventKeys.RequestStart, DiagnosticEventKeys.RequestSuccess });
+            Assert.True(tracer.IsEnabled(DiagnosticEventKeys.RequestStart));
+            Assert.True(tracer.IsEnabled(DiagnosticEventKeys.RequestSuccess));
+
+            // Others shouldn't be enabled.
+            Assert.False(tracer.IsEnabled(DiagnosticEventKeys.RequestFailure));
+            Assert.False(tracer.IsEnabled(DiagnosticEventKeys.MiddlewareFailure));
+        }
+
+        private class TestTracer : OperationDiagnosticTracerBase
         {
             public TestTracer()
                 : base()
+            {
+            }
+
+            public TestTracer(IEnumerable<string> subscriptions)
+                : base(subscriptions)
             {
             }
 

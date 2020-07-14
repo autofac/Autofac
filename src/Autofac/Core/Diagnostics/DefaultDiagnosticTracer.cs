@@ -9,7 +9,7 @@ namespace Autofac.Core.Diagnostics
     /// <summary>
     /// Provides a default resolve pipeline tracer that builds a multi-line
     /// string describing the end-to-end operation flow. Attach to the
-    /// <see cref="FullOperationDiagnosticTracerBase.OperationCompleted"/>
+    /// <see cref="OperationDiagnosticTracerBase.OperationCompleted"/>
     /// event to receive notifications when new trace content is available.
     /// </summary>
     /// <remarks>
@@ -19,7 +19,7 @@ namespace Autofac.Core.Diagnostics
     /// logical activity can be captured.
     /// </para>
     /// </remarks>
-    public class DefaultDiagnosticTracer : FullOperationDiagnosticTracerBase
+    public class DefaultDiagnosticTracer : OperationDiagnosticTracerBase
     {
         private const string RequestExceptionTraced = "__RequestException";
 

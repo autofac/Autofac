@@ -28,7 +28,7 @@ using Autofac.Core.Resolving;
 namespace Autofac.Core.Diagnostics
 {
     /// <summary>
-    /// Event data for the <see cref="FullOperationDiagnosticTracerBase.OperationCompleted"/> event.
+    /// Event data for the <see cref="OperationDiagnosticTracerBase.OperationCompleted"/> event.
     /// </summary>
     public sealed class OperationTraceCompletedArgs
     {

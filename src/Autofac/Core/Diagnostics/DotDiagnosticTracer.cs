@@ -37,7 +37,7 @@ namespace Autofac.Core.Diagnostics
     /// <summary>
     /// Provides a resolve pipeline tracer that generates DOT graph output
     /// traces for an end-to-end operation flow. Attach to the
-    /// <see cref="FullOperationDiagnosticTracerBase.OperationCompleted"/>
+    /// <see cref="OperationDiagnosticTracerBase.OperationCompleted"/>
     /// event to receive notifications when a new graph is available.
     /// </summary>
     /// <remarks>
@@ -47,7 +47,7 @@ namespace Autofac.Core.Diagnostics
     /// logical activity can be captured.
     /// </para>
     /// </remarks>
-    public class DotDiagnosticTracer : FullOperationDiagnosticTracerBase
+    public class DotDiagnosticTracer : OperationDiagnosticTracerBase
     {
         /// <summary>
         /// Metadata flag to help deduplicate the number of places where the exception is traced.
@@ -56,11 +56,21 @@ namespace Autofac.Core.Diagnostics
 
         private readonly ConcurrentDictionary<ResolveOperationBase, DotGraphBuilder> _operationBuilders = new ConcurrentDictionary<ResolveOperationBase, DotGraphBuilder>();
 
+        private static readonly string[] DotEvents = new string[]
+        {
+            DiagnosticEventKeys.OperationStart,
+            DiagnosticEventKeys.OperationFailure,
+            DiagnosticEventKeys.OperationSuccess,
+            DiagnosticEventKeys.RequestStart,
+            DiagnosticEventKeys.RequestFailure,
+            DiagnosticEventKeys.RequestSuccess,
+        };
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DotDiagnosticTracer"/> class.
         /// </summary>
         public DotDiagnosticTracer()
-            : base()
+            : base(DotEvents)
         {
         }
 
@@ -98,48 +108,6 @@ namespace Autofac.Core.Diagnostics
                     data.RequestContext.Service.ToString(),
                     data.RequestContext.Registration.Activator.DisplayName(),
                     data.RequestContext.DecoratorTarget?.Activator.DisplayName());
-            }
-        }
-
-        /// <inheritdoc/>
-        public override void OnMiddlewareStart(MiddlewareDiagnosticData data)
-        {
-            if (data is null)
-            {
-                return;
-            }
-
-            if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
-            {
-                builder.OnMiddlewareStart(data.Middleware.ToString());
-            }
-        }
-
-        /// <inheritdoc/>
-        public override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
-        {
-            if (data is null)
-            {
-                return;
-            }
-
-            if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
-            {
-                builder.OnMiddlewareFailure();
-            }
-        }
-
-        /// <inheritdoc/>
-        public override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
-        {
-            if (data is null)
-            {
-                return;
-            }
-
-            if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
-            {
-                builder.OnMiddlewareSuccess();
             }
         }
 
@@ -237,6 +205,17 @@ namespace Autofac.Core.Diagnostics
             public string Id { get; } = "n" + Guid.NewGuid().ToString("N");
 
             public bool Success { get; set; }
+
+            public List<DotGraphNode> Children { get; } = new List<DotGraphNode>();
+
+            public virtual void ToString(StringBuilder stringBuilder)
+            {
+                foreach (var child in Children)
+                {
+                    child.ToString(stringBuilder);
+                    stringBuilder.ConnectNodes(Id, child.Id, !child.Success);
+                }
+            }
         }
 
         private class ResolveRequestNode : DotGraphNode
@@ -245,7 +224,6 @@ namespace Autofac.Core.Diagnostics
             {
                 Service = service;
                 Component = component;
-                Middleware = new List<MiddlewareNode>();
             }
 
             public string Service { get; private set; }
@@ -258,9 +236,7 @@ namespace Autofac.Core.Diagnostics
 
             public string? InstanceType { get; set; }
 
-            public List<MiddlewareNode> Middleware { get; }
-
-            public void ToString(StringBuilder stringBuilder)
+            public override void ToString(StringBuilder stringBuilder)
             {
                 stringBuilder.StartTableNode(Id, border: 1)
                     .AppendTableRow(TracerMessages.ServiceDisplay, Service)
@@ -282,25 +258,7 @@ namespace Autofac.Core.Diagnostics
                 }
 
                 stringBuilder.EndTableNode();
-
-                if (Middleware.Count != 0)
-                {
-                    var middlewareSubgraphId = "mw" + Id;
-                    stringBuilder
-                        .ConnectNodes(Id, middlewareSubgraphId, Middleware.Any(mw => !mw.Success))
-                        .StartTableNode(middlewareSubgraphId, cellBorder: 1);
-
-                    foreach (var mw in Middleware)
-                    {
-                        stringBuilder.AppendTableRow(!mw.Success, mw.Id, "{0}", mw.Name);
-                    }
-
-                    stringBuilder.EndTableNode();
-                    foreach (var mw in Middleware)
-                    {
-                        mw.ToString(stringBuilder, middlewareSubgraphId);
-                    }
-                }
+                base.ToString(stringBuilder);
             }
         }
 
@@ -310,9 +268,7 @@ namespace Autofac.Core.Diagnostics
 
             public string? InstanceType { get; set; }
 
-            public List<ResolveRequestNode> ResolveRequests { get; } = new List<ResolveRequestNode>();
-
-            public void ToString(StringBuilder stringBuilder)
+            public override void ToString(StringBuilder stringBuilder)
             {
                 stringBuilder.Append(Id);
                 stringBuilder.Append(" [label=\"");
@@ -329,34 +285,7 @@ namespace Autofac.Core.Diagnostics
 
                 stringBuilder.Append("\"]");
                 stringBuilder.AppendLine();
-                foreach (var request in ResolveRequests)
-                {
-                    request.ToString(stringBuilder);
-                    stringBuilder.ConnectNodes(Id, request.Id, !request.Success);
-                }
-            }
-        }
-
-        private class MiddlewareNode : DotGraphNode
-        {
-            public MiddlewareNode(string name)
-            {
-                Name = name;
-                ResolveRequests = new List<ResolveRequestNode>();
-            }
-
-            public string Name { get; }
-
-            public List<ResolveRequestNode> ResolveRequests { get; }
-
-            public void ToString(StringBuilder stringBuilder, string middlewareSubgraphId)
-            {
-                var fullId = string.Format(CultureInfo.CurrentCulture, "{0}:{1}", middlewareSubgraphId, Id);
-                foreach (var request in ResolveRequests)
-                {
-                    stringBuilder.ConnectNodes(fullId, request.Id, !request.Success);
-                    request.ToString(stringBuilder);
-                }
+                base.ToString(stringBuilder);
             }
         }
 
@@ -368,8 +297,6 @@ namespace Autofac.Core.Diagnostics
             public OperationNode Root { get; private set; }
 
             public Stack<ResolveRequestNode> ResolveRequests { get; } = new Stack<ResolveRequestNode>();
-
-            public Stack<MiddlewareNode> Middlewares { get; } = new Stack<MiddlewareNode>();
 
             public DotGraphBuilder()
             {
@@ -396,13 +323,13 @@ namespace Autofac.Core.Diagnostics
                     request.DecoratorTarget = decoratorTarget;
                 }
 
-                if (Middlewares.Count != 0)
+                if (ResolveRequests.Count != 0)
                 {
-                    Middlewares.Peek().ResolveRequests.Add(request);
+                    ResolveRequests.Peek().Children.Add(request);
                 }
                 else
                 {
-                    Root.ResolveRequests.Add(request);
+                    Root.Children.Add(request);
                 }
 
                 ResolveRequests.Push(request);
@@ -432,43 +359,6 @@ namespace Autofac.Core.Diagnostics
                 var request = ResolveRequests.Pop();
                 request.Success = true;
                 request.InstanceType = instanceType;
-            }
-
-            public void OnMiddlewareStart(string middleware)
-            {
-                if (ResolveRequests.Count == 0)
-                {
-                    // Middleware only happens in context of a request.
-                    return;
-                }
-
-                var mw = new MiddlewareNode(middleware);
-                ResolveRequests.Peek().Middleware.Add(mw);
-                Middlewares.Push(mw);
-            }
-
-            public void OnMiddlewareFailure()
-            {
-                if (Middlewares.Count == 0)
-                {
-                    // We somehow missed the start event.
-                    return;
-                }
-
-                var mw = Middlewares.Pop();
-                mw.Success = false;
-            }
-
-            public void OnMiddlewareSuccess()
-            {
-                if (Middlewares.Count == 0)
-                {
-                    // We somehow missed the start event.
-                    return;
-                }
-
-                var mw = Middlewares.Pop();
-                mw.Success = true;
             }
 
             public override string ToString()

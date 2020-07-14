@@ -73,7 +73,7 @@ namespace Autofac.Core.Diagnostics
         /// </remarks>
         /// <seealso cref="EnableAll"/>
         /// <seealso cref="Disable"/>
-        public virtual void Enable(string diagnosticName)
+        public void Enable(string diagnosticName)
         {
             if (diagnosticName == null)
             {
@@ -129,7 +129,7 @@ namespace Autofac.Core.Diagnostics
         /// </remarks>
         /// <seealso cref="EnableAll"/>
         /// <seealso cref="Enable"/>
-        public virtual void Disable(string diagnosticName)
+        public void Disable(string diagnosticName)
         {
             if (diagnosticName == null)
             {
@@ -146,7 +146,7 @@ namespace Autofac.Core.Diagnostics
         /// <param name="diagnosticName">
         /// The name of the event to check. Diagnostic names are case-sensitive.
         /// </param>
-        public virtual bool IsEnabled(string diagnosticName)
+        public bool IsEnabled(string diagnosticName)
         {
             if (_subscriptions.Count == 0)
             {
