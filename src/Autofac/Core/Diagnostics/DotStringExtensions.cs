@@ -1,29 +1,8 @@
-// This software is part of the Autofac IoC container
-// Copyright © 2020 Autofac Contributors
-// https://autofac.org
-//
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Web;
@@ -36,6 +15,11 @@ namespace Autofac.Core.Diagnostics
     internal static class DotStringExtensions
     {
         /// <summary>
+        /// The set of characters on which a line is allowed to wrap.
+        /// </summary>
+        private static readonly char[] WrapCharacters = new[] { ' ', ',', '.', '?', '!', ':', ';', '-', '\n', '\r', '\t' };
+
+        /// <summary>
         /// Starts a DOT graph node where the label is an HTML table.
         /// </summary>
         /// <param name="stringBuilder">
@@ -44,32 +28,26 @@ namespace Autofac.Core.Diagnostics
         /// <param name="id">
         /// The node ID. You can connect to this node by this ID.
         /// </param>
-        /// <param name="border">
-        /// Size of the table border.
+        /// <param name="shape">
+        /// The shape the node should take, like <c>component</c>, <c>box3d</c>, or <c>plaintext</c>.
         /// </param>
-        /// <param name="cellBorder">
-        /// Size of the border around individual cells.
-        /// </param>
-        /// <param name="cellPadding">
-        /// Space between the text in the cell and the cell wall.
-        /// </param>
-        /// <param name="cellSpacing">
-        /// Space between the cells.
+        /// <param name="success">
+        /// <see langword="true"/> to indicate the operation was successful; <see langword="false"/> to
+        /// highlight the operation as a failure path.
         /// </param>
         /// <returns>
         /// The <paramref name="stringBuilder" /> for continued writing.
         /// </returns>
-        public static StringBuilder StartTableNode(this StringBuilder stringBuilder, string id, int border = 0, int cellBorder = 0, int cellPadding = 5, int cellSpacing = 0)
+        public static StringBuilder StartNode(this StringBuilder stringBuilder, string id, string shape, bool success)
         {
             stringBuilder.AppendFormat(
                 CultureInfo.CurrentCulture,
-                "{0} [shape=plaintext,label=<<table border='{1}' cellborder='{2}' cellpadding='{3}' cellspacing='{4}'>",
+                "{0} [shape={1},{2}label=<",
                 id,
-                border,
-                cellBorder,
-                cellPadding,
-                cellSpacing);
+                shape,
+                success ? null : "penwidth=3,color=red,");
             stringBuilder.AppendLine();
+            stringBuilder.AppendLine("<table border='0' cellborder='0' cellspacing='0'>");
             return stringBuilder;
         }
 
@@ -82,9 +60,30 @@ namespace Autofac.Core.Diagnostics
         /// <returns>
         /// The <paramref name="stringBuilder" /> for continued writing.
         /// </returns>
-        public static StringBuilder EndTableNode(this StringBuilder stringBuilder)
+        public static StringBuilder EndNode(this StringBuilder stringBuilder)
         {
-            stringBuilder.Append("</table>>];");
+            stringBuilder.AppendLine("</table>");
+            stringBuilder.AppendLine(">];");
+            return stringBuilder;
+        }
+
+        /// <summary>
+        /// Writes a table header to an HTML table node in a DOT graph.
+        /// </summary>
+        /// <param name="stringBuilder">
+        /// The <see cref="StringBuilder" /> to which the node should be written.
+        /// </param>
+        /// <param name="header">
+        /// A string that will be displayed as a header in the table.
+        /// </param>
+        /// <returns>
+        /// The <paramref name="stringBuilder" /> for continued writing.
+        /// </returns>
+        public static StringBuilder AppendTableHeader(this StringBuilder stringBuilder, string header)
+        {
+            stringBuilder.Append("<tr><td>");
+            stringBuilder.Append(header.Encode());
+            stringBuilder.Append("</td></tr>");
             stringBuilder.AppendLine();
             return stringBuilder;
         }
@@ -106,14 +105,15 @@ namespace Autofac.Core.Diagnostics
         /// </returns>
         public static StringBuilder AppendTableRow(this StringBuilder stringBuilder, string format, params string[] args)
         {
-            stringBuilder.Append("<tr><td align='left'>");
+            stringBuilder.Append("<tr><td><font point-size=\"10\">");
             for (var i = 0; i < args.Length; i++)
             {
-                args[i] = HttpUtility.HtmlEncode(args[i]).NewlineReplace("<br/>");
+                args[i] = args[i].Encode();
             }
 
             stringBuilder.AppendFormat(CultureInfo.CurrentCulture, format, args);
-            stringBuilder.Append("</td></tr>");
+            stringBuilder.Append("</font></td></tr>");
+            stringBuilder.AppendLine();
             return stringBuilder;
         }
 
@@ -123,41 +123,22 @@ namespace Autofac.Core.Diagnostics
         /// <param name="stringBuilder">
         /// The <see cref="StringBuilder" /> to which the node should be written.
         /// </param>
-        /// <param name="bold">
-        /// <see langword="true"/> if the text in the cell should be bold; <see langword="false"/> if not.
+        /// <param name="exceptionType">
+        /// The full exception type name to display.
         /// </param>
-        /// <param name="id">
-        /// The cell/row ID. You can connect to this cell by this ID.
-        /// </param>
-        /// <param name="format">
-        /// A string into which the arguments will be formatted.
-        /// </param>
-        /// <param name="args">
-        /// The arguments to HTML encode and put into the format string.
+        /// <param name="exceptionMessage">
+        /// The message from the exception.
         /// </param>
         /// <returns>
         /// The <paramref name="stringBuilder" /> for continued writing.
         /// </returns>
-        public static StringBuilder AppendTableRow(this StringBuilder stringBuilder, bool bold, string id, string format, params string[] args)
+        public static StringBuilder AppendTableErrorRow(this StringBuilder stringBuilder, string exceptionType, string exceptionMessage)
         {
-            stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "<tr><td align='left' port='{0}'>", id);
-            if (bold)
-            {
-                stringBuilder.Append("<b>");
-            }
-
-            for (var i = 0; i < args.Length; i++)
-            {
-                args[i] = HttpUtility.HtmlEncode(args[i]).NewlineReplace("<br/>");
-            }
-
-            stringBuilder.AppendFormat(CultureInfo.CurrentCulture, format, args);
-            if (bold)
-            {
-                stringBuilder.Append("</b>");
-            }
-
-            stringBuilder.Append("</td></tr>");
+            stringBuilder.Append("<tr><td><font point-size=\"10\"><b>");
+            stringBuilder.Append(exceptionType.Encode());
+            stringBuilder.Append("</b>:<br/>\n");
+            stringBuilder.Append(exceptionMessage.Wrap().Encode());
+            stringBuilder.Append("</font></td></tr>");
             stringBuilder.AppendLine();
             return stringBuilder;
         }
@@ -185,7 +166,7 @@ namespace Autofac.Core.Diagnostics
             stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} -> {1}", fromId, toId);
             if (bold)
             {
-                stringBuilder.Append(" [penwidth=3]");
+                stringBuilder.Append(" [penwidth=3,color=red]");
             }
 
             stringBuilder.AppendLine();
@@ -193,27 +174,54 @@ namespace Autofac.Core.Diagnostics
         }
 
         /// <summary>
-        /// Replaces the environment newline character with something else.
+        /// HTML-encodes and converts newlines to line break tags in an input string.
         /// </summary>
         /// <param name="input">
-        /// The string with characters to replace.
-        /// </param>
-        /// <param name="newlineReplacement">
-        /// The content that should replace newlines.
+        /// The <see cref="string"/> to encode.
         /// </param>
         /// <returns>
-        /// The <paramref name="input"/> with newlines replaced with the specified content.
+        /// The encoded version of <paramref name="input"/>.
         /// </returns>
-        public static string NewlineReplace(this string input, string newlineReplacement)
+        public static string Encode(this string input)
         {
             // Pretty stoked the StringComparison overload is only in one of our
             // target frameworks. :(
 #if NETSTANDARD2_0
-                return input.Replace(Environment.NewLine, newlineReplacement);
+                return HttpUtility.HtmlEncode(input).Replace(Environment.NewLine, "<br/>");
 #endif
 #if !NETSTANDARD2_0
-            return input.Replace(Environment.NewLine, newlineReplacement, StringComparison.Ordinal);
+            return HttpUtility.HtmlEncode(input).Replace(Environment.NewLine, "<br/>", StringComparison.Ordinal);
 #endif
+        }
+
+        /// <summary>
+        /// Line-wraps a long string for display in a graph.
+        /// </summary>
+        /// <param name="input">
+        /// The string to line wrap.
+        /// </param>
+        /// <returns>
+        /// A line-wrapped version of the input.
+        /// </returns>
+        public static string Wrap(this string input)
+        {
+            const int maxLineLength = 40;
+            var list = new List<string>();
+            var lastWrap = 0;
+            int currentIndex;
+            do
+            {
+                currentIndex = lastWrap + maxLineLength > input.Length ? input.Length : (input.LastIndexOfAny(WrapCharacters, Math.Min(input.Length - 1, lastWrap + maxLineLength)) + 1);
+                if (currentIndex <= lastWrap)
+                {
+                    currentIndex = Math.Min(lastWrap + maxLineLength, input.Length);
+                }
+
+                list.Add(input.Substring(lastWrap, currentIndex - lastWrap).Trim());
+                lastWrap = currentIndex;
+            }
+            while (currentIndex < input.Length);
+            return string.Join(Environment.NewLine, list);
         }
     }
 }

@@ -1,27 +1,5 @@
-﻿// This software is part of the Autofac IoC container
-// Copyright © 2020 Autofac Contributors
-// https://autofac.org
-//
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Collections.Concurrent;
@@ -92,6 +70,51 @@ namespace Autofac.Core.Diagnostics
             }
 
             var builder = _operationBuilders.GetOrAdd(data.Operation, k => new DotGraphBuilder());
+            builder.OnOperationStart(data.Operation.InitiatingRequest?.Service.Description);
+        }
+
+        /// <inheritdoc/>
+        public override void OnOperationSuccess(OperationSuccessDiagnosticData data)
+        {
+            if (data is null)
+            {
+                return;
+            }
+
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
+            {
+                try
+                {
+                    builder.OnOperationSuccess();
+                    OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
+                }
+                finally
+                {
+                    _operationBuilders.TryRemove(data.Operation, out var _);
+                }
+            }
+        }
+
+        /// <inheritdoc/>
+        public override void OnOperationFailure(OperationFailureDiagnosticData data)
+        {
+            if (data is null)
+            {
+                return;
+            }
+
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
+            {
+                try
+                {
+                    builder.OnOperationFailure();
+                    OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
+                }
+                finally
+                {
+                    _operationBuilders.TryRemove(data.Operation, out var _);
+                }
+            }
         }
 
         /// <inheritdoc/>
@@ -108,6 +131,20 @@ namespace Autofac.Core.Diagnostics
                     data.RequestContext.Service.ToString(),
                     data.RequestContext.Registration.Activator.DisplayName(),
                     data.RequestContext.DecoratorTarget?.Activator.DisplayName());
+            }
+        }
+
+        /// <inheritdoc/>
+        public override void OnRequestSuccess(RequestDiagnosticData data)
+        {
+            if (data is null)
+            {
+                return;
+            }
+
+            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
+            {
+                builder.OnRequestSuccess(data.RequestContext.Instance?.GetType().ToString());
             }
         }
 
@@ -140,66 +177,6 @@ namespace Autofac.Core.Diagnostics
             }
         }
 
-        /// <inheritdoc/>
-        public override void OnRequestSuccess(RequestDiagnosticData data)
-        {
-            if (data is null)
-            {
-                return;
-            }
-
-            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
-            {
-                builder.OnRequestSuccess(data.RequestContext.Instance?.GetType().ToString());
-            }
-        }
-
-        /// <inheritdoc/>
-        public override void OnOperationFailure(OperationFailureDiagnosticData data)
-        {
-            if (data is null)
-            {
-                return;
-            }
-
-            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
-            {
-                try
-                {
-                    builder.OnOperationFailure(data.OperationException);
-
-                    OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
-                }
-                finally
-                {
-                    _operationBuilders.TryRemove(data.Operation, out var _);
-                }
-            }
-        }
-
-        /// <inheritdoc/>
-        public override void OnOperationSuccess(OperationSuccessDiagnosticData data)
-        {
-            if (data is null)
-            {
-                return;
-            }
-
-            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
-            {
-                try
-                {
-                    builder.OnOperationSuccess(data.ResolvedInstance?.GetType().ToString());
-
-                    OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
-                }
-                finally
-                {
-                    _operationBuilders.TryRemove(data.Operation, out var _);
-                }
-            }
-        }
-
         private abstract class DotGraphNode
         {
             public string Id { get; } = "n" + Guid.NewGuid().ToString("N");
@@ -208,14 +185,7 @@ namespace Autofac.Core.Diagnostics
 
             public List<DotGraphNode> Children { get; } = new List<DotGraphNode>();
 
-            public virtual void ToString(StringBuilder stringBuilder)
-            {
-                foreach (var child in Children)
-                {
-                    child.ToString(stringBuilder);
-                    stringBuilder.ConnectNodes(Id, child.Id, !child.Success);
-                }
-            }
+            public abstract void ToString(StringBuilder stringBuilder);
         }
 
         private class ResolveRequestNode : DotGraphNode
@@ -238,8 +208,9 @@ namespace Autofac.Core.Diagnostics
 
             public override void ToString(StringBuilder stringBuilder)
             {
-                stringBuilder.StartTableNode(Id, border: 1)
-                    .AppendTableRow(TracerMessages.ServiceDisplay, Service)
+                var shape = DecoratorTarget == null ? "component" : "box3d";
+                stringBuilder.StartNode(Id, shape, Success)
+                    .AppendTableHeader(Service)
                     .AppendTableRow(TracerMessages.ComponentDisplay, Component);
 
                 if (DecoratorTarget is object)
@@ -254,38 +225,46 @@ namespace Autofac.Core.Diagnostics
 
                 if (Exception is object)
                 {
-                    stringBuilder.AppendTableRow(TracerMessages.ExceptionDisplay, Exception.ToString());
+                    stringBuilder.AppendTableErrorRow(Exception.GetType().FullName, Exception.Message);
                 }
 
-                stringBuilder.EndTableNode();
-                base.ToString(stringBuilder);
+                stringBuilder.EndNode();
+                foreach (var child in Children)
+                {
+                    child.ToString(stringBuilder);
+                    stringBuilder.ConnectNodes(Id, child.Id, !child.Success);
+                }
             }
         }
 
         private class OperationNode : DotGraphNode
         {
-            public Exception? Exception { get; set; }
-
-            public string? InstanceType { get; set; }
+            public string? Service { get; set; }
 
             public override void ToString(StringBuilder stringBuilder)
             {
-                stringBuilder.Append(Id);
-                stringBuilder.Append(" [label=\"");
-
-                if (InstanceType is object)
+                // Graph header
+                stringBuilder.Append("label=<");
+                if (!Success)
                 {
-                    stringBuilder.Append(InstanceType);
-                }
-                else if (Exception is object)
-                {
-                    stringBuilder.Append(HttpUtility.HtmlEncode(Exception.ToString()).NewlineReplace("\\l"));
-                    stringBuilder.Append("\\l");
+                    stringBuilder.Append("<b>");
                 }
 
-                stringBuilder.Append("\"]");
+                stringBuilder.Append(HttpUtility.HtmlEncode(Service));
+                if (!Success)
+                {
+                    stringBuilder.Append("</b>");
+                }
+
+                stringBuilder.Append(">;");
                 stringBuilder.AppendLine();
-                base.ToString(stringBuilder);
+                stringBuilder.AppendLine("labelloc=t");
+                foreach (var child in Children)
+                {
+                    // We _should_ only have one child here - the
+                    // initiating request.
+                    child.ToString(stringBuilder);
+                }
             }
         }
 
@@ -303,16 +282,19 @@ namespace Autofac.Core.Diagnostics
                 Root = new OperationNode();
             }
 
-            public void OnOperationFailure(Exception? operationException)
+            public void OnOperationStart(string? service)
             {
-                Root.Success = false;
-                Root.Exception = operationException;
+                Root.Service = service;
             }
 
-            public void OnOperationSuccess(string? instanceType)
+            public void OnOperationFailure()
+            {
+                Root.Success = false;
+            }
+
+            public void OnOperationSuccess()
             {
                 Root.Success = true;
-                Root.InstanceType = instanceType;
             }
 
             public void OnRequestStart(string service, string component, string? decoratorTarget)
@@ -329,6 +311,8 @@ namespace Autofac.Core.Diagnostics
                 }
                 else
                 {
+                    // The initiating request will be the first request
+                    // we see, and should be the last one off the stack.
                     Root.Children.Add(request);
                 }
 
