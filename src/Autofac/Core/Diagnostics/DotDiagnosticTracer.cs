@@ -469,14 +469,18 @@ namespace Autofac.Core.Diagnostics
 
             private void RemoveDuplicates(Guid sourceId)
             {
-                if (!Requests.TryGetValue(sourceId, out var source))
+                if (!Requests.Contains(sourceId))
                 {
                     // Should always find this value, but in testing
                     // sometimes the mock value uses an empty GUID or
-                    // something that might not be here.
+                    // something that might not be here. Also, it appears
+                    // TryGetValue on KeyedCollection<K,V> wasn't added
+                    // until netstandard2.1, so it causes compiler problems
+                    // to multitarget netstandard2.0.
                     return;
                 }
 
+                var source = Requests[sourceId];
                 if (!source.Success || source.Instance is null)
                 {
                     // We can only de-duplicate successful operations because
