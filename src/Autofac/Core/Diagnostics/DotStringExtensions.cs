@@ -38,12 +38,12 @@ namespace Autofac.Core.Diagnostics
         /// <returns>
         /// The <paramref name="stringBuilder" /> for continued writing.
         /// </returns>
-        public static StringBuilder StartNode(this StringBuilder stringBuilder, string id, string shape, bool success)
+        public static StringBuilder StartNode(this StringBuilder stringBuilder, Guid id, string shape, bool success)
         {
             stringBuilder.AppendFormat(
                 CultureInfo.CurrentCulture,
                 "{0} [shape={1},{2}label=<",
-                id,
+                id.NodeId(),
                 shape,
                 success ? null : "penwidth=3,color=red,");
             stringBuilder.AppendLine();
@@ -73,16 +73,21 @@ namespace Autofac.Core.Diagnostics
         /// <param name="stringBuilder">
         /// The <see cref="StringBuilder" /> to which the node should be written.
         /// </param>
-        /// <param name="header">
-        /// A string that will be displayed as a header in the table.
+        /// <param name="service">
+        /// A string that will be displayed as a header in the table, should be the name
+        /// of the service being resolved.
+        /// </param>
+        /// <param name="portId">
+        /// A <see cref="Guid"/> that uniquely identifies the service instance being
+        /// resolved. Used for linking from one request to a specific service.
         /// </param>
         /// <returns>
         /// The <paramref name="stringBuilder" /> for continued writing.
         /// </returns>
-        public static StringBuilder AppendTableHeader(this StringBuilder stringBuilder, string header)
+        public static StringBuilder AppendServiceRow(this StringBuilder stringBuilder, string service, Guid portId)
         {
-            stringBuilder.Append("<tr><td>");
-            stringBuilder.Append(header.Encode());
+            stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "<tr><td port='{0}'>", portId.NodeId());
+            stringBuilder.Append(service.Encode());
             stringBuilder.Append("</td></tr>");
             stringBuilder.AppendLine();
             return stringBuilder;
@@ -155,21 +160,24 @@ namespace Autofac.Core.Diagnostics
         /// <param name="toId">
         /// The ID of the node where the connection ends.
         /// </param>
+        /// <param name="label">
+        /// The label on the connecting line.
+        /// </param>
         /// <param name="bold">
         /// <see langword="true"/> if the text in the cell should be bold; <see langword="false"/> if not.
         /// </param>
         /// <returns>
         /// The <paramref name="stringBuilder" /> for continued writing.
         /// </returns>
-        public static StringBuilder ConnectNodes(this StringBuilder stringBuilder, string fromId, string toId, bool bold)
+        public static StringBuilder ConnectNodes(this StringBuilder stringBuilder, string fromId, string toId, string label, bool bold)
         {
-            stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} -> {1}", fromId, toId);
+            stringBuilder.AppendFormat(CultureInfo.CurrentCulture, "{0} -> {1} [label=<{2}>", fromId, toId, label.Encode());
             if (bold)
             {
-                stringBuilder.Append(" [penwidth=3,color=red]");
+                stringBuilder.Append(",penwidth=3,color=red");
             }
 
-            stringBuilder.AppendLine();
+            stringBuilder.AppendLine("]");
             return stringBuilder;
         }
 
@@ -222,6 +230,17 @@ namespace Autofac.Core.Diagnostics
             }
             while (currentIndex < input.Length);
             return string.Join(Environment.NewLine, list);
+        }
+
+        /// <summary>
+        /// Creates a unique string ID from a <see cref="Guid"/>
+        /// that can be used to identify a node in a DOT graph.
+        /// </summary>
+        /// <param name="guid">The ID to serialize.</param>
+        /// <returns>A string version of the ID.</returns>
+        public static string NodeId(this Guid guid)
+        {
+            return "n" + guid.ToString("N");
         }
     }
 }

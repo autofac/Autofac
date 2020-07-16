@@ -4,8 +4,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Web;
 using Autofac.Core.Resolving;
@@ -128,7 +129,7 @@ namespace Autofac.Core.Diagnostics
             if (_operationBuilders.TryGetValue(data.Operation, out var builder))
             {
                 builder.OnRequestStart(
-                    data.RequestContext.Service.ToString(),
+                    data.RequestContext.Service,
                     data.RequestContext.Registration.Activator.DisplayName(),
                     data.RequestContext.DecoratorTarget?.Activator.DisplayName());
             }
@@ -144,7 +145,7 @@ namespace Autofac.Core.Diagnostics
 
             if (_operationBuilders.TryGetValue(data.Operation, out var builder))
             {
-                builder.OnRequestSuccess(data.RequestContext.Instance?.GetType().ToString());
+                builder.OnRequestSuccess(data.RequestContext.Instance);
             }
         }
 
@@ -177,50 +178,57 @@ namespace Autofac.Core.Diagnostics
             }
         }
 
-        private abstract class DotGraphNode
+        /// <summary>
+        /// One node in the graph. The resulting instance (for successful requests)
+        /// is what uniquely identifies the node when normalizing the data. This
+        /// converts the notion of a "resolve request" into a dependency graph
+        /// based on completed resolutions.
+        /// </summary>
+        private class ResolveRequestNode
         {
-            public string Id { get; } = "n" + Guid.NewGuid().ToString("N");
-
-            public bool Success { get; set; }
-
-            public List<DotGraphNode> Children { get; } = new List<DotGraphNode>();
-
-            public abstract void ToString(StringBuilder stringBuilder);
-        }
-
-        private class ResolveRequestNode : DotGraphNode
-        {
-            public ResolveRequestNode(string service, string component)
+            public ResolveRequestNode(string component)
             {
-                Service = service;
+                Services = new Dictionary<Service, Guid>();
                 Component = component;
+                Id = Guid.NewGuid();
+                Edges = new HashSet<GraphEdge>();
             }
 
-            public string Service { get; private set; }
+            public Guid Id { get; }
+
+            public Dictionary<Service, Guid> Services { get; private set; }
 
             public string Component { get; private set; }
 
             public string? DecoratorTarget { get; set; }
 
+            public bool Success { get; set; }
+
             public Exception? Exception { get; set; }
 
-            public string? InstanceType { get; set; }
+            public object? Instance { get; set; }
 
-            public override void ToString(StringBuilder stringBuilder)
+            public HashSet<GraphEdge> Edges { get; }
+
+            public void ToString(StringBuilder stringBuilder, RequestDictionary allRequests)
             {
                 var shape = DecoratorTarget == null ? "component" : "box3d";
-                stringBuilder.StartNode(Id, shape, Success)
-                    .AppendTableHeader(Service)
-                    .AppendTableRow(TracerMessages.ComponentDisplay, Component);
+                stringBuilder.StartNode(Id, shape, Success);
+                foreach (var service in Services.Keys)
+                {
+                    stringBuilder.AppendServiceRow(service.Description, Services[service]);
+                }
+
+                stringBuilder.AppendTableRow(TracerMessages.ComponentDisplay, Component);
 
                 if (DecoratorTarget is object)
                 {
                     stringBuilder.AppendTableRow(TracerMessages.TargetDisplay, DecoratorTarget);
                 }
 
-                if (InstanceType is object)
+                if (Instance is object)
                 {
-                    stringBuilder.AppendTableRow(TracerMessages.InstanceDisplay, InstanceType);
+                    stringBuilder.AppendTableRow(TracerMessages.InstanceDisplay, Instance.GetType().FullName);
                 }
 
                 if (Exception is object)
@@ -229,19 +237,27 @@ namespace Autofac.Core.Diagnostics
                 }
 
                 stringBuilder.EndNode();
-                foreach (var child in Children)
+                foreach (var edge in Edges)
                 {
-                    child.ToString(stringBuilder);
-                    stringBuilder.ConnectNodes(Id, child.Id, !child.Success);
+                    // Connect into a table with the ID format "parent:tablerow"
+                    var destination = allRequests[edge.Request];
+                    var edgeId = destination.Id.NodeId() + ":" + destination.Services[edge.Service].NodeId();
+                    stringBuilder.ConnectNodes(Id.NodeId(), edgeId, edge.Service.Description, !destination.Success);
                 }
             }
         }
 
-        private class OperationNode : DotGraphNode
+        /// <summary>
+        /// Metadata about the operation being graphed. Used to
+        /// generate the graph header.
+        /// </summary>
+        private class OperationNode
         {
             public string? Service { get; set; }
 
-            public override void ToString(StringBuilder stringBuilder)
+            public bool Success { get; set; }
+
+            public void ToString(StringBuilder stringBuilder)
             {
                 // Graph header
                 stringBuilder.Append("label=<");
@@ -259,13 +275,72 @@ namespace Autofac.Core.Diagnostics
                 stringBuilder.Append(">;");
                 stringBuilder.AppendLine();
                 stringBuilder.AppendLine("labelloc=t");
-                foreach (var child in Children)
-                {
-                    // We _should_ only have one child here - the
-                    // initiating request.
-                    child.ToString(stringBuilder);
-                }
             }
+        }
+
+        /// <summary>
+        /// Convenience collection for accessing a request by ID
+        /// out of the list of all requests.
+        /// </summary>
+        private class RequestDictionary : KeyedCollection<Guid, ResolveRequestNode>
+        {
+            protected override Guid GetKeyForItem(ResolveRequestNode item)
+            {
+                return item.Id;
+            }
+        }
+
+        /// <summary>
+        /// An edge that connects two nodes (two resolve requests) in a graph.
+        /// The source of an edge is the request that's resolving child items;
+        /// the target is a specific service on a child request.
+        /// </summary>
+        private class GraphEdge : IEquatable<GraphEdge>
+        {
+            public GraphEdge(Guid request, Service service)
+            {
+                Request = request;
+                Service = service ?? throw new ArgumentNullException(nameof(service));
+            }
+
+            public Guid Request { get; private set; }
+
+            public Service Service { get; private set; }
+
+            public bool Equals(GraphEdge? other)
+            {
+                return
+                    other is object &&
+                    other.Request == Request &&
+                    ((other.Service is object && Service is object && other.Service.Equals(Service)) ||
+                    (other.Service is null && Service is null));
+            }
+
+            public override bool Equals(object? obj)
+            {
+                return Equals(obj as GraphEdge);
+            }
+
+            public override int GetHashCode()
+            {
+                // This doesn't have to be great; we don't really use it
+                // but analyzers complain since we do need equality.
+                return Request.GetHashCode() ^ Service.GetHashCode();
+            }
+        }
+
+        /// <summary>
+        /// Equality comparer that determines if two resolve requests are effectively the
+        /// same based on the returned instance. Used to find "duplicates" in the graph
+        /// during normalization.
+        /// </summary>
+        private class InstanceEqualityComparer : IEqualityComparer<ResolveRequestNode>
+        {
+            public static InstanceEqualityComparer Default { get; } = new InstanceEqualityComparer();
+
+            public bool Equals(ResolveRequestNode x, ResolveRequestNode y) => ReferenceEquals(x.Instance, y.Instance);
+
+            public int GetHashCode(ResolveRequestNode obj) => RuntimeHelpers.GetHashCode(obj.Instance);
         }
 
         /// <summary>
@@ -273,83 +348,187 @@ namespace Autofac.Core.Diagnostics
         /// </summary>
         private class DotGraphBuilder
         {
-            public OperationNode Root { get; private set; }
+            /// <summary>
+            /// Gets the node that has operation-level data for the graph.
+            /// </summary>
+            public OperationNode Operation { get; private set; }
 
-            public Stack<ResolveRequestNode> ResolveRequests { get; } = new Stack<ResolveRequestNode>();
+            /// <summary>
+            /// Gets the set of all requests made during the operation.
+            /// </summary>
+            public RequestDictionary Requests { get; private set; }
+
+            /// <summary>
+            /// Gets the originating request ID. This will also be the first request in the
+            /// stack of ongoing requests. Tracked to ensure we retain the originating
+            /// request during the normalization of the graph.
+            /// </summary>
+            public Guid OriginatingRequest { get; private set; }
+
+            /// <summary>
+            /// Gets the stack of ongoing requests. The first request in the stack is the originating
+            /// request where the graph should start.
+            /// </summary>
+            public Stack<Guid> CurrentRequest { get; private set; }
 
             public DotGraphBuilder()
             {
-                Root = new OperationNode();
+                Operation = new OperationNode();
+                Requests = new RequestDictionary();
+                CurrentRequest = new Stack<Guid>();
             }
 
             public void OnOperationStart(string? service)
             {
-                Root.Service = service;
+                Operation.Service = service;
             }
 
             public void OnOperationFailure()
             {
-                Root.Success = false;
+                Operation.Success = false;
+                NormalizeGraph();
             }
 
             public void OnOperationSuccess()
             {
-                Root.Success = true;
+                Operation.Success = true;
+                NormalizeGraph();
             }
 
-            public void OnRequestStart(string service, string component, string? decoratorTarget)
+            public void OnRequestStart(Service service, string component, string? decoratorTarget)
             {
-                var request = new ResolveRequestNode(service, component);
+                var request = new ResolveRequestNode(component);
+                request.Services.Add(service, Guid.NewGuid());
+                Requests.Add(request);
                 if (decoratorTarget is object)
                 {
                     request.DecoratorTarget = decoratorTarget;
                 }
 
-                if (ResolveRequests.Count != 0)
+                if (CurrentRequest.Count != 0)
                 {
-                    ResolveRequests.Peek().Children.Add(request);
+                    // We're already in a request, so add an edge from
+                    // the parent to this new request/service.
+                    var parent = Requests[CurrentRequest.Peek()];
+                    parent.Edges.Add(new GraphEdge(request.Id, service));
                 }
                 else
                 {
-                    // The initiating request will be the first request
-                    // we see, and should be the last one off the stack.
-                    Root.Children.Add(request);
+                    // The initiating request will be the first request we see.
+                    OriginatingRequest = request.Id;
                 }
 
-                ResolveRequests.Push(request);
+                // The inbound request is the new current.
+                CurrentRequest.Push(request.Id);
             }
 
             public void OnRequestFailure(Exception? requestException)
             {
-                if (ResolveRequests.Count == 0)
+                if (CurrentRequest.Count == 0)
                 {
                     // OnRequestFailure happened without a corresponding OnRequestStart.
                     return;
                 }
 
-                var request = ResolveRequests.Pop();
+                var request = Requests[CurrentRequest.Pop()];
                 request.Success = false;
                 request.Exception = requestException;
             }
 
-            public void OnRequestSuccess(string? instanceType)
+            public void OnRequestSuccess(object? instance)
             {
-                if (ResolveRequests.Count == 0)
+                if (CurrentRequest.Count == 0)
                 {
                     // OnRequestSuccess happened without a corresponding OnRequestStart.
                     return;
                 }
 
-                var request = ResolveRequests.Pop();
+                var request = Requests[CurrentRequest.Pop()];
                 request.Success = true;
-                request.InstanceType = instanceType;
+                request.Instance = instance;
+            }
+
+            private void NormalizeGraph()
+            {
+                // Remove any duplicates of the root node. We need to make sure that node in particular stays.
+                RemoveDuplicates(OriginatingRequest);
+
+                // Other than the originating request, find the rest of the distinct values
+                // so we can de-dupe.
+                var unique = Requests
+                    .Where(r => r.Success && r.Instance is object && r.Id != OriginatingRequest)
+                    .Distinct(InstanceEqualityComparer.Default)
+                    .Select(r => r.Id)
+                    .ToArray();
+
+                foreach (var id in unique)
+                {
+                    RemoveDuplicates(id);
+                }
+            }
+
+            private void RemoveDuplicates(Guid sourceId)
+            {
+                var source = Requests[sourceId];
+                if (!source.Success || source.Instance is null)
+                {
+                    // We can only de-duplicate successful operations because
+                    // failed operations don't have instances to compare.
+                    return;
+                }
+
+                var duplicates = Requests.Where(dup =>
+
+                    // Successful requests where IDs are different
+                    dup.Id != sourceId && dup.Success &&
+
+                    // Instance is exactly the same
+                    dup.Instance is object && object.ReferenceEquals(dup.Instance, source.Instance) &&
+
+                    // Decorator target must also be the same (otherwise we lose the instance/decorator relationship)
+                    dup.DecoratorTarget == source.DecoratorTarget).ToArray();
+                if (duplicates.Length == 0)
+                {
+                    // No duplicates.
+                    return;
+                }
+
+                foreach (var duplicate in duplicates)
+                {
+                    Requests.Remove(duplicate.Id);
+                    foreach (var request in Requests)
+                    {
+                        var duplicateEdges = request.Edges.Where(e => e.Request == duplicate.Id).ToArray();
+                        foreach (var duplicateEdge in duplicateEdges)
+                        {
+                            // Replace edges pointing to the duplicate so they
+                            // point at the new source. HashSet will only keep
+                            // unique edges, so if there was already a link to
+                            // the source, there won't be duplicate edges.
+                            // Also, duplicateEdge will never be null but the
+                            // analyzer thinks it could be in that GraphEdge.ctor
+                            // call.
+                            request.Edges.Remove(duplicateEdge);
+                            request.Edges.Add(new GraphEdge(sourceId, duplicateEdge!.Service));
+                            if (!source.Services.ContainsKey(duplicateEdge.Service))
+                            {
+                                source.Services.Add(duplicateEdge.Service, Guid.NewGuid());
+                            }
+                        }
+                    }
+                }
             }
 
             public override string ToString()
             {
                 var builder = new StringBuilder();
                 builder.AppendLine("digraph G {");
-                Root.ToString(builder);
+                Operation.ToString(builder);
+                foreach (var request in Requests)
+                {
+                    request.ToString(builder, Requests);
+                }
+
                 builder.AppendLine("}");
                 return builder.ToString();
             }
