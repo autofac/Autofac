@@ -226,7 +226,13 @@ namespace Autofac.Core.Diagnostics
                     stringBuilder.AppendTableRow(TracerMessages.TargetDisplay, DecoratorTarget);
                 }
 
-                if (Instance is object)
+                // Only write the instance info IF
+                // - There IS an instance AND
+                //   - There's more than one service exposed (which means there's at least one service)
+                //     not matching the instance type OR
+                //   - There's only one service exposed and that one doesn't match the instance type.
+                if (Instance is object &&
+                    (Services.Count != 1 || !(Services.First().Key is IServiceWithType swt) || swt.ServiceType != Instance.GetType()))
                 {
                     stringBuilder.AppendTableRow(TracerMessages.InstanceDisplay, Instance.GetType().FullName);
                 }
@@ -242,7 +248,10 @@ namespace Autofac.Core.Diagnostics
                     // Connect into a table with the ID format "parent:tablerow"
                     var destination = allRequests[edge.Request];
                     var edgeId = destination.Id.NodeId() + ":" + destination.Services[edge.Service].NodeId();
-                    stringBuilder.ConnectNodes(Id.NodeId(), edgeId, edge.Service.Description, !destination.Success);
+
+                    // Shorter type name for line descriptions where possible.
+                    var description = edge.Service is IServiceWithType edgeSwt ? edgeSwt.ServiceType.Name : edge.Service.Description;
+                    stringBuilder.ConnectNodes(Id.NodeId(), edgeId, description, !destination.Success);
                 }
             }
         }
