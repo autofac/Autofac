@@ -12,17 +12,13 @@ namespace Autofac.Specification.Test.Diagnostics
         [Fact]
         public void DiagnosticTracerRaisesEventsOnSuccess()
         {
-            var tracer = new DotDiagnosticTracer();
-
             var containerBuilder = new ContainerBuilder();
             containerBuilder.Register(ctxt => "Hello");
-
             var container = containerBuilder.Build();
 
+            var tracer = new DotDiagnosticTracer();
             container.SubscribeToDiagnostics(tracer);
-
             string lastOpResult = null;
-
             tracer.OperationCompleted += (sender, args) =>
             {
                 Assert.Same(tracer, sender);
@@ -39,17 +35,13 @@ namespace Autofac.Specification.Test.Diagnostics
         [Fact]
         public void DiagnosticTracerRaisesEventsOnError()
         {
-            var tracer = new DotDiagnosticTracer();
-
             var containerBuilder = new ContainerBuilder();
             containerBuilder.Register<string>(ctxt => throw new InvalidOperationException());
-
             var container = containerBuilder.Build();
 
+            var tracer = new DotDiagnosticTracer();
             container.SubscribeToDiagnostics(tracer);
-
             string lastOpResult = null;
-
             tracer.OperationCompleted += (sender, args) =>
             {
                 Assert.Same(tracer, sender);
@@ -72,18 +64,14 @@ namespace Autofac.Specification.Test.Diagnostics
         [Fact]
         public void DiagnosticTracerHandlesDecorators()
         {
-            var tracer = new DotDiagnosticTracer();
-
             var containerBuilder = new ContainerBuilder();
             containerBuilder.RegisterType<Implementor>().As<IService>();
             containerBuilder.RegisterDecorator<Decorator, IService>();
-
             var container = containerBuilder.Build();
 
+            var tracer = new DotDiagnosticTracer();
             container.SubscribeToDiagnostics(tracer);
-
             string lastOpResult = null;
-
             tracer.OperationCompleted += (sender, args) =>
             {
                 Assert.Same(tracer, sender);
@@ -98,14 +86,12 @@ namespace Autofac.Specification.Test.Diagnostics
         [Fact]
         public void DiagnosticTracerDoesNotLeakMemory()
         {
-            var tracer = new DotDiagnosticTracer();
-
             var containerBuilder = new ContainerBuilder();
             containerBuilder.RegisterType<Implementor>().As<IService>();
             containerBuilder.RegisterDecorator<Decorator, IService>();
-
             var container = containerBuilder.Build();
 
+            var tracer = new DotDiagnosticTracer();
             container.SubscribeToDiagnostics(tracer);
             container.Resolve<IService>();
 
