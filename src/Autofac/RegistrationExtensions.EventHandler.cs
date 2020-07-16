@@ -27,6 +27,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.Scanning;
 using Autofac.Util;
@@ -110,13 +111,17 @@ namespace Autofac
             // .OnActivating() handler may call .ReplaceInstance() and we'll
             // have closed over the wrong thing.
             registration.ExternallyOwned();
-            registration.ResolvePipeline.Use(nameof(OnRelease), PipelinePhase.Activation, MiddlewareInsertionMode.StartOfPhase, (ctxt, next) =>
+
+            var middleware = new CoreEventMiddleware(ResolveEventType.OnRelease, PipelinePhase.Activation, (ctxt, next) =>
             {
                 // Continue down the pipeline.
                 next(ctxt);
 
                 ctxt.ActivationScope.Disposer.AddInstanceForAsyncDisposal(new ReleaseAction<TLimit>(releaseAction, () => (TLimit)ctxt.Instance!));
             });
+
+            registration.ResolvePipeline.Use(middleware, MiddlewareInsertionMode.StartOfPhase);
+
             return registration;
         }
     }

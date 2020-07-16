@@ -30,6 +30,7 @@ using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
+using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.OwnedInstances;
 
@@ -400,7 +401,7 @@ namespace Autofac.Builder
         {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
 
-            ResolvePipeline.Use(nameof(OnPreparing), PipelinePhase.ParameterSelection, (ctxt, next) =>
+            var middleware = new CoreEventMiddleware(ResolveEventType.OnPreparing, PipelinePhase.ParameterSelection, (ctxt, next) =>
             {
                 var args = new PreparingEventArgs(ctxt, ctxt.Service, ctxt.Registration, ctxt.Parameters);
 
@@ -411,6 +412,8 @@ namespace Autofac.Builder
                 // Go down the pipeline now.
                 next(ctxt);
             });
+
+            ResolvePipeline.Use(middleware);
 
             return this;
         }
@@ -424,9 +427,7 @@ namespace Autofac.Builder
         {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
 
-            // Activation events have to run at the start of the phase, to make sure
-            // that the event handlers run in the same order as they were added to the registration.
-            ResolvePipeline.Use(nameof(OnActivating), PipelinePhase.Activation, MiddlewareInsertionMode.StartOfPhase, (ctxt, next) =>
+            var middleware = new CoreEventMiddleware(ResolveEventType.OnActivating, PipelinePhase.Activation, (ctxt, next) =>
             {
                 next(ctxt);
 
@@ -435,6 +436,10 @@ namespace Autofac.Builder
                 handler(args);
                 ctxt.Instance = args.Instance;
             });
+
+            // Activation events have to run at the start of the phase, to make sure
+            // that the event handlers run in the same order as they were added to the registration.
+            ResolvePipeline.Use(middleware, MiddlewareInsertionMode.StartOfPhase);
 
             return this;
         }
@@ -448,9 +453,7 @@ namespace Autofac.Builder
         {
             if (handler == null) throw new ArgumentNullException(nameof(handler));
 
-            // Need to insert OnActivated at the start of the phase, to ensure we attach to RequestCompleting in the same order
-            // as calls to OnActivated.
-            ResolvePipeline.Use(nameof(OnActivated), PipelinePhase.Activation, MiddlewareInsertionMode.StartOfPhase, (ctxt, next) =>
+            var middleware = new CoreEventMiddleware(ResolveEventType.OnActivated, PipelinePhase.Activation, (ctxt, next) =>
             {
                 // Go down the pipeline first.
                 next(ctxt);
@@ -473,6 +476,10 @@ namespace Autofac.Builder
                     handler(args);
                 };
             });
+
+            // Need to insert OnActivated at the start of the phase, to ensure we attach to RequestCompleting in the same order
+            // as calls to OnActivated.
+            ResolvePipeline.Use(middleware, MiddlewareInsertionMode.StartOfPhase);
 
             return this;
         }
