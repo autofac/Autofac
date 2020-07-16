@@ -469,7 +469,14 @@ namespace Autofac.Core.Diagnostics
 
             private void RemoveDuplicates(Guid sourceId)
             {
-                var source = Requests[sourceId];
+                if (!Requests.TryGetValue(sourceId, out var source))
+                {
+                    // Should always find this value, but in testing
+                    // sometimes the mock value uses an empty GUID or
+                    // something that might not be here.
+                    return;
+                }
+
                 if (!source.Success || source.Instance is null)
                 {
                     // We can only de-duplicate successful operations because
