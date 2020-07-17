@@ -27,8 +27,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Registration;
+using Autofac.Diagnostics;
 using Autofac.Features.Decorators;
 
 namespace Autofac.Core.Resolving.Pipeline

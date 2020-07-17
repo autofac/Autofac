@@ -3,7 +3,7 @@
 
 using Autofac.Core.Resolving.Pipeline;
 
-namespace Autofac.Core.Diagnostics
+namespace Autofac.Diagnostics
 {
     /// <summary>
     /// Diagnostic data associated with middleware events.

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Core.Diagnostics {
+namespace Autofac.Diagnostics {
     using System;
 
 

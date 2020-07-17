@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
-using Autofac.Core.Diagnostics;
+using Autofac.Diagnostics;
 using Autofac.Specification.Test.Features.CircularDependency;
 using Xunit;
 using Xunit.Abstractions;

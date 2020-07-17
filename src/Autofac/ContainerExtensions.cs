@@ -25,7 +25,7 @@
 
 using System;
 using System.Diagnostics;
-using Autofac.Core.Diagnostics;
+using Autofac.Diagnostics;
 
 namespace Autofac
 {

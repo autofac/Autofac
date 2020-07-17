@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 
-namespace Autofac.Core.Diagnostics
+namespace Autofac.Diagnostics
 {
     /// <summary>
     /// Names of the events raised in diagnostics.

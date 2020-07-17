@@ -31,9 +31,9 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Autofac.Builder;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
+using Autofac.Diagnostics;
 using Autofac.Util;
 
 namespace Autofac.Core.Lifetime

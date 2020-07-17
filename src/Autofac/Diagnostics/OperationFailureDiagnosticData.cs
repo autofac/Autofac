@@ -4,7 +4,7 @@
 using System;
 using Autofac.Core.Resolving;
 
-namespace Autofac.Core.Diagnostics
+namespace Autofac.Diagnostics
 {
     /// <summary>
     /// Diagnostic data associated with resolve operation failure events.

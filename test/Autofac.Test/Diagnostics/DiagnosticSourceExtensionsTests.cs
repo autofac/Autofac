@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Autofac.Core;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 using Moq;
 using Xunit;
 
-namespace Autofac.Test.Core.Diagnostics
+namespace Autofac.Test.Diagnostics
 {
     public class DiagnosticSourceExtensionsTests
     {

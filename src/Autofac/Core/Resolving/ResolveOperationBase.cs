@@ -26,9 +26,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving
 {

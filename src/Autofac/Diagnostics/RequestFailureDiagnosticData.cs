@@ -5,7 +5,7 @@ using System;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 
-namespace Autofac.Core.Diagnostics
+namespace Autofac.Diagnostics
 {
     /// <summary>
     /// Diagnostic data associated with resolve request failure events.

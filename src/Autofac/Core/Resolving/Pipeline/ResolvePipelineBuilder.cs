@@ -28,10 +28,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Pipeline;
-using Autofac.Core.Resolving.Middleware;
+using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Pipeline
 {

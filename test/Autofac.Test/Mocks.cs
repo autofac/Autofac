@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
-using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 
 namespace Autofac.Test
 {

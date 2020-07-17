@@ -3,7 +3,7 @@
 
 using Autofac.Core.Resolving;
 
-namespace Autofac.Core.Diagnostics
+namespace Autofac.Diagnostics
 {
     /// <summary>
     /// Event data for the <see cref="OperationDiagnosticTracerBase.OperationCompleted"/> event.

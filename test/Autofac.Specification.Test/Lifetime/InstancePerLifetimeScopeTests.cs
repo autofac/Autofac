@@ -1,5 +1,5 @@
 ﻿using System;
-using Autofac.Core.Diagnostics;
+using Autofac.Diagnostics;
 using Autofac.Specification.Test.Util;
 using Xunit;
 using Xunit.Abstractions;

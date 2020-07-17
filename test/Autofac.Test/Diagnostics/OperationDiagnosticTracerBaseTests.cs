@@ -2,10 +2,10 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Collections.Generic;
-using Autofac.Core.Diagnostics;
+using Autofac.Diagnostics;
 using Xunit;
 
-namespace Autofac.Test.Core.Diagnostics
+namespace Autofac.Test.Diagnostics
 {
     public class OperationDiagnosticTracerBaseTests
     {

@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Autofac.Core.Diagnostics
+namespace Autofac.Diagnostics
 {
     /// <summary>
     /// Base class for creating diagnostic tracers that follow Autofac diagnostic events.

@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac.Core;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 using Xunit;
 
 namespace Autofac.Test.Core.Pipeline

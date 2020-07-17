@@ -26,9 +26,9 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
+using Autofac.Diagnostics;
 using Autofac.Util;
 
 namespace Autofac.Core

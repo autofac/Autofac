@@ -5,9 +5,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.Text;
+using Autofac.Core;
 using Autofac.Core.Resolving;
 
-namespace Autofac.Core.Diagnostics
+namespace Autofac.Diagnostics
 {
     /// <summary>
     /// Provides a default resolve pipeline tracer that builds a multi-line

@@ -24,8 +24,8 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Diagnostics.CodeAnalysis;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving
 {
