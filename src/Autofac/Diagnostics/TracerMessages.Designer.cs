@@ -39,7 +39,7 @@ namespace Autofac.Diagnostics {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Diagnostics.TracerMessages", typeof(TracerMessages).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Diagnostics.TracerMessages", typeof(TracerMessages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
