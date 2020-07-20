@@ -37,7 +37,7 @@ namespace Autofac.Test.Diagnostics
             Assert.False(tracer.IsEnabled(DiagnosticEventKeys.MiddlewareFailure));
         }
 
-        private class TestTracer : OperationDiagnosticTracerBase
+        private class TestTracer : OperationDiagnosticTracerBase<string>
         {
             public TestTracer()
                 : base()

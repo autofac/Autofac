@@ -13,7 +13,7 @@ namespace Autofac.Diagnostics
     /// <summary>
     /// Provides a default resolve pipeline tracer that builds a multi-line
     /// string describing the end-to-end operation flow. Attach to the
-    /// <see cref="OperationDiagnosticTracerBase.OperationCompleted"/>
+    /// <see cref="OperationDiagnosticTracerBase{TContent}.OperationCompleted"/>
     /// event to receive notifications when new trace content is available.
     /// </summary>
     /// <remarks>
@@ -23,7 +23,7 @@ namespace Autofac.Diagnostics
     /// logical activity can be captured.
     /// </para>
     /// </remarks>
-    public class DefaultDiagnosticTracer : OperationDiagnosticTracerBase
+    public class DefaultDiagnosticTracer : OperationDiagnosticTracerBase<string>
     {
         private const string RequestExceptionTraced = "__RequestException";
 
@@ -198,7 +198,7 @@ namespace Autofac.Diagnostics
                     builder.AppendLine(TracerMessages.ExitBrace);
                     builder.AppendException(TracerMessages.OperationFailed, data.OperationException);
 
-                    OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
+                    OnOperationCompleted(new OperationTraceCompletedArgs<string>(data.Operation, builder.ToString()));
                 }
                 finally
                 {
@@ -223,7 +223,7 @@ namespace Autofac.Diagnostics
                     builder.AppendLine(TracerMessages.ExitBrace);
                     builder.AppendFormattedLine(TracerMessages.OperationSucceeded, data.ResolvedInstance);
 
-                    OnOperationCompleted(new OperationTraceCompletedArgs(data.Operation, builder.ToString()));
+                    OnOperationCompleted(new OperationTraceCompletedArgs<string>(data.Operation, builder.ToString()));
                 }
                 finally
                 {
