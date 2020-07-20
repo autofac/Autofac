@@ -226,7 +226,7 @@ namespace Autofac.Diagnostics
         /// on the event. By default, the base class does nothing.
         /// </para>
         /// </remarks>
-        public virtual void OnMiddlewareFailure(MiddlewareDiagnosticData data)
+        protected virtual void OnMiddlewareFailure(MiddlewareDiagnosticData data)
         {
         }
 
@@ -242,7 +242,7 @@ namespace Autofac.Diagnostics
         /// on the event. By default, the base class does nothing.
         /// </para>
         /// </remarks>
-        public virtual void OnMiddlewareStart(MiddlewareDiagnosticData data)
+        protected virtual void OnMiddlewareStart(MiddlewareDiagnosticData data)
         {
         }
 
@@ -258,7 +258,7 @@ namespace Autofac.Diagnostics
         /// on the event. By default, the base class does nothing.
         /// </para>
         /// </remarks>
-        public virtual void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
+        protected virtual void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
         {
         }
 
@@ -274,7 +274,7 @@ namespace Autofac.Diagnostics
         /// on the event. By default, the base class does nothing.
         /// </para>
         /// </remarks>
-        public virtual void OnOperationFailure(OperationFailureDiagnosticData data)
+        protected virtual void OnOperationFailure(OperationFailureDiagnosticData data)
         {
         }
 
@@ -290,7 +290,7 @@ namespace Autofac.Diagnostics
         /// on the event. By default, the base class does nothing.
         /// </para>
         /// </remarks>
-        public virtual void OnOperationStart(OperationStartDiagnosticData data)
+        protected virtual void OnOperationStart(OperationStartDiagnosticData data)
         {
         }
 
@@ -306,7 +306,7 @@ namespace Autofac.Diagnostics
         /// on the event. By default, the base class does nothing.
         /// </para>
         /// </remarks>
-        public virtual void OnOperationSuccess(OperationSuccessDiagnosticData data)
+        protected virtual void OnOperationSuccess(OperationSuccessDiagnosticData data)
         {
         }
 
@@ -322,7 +322,7 @@ namespace Autofac.Diagnostics
         /// on the event. By default, the base class does nothing.
         /// </para>
         /// </remarks>
-        public virtual void OnRequestFailure(RequestFailureDiagnosticData data)
+        protected virtual void OnRequestFailure(RequestFailureDiagnosticData data)
         {
         }
 
@@ -338,7 +338,7 @@ namespace Autofac.Diagnostics
         /// on the event. By default, the base class does nothing.
         /// </para>
         /// </remarks>
-        public virtual void OnRequestStart(RequestDiagnosticData data)
+        protected virtual void OnRequestStart(RequestDiagnosticData data)
         {
         }
 
@@ -354,7 +354,7 @@ namespace Autofac.Diagnostics
         /// on the event. By default, the base class does nothing.
         /// </para>
         /// </remarks>
-        public virtual void OnRequestSuccess(RequestDiagnosticData data)
+        protected virtual void OnRequestSuccess(RequestDiagnosticData data)
         {
         }
 

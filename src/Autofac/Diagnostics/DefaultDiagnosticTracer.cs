@@ -49,7 +49,7 @@ namespace Autofac.Diagnostics
         public override int OperationsInProgress => _operationBuilders.Count;
 
         /// <inheritdoc/>
-        public override void OnOperationStart(OperationStartDiagnosticData data)
+        protected override void OnOperationStart(OperationStartDiagnosticData data)
         {
             if (data is null)
             {
@@ -64,7 +64,7 @@ namespace Autofac.Diagnostics
         }
 
         /// <inheritdoc/>
-        public override void OnRequestStart(RequestDiagnosticData data)
+        protected override void OnRequestStart(RequestDiagnosticData data)
         {
             if (data is null)
             {
@@ -90,7 +90,7 @@ namespace Autofac.Diagnostics
         }
 
         /// <inheritdoc/>
-        public override void OnMiddlewareStart(MiddlewareDiagnosticData data)
+        protected override void OnMiddlewareStart(MiddlewareDiagnosticData data)
         {
             if (data is null)
             {
@@ -105,7 +105,7 @@ namespace Autofac.Diagnostics
         }
 
         /// <inheritdoc/>
-        public override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
+        protected override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
         {
             if (data is null)
             {
@@ -120,7 +120,7 @@ namespace Autofac.Diagnostics
         }
 
         /// <inheritdoc/>
-        public override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
+        protected override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
         {
             if (data is null)
             {
@@ -135,7 +135,7 @@ namespace Autofac.Diagnostics
         }
 
         /// <inheritdoc/>
-        public override void OnRequestFailure(RequestFailureDiagnosticData data)
+        protected override void OnRequestFailure(RequestFailureDiagnosticData data)
         {
             if (data is null)
             {
@@ -167,7 +167,7 @@ namespace Autofac.Diagnostics
         }
 
         /// <inheritdoc/>
-        public override void OnRequestSuccess(RequestDiagnosticData data)
+        protected override void OnRequestSuccess(RequestDiagnosticData data)
         {
             if (data is null)
             {
@@ -183,7 +183,7 @@ namespace Autofac.Diagnostics
         }
 
         /// <inheritdoc/>
-        public override void OnOperationFailure(OperationFailureDiagnosticData data)
+        protected override void OnOperationFailure(OperationFailureDiagnosticData data)
         {
             if (data is null)
             {
@@ -208,7 +208,7 @@ namespace Autofac.Diagnostics
         }
 
         /// <inheritdoc/>
-        public override void OnOperationSuccess(OperationSuccessDiagnosticData data)
+        protected override void OnOperationSuccess(OperationSuccessDiagnosticData data)
         {
             if (data is null)
             {

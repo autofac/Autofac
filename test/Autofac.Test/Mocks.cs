@@ -126,47 +126,47 @@ namespace Autofac.Test
 
             public event Action<ResolveOperationBase, object> OperationSucceeding;
 
-            public override void OnOperationStart(OperationStartDiagnosticData data)
+            protected override void OnOperationStart(OperationStartDiagnosticData data)
             {
                 OperationStarting?.Invoke(data.Operation, data.InitiatingRequest);
             }
 
-            public override void OnRequestStart(RequestDiagnosticData data)
+            protected override void OnRequestStart(RequestDiagnosticData data)
             {
                 RequestStarting?.Invoke(data.Operation, data.RequestContext);
             }
 
-            public override void OnMiddlewareStart(MiddlewareDiagnosticData data)
+            protected override void OnMiddlewareStart(MiddlewareDiagnosticData data)
             {
                 EnteringMiddleware?.Invoke(data.RequestContext, data.Middleware);
             }
 
-            public override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
+            protected override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
             {
                 ExitingMiddleware?.Invoke(data.RequestContext, data.Middleware, false);
             }
 
-            public override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
+            protected override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
             {
                 ExitingMiddleware?.Invoke(data.RequestContext, data.Middleware, true);
             }
 
-            public override void OnRequestFailure(RequestFailureDiagnosticData data)
+            protected override void OnRequestFailure(RequestFailureDiagnosticData data)
             {
                 RequestFailing?.Invoke(data.Operation, data.RequestContext, data.RequestException);
             }
 
-            public override void OnRequestSuccess(RequestDiagnosticData data)
+            protected override void OnRequestSuccess(RequestDiagnosticData data)
             {
                 RequestSucceeding?.Invoke(data.Operation, data.RequestContext);
             }
 
-            public override void OnOperationFailure(OperationFailureDiagnosticData data)
+            protected override void OnOperationFailure(OperationFailureDiagnosticData data)
             {
                 OperationFailing?.Invoke(data.Operation, data.OperationException);
             }
 
-            public override void OnOperationSuccess(OperationSuccessDiagnosticData data)
+            protected override void OnOperationSuccess(OperationSuccessDiagnosticData data)
             {
                 OperationSucceeding?.Invoke(data.Operation, data.ResolvedInstance);
             }
