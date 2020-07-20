@@ -26,6 +26,30 @@ namespace Autofac.Diagnostics
     /// observer, it's not a general purpose mechanism - it's very much tailored
     /// to Autofac.
     /// </para>
+    /// <para>
+    /// Should you want to start emitting and subscribing to your own events in the
+    /// Autofac pipeline (e.g., a custom middleware that emits your own custom events)
+    /// you have some options:
+    /// </para>
+    /// <para>
+    /// First, you could implement your own <see cref="IObserver{T}"/> that listens
+    /// for your custom events. Since you can subscribe any number of <see cref="IObserver{T}"/>
+    /// to a given <see cref="System.Diagnostics.DiagnosticListener"/>, having one
+    /// that derives from this class and a separate one of your own making is acceptable.
+    /// </para>
+    /// <para>
+    /// Second, you could create your own <see cref="IObserver{T}"/> that does not
+    /// derive from this class but still listens for Autofac events as well as any
+    /// custom events you emit. Any diagnostics observer can listen for these events as
+    /// long as it's subscribed to the <see cref="IContainer.DiagnosticSource"/>;
+    /// it doesn't have to be one of this specific class type.
+    /// </para>
+    /// <para>
+    /// Finally, if you want to use this as a base but to listen for your custom events,
+    /// you can derive from this and override the <see cref="DiagnosticTracerBase.Write(string, object)"/>
+    /// method. Handle your custom events, or if it's not one of your custom events, call
+    /// the base to handle the Autofac events.
+    /// </para>
     /// </remarks>
     /// <seealso cref="DefaultDiagnosticTracer"/>
     public abstract class DiagnosticTracerBase : IObserver<KeyValuePair<string, object>>
@@ -369,6 +393,13 @@ namespace Autofac.Diagnostics
         /// <param name="data">
         /// The diagnostic data associated with the event.
         /// </param>
+        /// <remarks>
+        /// <para>
+        /// If you are interested in handling custom events, check out the top-level
+        /// <see cref="DiagnosticTracerBase"/> documentation which discusses some
+        /// options.
+        /// </para>
+        /// </remarks>
         protected virtual void Write(string diagnosticName, object data)
         {
             if (data == null || !IsEnabled(diagnosticName))
