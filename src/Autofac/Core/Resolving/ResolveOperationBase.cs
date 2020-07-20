@@ -48,10 +48,13 @@ namespace Autofac.Core.Resolving
         /// </summary>
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
         /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
-        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope)
+        /// <param name="diagnosticSource">
+        /// The <see cref="System.Diagnostics.DiagnosticSource"/> to which trace events should be written.
+        /// </param>
+        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope, DiagnosticSource diagnosticSource)
         {
             CurrentScope = mostNestedLifetimeScope ?? throw new ArgumentNullException(nameof(mostNestedLifetimeScope));
-            DiagnosticSource = mostNestedLifetimeScope.DiagnosticSource;
+            DiagnosticSource = diagnosticSource ?? throw new ArgumentNullException(nameof(diagnosticSource));
         }
 
         /// <summary>
@@ -179,7 +182,7 @@ namespace Autofac.Core.Resolving
             if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
 
             // Create a new request context.
-            var requestContext = new ResolveRequestContext(this, request, currentOperationScope);
+            var requestContext = new ResolveRequestContext(this, request, currentOperationScope, DiagnosticSource);
 
             // Raise our request-beginning event.
             var handler = ResolveRequestBeginning;

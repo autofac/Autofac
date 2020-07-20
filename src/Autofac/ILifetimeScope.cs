@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Diagnostics;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
@@ -117,12 +116,6 @@ namespace Autofac
         /// that adds component registrations visible only in the new scope.</param>
         /// <returns>A new lifetime scope.</returns>
         ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction);
-
-        /// <summary>
-        /// Gets the <see cref="System.Diagnostics.DiagnosticListener"/> to which
-        /// trace events should be written.
-        /// </summary>
-        DiagnosticListener DiagnosticSource { get; }
 
         /// <summary>
         /// Gets the disposer associated with this <see cref="ILifetimeScope"/>.

@@ -39,7 +39,7 @@ namespace Autofac.Core
     [DebuggerDisplay("Tag = {Tag}, IsDisposed = {IsDisposed}")]
     public class Container : Disposable, IContainer, IServiceProvider
     {
-        private readonly ILifetimeScope _rootLifetimeScope;
+        private readonly LifetimeScope _rootLifetimeScope;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Container"/> class.

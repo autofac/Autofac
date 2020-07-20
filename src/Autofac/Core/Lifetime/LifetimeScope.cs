@@ -97,6 +97,7 @@ namespace Autofac.Core.Lifetime
             _sharedInstances[SelfRegistrationId] = this;
             RootLifetimeScope = this;
             DiagnosticSource = new DiagnosticListener("Autofac");
+            Disposer.AddInstanceForDisposal(DiagnosticSource);
         }
 
         /// <summary>
@@ -160,8 +161,11 @@ namespace Autofac.Core.Lifetime
             handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
         }
 
-        /// <inheritdoc/>
-        public DiagnosticListener DiagnosticSource { get; }
+        /// <summary>
+        /// Gets the <see cref="System.Diagnostics.DiagnosticListener"/> to which
+        /// trace events should be written.
+        /// </summary>
+        internal DiagnosticListener DiagnosticSource { get; }
 
         /// <summary>
         /// Begin a new anonymous sub-scope, with additional components available to it.
@@ -292,7 +296,7 @@ namespace Autofac.Core.Lifetime
 
             CheckNotDisposed();
 
-            var operation = new ResolveOperation(this);
+            var operation = new ResolveOperation(this, DiagnosticSource);
             var handler = ResolveOperationBeginning;
             handler?.Invoke(this, new ResolveOperationBeginningEventArgs(operation));
             return operation.Execute(request);

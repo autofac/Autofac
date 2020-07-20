@@ -246,7 +246,7 @@ namespace Autofac.Test.Diagnostics
         {
             var container = new ContainerBuilder().Build();
             var scope = container.BeginLifetimeScope() as ISharingLifetimeScope;
-            return new ResolveOperation(scope);
+            return new ResolveOperation(scope, container.DiagnosticSource);
         }
 
         private static ResolveRequest MockResolveRequest()
@@ -261,7 +261,7 @@ namespace Autofac.Test.Diagnostics
         {
             var operation = MockResolveOperation();
             var request = MockResolveRequest();
-            return new ResolveRequestContext(operation, request, operation.CurrentScope);
+            return new ResolveRequestContext(operation, request, operation.CurrentScope, operation.DiagnosticSource);
         }
 
         private class MockSubscriber : DiagnosticTracerBase

@@ -423,9 +423,10 @@ namespace Autofac.Test.Core.Pipeline
         {
             public MockPipelineRequestContext()
                 : base(
-                      new ResolveOperation(new MockLifetimeScope()),
+                      new ResolveOperation(new MockLifetimeScope(), new DiagnosticListener("Autofac")),
                       new ResolveRequest(new TypedService(typeof(int)), Mocks.GetResolvableImplementation(), Enumerable.Empty<Parameter>()),
-                      new MockLifetimeScope())
+                      new MockLifetimeScope(),
+                      new DiagnosticListener("Autofac"))
             {
             }
         }
@@ -441,8 +442,6 @@ namespace Autofac.Test.Core.Pipeline
             public object Tag => throw new NotImplementedException();
 
             public IComponentRegistry ComponentRegistry => throw new NotImplementedException();
-
-            public DiagnosticListener DiagnosticSource { get; } = new DiagnosticListener("Autofac");
 
             public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning
             {

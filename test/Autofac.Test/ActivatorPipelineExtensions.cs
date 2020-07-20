@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Autofac.Core;
+using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 
@@ -41,12 +42,13 @@ namespace Autofac.Test
             return (scope, parameters) =>
             {
                 // To get the sharing scope from what might be a container, we're going to resolve the lifetime scope.
-                var lifetimeScope = scope.Resolve<ILifetimeScope>() as ISharingLifetimeScope;
+                var lifetimeScope = scope.Resolve<ILifetimeScope>() as LifetimeScope;
 
                 var request = new ResolveRequestContext(
-                    new ResolveOperation(lifetimeScope),
+                    new ResolveOperation(lifetimeScope, lifetimeScope.DiagnosticSource),
                     new ResolveRequest(new TypedService(typeof(T)), Mocks.GetResolvableImplementation(), parameters),
-                    lifetimeScope);
+                    lifetimeScope,
+                    lifetimeScope.DiagnosticSource);
 
                 built.Invoke(request);
 

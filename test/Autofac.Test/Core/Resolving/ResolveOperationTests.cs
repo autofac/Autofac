@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
+using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
 using Xunit;
 
@@ -39,7 +40,7 @@ namespace Autofac.Test.Core.Resolving
 
             var scope = container.Resolve<ILifetimeScope>() as ISharingLifetimeScope;
 
-            var resolveOp = new ResolveOperation(scope);
+            var resolveOp = new ResolveOperation(scope, container.DiagnosticSource);
 
             var raisedEvents = new List<string>();
 
@@ -89,7 +90,7 @@ namespace Autofac.Test.Core.Resolving
 
             var scope = container.Resolve<ILifetimeScope>() as ISharingLifetimeScope;
 
-            var resolveOp = new ResolveOperation(scope);
+            var resolveOp = new ResolveOperation(scope, container.DiagnosticSource);
 
             var raisedEvents = new List<string>();
 

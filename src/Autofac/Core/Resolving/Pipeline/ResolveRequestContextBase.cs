@@ -48,16 +48,20 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <param name="owningOperation">The owning resolve operation.</param>
         /// <param name="request">The initiating resolve request.</param>
         /// <param name="scope">The lifetime scope.</param>
+        /// <param name="diagnosticSource">
+        /// The <see cref="System.Diagnostics.DiagnosticSource"/> to which trace events should be written.
+        /// </param>
         internal ResolveRequestContextBase(
             ResolveOperationBase owningOperation,
             ResolveRequest request,
-            ISharingLifetimeScope scope)
+            ISharingLifetimeScope scope,
+            DiagnosticSource diagnosticSource)
         {
             Operation = owningOperation;
             ActivationScope = scope;
             Parameters = request.Parameters;
             PhaseReached = PipelinePhase.ResolveRequestStart;
-            DiagnosticSource = scope.DiagnosticSource;
+            DiagnosticSource = diagnosticSource;
             _resolveRequest = request;
         }
 
@@ -107,7 +111,7 @@ namespace Autofac.Core.Resolving.Pipeline
         public bool NewInstanceActivated => Instance is object && PhaseReached == PipelinePhase.Activation;
 
         /// <summary>
-        /// Gets the <see cref="System.Diagnostics.DiagnosticSource"/> for the request.
+        /// Gets the <see cref="System.Diagnostics.DiagnosticSource"/> to which trace events should be written.
         /// </summary>
         public DiagnosticSource DiagnosticSource { get; }
 

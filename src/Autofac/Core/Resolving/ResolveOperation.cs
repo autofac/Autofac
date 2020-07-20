@@ -23,9 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using Autofac.Core.Resolving.Pipeline;
-using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving
 {
@@ -40,8 +39,11 @@ namespace Autofac.Core.Resolving
         /// </summary>
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
         /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
-        public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope)
-            : base(mostNestedLifetimeScope)
+        /// <param name="diagnosticSource">
+        /// The <see cref="System.Diagnostics.DiagnosticSource"/> to which trace events should be written.
+        /// </param>
+        public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope, DiagnosticSource diagnosticSource)
+            : base(mostNestedLifetimeScope, diagnosticSource)
         {
         }
 
