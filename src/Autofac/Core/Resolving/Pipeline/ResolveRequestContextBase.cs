@@ -49,13 +49,13 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <param name="request">The initiating resolve request.</param>
         /// <param name="scope">The lifetime scope.</param>
         /// <param name="diagnosticSource">
-        /// The <see cref="System.Diagnostics.DiagnosticSource"/> to which trace events should be written.
+        /// The <see cref="System.Diagnostics.DiagnosticListener"/> to which trace events should be written.
         /// </param>
         internal ResolveRequestContextBase(
             ResolveOperationBase owningOperation,
             ResolveRequest request,
             ISharingLifetimeScope scope,
-            DiagnosticSource diagnosticSource)
+            DiagnosticListener diagnosticSource)
         {
             Operation = owningOperation;
             ActivationScope = scope;
@@ -111,9 +111,9 @@ namespace Autofac.Core.Resolving.Pipeline
         public bool NewInstanceActivated => Instance is object && PhaseReached == PipelinePhase.Activation;
 
         /// <summary>
-        /// Gets the <see cref="System.Diagnostics.DiagnosticSource"/> to which trace events should be written.
+        /// Gets the <see cref="System.Diagnostics.DiagnosticListener"/> to which trace events should be written.
         /// </summary>
-        public DiagnosticSource DiagnosticSource { get; }
+        public DiagnosticListener DiagnosticSource { get; }
 
         /// <summary>
         /// Gets the current resolve parameters. These can be changed using the <see cref="ChangeParameters(IEnumerable{Parameter})"/> method.

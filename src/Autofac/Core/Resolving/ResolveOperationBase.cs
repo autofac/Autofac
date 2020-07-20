@@ -49,9 +49,9 @@ namespace Autofac.Core.Resolving
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
         /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
         /// <param name="diagnosticSource">
-        /// The <see cref="System.Diagnostics.DiagnosticSource"/> to which trace events should be written.
+        /// The <see cref="System.Diagnostics.DiagnosticListener"/> to which trace events should be written.
         /// </param>
-        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope, DiagnosticSource diagnosticSource)
+        protected ResolveOperationBase(ISharingLifetimeScope mostNestedLifetimeScope, DiagnosticListener diagnosticSource)
         {
             CurrentScope = mostNestedLifetimeScope ?? throw new ArgumentNullException(nameof(mostNestedLifetimeScope));
             DiagnosticSource = diagnosticSource ?? throw new ArgumentNullException(nameof(diagnosticSource));
@@ -73,9 +73,9 @@ namespace Autofac.Core.Resolving
         public IEnumerable<ResolveRequestContextBase> InProgressRequests => RequestStack;
 
         /// <summary>
-        /// Gets the <see cref="System.Diagnostics.DiagnosticSource"/> for the operation.
+        /// Gets the <see cref="System.Diagnostics.DiagnosticListener"/> for the operation.
         /// </summary>
-        public DiagnosticSource DiagnosticSource { get; }
+        public DiagnosticListener DiagnosticSource { get; }
 
         /// <summary>
         /// Gets or sets the current request depth.

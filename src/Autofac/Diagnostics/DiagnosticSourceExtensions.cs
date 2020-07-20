@@ -3,7 +3,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 
@@ -20,9 +19,9 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="requestContext">The context for the resolve request that is running.</param>
         /// <param name="middleware">The middleware that is about to run.</param>
-        public static void MiddlewareStart(this DiagnosticSource diagnosticSource, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+        public static void MiddlewareStart(this DiagnosticListener diagnosticSource, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
         {
-            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareStart))
+            if (diagnosticSource.IsEnabled() && diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareStart))
             {
                 diagnosticSource.Write(DiagnosticEventKeys.MiddlewareStart, new MiddlewareDiagnosticData(requestContext, middleware));
             }
@@ -34,9 +33,9 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="requestContext">The context for the resolve request that is running.</param>
         /// <param name="middleware">The middleware that just ran.</param>
-        public static void MiddlewareFailure(this DiagnosticSource diagnosticSource, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+        public static void MiddlewareFailure(this DiagnosticListener diagnosticSource, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
         {
-            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareFailure))
+            if (diagnosticSource.IsEnabled() && diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareFailure))
             {
                 diagnosticSource.Write(DiagnosticEventKeys.MiddlewareFailure, new MiddlewareDiagnosticData(requestContext, middleware));
             }
@@ -48,9 +47,9 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="requestContext">The context for the resolve request that is running.</param>
         /// <param name="middleware">The middleware that just ran.</param>
-        public static void MiddlewareSuccess(this DiagnosticSource diagnosticSource, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+        public static void MiddlewareSuccess(this DiagnosticListener diagnosticSource, ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
         {
-            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareSuccess))
+            if (diagnosticSource.IsEnabled() && diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareSuccess))
             {
                 diagnosticSource.Write(DiagnosticEventKeys.MiddlewareSuccess, new MiddlewareDiagnosticData(requestContext, middleware));
             }
@@ -62,9 +61,9 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that is about to run.</param>
         /// <param name="initiatingRequest">The request that is responsible for starting this operation.</param>
-        public static void OperationStart(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequest initiatingRequest)
+        public static void OperationStart(this DiagnosticListener diagnosticSource, ResolveOperationBase operation, ResolveRequest initiatingRequest)
         {
-            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationStart))
+            if (diagnosticSource.IsEnabled() && diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationStart))
             {
                 diagnosticSource.Write(DiagnosticEventKeys.OperationStart, new OperationStartDiagnosticData(operation, initiatingRequest));
             }
@@ -76,9 +75,9 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The resolve operation that failed.</param>
         /// <param name="operationException">The exception that caused the operation failure.</param>
-        public static void OperationFailure(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, Exception operationException)
+        public static void OperationFailure(this DiagnosticListener diagnosticSource, ResolveOperationBase operation, Exception operationException)
         {
-            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationFailure))
+            if (diagnosticSource.IsEnabled() && diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationFailure))
             {
                 diagnosticSource.Write(DiagnosticEventKeys.OperationFailure, new OperationFailureDiagnosticData(operation, operationException));
             }
@@ -90,9 +89,9 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The resolve operation that succeeded.</param>
         /// <param name="resolvedInstance">The resolved instance providing the requested service.</param>
-        public static void OperationSuccess(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, object resolvedInstance)
+        public static void OperationSuccess(this DiagnosticListener diagnosticSource, ResolveOperationBase operation, object resolvedInstance)
         {
-            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationSuccess))
+            if (diagnosticSource.IsEnabled() && diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationSuccess))
             {
                 diagnosticSource.Write(DiagnosticEventKeys.OperationSuccess, new OperationSuccessDiagnosticData(operation, resolvedInstance));
             }
@@ -104,9 +103,9 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that is about to start.</param>
-        public static void RequestStart(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext)
+        public static void RequestStart(this DiagnosticListener diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext)
         {
-            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestStart))
+            if (diagnosticSource.IsEnabled() && diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestStart))
             {
                 diagnosticSource.Write(DiagnosticEventKeys.RequestStart, new RequestDiagnosticData(operation, requestContext));
             }
@@ -119,9 +118,9 @@ namespace Autofac.Diagnostics
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that failed.</param>
         /// <param name="requestException">The exception that caused the failure.</param>
-        public static void RequestFailure(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext, Exception requestException)
+        public static void RequestFailure(this DiagnosticListener diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext, Exception requestException)
         {
-            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestFailure))
+            if (diagnosticSource.IsEnabled() && diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestFailure))
             {
                 diagnosticSource.Write(DiagnosticEventKeys.RequestFailure, new RequestFailureDiagnosticData(operation, requestContext, requestException));
             }
@@ -133,9 +132,9 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that failed.</param>
-        public static void RequestSuccess(this DiagnosticSource diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext)
+        public static void RequestSuccess(this DiagnosticListener diagnosticSource, ResolveOperationBase operation, ResolveRequestContextBase requestContext)
         {
-            if (diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestSuccess))
+            if (diagnosticSource.IsEnabled() && diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestSuccess))
             {
                 diagnosticSource.Write(DiagnosticEventKeys.RequestSuccess, new RequestDiagnosticData(operation, requestContext));
             }

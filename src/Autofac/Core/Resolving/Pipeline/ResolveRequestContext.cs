@@ -39,13 +39,13 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <param name="request">The initiating resolve request.</param>
         /// <param name="scope">The lifetime scope.</param>
         /// <param name="diagnosticSource">
-        /// The <see cref="System.Diagnostics.DiagnosticSource"/> to which trace events should be written.
+        /// The <see cref="System.Diagnostics.DiagnosticListener"/> to which trace events should be written.
         /// </param>
         internal ResolveRequestContext(
             ResolveOperationBase owningOperation,
             ResolveRequest request,
             ISharingLifetimeScope scope,
-            DiagnosticSource diagnosticSource)
+            DiagnosticListener diagnosticSource)
             : base(owningOperation, request, scope, diagnosticSource)
         {
         }

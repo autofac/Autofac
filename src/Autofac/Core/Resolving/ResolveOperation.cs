@@ -24,7 +24,6 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Core.Resolving
 {
@@ -40,9 +39,9 @@ namespace Autofac.Core.Resolving
         /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
         /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
         /// <param name="diagnosticSource">
-        /// The <see cref="System.Diagnostics.DiagnosticSource"/> to which trace events should be written.
+        /// The <see cref="System.Diagnostics.DiagnosticListener"/> to which trace events should be written.
         /// </param>
-        public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope, DiagnosticSource diagnosticSource)
+        public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope, DiagnosticListener diagnosticSource)
             : base(mostNestedLifetimeScope, diagnosticSource)
         {
         }
@@ -51,7 +50,6 @@ namespace Autofac.Core.Resolving
         /// Execute the complete resolve operation.
         /// </summary>
         /// <param name="request">The resolution context.</param>
-        [SuppressMessage("CA1031", "CA1031", Justification = "General exception gets rethrown in a DependencyResolutionException.")]
         public object Execute(ResolveRequest request)
         {
             return ExecuteOperation(request);
