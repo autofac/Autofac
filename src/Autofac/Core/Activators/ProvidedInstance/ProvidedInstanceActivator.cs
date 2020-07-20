@@ -67,7 +67,7 @@ namespace Autofac.Core.Activators.ProvidedInstance
             CheckNotDisposed();
 
             if (_activated)
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, this._instance.GetType()));
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, _instance.GetType()));
 
             _activated = true;
 

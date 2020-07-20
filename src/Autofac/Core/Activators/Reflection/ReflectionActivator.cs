@@ -109,7 +109,7 @@ namespace Autofac.Core.Activators.Reflection
 
             _constructorBinders = binders;
 
-            pipelineBuilder.Use(this.ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
+            pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
             {
                 ctxt.Instance = ActivateInstance(ctxt, ctxt.Parameters);
 

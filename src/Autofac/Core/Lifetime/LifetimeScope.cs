@@ -81,7 +81,7 @@ namespace Autofac.Core.Lifetime
 
             _sharedInstances[SelfRegistrationId] = this;
             RootLifetimeScope = _parentScope.RootLifetimeScope;
-            this.DiagnosticSource = _parentScope.DiagnosticSource;
+            DiagnosticSource = _parentScope.DiagnosticSource;
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace Autofac.Core.Lifetime
 
             _sharedInstances[SelfRegistrationId] = this;
             RootLifetimeScope = this;
-            this.DiagnosticSource = new DiagnosticListener("Autofac");
+            DiagnosticSource = new DiagnosticListener("Autofac");
         }
 
         /// <summary>

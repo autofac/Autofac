@@ -39,12 +39,7 @@ namespace Autofac.Util
         /// </param>
         public FallbackDictionary(IDictionary<TKey, TValue> parent)
         {
-            if (parent == null)
-            {
-                throw new ArgumentNullException(nameof(parent));
-            }
-
-            this._parent = parent;
+            _parent = parent ?? throw new ArgumentNullException(nameof(parent));
         }
 
         /// <summary>
@@ -57,7 +52,7 @@ namespace Autofac.Util
         {
             get
             {
-                return this.Keys.Count;
+                return Keys.Count;
             }
         }
 
@@ -90,7 +85,7 @@ namespace Autofac.Util
         {
             get
             {
-                return this.OrderedKeys().ToArray();
+                return OrderedKeys().ToArray();
             }
         }
 
@@ -109,7 +104,7 @@ namespace Autofac.Util
         {
             get
             {
-                var keys = this.Keys.ToArray();
+                var keys = Keys.ToArray();
                 var values = new TValue[keys.Length];
                 for (var i = 0; i < keys.Length; i++)
                 {
@@ -136,18 +131,17 @@ namespace Autofac.Util
         {
             get
             {
-                TValue value;
-                if (this._localValues.TryGetValue(key, out value))
+                if (_localValues.TryGetValue(key, out TValue value))
                 {
                     return value;
                 }
 
-                return this._parent[key];
+                return _parent[key];
             }
 
             set
             {
-                this._localValues[key] = value;
+                _localValues[key] = value;
             }
         }
 
@@ -162,7 +156,7 @@ namespace Autofac.Util
         /// </remarks>
         public void Add(KeyValuePair<TKey, TValue> item)
         {
-            this.Add(item.Key, item.Value);
+            Add(item.Key, item.Value);
         }
 
         /// <summary>
@@ -188,12 +182,12 @@ namespace Autofac.Util
                 throw new ArgumentNullException(nameof(key));
             }
 
-            if (this._parent.ContainsKey(key))
+            if (_parent.ContainsKey(key))
             {
                 throw new ArgumentException(string.Format(CultureInfo.InvariantCulture, FallbackDictionaryResources.DuplicateItem, key));
             }
 
-            this._localValues.Add(key, value);
+            _localValues.Add(key, value);
         }
 
         /// <summary>
@@ -201,7 +195,7 @@ namespace Autofac.Util
         /// </summary>
         public void Clear()
         {
-            this._localValues.Clear();
+            _localValues.Clear();
         }
 
         /// <summary>
@@ -213,12 +207,12 @@ namespace Autofac.Util
         /// </returns>
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            if (this._localValues.ContainsKey(item.Key))
+            if (_localValues.ContainsKey(item.Key))
             {
-                return this._localValues.Contains(item);
+                return _localValues.Contains(item);
             }
 
-            return this._parent.Contains(item);
+            return _parent.Contains(item);
         }
 
         /// <summary>
@@ -230,7 +224,7 @@ namespace Autofac.Util
         /// </returns>
         public bool ContainsKey(TKey key)
         {
-            return this.Keys.Contains(key);
+            return Keys.Contains(key);
         }
 
         /// <summary>
@@ -257,7 +251,7 @@ namespace Autofac.Util
         /// </returns>
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            foreach (var key in this.OrderedKeys())
+            foreach (var key in OrderedKeys())
             {
                 yield return new KeyValuePair<TKey, TValue>(key, this[key]);
             }
@@ -278,7 +272,7 @@ namespace Autofac.Util
         /// </remarks>
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
-            return this._localValues.Remove(item);
+            return _localValues.Remove(item);
         }
 
         /// <summary>
@@ -296,7 +290,7 @@ namespace Autofac.Util
         /// </remarks>
         public bool Remove(TKey key)
         {
-            return this._localValues.Remove(key);
+            return _localValues.Remove(key);
         }
 
         /// <summary>
@@ -309,12 +303,12 @@ namespace Autofac.Util
         /// </returns>
         public bool TryGetValue(TKey key, out TValue value)
         {
-            if (this._localValues.TryGetValue(key, out value))
+            if (_localValues.TryGetValue(key, out value))
             {
                 return true;
             }
 
-            return this._parent.TryGetValue(key, out value);
+            return _parent.TryGetValue(key, out value);
         }
 
         /// <summary>
@@ -325,7 +319,7 @@ namespace Autofac.Util
         /// </returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.GetEnumerator();
+            return GetEnumerator();
         }
 
         /// <summary>
@@ -336,7 +330,7 @@ namespace Autofac.Util
         /// </returns>
         private IEnumerable<TKey> OrderedKeys()
         {
-            return this._localValues.Keys.Union(this._parent.Keys).Distinct().OrderBy(k => k);
+            return _localValues.Keys.Union(_parent.Keys).Distinct().OrderBy(k => k);
         }
     }
 }

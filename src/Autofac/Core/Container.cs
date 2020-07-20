@@ -100,7 +100,7 @@ namespace Autofac.Core
         }
 
         /// <inheritdoc/>
-        public DiagnosticListener DiagnosticSource => this._rootLifetimeScope.DiagnosticSource;
+        public DiagnosticListener DiagnosticSource => _rootLifetimeScope.DiagnosticSource;
 
         /// <summary>
         /// Gets the disposer associated with this container. Instances can be associated

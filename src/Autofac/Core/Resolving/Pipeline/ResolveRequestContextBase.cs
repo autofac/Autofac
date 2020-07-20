@@ -57,7 +57,7 @@ namespace Autofac.Core.Resolving.Pipeline
             ActivationScope = scope;
             Parameters = request.Parameters;
             PhaseReached = PipelinePhase.ResolveRequestStart;
-            this.DiagnosticSource = scope.DiagnosticSource;
+            DiagnosticSource = scope.DiagnosticSource;
             _resolveRequest = request;
         }
 

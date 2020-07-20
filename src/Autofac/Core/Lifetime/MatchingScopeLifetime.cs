@@ -43,12 +43,7 @@ namespace Autofac.Core.Lifetime
         /// <param name="lifetimeScopeTagsToMatch">The tags applied to matching scopes.</param>
         public MatchingScopeLifetime(params object[] lifetimeScopeTagsToMatch)
         {
-            if (lifetimeScopeTagsToMatch == null)
-            {
-                throw new ArgumentNullException(nameof(lifetimeScopeTagsToMatch));
-            }
-
-            this._tagsToMatch = lifetimeScopeTagsToMatch;
+            _tagsToMatch = lifetimeScopeTagsToMatch ?? throw new ArgumentNullException(nameof(lifetimeScopeTagsToMatch));
         }
 
         /// <summary>
@@ -62,7 +57,7 @@ namespace Autofac.Core.Lifetime
         {
             get
             {
-                return this._tagsToMatch;
+                return _tagsToMatch;
             }
         }
 
@@ -82,7 +77,7 @@ namespace Autofac.Core.Lifetime
             ISharingLifetimeScope? next = mostNestedVisibleScope;
             while (next != null)
             {
-                if (this._tagsToMatch.Contains(next.Tag))
+                if (_tagsToMatch.Contains(next.Tag))
                 {
                     return next;
                 }
@@ -91,7 +86,7 @@ namespace Autofac.Core.Lifetime
             }
 
             throw new DependencyResolutionException(string.Format(
-                CultureInfo.CurrentCulture, MatchingScopeLifetimeResources.MatchingScopeNotFound, string.Join(", ", this._tagsToMatch)));
+                CultureInfo.CurrentCulture, MatchingScopeLifetimeResources.MatchingScopeNotFound, string.Join(", ", _tagsToMatch)));
         }
     }
 }

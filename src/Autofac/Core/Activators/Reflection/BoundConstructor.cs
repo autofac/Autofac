@@ -119,7 +119,7 @@ namespace Autofac.Core.Activators.Reflection
         {
             if (!CanInstantiate)
             {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.CannotInstantitate, this.Description));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.CannotInstantitate, Description));
             }
 
             var values = new object?[_valueRetrievers!.Length];
