@@ -124,40 +124,24 @@ namespace Autofac.Core.Resolving
             try
             {
                 InitiatingRequest = request;
-
-                if (DiagnosticSource.OperationDiagnosticsEnabled())
-                {
-                    DiagnosticSource.OperationStart(this, request);
-                }
-
+                DiagnosticSource.OperationStart(this, request);
                 result = GetOrCreateInstance(CurrentScope, request);
             }
             catch (ObjectDisposedException disposeException)
             {
-                if (DiagnosticSource.OperationDiagnosticsEnabled())
-                {
-                    DiagnosticSource.OperationFailure(this, disposeException);
-                }
-
+                DiagnosticSource.OperationFailure(this, disposeException);
                 throw;
             }
             catch (DependencyResolutionException dependencyResolutionException)
             {
-                if (DiagnosticSource.OperationDiagnosticsEnabled())
-                {
-                    DiagnosticSource.OperationFailure(this, dependencyResolutionException);
-                }
-
+                DiagnosticSource.OperationFailure(this, dependencyResolutionException);
                 End(dependencyResolutionException);
                 throw;
             }
             catch (Exception exception)
             {
                 End(exception);
-                if (DiagnosticSource.OperationDiagnosticsEnabled())
-                {
-                    DiagnosticSource.OperationFailure(this, exception);
-                }
+                DiagnosticSource.OperationFailure(this, exception);
 
                 throw new DependencyResolutionException(ResolveOperationResources.ExceptionDuringResolve, exception);
             }
@@ -167,11 +151,7 @@ namespace Autofac.Core.Resolving
             }
 
             End();
-
-            if (DiagnosticSource.OperationDiagnosticsEnabled())
-            {
-                DiagnosticSource.OperationSuccess(this, result);
-            }
+            DiagnosticSource.OperationSuccess(this, result);
 
             return result;
         }
@@ -199,10 +179,7 @@ namespace Autofac.Core.Resolving
 
             try
             {
-                if (DiagnosticSource.RequestDiagnosticsEnabled())
-                {
-                    DiagnosticSource.RequestStart(this, requestContext);
-                }
+                DiagnosticSource.RequestStart(this, requestContext);
 
                 // Invoke the resolve pipeline.
                 request.ResolvePipeline.Invoke(requestContext);
@@ -214,18 +191,11 @@ namespace Autofac.Core.Resolving
                 }
 
                 _successfulRequests.Add(requestContext);
-                if (DiagnosticSource.RequestDiagnosticsEnabled())
-                {
-                    DiagnosticSource.RequestSuccess(this, requestContext);
-                }
+                DiagnosticSource.RequestSuccess(this, requestContext);
             }
             catch (Exception ex)
             {
-                if (DiagnosticSource.RequestDiagnosticsEnabled())
-                {
-                    DiagnosticSource.RequestFailure(this, requestContext, ex);
-                }
-
+                DiagnosticSource.RequestFailure(this, requestContext, ex);
                 throw;
             }
             finally

@@ -15,16 +15,6 @@ namespace Autofac.Diagnostics
     internal static class DiagnosticSourceExtensions
     {
         /// <summary>
-        /// Determines if diagnostics for middleware events is enabled.
-        /// </summary>
-        /// <param name="diagnosticSource">The diagnostic source to check for diagnostic settings.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool MiddlewareDiagnosticsEnabled(this DiagnosticSource diagnosticSource)
-        {
-            return diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareStart) || diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareSuccess) || diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareFailure);
-        }
-
-        /// <summary>
         /// Writes a diagnostic event indicating an individual middleware item is about to execute (just before the <see cref="IResolveMiddleware.Execute"/> method executes).
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
@@ -67,16 +57,6 @@ namespace Autofac.Diagnostics
         }
 
         /// <summary>
-        /// Determines if diagnostics for operation events is enabled.
-        /// </summary>
-        /// <param name="diagnosticSource">The diagnostic source to check for diagnostic settings.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool OperationDiagnosticsEnabled(this DiagnosticSource diagnosticSource)
-        {
-            return diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationStart) || diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationSuccess) || diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationFailure);
-        }
-
-        /// <summary>
         /// Writes a diagnostic event indicating a resolve operation has started.
         /// </summary>
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
@@ -116,16 +96,6 @@ namespace Autofac.Diagnostics
             {
                 diagnosticSource.Write(DiagnosticEventKeys.OperationSuccess, new OperationSuccessDiagnosticData(operation, resolvedInstance));
             }
-        }
-
-        /// <summary>
-        /// Determines if diagnostics for resolve requests is enabled.
-        /// </summary>
-        /// <param name="diagnosticSource">The diagnostic source to check for diagnostic settings.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool RequestDiagnosticsEnabled(this DiagnosticSource diagnosticSource)
-        {
-            return diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestStart) || diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestSuccess) || diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestFailure);
         }
 
         /// <summary>
