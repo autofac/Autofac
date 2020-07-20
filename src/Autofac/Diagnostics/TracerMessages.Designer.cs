@@ -223,6 +223,15 @@ namespace Autofac.Diagnostics {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to You may not add or remove subscriptions on this tracer. This ensures all required events are properly captured and traces can be correctly handled..
+        /// </summary>
+        internal static string SubscriptionsDisabled {
+            get {
+                return ResourceManager.GetString("SubscriptionsDisabled", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Target: {0}.
         /// </summary>
         internal static string TargetDisplay {

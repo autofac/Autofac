@@ -51,7 +51,28 @@ namespace Autofac.Diagnostics
         /// </remarks>
         /// <seealso cref="EnableAll"/>
         /// <seealso cref="Disable"/>
-        public void Enable(string diagnosticName)
+        public virtual void Enable(string diagnosticName)
+        {
+            EnableBase(diagnosticName);
+        }
+
+        /// <summary>
+        /// Subscribes the observer to a particular named diagnostic event.
+        /// </summary>
+        /// <param name="diagnosticName">
+        /// The name of the event to which the observer should subscribe. Diagnostic
+        /// names are case-sensitive.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// Derived classes may override the public <see cref="Enable"/> method to
+        /// handle consumer calls to enabling events; constructors needing to call
+        /// non-virtual methods may directly call this to avoid executing against
+        /// partially constructed derived classes.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="DisableBase"/>
+        protected void EnableBase(string diagnosticName)
         {
             if (diagnosticName == null)
             {
@@ -79,15 +100,19 @@ namespace Autofac.Diagnostics
         /// <seealso cref="Disable"/>
         public void EnableAll()
         {
-            _subscriptions.Add(DiagnosticEventKeys.MiddlewareStart);
-            _subscriptions.Add(DiagnosticEventKeys.MiddlewareFailure);
-            _subscriptions.Add(DiagnosticEventKeys.MiddlewareSuccess);
-            _subscriptions.Add(DiagnosticEventKeys.OperationFailure);
-            _subscriptions.Add(DiagnosticEventKeys.OperationStart);
-            _subscriptions.Add(DiagnosticEventKeys.OperationSuccess);
-            _subscriptions.Add(DiagnosticEventKeys.RequestFailure);
-            _subscriptions.Add(DiagnosticEventKeys.RequestStart);
-            _subscriptions.Add(DiagnosticEventKeys.RequestSuccess);
+            // EnableAll is intentionally not virtual so it can be called
+            // from the OperationDiagnosticTracerBase constructor.
+            //
+            // Subscriptions ordered intentionally from most to least common events.
+            EnableBase(DiagnosticEventKeys.MiddlewareStart);
+            EnableBase(DiagnosticEventKeys.MiddlewareSuccess);
+            EnableBase(DiagnosticEventKeys.RequestStart);
+            EnableBase(DiagnosticEventKeys.RequestSuccess);
+            EnableBase(DiagnosticEventKeys.OperationStart);
+            EnableBase(DiagnosticEventKeys.OperationSuccess);
+            EnableBase(DiagnosticEventKeys.MiddlewareFailure);
+            EnableBase(DiagnosticEventKeys.RequestFailure);
+            EnableBase(DiagnosticEventKeys.OperationFailure);
         }
 
         /// <summary>
@@ -107,7 +132,28 @@ namespace Autofac.Diagnostics
         /// </remarks>
         /// <seealso cref="EnableAll"/>
         /// <seealso cref="Enable"/>
-        public void Disable(string diagnosticName)
+        public virtual void Disable(string diagnosticName)
+        {
+            DisableBase(diagnosticName);
+        }
+
+        /// <summary>
+        /// Unsubscribes the observer from a particular named diagnostic event.
+        /// </summary>
+        /// <param name="diagnosticName">
+        /// The name of the event to which the observer should unsubscribe. Diagnostic
+        /// names are case-sensitive.
+        /// </param>
+        /// <remarks>
+        /// <para>
+        /// Derived classes may override the public <see cref="Disable"/> method to
+        /// handle consumer calls to disabling events; constructors needing to call
+        /// non-virtual methods may directly call this to avoid executing against
+        /// partially constructed derived classes.
+        /// </para>
+        /// </remarks>
+        /// <seealso cref="EnableBase"/>
+        protected void DisableBase(string diagnosticName)
         {
             if (diagnosticName == null)
             {
@@ -323,7 +369,7 @@ namespace Autofac.Diagnostics
         /// <param name="data">
         /// The diagnostic data associated with the event.
         /// </param>
-        public virtual void Write(string diagnosticName, object data)
+        protected virtual void Write(string diagnosticName, object data)
         {
             if (data == null || !IsEnabled(diagnosticName))
             {

@@ -43,8 +43,20 @@ namespace Autofac.Diagnostics
 
             foreach (var subscription in subscriptions)
             {
-                Enable(subscription);
+                EnableBase(subscription);
             }
+        }
+
+        /// <inheritdoc/>
+        public override void Enable(string diagnosticName)
+        {
+            throw new NotSupportedException(TracerMessages.SubscriptionsDisabled);
+        }
+
+        /// <inheritdoc/>
+        public override void Disable(string diagnosticName)
+        {
+            throw new NotSupportedException(TracerMessages.SubscriptionsDisabled);
         }
 
         /// <summary>

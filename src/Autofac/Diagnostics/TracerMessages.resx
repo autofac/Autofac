@@ -172,6 +172,9 @@
   <data name="ServiceDisplay" xml:space="preserve">
     <value>Service: {0}</value>
   </data>
+  <data name="SubscriptionsDisabled" xml:space="preserve">
+    <value>You may not add or remove subscriptions on this tracer. This ensures all required events are properly captured and traces can be correctly handled.</value>
+  </data>
   <data name="TargetDisplay" xml:space="preserve">
     <value>Target: {0}</value>
   </data>

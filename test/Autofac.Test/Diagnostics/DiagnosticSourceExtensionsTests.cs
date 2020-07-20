@@ -268,7 +268,7 @@ namespace Autofac.Test.Diagnostics
         {
             public List<KeyValuePair<string, object>> Events { get; } = new List<KeyValuePair<string, object>>();
 
-            public override void Write(string diagnosticName, object data)
+            protected override void Write(string diagnosticName, object data)
             {
                 Events.Add(new KeyValuePair<string, object>(diagnosticName, data));
             }
