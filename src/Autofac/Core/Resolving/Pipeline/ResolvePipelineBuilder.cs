@@ -270,24 +270,35 @@ namespace Autofac.Core.Resolving.Pipeline
 
                 return (ctxt) =>
                 {
-                    ctxt.DiagnosticSource.MiddlewareStart(ctxt, stage);
-                    var succeeded = false;
-                    try
+                    // Same basic flow in if/else, but doing a one-time check for diagnostics
+                    // and choosing the "diagnostics enabled" version vs. the more common
+                    // "no diagnostics enabled" path: hot-path optimization.
+                    if (ctxt.DiagnosticSource.IsEnabled())
+                    {
+                        ctxt.DiagnosticSource.MiddlewareStart(ctxt, stage);
+                        var succeeded = false;
+                        try
+                        {
+                            ctxt.PhaseReached = stagePhase;
+                            stage.Execute(ctxt, next);
+                            succeeded = true;
+                        }
+                        finally
+                        {
+                            if (succeeded)
+                            {
+                                ctxt.DiagnosticSource.MiddlewareSuccess(ctxt, stage);
+                            }
+                            else
+                            {
+                                ctxt.DiagnosticSource.MiddlewareFailure(ctxt, stage);
+                            }
+                        }
+                    }
+                    else
                     {
                         ctxt.PhaseReached = stagePhase;
                         stage.Execute(ctxt, next);
-                        succeeded = true;
-                    }
-                    finally
-                    {
-                        if (succeeded)
-                        {
-                            ctxt.DiagnosticSource.MiddlewareSuccess(ctxt, stage);
-                        }
-                        else
-                        {
-                            ctxt.DiagnosticSource.MiddlewareFailure(ctxt, stage);
-                        }
                     }
                 };
             }

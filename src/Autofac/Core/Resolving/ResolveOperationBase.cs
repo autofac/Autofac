@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Diagnostics;
@@ -124,24 +125,39 @@ namespace Autofac.Core.Resolving
             try
             {
                 InitiatingRequest = request;
-                DiagnosticSource.OperationStart(this, request);
+                if (DiagnosticSource.IsEnabled())
+                {
+                    DiagnosticSource.OperationStart(this, request);
+                }
+
                 result = GetOrCreateInstance(CurrentScope, request);
             }
             catch (ObjectDisposedException disposeException)
             {
-                DiagnosticSource.OperationFailure(this, disposeException);
+                if (DiagnosticSource.IsEnabled())
+                {
+                    DiagnosticSource.OperationFailure(this, disposeException);
+                }
+
                 throw;
             }
             catch (DependencyResolutionException dependencyResolutionException)
             {
-                DiagnosticSource.OperationFailure(this, dependencyResolutionException);
+                if (DiagnosticSource.IsEnabled())
+                {
+                    DiagnosticSource.OperationFailure(this, dependencyResolutionException);
+                }
+
                 End(dependencyResolutionException);
                 throw;
             }
             catch (Exception exception)
             {
                 End(exception);
-                DiagnosticSource.OperationFailure(this, exception);
+                if (DiagnosticSource.IsEnabled())
+                {
+                    DiagnosticSource.OperationFailure(this, exception);
+                }
 
                 throw new DependencyResolutionException(ResolveOperationResources.ExceptionDuringResolve, exception);
             }
@@ -151,7 +167,11 @@ namespace Autofac.Core.Resolving
             }
 
             End();
-            DiagnosticSource.OperationSuccess(this, result);
+
+            if (DiagnosticSource.IsEnabled())
+            {
+                DiagnosticSource.OperationSuccess(this, result);
+            }
 
             return result;
         }
@@ -179,23 +199,27 @@ namespace Autofac.Core.Resolving
 
             try
             {
-                DiagnosticSource.RequestStart(this, requestContext);
-
-                // Invoke the resolve pipeline.
-                request.ResolvePipeline.Invoke(requestContext);
-
-                if (requestContext.Instance == null)
+                // Same basic flow in if/else, but doing a one-time check for diagnostics
+                // and choosing the "diagnostics enabled" version vs. the more common
+                // "no diagnostics enabled" path: hot-path optimization.
+                if (DiagnosticSource.IsEnabled())
                 {
-                    // No exception, but was null; this shouldn't happen.
-                    throw new DependencyResolutionException(ResolveOperationResources.PipelineCompletedWithNoInstance);
+                    DiagnosticSource.RequestStart(this, requestContext);
+                    InvokePipeline(request, requestContext);
+                    DiagnosticSource.RequestSuccess(this, requestContext);
                 }
-
-                _successfulRequests.Add(requestContext);
-                DiagnosticSource.RequestSuccess(this, requestContext);
+                else
+                {
+                    InvokePipeline(request, requestContext);
+                }
             }
             catch (Exception ex)
             {
-                DiagnosticSource.RequestFailure(this, requestContext, ex);
+                if (DiagnosticSource.IsEnabled())
+                {
+                    DiagnosticSource.RequestFailure(this, requestContext, ex);
+                }
+
                 throw;
             }
             finally
@@ -212,7 +236,25 @@ namespace Autofac.Core.Resolving
                 RequestDepth--;
             }
 
-            return requestContext.Instance;
+            // InvokePipeline throws if the instance is null but
+            // analyzers don't pick that up and get mad.
+            return requestContext.Instance!;
+        }
+
+        /// <summary>
+        /// Basic pipeline invocation steps used when retrieving an instance. Isolated
+        /// to enable it to be optionally surrounded with diagnostics.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void InvokePipeline(ResolveRequest request, ResolveRequestContext requestContext)
+        {
+            request.ResolvePipeline.Invoke(requestContext);
+            if (requestContext.Instance == null)
+            {
+                throw new DependencyResolutionException(ResolveOperationResources.PipelineCompletedWithNoInstance);
+            }
+
+            _successfulRequests.Add(requestContext);
         }
 
         private void CompleteRequests()
