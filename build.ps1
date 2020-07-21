@@ -52,6 +52,13 @@ try {
         Get-ChildItem -Path $PSScriptRoot\bench -Filter "BenchmarkDotNet.Artifacts" -Directory -Recurse | Move-Item -Destination "$PSScriptRoot\artifacts\benchmarks"
     }
 
+    if ($env:CI -eq "true") {
+        # Generate Coverage Report
+        Write-Message "Generating Codecov Report"
+        Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+        & bash codecov.sh -f "coverage.info"
+    }
+
     # Finished
     Write-Message "Build finished"
 }

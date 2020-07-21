@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build.ps1 = build.ps1
 		global.json = global.json
 		NuGet.Config = NuGet.Config
+		codecov.yml = codecov.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F65B03DB-7242-4C47-BB28-2079DC050CC9}"
