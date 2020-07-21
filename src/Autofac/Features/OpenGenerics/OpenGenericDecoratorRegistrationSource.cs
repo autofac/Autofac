@@ -36,7 +36,7 @@ using Autofac.Core.Resolving.Pipeline;
 namespace Autofac.Features.OpenGenerics
 {
     /// <summary>
-    /// TODO: Replace this with a service pipeline source.
+    /// Registration source for handling open generic decorators.
     /// </summary>
     internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
     {

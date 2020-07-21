@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
+using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
 using Xunit;
 
@@ -34,12 +35,12 @@ namespace Autofac.Test.Core.Resolving
             builder.RegisterInstance("Hello");
 
             var container = builder.Build();
+            var mockTracer = Mocks.GetTracer();
+            container.SubscribeToDiagnostics(mockTracer);
 
             var scope = container.Resolve<ILifetimeScope>() as ISharingLifetimeScope;
 
-            var mockTracer = Mocks.GetTracer();
-
-            var resolveOp = new ResolveOperation(scope, mockTracer);
+            var resolveOp = new ResolveOperation(scope, container.DiagnosticSource);
 
             var raisedEvents = new List<string>();
 
@@ -84,12 +85,12 @@ namespace Autofac.Test.Core.Resolving
             builder.Register<string>(ctxt => throw new InvalidOperationException());
 
             var container = builder.Build();
+            var mockTracer = Mocks.GetTracer();
+            container.SubscribeToDiagnostics(mockTracer);
 
             var scope = container.Resolve<ILifetimeScope>() as ISharingLifetimeScope;
 
-            var mockTracer = Mocks.GetTracer();
-
-            var resolveOp = new ResolveOperation(scope, mockTracer);
+            var resolveOp = new ResolveOperation(scope, container.DiagnosticSource);
 
             var raisedEvents = new List<string>();
 

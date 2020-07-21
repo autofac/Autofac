@@ -26,7 +26,6 @@
 using System;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
 
@@ -117,17 +116,6 @@ namespace Autofac
         /// that adds component registrations visible only in the new scope.</param>
         /// <returns>A new lifetime scope.</returns>
         ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction);
-
-        /// <summary>
-        /// Enable tracing (or replace existing tracing) on this scope, routing trace events to the specified tracer.
-        /// All lifetime scopes created from this one will inherit this tracer as well.
-        /// </summary>
-        /// <param name="tracer">The <see cref="IResolvePipelineTracer"/> implementation.</param>
-        /// <remarks>
-        /// Only one tracer is supported at once, so calling this will replace any prior tracer on this scope. Nested scopes
-        /// will continue to retain the same trace behaviour.
-        /// </remarks>
-        void AttachTrace(IResolvePipelineTracer tracer);
 
         /// <summary>
         /// Gets the disposer associated with this <see cref="ILifetimeScope"/>.

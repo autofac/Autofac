@@ -51,7 +51,7 @@ namespace Autofac.Core.Activators.Reflection
             : base(message)
         {
             if (offendingType == null) throw new ArgumentNullException(nameof(offendingType));
-            this.OffendingType = offendingType;
+            OffendingType = offendingType;
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace Autofac.Core.Activators.Reflection
             : base(message, innerException)
         {
             if (offendingType == null) throw new ArgumentNullException(nameof(offendingType));
-            this.OffendingType = offendingType;
+            OffendingType = offendingType;
         }
 
         /// <summary>

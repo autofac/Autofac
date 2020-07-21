@@ -50,15 +50,14 @@ namespace Autofac.Builder
         /// </summary>
         internal const string ContainerBuildOptions = "__ContainerBuildOptions";
 
-        // TODO: Change the registration builder event handler to not use these.
-        #pragma warning disable SA1600 // Elements should be documented
+        /// <summary>
+        /// Event handler for <see cref="Autofac.Core.Registration.ComponentRegistryBuilder.Registered"/>.
+        /// </summary>
         internal const string RegisteredPropertyKey = "__RegisteredKey";
 
+        /// <summary>
+        /// Event handler for <see cref="Autofac.Core.Registration.ComponentRegistryBuilder.RegistrationSourceAdded"/>.
+        /// </summary>
         internal const string RegistrationSourceAddedPropertyKey = "__RegistrationSourceAddedKey";
-
-        internal const string InternalRegisteredPropertyKey = "__InternalRegisteredKey";
-
-        internal const string InternalRegistrationSourceAddedPropertyKey = "__InternalRegistrationSourceAddedKey";
-        #pragma warning restore SA1600 // Elements should be documented
     }
 }

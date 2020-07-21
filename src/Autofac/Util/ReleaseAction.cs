@@ -61,7 +61,7 @@ namespace Autofac.Util
             // disposal runs to ensure any calls to, say, .ReplaceInstance()
             // during .OnActivating() will be accounted for.
             if (disposing)
-                _action(this._factory());
+                _action(_factory());
 
             base.Dispose(disposing);
         }

@@ -1,5 +1,5 @@
 ﻿using System;
-using Autofac.Core.Diagnostics;
+using Autofac.Diagnostics;
 using Autofac.Specification.Test.Util;
 using Xunit;
 using Xunit.Abstractions;
@@ -31,7 +31,7 @@ namespace Autofac.Specification.Test.Lifetime
                 _output.WriteLine(args.TraceContent);
             };
 
-            lifetime.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
 
             var ctxA = lifetime.Resolve<A>();
             var ctxA2 = lifetime.Resolve<A>();

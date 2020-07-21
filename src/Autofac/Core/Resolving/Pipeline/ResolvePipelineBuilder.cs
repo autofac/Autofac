@@ -28,9 +28,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using Autofac.Core.Pipeline;
-using Autofac.Core.Resolving.Middleware;
+using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Pipeline
 {
@@ -271,10 +270,12 @@ namespace Autofac.Core.Resolving.Pipeline
 
                 return (ctxt) =>
                 {
-                    // Optimise the path depending on whether a tracer is attached.
-                    if (ctxt.TracingEnabled)
+                    // Same basic flow in if/else, but doing a one-time check for diagnostics
+                    // and choosing the "diagnostics enabled" version vs. the more common
+                    // "no diagnostics enabled" path: hot-path optimization.
+                    if (ctxt.DiagnosticSource.IsEnabled())
                     {
-                        ctxt.Tracer!.MiddlewareEntry(ctxt.Operation, ctxt, stage);
+                        ctxt.DiagnosticSource.MiddlewareStart(ctxt, stage);
                         var succeeded = false;
                         try
                         {
@@ -284,7 +285,14 @@ namespace Autofac.Core.Resolving.Pipeline
                         }
                         finally
                         {
-                            ctxt.Tracer.MiddlewareExit(ctxt.Operation, ctxt, stage, succeeded);
+                            if (succeeded)
+                            {
+                                ctxt.DiagnosticSource.MiddlewareSuccess(ctxt, stage);
+                            }
+                            else
+                            {
+                                ctxt.DiagnosticSource.MiddlewareFailure(ctxt, stage);
+                            }
                         }
                     }
                     else

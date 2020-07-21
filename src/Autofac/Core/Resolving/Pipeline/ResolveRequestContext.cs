@@ -23,7 +23,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
-using Autofac.Core.Diagnostics;
+using System.Diagnostics;
 
 namespace Autofac.Core.Resolving.Pipeline
 {
@@ -38,13 +38,15 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <param name="owningOperation">The owning resolve operation.</param>
         /// <param name="request">The initiating resolve request.</param>
         /// <param name="scope">The lifetime scope.</param>
-        /// <param name="tracer">An optional tracer.</param>
+        /// <param name="diagnosticSource">
+        /// The <see cref="System.Diagnostics.DiagnosticListener"/> to which trace events should be written.
+        /// </param>
         internal ResolveRequestContext(
             ResolveOperationBase owningOperation,
             ResolveRequest request,
             ISharingLifetimeScope scope,
-            IResolvePipelineTracer? tracer)
-            : base(owningOperation, request, scope, tracer)
+            DiagnosticListener diagnosticSource)
+            : base(owningOperation, request, scope, diagnosticSource)
         {
         }
 

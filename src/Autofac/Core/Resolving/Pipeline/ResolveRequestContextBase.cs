@@ -25,9 +25,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Registration;
+using Autofac.Diagnostics;
 using Autofac.Features.Decorators;
 
 namespace Autofac.Core.Resolving.Pipeline
@@ -47,19 +48,20 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <param name="owningOperation">The owning resolve operation.</param>
         /// <param name="request">The initiating resolve request.</param>
         /// <param name="scope">The lifetime scope.</param>
-        /// <param name="tracer">An optional tracer.</param>
+        /// <param name="diagnosticSource">
+        /// The <see cref="System.Diagnostics.DiagnosticListener"/> to which trace events should be written.
+        /// </param>
         internal ResolveRequestContextBase(
             ResolveOperationBase owningOperation,
             ResolveRequest request,
             ISharingLifetimeScope scope,
-            IResolvePipelineTracer? tracer)
+            DiagnosticListener diagnosticSource)
         {
             Operation = owningOperation;
             ActivationScope = scope;
             Parameters = request.Parameters;
             PhaseReached = PipelinePhase.ResolveRequestStart;
-            Tracer = tracer;
-            TracingEnabled = tracer is object;
+            DiagnosticSource = diagnosticSource;
             _resolveRequest = request;
         }
 
@@ -109,14 +111,9 @@ namespace Autofac.Core.Resolving.Pipeline
         public bool NewInstanceActivated => Instance is object && PhaseReached == PipelinePhase.Activation;
 
         /// <summary>
-        /// Gets the active <see cref="IResolvePipelineTracer"/> for the request.
+        /// Gets the <see cref="System.Diagnostics.DiagnosticListener"/> to which trace events should be written.
         /// </summary>
-        public IResolvePipelineTracer? Tracer { get; }
-
-        /// <summary>
-        /// Gets a value indicating whether tracing is enabled. If this value is true, then <see cref="Tracer"/> will not be null.
-        /// </summary>
-        public bool TracingEnabled { get; }
+        public DiagnosticListener DiagnosticSource { get; }
 
         /// <summary>
         /// Gets the current resolve parameters. These can be changed using the <see cref="ChangeParameters(IEnumerable{Parameter})"/> method.

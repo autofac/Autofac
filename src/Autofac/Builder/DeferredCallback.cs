@@ -28,8 +28,8 @@ namespace Autofac.Builder
                 throw new ArgumentNullException(nameof(callback));
             }
 
-            this.Id = Guid.NewGuid();
-            this.Callback = callback;
+            Id = Guid.NewGuid();
+            Callback = callback;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Autofac.Builder
         {
             get
             {
-                return this._callback;
+                return _callback;
             }
 
             set
@@ -56,7 +56,7 @@ namespace Autofac.Builder
                     throw new ArgumentNullException(nameof(value));
                 }
 
-                this._callback = value;
+                _callback = value;
             }
         }
 

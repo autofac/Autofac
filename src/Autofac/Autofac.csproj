@@ -57,6 +57,7 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="4.7.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
@@ -124,7 +125,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ContainerResources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Core\Diagnostics\TracerMessages.Designer.cs">
+    <Compile Update="Diagnostics\TracerMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>TracerMessages.resx</DependentUpon>
@@ -350,7 +351,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ContainerResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Core\Diagnostics\TracerMessages.resx">
+    <EmbeddedResource Update="Diagnostics\TracerMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TracerMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>

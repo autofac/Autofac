@@ -23,6 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
 
+using System.Diagnostics;
+
 namespace Autofac
 {
     /// <summary>
@@ -50,5 +52,10 @@ namespace Autofac
     /// <seealso cref="ContainerBuilder"/>
     public interface IContainer : ILifetimeScope
     {
+        /// <summary>
+        /// Gets the <see cref="System.Diagnostics.DiagnosticListener"/> to which
+        /// trace events should be written.
+        /// </summary>
+        DiagnosticListener DiagnosticSource { get; }
     }
 }

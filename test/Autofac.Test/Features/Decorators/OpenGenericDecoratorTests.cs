@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
-using Autofac.Core.Diagnostics;
+using Autofac.Diagnostics;
 using Autofac.Features.Decorators;
 using Xunit;
 using Xunit.Abstractions;
@@ -217,7 +217,7 @@ namespace Autofac.Test.Features.Decorators
 
             var tracer = new DefaultDiagnosticTracer();
 
-            container.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
 
             tracer.OperationCompleted += (sender, args) =>
             {
@@ -253,7 +253,7 @@ namespace Autofac.Test.Features.Decorators
 
             var tracer = new DefaultDiagnosticTracer();
 
-            container.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
 
             tracer.OperationCompleted += (sender, args) =>
             {

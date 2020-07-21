@@ -26,9 +26,9 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
+using Autofac.Diagnostics;
 using Autofac.Util;
 
 namespace Autofac.Core
@@ -39,7 +39,7 @@ namespace Autofac.Core
     [DebuggerDisplay("Tag = {Tag}, IsDisposed = {IsDisposed}")]
     public class Container : Disposable, IContainer, IServiceProvider
     {
-        private readonly ILifetimeScope _rootLifetimeScope;
+        private readonly LifetimeScope _rootLifetimeScope;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Container"/> class.
@@ -100,10 +100,7 @@ namespace Autofac.Core
         }
 
         /// <inheritdoc/>
-        public void AttachTrace(IResolvePipelineTracer tracer)
-        {
-            _rootLifetimeScope.AttachTrace(tracer);
-        }
+        public DiagnosticListener DiagnosticSource => _rootLifetimeScope.DiagnosticSource;
 
         /// <summary>
         /// Gets the disposer associated with this container. Instances can be associated

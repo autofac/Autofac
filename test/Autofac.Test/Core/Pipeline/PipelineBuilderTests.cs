@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac.Core;
-using Autofac.Core.Diagnostics;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 using Xunit;
 
 namespace Autofac.Test.Core.Pipeline
@@ -422,10 +423,10 @@ namespace Autofac.Test.Core.Pipeline
         {
             public MockPipelineRequestContext()
                 : base(
-                      new ResolveOperation(new MockLifetimeScope()),
+                      new ResolveOperation(new MockLifetimeScope(), new DiagnosticListener("Autofac")),
                       new ResolveRequest(new TypedService(typeof(int)), Mocks.GetResolvableImplementation(), Enumerable.Empty<Parameter>()),
                       new MockLifetimeScope(),
-                      null)
+                      new DiagnosticListener("Autofac"))
             {
             }
         }
@@ -458,11 +459,6 @@ namespace Autofac.Test.Core.Pipeline
             {
                 add { }
                 remove { }
-            }
-
-            public void AttachTrace(IResolvePipelineTracer tracer)
-            {
-                throw new NotImplementedException();
             }
 
             public ILifetimeScope BeginLifetimeScope()

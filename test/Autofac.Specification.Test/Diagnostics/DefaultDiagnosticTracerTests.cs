@@ -1,5 +1,8 @@
-﻿using System;
-using Autofac.Core.Diagnostics;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using System;
+using Autofac.Diagnostics;
 using Xunit;
 
 namespace Autofac.Specification.Test.Diagnostics
@@ -16,7 +19,7 @@ namespace Autofac.Specification.Test.Diagnostics
 
             var container = containerBuilder.Build();
 
-            container.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
 
             string lastOpResult = null;
 
@@ -41,7 +44,7 @@ namespace Autofac.Specification.Test.Diagnostics
 
             var container = containerBuilder.Build();
 
-            container.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
 
             string lastOpResult = null;
 
@@ -63,7 +66,7 @@ namespace Autofac.Specification.Test.Diagnostics
         }
 
         [Fact]
-        public void DiagnosticTracerDoesNotRaiseAnEventOnNestedOperations()
+        public void DiagnosticTracerHandlesDecorators()
         {
             var tracer = new DefaultDiagnosticTracer();
 
@@ -73,22 +76,18 @@ namespace Autofac.Specification.Test.Diagnostics
 
             var container = containerBuilder.Build();
 
-            container.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
 
-            int traceCount = 0;
             string lastOpResult = null;
 
             tracer.OperationCompleted += (sender, args) =>
             {
                 Assert.Same(tracer, sender);
                 lastOpResult = args.TraceContent;
-                traceCount++;
             };
 
             container.Resolve<IService>();
 
-            // Only a single trace (despite the nested operations).
-            Assert.Equal(1, traceCount);
             Assert.Contains("Decorator", lastOpResult);
         }
 
@@ -103,10 +102,10 @@ namespace Autofac.Specification.Test.Diagnostics
 
             var container = containerBuilder.Build();
 
-            container.AttachTrace(tracer);
+            container.SubscribeToDiagnostics(tracer);
             container.Resolve<IService>();
 
-            // The dictionary of tracked trace IDs and
+            // The dictionary of tracked operations and
             // string builders should be empty.
             Assert.Equal(0, tracer.OperationsInProgress);
         }
@@ -119,7 +118,7 @@ namespace Autofac.Specification.Test.Diagnostics
         {
             public Decorator(IService decorated)
             {
-                this.Decorated = decorated;
+                Decorated = decorated;
             }
 
             public IService Decorated { get; }

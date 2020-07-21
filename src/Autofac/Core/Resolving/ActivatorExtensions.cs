@@ -41,7 +41,7 @@ namespace Autofac.Core.Resolving
         /// <returns>A display name.</returns>
         public static string DisplayName(this IInstanceActivator activator)
         {
-            var fullName = activator.LimitType.FullName ?? "";
+            var fullName = activator?.LimitType.FullName ?? "";
             return activator is DelegateActivator ?
                 $"λ:{fullName}" :
                 fullName;
