@@ -25,7 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F65B03DB
 		build\Analyzers.ruleset = build\Analyzers.ruleset
 		build\Autofac.Build.psd1 = build\Autofac.Build.psd1
 		build\Autofac.Build.psm1 = build\Autofac.Build.psm1
-		build\CodeAnalysisDictionary.xml = build\CodeAnalysisDictionary.xml
 		build\Documentation.proj = build\Documentation.proj
 		build\Documentation.shfbproj = build\Documentation.shfbproj
 	EndProjectSection
