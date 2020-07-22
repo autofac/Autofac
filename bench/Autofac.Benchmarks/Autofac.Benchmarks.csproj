@@ -10,7 +10,6 @@
     <AssemblyName>Autofac.Benchmarks</AssemblyName>
     <AssemblyOriginatorKeyFile>../../Autofac.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageId>Autofac.Benchmarks</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <CodeAnalysisRuleSet>../../build/Analyzers.ruleset</CodeAnalysisRuleSet>
