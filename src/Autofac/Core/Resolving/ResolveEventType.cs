@@ -8,7 +8,7 @@ namespace Autofac.Core.Resolving.Middleware
     public enum ResolveEventType
     {
         /// <summary>
-        /// Event type for the OnPreparing event registered by <see cref="IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}.OnPreparing"/>.
+        /// Event type for the OnPreparing event registered by <see cref="IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}.OnPreparing(System.Action{PreparingEventArgs})"/>.
         /// </summary>
         OnPreparing,
 
@@ -23,7 +23,7 @@ namespace Autofac.Core.Resolving.Middleware
         OnActivated,
 
         /// <summary>
-        /// Event type for the OnRelease event registered by <see cref="RegistrationExtensions.OnRelease"/>
+        /// Event type for the OnRelease event registered by <see cref="RegistrationExtensions.OnRelease{TLimit, TActivatorData, TRegistrationStyle}(IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}, System.Action{TLimit})"/>
         /// </summary>
         OnRelease
     }

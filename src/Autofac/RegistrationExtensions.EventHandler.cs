@@ -25,6 +25,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Resolving.Middleware;
@@ -94,7 +95,6 @@ namespace Autofac
         /// <param name="registration">Registration to set release action for.</param>
         /// <param name="releaseAction">An action to perform instead of disposing the instance.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
-        /// <remarks>Only one release action can be configured per registration.</remarks>
         public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
             OnRelease<TLimit, TActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration,
@@ -118,6 +118,44 @@ namespace Autofac
                 next(ctxt);
 
                 ctxt.ActivationScope.Disposer.AddInstanceForAsyncDisposal(new ReleaseAction<TLimit>(releaseAction, () => (TLimit)ctxt.Instance!));
+            });
+
+            registration.ResolvePipeline.Use(middleware, MiddlewareInsertionMode.StartOfPhase);
+
+            return registration;
+        }
+
+        /// <summary>
+        /// Run a supplied async action instead of disposing instances when they're no
+        /// longer required.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set release action for.</param>
+        /// <param name="releaseAction">
+        /// An action to perform instead of disposing the instance.
+        /// The release/disposal process will not continue until the returned task completes.
+        /// </param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
+            OnRelease<TLimit, TActivatorData, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration,
+                Func<TLimit, Task> releaseAction)
+        {
+            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (releaseAction == null) throw new ArgumentNullException(nameof(releaseAction));
+
+            registration.ExternallyOwned();
+
+            var middleware = new CoreEventMiddleware(ResolveEventType.OnRelease, PipelinePhase.Activation, (ctxt, next) =>
+            {
+                // Continue down the pipeline.
+                next(ctxt);
+
+                // Use an async release action that invokes the release callback in a proper async/await flow if someone
+                // is using actual async disposal.
+                ctxt.ActivationScope.Disposer.AddInstanceForAsyncDisposal(new AsyncReleaseAction<TLimit>(releaseAction, () => (TLimit)ctxt.Instance!));
             });
 
             registration.ResolvePipeline.Use(middleware, MiddlewareInsertionMode.StartOfPhase);
