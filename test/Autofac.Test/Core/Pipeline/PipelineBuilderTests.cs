@@ -419,7 +419,7 @@ namespace Autofac.Test.Core.Pipeline
             }));
         }
 
-        private class MockPipelineRequestContext : ResolveRequestContextBase
+        private class MockPipelineRequestContext : ResolveRequestContext
         {
             public MockPipelineRequestContext()
                 : base(

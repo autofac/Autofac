@@ -8,7 +8,7 @@ namespace Autofac.Core.Resolving.Middleware
     /// </summary>
     public class CoreEventMiddleware : IResolveMiddleware
     {
-        private readonly Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> _callback;
+        private readonly Action<IResolveRequestContext, Action<IResolveRequestContext>> _callback;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CoreEventMiddleware"/> class.
@@ -16,7 +16,7 @@ namespace Autofac.Core.Resolving.Middleware
         /// <param name="eventType">The type of event.</param>
         /// <param name="phase">The phase of the pipeine at which the event runs.</param>
         /// <param name="callback">The middleware callback to process the event.</param>
-        internal CoreEventMiddleware(ResolveEventType eventType, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
+        internal CoreEventMiddleware(ResolveEventType eventType, PipelinePhase phase, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback)
         {
             Phase = phase;
             _callback = callback;
@@ -35,7 +35,7 @@ namespace Autofac.Core.Resolving.Middleware
         public override string ToString() => EventType.ToString();
 
         /// <inheritdoc/>
-        public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
+        public void Execute(IResolveRequestContext context, Action<IResolveRequestContext> next)
         {
             _callback(context, next);
         }

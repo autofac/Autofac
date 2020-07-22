@@ -34,6 +34,6 @@ namespace Autofac.Core.Resolving.Pipeline
         /// Invoke the pipeline to the end, or until an exception is thrown.
         /// </summary>
         /// <param name="context">The request context.</param>
-        void Invoke(ResolveRequestContextBase context);
+        void Invoke(IResolveRequestContext context);
     }
 }
