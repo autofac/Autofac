@@ -41,8 +41,8 @@ namespace Autofac.Core.Resolving
         private const int SuccessListInitialCapacity = 32;
 
         private bool _ended;
-        private List<ResolveRequestContext> _successfulRequests = new List<ResolveRequestContext>(SuccessListInitialCapacity);
-        private int _nextCompleteSuccessfulRequestStartPos = 0;
+        private readonly List<ResolveRequestContext> _successfulRequests = new List<ResolveRequestContext>(SuccessListInitialCapacity);
+        private int _nextCompleteSuccessfulRequestStartPos;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ResolveOperationBase"/> class.
@@ -179,6 +179,11 @@ namespace Autofac.Core.Resolving
         /// <inheritdoc />
         public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request)
         {
+            if (request is null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
 
             // Create a new request context.
