@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Autofac.Core;
 using Autofac.Core.Resolving.Pipeline;
 
@@ -258,6 +259,14 @@ namespace Autofac.Builder
         IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnPreparing(Action<PreparingEventArgs> handler);
 
         /// <summary>
+        /// Add an async handler for the Preparing event. This event allows manipulating of the parameters
+        /// that will be provided to the component.
+        /// </summary>
+        /// <param name="handler">An event handler; the resolve process will not continue until the returned task completes.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnPreparing(Func<PreparingEventArgs, ValueTask> handler);
+
+        /// <summary>
         /// Add a handler for the Activating event.
         /// </summary>
         /// <param name="handler">The event handler.</param>
@@ -265,11 +274,25 @@ namespace Autofac.Builder
         IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivating(Action<IActivatingEventArgs<TLimit>> handler);
 
         /// <summary>
+        /// Add an async handler for the Activating event.
+        /// </summary>
+        /// <param name="handler">An event handler; the resolve process will not continue until the returned task completes.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivating(Func<IActivatingEventArgs<TLimit>, ValueTask> handler);
+
+        /// <summary>
         /// Add a handler for the Activated event.
         /// </summary>
         /// <param name="handler">The event handler.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivated(Action<IActivatedEventArgs<TLimit>> handler);
+
+        /// <summary>
+        /// Add a handler for the Activated event.
+        /// </summary>
+        /// <param name="handler">An event handler; the resolve process will not continue until the returned task completes.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivated(Func<IActivatedEventArgs<TLimit>, ValueTask> handler);
 
         /// <summary>
         /// Configure the component so that any properties whose types are registered in the

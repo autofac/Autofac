@@ -45,7 +45,7 @@ namespace Autofac.Core.Registration
         [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "The _service field is useful in debugging and diagnostics.")]
         private readonly Service _service;
 
-        private IComponentRegistration? _fixedRegistration = null;
+        private IComponentRegistration? _fixedRegistration;
 
         /// <summary>
         ///  List of implicit default service implementations. Overriding default implementations are appended to the end,
