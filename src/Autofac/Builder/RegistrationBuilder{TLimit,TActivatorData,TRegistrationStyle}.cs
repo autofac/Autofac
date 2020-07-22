@@ -420,14 +420,22 @@ namespace Autofac.Builder
         }
 
         /// <inheritdoc/>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnPreparing(Func<PreparingEventArgs, Task> handler)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnPreparing(Func<PreparingEventArgs, ValueTask> handler)
         {
             if (handler == null)
             {
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            return OnPreparing(args => handler(args).ConfigureAwait(false).GetAwaiter().GetResult());
+            return OnPreparing(args =>
+            {
+                var vt = handler(args);
+
+                if (!vt.IsCompletedSuccessfully)
+                {
+                    vt.ConfigureAwait(false).GetAwaiter().GetResult();
+                }
+            });
         }
 
         /// <summary>
@@ -457,14 +465,22 @@ namespace Autofac.Builder
         }
 
         /// <inheritdoc/>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivating(Func<IActivatingEventArgs<TLimit>, Task> handler)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivating(Func<IActivatingEventArgs<TLimit>, ValueTask> handler)
         {
             if (handler == null)
             {
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            return OnActivating(args => handler(args).ConfigureAwait(false).GetAwaiter().GetResult());
+            return OnActivating(args =>
+            {
+                var vt = handler(args);
+
+                if (!vt.IsCompletedSuccessfully)
+                {
+                    vt.ConfigureAwait(false).GetAwaiter().GetResult();
+                }
+            });
         }
 
         /// <summary>
@@ -508,14 +524,22 @@ namespace Autofac.Builder
         }
 
         /// <inheritdoc/>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivated(Func<IActivatedEventArgs<TLimit>, Task> handler)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> OnActivated(Func<IActivatedEventArgs<TLimit>, ValueTask> handler)
         {
             if (handler == null)
             {
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            return OnActivated(args => handler(args).ConfigureAwait(false).GetAwaiter().GetResult());
+            return OnActivated(args =>
+            {
+                var vt = handler(args);
+
+                if (!vt.IsCompletedSuccessfully)
+                {
+                    vt.ConfigureAwait(false).GetAwaiter().GetResult();
+                }
+            });
         }
 
         /// <summary>

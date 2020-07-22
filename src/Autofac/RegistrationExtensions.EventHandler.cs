@@ -141,7 +141,7 @@ namespace Autofac
         public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
             OnRelease<TLimit, TActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration,
-                Func<TLimit, Task> releaseAction)
+                Func<TLimit, ValueTask> releaseAction)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (releaseAction == null) throw new ArgumentNullException(nameof(releaseAction));

@@ -11,7 +11,7 @@ namespace Autofac.Util
     /// </summary>
     internal class AsyncReleaseAction<TLimit> : Disposable
     {
-        private readonly Func<TLimit, Task> _action;
+        private readonly Func<TLimit, ValueTask> _action;
         private readonly Func<TLimit> _factory;
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace Autofac.Util
         /// A factory that retrieves the value on which the <paramref name="action" />
         /// should be executed.
         /// </param>
-        public AsyncReleaseAction(Func<TLimit, Task> action, Func<TLimit> factory)
+        public AsyncReleaseAction(Func<TLimit, ValueTask> action, Func<TLimit> factory)
         {
             if (action == null) throw new ArgumentNullException(nameof(action));
             if (factory == null) throw new ArgumentNullException(nameof(factory));
@@ -55,7 +55,12 @@ namespace Autofac.Util
             // during .OnActivating() will be accounted for.
             if (disposing)
             {
-                _action(_factory()).ConfigureAwait(false).GetAwaiter().GetResult();
+                var vt = _action(_factory());
+
+                if (!vt.IsCompletedSuccessfully)
+                {
+                    vt.ConfigureAwait(false).GetAwaiter().GetResult();
+                }
             }
 
             base.Dispose(disposing);
