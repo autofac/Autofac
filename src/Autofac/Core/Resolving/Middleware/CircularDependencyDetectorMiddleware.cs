@@ -64,6 +64,14 @@ namespace Autofac.Core.Resolving.Middleware
         /// <inheritdoc/>
         public void Execute(IResolveRequestContext context, Action<IResolveRequestContext> next)
         {
+            if (!(context.Operation is IDependencyTrackingResolveOperation dependencyTrackingResolveOperation))
+            {
+                // Skipping circular dependency detection, since IResolveOperation is not IDependencyTrackingResolveOperation
+                // Which contains the actual RequestStack using SegmentStack
+                next(context);
+                return;
+            }
+
             var activationDepth = context.Operation.RequestDepth;
 
             if (activationDepth > _maxResolveDepth)
@@ -80,7 +88,7 @@ namespace Autofac.Core.Resolving.Middleware
 #endif
             }
 
-            var requestStack = context.Operation.RequestStack;
+            var requestStack = dependencyTrackingResolveOperation.RequestStack;
 
             // The first one is the current resolve request.
             // Do our circular dependency check.
@@ -88,15 +96,12 @@ namespace Autofac.Core.Resolving.Middleware
             {
                 var registration = context.Registration;
 
-                foreach (var requestEntry in requestStack)
+                if (requestStack.Any(requestEntry => requestEntry.Registration == registration))
                 {
-                    if (requestEntry.Registration == registration)
-                    {
-                        throw new DependencyResolutionException(string.Format(
-                            CultureInfo.CurrentCulture,
-                            CircularDependencyDetectorMessages.CircularDependency,
-                            CreateDependencyGraphTo(registration, requestStack)));
-                    }
+                    throw new DependencyResolutionException(string.Format(
+                        CultureInfo.CurrentCulture,
+                        CircularDependencyDetectorMessages.CircularDependency,
+                        CreateDependencyGraphTo(registration, requestStack)));
                 }
             }
 

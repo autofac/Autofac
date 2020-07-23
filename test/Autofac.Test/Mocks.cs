@@ -110,21 +110,21 @@ namespace Autofac.Test
                 this.EnableAll();
             }
 
-            public event Action<ResolveOperationBase, ResolveRequest> OperationStarting;
+            public event Action<IResolveOperation, ResolveRequest> OperationStarting;
 
-            public event Action<ResolveOperationBase, IResolveRequestContext> RequestStarting;
+            public event Action<IResolveOperation, IResolveRequestContext> RequestStarting;
 
             public event Action<IResolveRequestContext, IResolveMiddleware> EnteringMiddleware;
 
             public event Action<IResolveRequestContext, IResolveMiddleware, bool> ExitingMiddleware;
 
-            public event Action<ResolveOperationBase, IResolveRequestContext, Exception> RequestFailing;
+            public event Action<IResolveOperation, IResolveRequestContext, Exception> RequestFailing;
 
-            public event Action<ResolveOperationBase, IResolveRequestContext> RequestSucceeding;
+            public event Action<IResolveOperation, IResolveRequestContext> RequestSucceeding;
 
-            public event Action<ResolveOperationBase, Exception> OperationFailing;
+            public event Action<IResolveOperation, Exception> OperationFailing;
 
-            public event Action<ResolveOperationBase, object> OperationSucceeding;
+            public event Action<IResolveOperation, object> OperationSucceeding;
 
             protected override void OnOperationStart(OperationStartDiagnosticData data)
             {

@@ -61,7 +61,7 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that is about to run.</param>
         /// <param name="initiatingRequest">The request that is responsible for starting this operation.</param>
-        public static void OperationStart(this DiagnosticListener diagnosticSource, ResolveOperationBase operation, ResolveRequest initiatingRequest)
+        public static void OperationStart(this DiagnosticListener diagnosticSource, IResolveOperation operation, ResolveRequest initiatingRequest)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationStart))
             {
@@ -75,7 +75,7 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The resolve operation that failed.</param>
         /// <param name="operationException">The exception that caused the operation failure.</param>
-        public static void OperationFailure(this DiagnosticListener diagnosticSource, ResolveOperationBase operation, Exception operationException)
+        public static void OperationFailure(this DiagnosticListener diagnosticSource, IResolveOperation operation, Exception operationException)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationFailure))
             {
@@ -89,7 +89,7 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The resolve operation that succeeded.</param>
         /// <param name="resolvedInstance">The resolved instance providing the requested service.</param>
-        public static void OperationSuccess(this DiagnosticListener diagnosticSource, ResolveOperationBase operation, object resolvedInstance)
+        public static void OperationSuccess(this DiagnosticListener diagnosticSource, IResolveOperation operation, object resolvedInstance)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationSuccess))
             {
@@ -103,7 +103,7 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that is about to start.</param>
-        public static void RequestStart(this DiagnosticListener diagnosticSource, ResolveOperationBase operation, IResolveRequestContext requestContext)
+        public static void RequestStart(this DiagnosticListener diagnosticSource, IResolveOperation operation, IResolveRequestContext requestContext)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestStart))
             {
@@ -118,7 +118,7 @@ namespace Autofac.Diagnostics
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that failed.</param>
         /// <param name="requestException">The exception that caused the failure.</param>
-        public static void RequestFailure(this DiagnosticListener diagnosticSource, ResolveOperationBase operation, IResolveRequestContext requestContext, Exception requestException)
+        public static void RequestFailure(this DiagnosticListener diagnosticSource, IResolveOperation operation, IResolveRequestContext requestContext, Exception requestException)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestFailure))
             {
@@ -132,7 +132,7 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that failed.</param>
-        public static void RequestSuccess(this DiagnosticListener diagnosticSource, ResolveOperationBase operation, IResolveRequestContext requestContext)
+        public static void RequestSuccess(this DiagnosticListener diagnosticSource, IResolveOperation operation, IResolveRequestContext requestContext)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestSuccess))
             {

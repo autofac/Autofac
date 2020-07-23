@@ -49,7 +49,7 @@ namespace Autofac.Core.Resolving.Pipeline
         /// The <see cref="System.Diagnostics.DiagnosticListener" /> to which trace events should be written.
         /// </param>
         internal ResolveRequestContext(
-            ResolveOperationBase owningOperation,
+            IResolveOperation owningOperation,
             ResolveRequest request,
             ISharingLifetimeScope scope,
             DiagnosticListener diagnosticSource)
@@ -63,7 +63,7 @@ namespace Autofac.Core.Resolving.Pipeline
         }
 
         /// <inheritdoc />
-        public ResolveOperationBase Operation { get; }
+        public IResolveOperation Operation { get; }
 
         /// <inheritdoc />
         public ISharingLifetimeScope ActivationScope { get; private set; }

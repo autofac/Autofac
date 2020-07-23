@@ -12,7 +12,7 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <summary>
         /// Gets a reference to the owning resolve operation (which might emcompass multiple nested requests).
         /// </summary>
-        ResolveOperationBase Operation { get; }
+        IResolveOperation Operation { get; }
 
         /// <summary>
         /// Gets the lifetime scope that will be used for the activation of any components later in the pipeline.

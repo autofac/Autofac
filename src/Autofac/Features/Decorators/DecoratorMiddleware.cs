@@ -27,6 +27,7 @@ using System;
 using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Registration;
+using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Features.Decorators
@@ -71,15 +72,19 @@ namespace Autofac.Features.Decorators
                 return;
             }
 
+            if (!(context.Operation is IDependencyTrackingResolveOperation dependencyTrackingResolveOperation))
+            {
+                // Skipping decorator middleware, since IResolveOperation is not IDependencyTrackingResolveOperation
+                // Which contains required functionality EnterNewDependencyDetectionBlock
+                return;
+            }
+
             // This middleware is only ever added to IServiceWithType pipelines, so this cast will always succeed.
             var swt = (IServiceWithType)context.Service;
 
             var serviceType = swt.ServiceType;
 
-            if (context.DecoratorContext is null)
-            {
-                context.DecoratorContext = DecoratorContext.Create(context.Instance.GetType(), serviceType, context.Instance);
-            }
+            context.DecoratorContext ??= DecoratorContext.Create(context.Instance.GetType(), serviceType, context.Instance);
 
             if (!_decoratorService.Condition(context.DecoratorContext))
             {
@@ -121,7 +126,7 @@ namespace Autofac.Features.Decorators
                 resolveParameters,
                 context.Registration);
 
-            using (context.Operation.EnterNewDependencyDetectionBlock())
+            using (dependencyTrackingResolveOperation.EnterNewDependencyDetectionBlock())
             {
                 var decoratedInstance = context.ResolveComponent(resolveRequest);
 
