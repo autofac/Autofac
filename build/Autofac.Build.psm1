@@ -171,7 +171,16 @@ function Invoke-Test {
         foreach ($Project in $ProjectDirectory) {
             Push-Location $Project
 
-            & dotnet test --configuration Release --logger:trx
+            & dotnet test `
+                --configuration Release `
+                --logger:trx `
+                /p:CollectCoverage=true `
+                /p:CoverletOutput="..\..\" `
+                /p:MergeWith="..\..\coverage.json" `
+                /p:CoverletOutputFormat="json%2clcov" `
+                /p:ExcludeByAttribute=CompilerGeneratedAttribute `
+                /p:ExcludeByAttribute=GeneratedCodeAttribute
+
             if ($LASTEXITCODE -ne 0) {
                 Pop-Location
                 exit 3
