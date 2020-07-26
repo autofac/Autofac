@@ -16,7 +16,7 @@ namespace Autofac.Diagnostics
         /// </summary>
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that is running.</param>
-        public RequestDiagnosticData(ResolveOperationBase operation, IResolveRequestContext requestContext)
+        public RequestDiagnosticData(IResolveOperation operation, IResolveRequestContext requestContext)
         {
             Operation = operation;
             RequestContext = requestContext;
@@ -25,7 +25,7 @@ namespace Autofac.Diagnostics
         /// <summary>
         /// Gets the pipeline resolve operation that this request is running within.
         /// </summary>
-        public ResolveOperationBase Operation { get; private set; }
+        public IResolveOperation Operation { get; private set; }
 
         /// <summary>
         /// Gets the context for the resolve request that is running.

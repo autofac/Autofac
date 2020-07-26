@@ -27,7 +27,7 @@ namespace Autofac.Diagnostics
     {
         private const string RequestExceptionTraced = "__RequestException";
 
-        private readonly ConcurrentDictionary<ResolveOperationBase, IndentingStringBuilder> _operationBuilders = new ConcurrentDictionary<ResolveOperationBase, IndentingStringBuilder>();
+        private readonly ConcurrentDictionary<IResolveOperation, IndentingStringBuilder> _operationBuilders = new ConcurrentDictionary<IResolveOperation, IndentingStringBuilder>();
 
         private static readonly string[] NewLineSplit = new[] { Environment.NewLine };
 

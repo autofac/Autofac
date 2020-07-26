@@ -35,7 +35,7 @@ namespace Autofac.Core.Resolving
     /// of the stack to be enumerated without including items pushed before the segment.
     /// </summary>
     /// <typeparam name="T">The item type.</typeparam>
-    internal sealed class SegmentedStack<T> : IEnumerable<T>
+    public sealed class SegmentedStack<T> : IEnumerable<T>
         where T : class
     {
         private T[] _array;

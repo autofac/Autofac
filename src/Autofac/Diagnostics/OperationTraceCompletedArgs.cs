@@ -18,7 +18,7 @@ namespace Autofac.Diagnostics
         /// </summary>
         /// <param name="operation">The operation for which a trace has completed.</param>
         /// <param name="traceContent">The content of the trace.</param>
-        public OperationTraceCompletedArgs(ResolveOperationBase operation, TContent traceContent)
+        public OperationTraceCompletedArgs(IResolveOperation operation, TContent traceContent)
         {
             Operation = operation;
             TraceContent = traceContent;
@@ -27,7 +27,7 @@ namespace Autofac.Diagnostics
         /// <summary>
         /// Gets the operation for which a trace is available.
         /// </summary>
-        public ResolveOperationBase Operation { get; }
+        public IResolveOperation Operation { get; }
 
         /// <summary>
         /// Gets the content of the trace.

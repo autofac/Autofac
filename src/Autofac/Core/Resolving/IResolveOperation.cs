@@ -1,30 +1,7 @@
-﻿// This software is part of the Autofac IoC container
-// Copyright © 2011 Autofac Contributors
-// https://autofac.org
-//
-// Permission is hereby granted, free of charge, to any person
-// obtaining a copy of this software and associated documentation
-// files (the "Software"), to deal in the Software without
-// restriction, including without limitation the rights to use,
-// copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following
-// conditions:
-//
-// The above copyright notice and this permission notice shall be
-// included in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-// HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-// WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-// OTHER DEALINGS IN THE SOFTWARE.
-
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Resolving
 {
@@ -35,12 +12,40 @@ namespace Autofac.Core.Resolving
     public interface IResolveOperation
     {
         /// <summary>
-        /// Get or create and share an instance of the requested service in the <paramref name="currentOperationScope"/>.
+        /// Gets the active resolve request.
         /// </summary>
-        /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
-        /// <param name="request">The resolve request.</param>
-        /// <returns>The component instance.</returns>
-        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request);
+        IResolveRequestContext? ActiveRequestContext { get; }
+
+        /// <summary>
+        /// Gets the current lifetime scope of the operation; based on the most recently executed request.
+        /// </summary>
+        ISharingLifetimeScope CurrentScope { get; }
+
+        /// <summary>
+        /// Gets the set of all in-progress requests on the request stack.
+        /// </summary>
+        IEnumerable<IResolveRequestContext> InProgressRequests { get; }
+
+        /// <summary>
+        /// Gets the <see cref="System.Diagnostics.DiagnosticListener" /> for the operation.
+        /// </summary>
+        DiagnosticListener DiagnosticSource { get; }
+
+        /// <summary>
+        /// Gets the current request depth.
+        /// </summary>
+        int RequestDepth { get; }
+
+        /// <summary>
+        /// Gets the <see cref="ResolveRequest" /> that initiated the operation. Other nested requests may have been
+        /// issued as a result of this one.
+        /// </summary>
+        ResolveRequest? InitiatingRequest { get; }
+
+        /// <summary>
+        /// Raised when a resolve request starts.
+        /// </summary>
+        event EventHandler<ResolveRequestBeginningEventArgs>? ResolveRequestBeginning;
 
         /// <summary>
         /// Raised when the entire operation is complete.
@@ -48,8 +53,11 @@ namespace Autofac.Core.Resolving
         event EventHandler<ResolveOperationEndingEventArgs>? CurrentOperationEnding;
 
         /// <summary>
-        /// Raised when a resolve request starts.
+        /// Get or create and share an instance of the requested service in the <paramref name="currentOperationScope"/>.
         /// </summary>
-        event EventHandler<ResolveRequestBeginningEventArgs>? ResolveRequestBeginning;
+        /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
+        /// <param name="request">The resolve request.</param>
+        /// <returns>The component instance.</returns>
+        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request);
     }
 }

@@ -16,7 +16,7 @@ namespace Autofac.Diagnostics
         /// </summary>
         /// <param name="operation">The resolve operation that failed.</param>
         /// <param name="operationException">The exception that caused the operation failure.</param>
-        public OperationFailureDiagnosticData(ResolveOperationBase operation, Exception operationException)
+        public OperationFailureDiagnosticData(IResolveOperation operation, Exception operationException)
         {
             Operation = operation;
             OperationException = operationException;
@@ -25,7 +25,7 @@ namespace Autofac.Diagnostics
         /// <summary>
         /// Gets the resolve operation that failed.
         /// </summary>
-        public ResolveOperationBase Operation { get; private set; }
+        public IResolveOperation Operation { get; private set; }
 
         /// <summary>
         /// Gets the exception that caused the operation failure.

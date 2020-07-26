@@ -15,7 +15,7 @@ namespace Autofac.Diagnostics
         /// </summary>
         /// <param name="operation">The resolve operation that succeeded.</param>
         /// <param name="resolvedInstance">The resolved instance providing the requested service.</param>
-        public OperationSuccessDiagnosticData(ResolveOperationBase operation, object resolvedInstance)
+        public OperationSuccessDiagnosticData(IResolveOperation operation, object resolvedInstance)
         {
             Operation = operation;
             ResolvedInstance = resolvedInstance;
@@ -24,7 +24,7 @@ namespace Autofac.Diagnostics
         /// <summary>
         /// Gets the resolve operation that succeeded.
         /// </summary>
-        public ResolveOperationBase Operation { get; private set; }
+        public IResolveOperation Operation { get; private set; }
 
         /// <summary>
         /// Gets the resolved instance providing the requested service.

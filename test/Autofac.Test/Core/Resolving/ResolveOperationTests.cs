@@ -1,15 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Autofac.Core;
-using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
+using Moq;
 using Xunit;
 
 namespace Autofac.Test.Core.Resolving
 {
     public class ResolveOperationTests
     {
+        [Fact]
+        public void NullLifetimeScope_ThrowsArgumentNullException()
+        {
+            var ex = Assert.Throws<ArgumentNullException>(() => new ResolveOperation(null!, new DiagnosticListener("SomeListener")));
+            Assert.Contains("(Parameter 'mostNestedLifetimeScope')", ex.Message);
+        }
+
+        [Fact]
+        public void NullDiagnosticSource_ThrowsArgumentNullException()
+        {
+            var ex = Assert.Throws<ArgumentNullException>(() => new ResolveOperation(Mock.Of<ISharingLifetimeScope>(), null!));
+            Assert.Contains("(Parameter 'diagnosticSource')", ex.Message);
+        }
+
+        [Fact]
+        public void EmptyInProgessRequestWhenInitializing()
+        {
+            var resolveOperation = new ResolveOperation(Mock.Of<ISharingLifetimeScope>(), new DiagnosticListener("SomeName"));
+
+            var inProgressStack = resolveOperation.InProgressRequests;
+
+            Assert.Empty(inProgressStack);
+        }
+
+        [Fact]
+        public void GetOrCreateInstanceThrowsArgumentNullExceptionWhenResolveRequestIsNull()
+        {
+            var lifetimeScope = Mock.Of<ISharingLifetimeScope>();
+            var resolveOperation = new ResolveOperation(lifetimeScope, new DiagnosticListener("SomeName"));
+
+            Assert.Throws<ArgumentNullException>(() => resolveOperation.GetOrCreateInstance(lifetimeScope, null!));
+        }
+
         [Fact]
         public void AfterTheOperationIsFinished_ReusingTheTemporaryContextThrows()
         {
