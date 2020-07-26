@@ -96,12 +96,15 @@ namespace Autofac.Core.Resolving.Middleware
             {
                 var registration = context.Registration;
 
-                if (requestStack.Any(requestEntry => requestEntry.Registration == registration))
+                foreach (var requestEntry in requestStack)
                 {
-                    throw new DependencyResolutionException(string.Format(
-                        CultureInfo.CurrentCulture,
-                        CircularDependencyDetectorMessages.CircularDependency,
-                        CreateDependencyGraphTo(registration, requestStack)));
+                    if (requestEntry.Registration == registration)
+                    {
+                        throw new DependencyResolutionException(string.Format(
+                            CultureInfo.CurrentCulture,
+                            CircularDependencyDetectorMessages.CircularDependency,
+                            CreateDependencyGraphTo(registration, requestStack)));
+                    }
                 }
             }
 
