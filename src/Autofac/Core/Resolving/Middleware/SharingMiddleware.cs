@@ -42,7 +42,7 @@ namespace Autofac.Core.Resolving.Middleware
         public PipelinePhase Phase => PipelinePhase.Sharing;
 
         /// <inheritdoc />
-        public void Execute(IResolveRequestContext context, Action<IResolveRequestContext> next)
+        public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
         {
             var registration = context.Registration;
             var decoratorRegistration = context.DecoratorTarget;

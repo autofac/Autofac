@@ -57,7 +57,7 @@ namespace Autofac.Core.Resolving.Pipeline
         /// <summary>
         /// Termination action for the end of pipelines.
         /// </summary>
-        private static readonly Action<IResolveRequestContext> _terminateAction = ctxt => { };
+        private static readonly Action<ResolveRequestContextBase> _terminateAction = ctxt => { };
 
         private MiddlewareDeclaration? _first;
         private MiddlewareDeclaration? _last;
@@ -262,9 +262,9 @@ namespace Autofac.Core.Resolving.Pipeline
         {
             // When we build, we go through the set and construct a single call stack, starting from the end.
             var current = lastDecl;
-            Action<IResolveRequestContext>? currentInvoke = _terminateAction;
+            Action<ResolveRequestContextBase>? currentInvoke = _terminateAction;
 
-            Action<IResolveRequestContext> Chain(Action<IResolveRequestContext> next, IResolveMiddleware stage)
+            Action<ResolveRequestContextBase> Chain(Action<ResolveRequestContextBase> next, IResolveMiddleware stage)
             {
                 var stagePhase = stage.Phase;
 

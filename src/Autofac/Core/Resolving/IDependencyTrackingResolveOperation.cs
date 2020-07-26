@@ -24,6 +24,6 @@ namespace Autofac.Core.Resolving
         /// <see cref="CircularDependencyDetectorMiddleware" />,
         /// hence it's internal.
         /// </remarks>
-        SegmentedStack<IResolveRequestContext> RequestStack { get; }
+        SegmentedStack<ResolveRequestContextBase> RequestStack { get; }
     }
 }

@@ -43,11 +43,11 @@ namespace Autofac
         /// <param name="phase">The phase of the pipeline the middleware should run at.</param>
         /// <param name="callback">
         /// A callback invoked to run your middleware.
-        /// This callback takes a <see cref="IResolveRequestContext"/>, containing the context for the resolve request, plus
+        /// This callback takes a <see cref="ResolveRequestContextBase"/>, containing the context for the resolve request, plus
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, PipelinePhase phase, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback)
+        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             builder.Use(phase, MiddlewareInsertionMode.EndOfPhase, callback);
 
@@ -62,11 +62,11 @@ namespace Autofac
         /// <param name="insertionMode">The insertion mode specifying whether to add at the start or end of the phase.</param>
         /// <param name="callback">
         /// A callback invoked to run your middleware.
-        /// This callback takes a <see cref="IResolveRequestContext"/>, containing the context for the resolve request, plus
+        /// This callback takes a <see cref="ResolveRequestContextBase"/>, containing the context for the resolve request, plus
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback)
+        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             builder.Use(AnonymousDescriptor, phase, insertionMode, callback);
 
@@ -81,11 +81,11 @@ namespace Autofac
         /// <param name="phase">The phase of the pipeline the middleware should run at.</param>
         /// <param name="callback">
         /// A callback invoked to run your middleware.
-        /// This callback takes a <see cref="IResolveRequestContext"/>, containing the context for the resolve request, plus
+        /// This callback takes a <see cref="ResolveRequestContextBase"/>, containing the context for the resolve request, plus
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, string descriptor, PipelinePhase phase, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback)
+        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, string descriptor, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             if (builder is null)
             {
@@ -106,11 +106,11 @@ namespace Autofac
         /// <param name="insertionMode">The insertion mode specifying whether to add at the start or end of the phase.</param>
         /// <param name="callback">
         /// A callback invoked to run your middleware.
-        /// This callback takes a <see cref="IResolveRequestContext"/>, containing the context for the resolve request, plus
+        /// This callback takes a <see cref="ResolveRequestContextBase"/>, containing the context for the resolve request, plus
         /// a callback to invoke to continue the pipeline.
         /// </param>
         /// <returns>The same builder instance.</returns>
-        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, string descriptor, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<IResolveRequestContext, Action<IResolveRequestContext>> callback)
+        public static IResolvePipelineBuilder Use(this IResolvePipelineBuilder builder, string descriptor, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
         {
             if (builder is null)
             {

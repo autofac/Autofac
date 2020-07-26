@@ -75,7 +75,7 @@ namespace Autofac.Core.Resolving
         /// <summary>
         /// Gets the active resolve request.
         /// </summary>
-        public IResolveRequestContext? ActiveRequestContext { get; private set; }
+        public ResolveRequestContextBase? ActiveRequestContext { get; private set; }
 
         /// <summary>
         /// Gets the current lifetime scope of the operation; based on the most recently executed request.
@@ -83,7 +83,7 @@ namespace Autofac.Core.Resolving
         public ISharingLifetimeScope CurrentScope { get; private set; }
 
         /// <inheritdoc/>
-        public IEnumerable<IResolveRequestContext> InProgressRequests => RequestStack;
+        public IEnumerable<ResolveRequestContextBase> InProgressRequests => RequestStack;
 
         /// <summary>
         /// Gets the <see cref="System.Diagnostics.DiagnosticListener" /> for the operation.
@@ -115,7 +115,7 @@ namespace Autofac.Core.Resolving
         public IDisposable EnterNewDependencyDetectionBlock() => RequestStack.EnterSegment();
 
         /// <inheritdoc/>
-        public SegmentedStack<IResolveRequestContext> RequestStack { get; } = new SegmentedStack<IResolveRequestContext>();
+        public SegmentedStack<ResolveRequestContextBase> RequestStack { get; } = new SegmentedStack<ResolveRequestContextBase>();
 
         /// <inheritdoc />
         public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request)
@@ -140,7 +140,7 @@ namespace Autofac.Core.Resolving
             RequestDepth++;
 
             // Track the last active request and scope in the call stack.
-            IResolveRequestContext? lastActiveRequest = ActiveRequestContext;
+            ResolveRequestContextBase? lastActiveRequest = ActiveRequestContext;
             var lastScope = CurrentScope;
 
             ActiveRequestContext = requestContext;

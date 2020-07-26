@@ -10,7 +10,7 @@ namespace Autofac.Test.Core.Resolving
         [Fact]
         public void NextCalled_OperationIsNotIDependencyTrackingResolveOperation_MiddlewareSkipped()
         {
-            var resolveRequestContextMock = new Mock<IResolveRequestContext>();
+            var resolveRequestContextMock = new Mock<ResolveRequestContextBase>();
             var middleware =
                 new CircularDependencyDetectorMiddleware(CircularDependencyDetectorMiddleware.DefaultMaxResolveDepth);
 

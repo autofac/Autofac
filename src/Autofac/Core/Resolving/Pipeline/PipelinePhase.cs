@@ -73,7 +73,7 @@ namespace Autofac.Core.Resolving.Pipeline
 
         /// <summary>
         /// This phase runs just before Activation, is the recommended point at which the resolve parameters should be replaced
-        /// (using <see cref="IResolveRequestContext.ChangeParameters(IEnumerable{Parameter})"/>).
+        /// (using <see cref="ResolveRequestContextBase.ChangeParameters(IEnumerable{Parameter})"/>).
         /// </summary>
         ParameterSelection = 250,
 

@@ -34,7 +34,7 @@ namespace Autofac.Core.Resolving.Pipeline
     /// <summary>
     ///     Context area for a resolve request.
     /// </summary>
-    internal class ResolveRequestContext : IResolveRequestContext
+    internal class ResolveRequestContext : ResolveRequestContextBase
     {
         private readonly ResolveRequest _resolveRequest;
         private object? _instance;
@@ -63,59 +63,59 @@ namespace Autofac.Core.Resolving.Pipeline
         }
 
         /// <inheritdoc />
-        public IResolveOperation Operation { get; }
+        public override IResolveOperation Operation { get; }
 
         /// <inheritdoc />
-        public ISharingLifetimeScope ActivationScope { get; private set; }
+        public override ISharingLifetimeScope ActivationScope { get; protected set; }
 
         /// <inheritdoc />
-        public IComponentRegistration Registration => _resolveRequest.Registration;
+        public override IComponentRegistration Registration => _resolveRequest.Registration;
 
         /// <inheritdoc />
-        public Service Service => _resolveRequest.Service;
+        public override Service Service => _resolveRequest.Service;
 
         /// <inheritdoc />
-        public IComponentRegistration? DecoratorTarget => _resolveRequest.DecoratorTarget;
+        public override IComponentRegistration? DecoratorTarget => _resolveRequest.DecoratorTarget;
 
         /// <inheritdoc />
         [DisallowNull]
-        public object? Instance
+        public override object? Instance
         {
             get => _instance;
             set => _instance = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         /// <inheritdoc />
-        public bool NewInstanceActivated => Instance is object && PhaseReached == PipelinePhase.Activation;
+        public override bool NewInstanceActivated => Instance is object && PhaseReached == PipelinePhase.Activation;
 
         /// <inheritdoc />
-        public DiagnosticListener DiagnosticSource { get; }
+        public override DiagnosticListener DiagnosticSource { get; }
 
         /// <inheritdoc />
-        public IEnumerable<Parameter> Parameters { get; private set; }
+        public override IEnumerable<Parameter> Parameters { get; protected set; }
 
         /// <inheritdoc />
-        public PipelinePhase PhaseReached { get; set; }
+        public override PipelinePhase PhaseReached { get; set; }
 
         /// <inheritdoc />
-        public IComponentRegistry ComponentRegistry => ActivationScope.ComponentRegistry;
+        public override IComponentRegistry ComponentRegistry => ActivationScope.ComponentRegistry;
 
         /// <inheritdoc />
-        public event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
+        public override event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
 
         /// <inheritdoc />
-        public DecoratorContext? DecoratorContext { get; set; }
+        public override DecoratorContext? DecoratorContext { get; set; }
 
         /// <inheritdoc />
-        public void ChangeScope(ISharingLifetimeScope newScope) =>
+        public override void ChangeScope(ISharingLifetimeScope newScope) =>
             ActivationScope = newScope ?? throw new ArgumentNullException(nameof(newScope));
 
         /// <inheritdoc />
-        public void ChangeParameters(IEnumerable<Parameter> newParameters) =>
+        public override void ChangeParameters(IEnumerable<Parameter> newParameters) =>
             Parameters = newParameters ?? throw new ArgumentNullException(nameof(newParameters));
 
         /// <inheritdoc />
-        public object ResolveComponent(ResolveRequest request) =>
+        public override object ResolveComponent(ResolveRequest request) =>
             Operation.GetOrCreateInstance(ActivationScope, request);
 
         /// <summary>
