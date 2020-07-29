@@ -7,7 +7,7 @@ namespace Autofac.Benchmarks
 {
     internal class BenchmarkConfig : ManualConfig
     {
-        private const string BenchmarkArtificatsFolder = "BenchmarkDotNet.Artifacts";
+        private const string BenchmarkArtifactsFolder = "BenchmarkDotNet.Artifacts";
 
         internal BenchmarkConfig()
         {
@@ -15,7 +15,7 @@ namespace Autofac.Benchmarks
 
             var rootFolder = AppContext.BaseDirectory;
             var runFolder = DateTime.UtcNow.ToString("dd-MM-yyyy_hh-MM-ss");
-            ArtifactsPath = Path.Combine(rootFolder, BenchmarkArtificatsFolder, runFolder);
+            ArtifactsPath = Path.Combine(rootFolder, BenchmarkArtifactsFolder, runFolder);
 
             Add(MemoryDiagnoser.Default);
         }
