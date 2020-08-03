@@ -14,7 +14,7 @@ namespace Autofac.Core.Resolving
         /// <summary>
         /// Gets the active resolve request.
         /// </summary>
-        ResolveRequestContextBase? ActiveRequestContext { get; }
+        ResolveRequestContext? ActiveRequestContext { get; }
 
         /// <summary>
         /// Gets the current lifetime scope of the operation; based on the most recently executed request.
@@ -24,7 +24,7 @@ namespace Autofac.Core.Resolving
         /// <summary>
         /// Gets the set of all in-progress requests on the request stack.
         /// </summary>
-        IEnumerable<ResolveRequestContextBase> InProgressRequests { get; }
+        IEnumerable<ResolveRequestContext> InProgressRequests { get; }
 
         /// <summary>
         /// Gets the <see cref="System.Diagnostics.DiagnosticListener" /> for the operation.

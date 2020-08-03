@@ -55,7 +55,7 @@ namespace Autofac.Features.Decorators
         public PipelinePhase Phase => PipelinePhase.Decoration;
 
         /// <inheritdoc/>
-        public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
+        public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
         {
             // Go down the pipeline first, need that instance.
             next(context);

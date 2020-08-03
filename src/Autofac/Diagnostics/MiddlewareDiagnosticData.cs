@@ -15,7 +15,7 @@ namespace Autofac.Diagnostics
         /// </summary>
         /// <param name="requestContext">The context for the resolve request that is running.</param>
         /// <param name="middleware">The middleware that is running.</param>
-        public MiddlewareDiagnosticData(ResolveRequestContextBase requestContext, IResolveMiddleware middleware)
+        public MiddlewareDiagnosticData(ResolveRequestContext requestContext, IResolveMiddleware middleware)
         {
             RequestContext = requestContext;
             Middleware = middleware;
@@ -24,7 +24,7 @@ namespace Autofac.Diagnostics
         /// <summary>
         /// Gets the context for the resolve request that is running.
         /// </summary>
-        public ResolveRequestContextBase RequestContext { get; private set; }
+        public ResolveRequestContext RequestContext { get; private set; }
 
         /// <summary>
         /// Gets the middleware that is running.

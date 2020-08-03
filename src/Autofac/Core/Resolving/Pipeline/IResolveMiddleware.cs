@@ -43,6 +43,6 @@ namespace Autofac.Core.Resolving.Pipeline
         /// </summary>
         /// <param name="context">The context for the resolve request.</param>
         /// <param name="next">The method to invoke to continue the pipeline execution; pass this method the <paramref name="context"/> argument.</param>
-        void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next);
+        void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next);
     }
 }

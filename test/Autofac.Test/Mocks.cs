@@ -112,15 +112,15 @@ namespace Autofac.Test
 
             public event Action<IResolveOperation, ResolveRequest> OperationStarting;
 
-            public event Action<IResolveOperation, ResolveRequestContextBase> RequestStarting;
+            public event Action<IResolveOperation, ResolveRequestContext> RequestStarting;
 
-            public event Action<ResolveRequestContextBase, IResolveMiddleware> EnteringMiddleware;
+            public event Action<ResolveRequestContext, IResolveMiddleware> EnteringMiddleware;
 
-            public event Action<ResolveRequestContextBase, IResolveMiddleware, bool> ExitingMiddleware;
+            public event Action<ResolveRequestContext, IResolveMiddleware, bool> ExitingMiddleware;
 
-            public event Action<IResolveOperation, ResolveRequestContextBase, Exception> RequestFailing;
+            public event Action<IResolveOperation, ResolveRequestContext, Exception> RequestFailing;
 
-            public event Action<IResolveOperation, ResolveRequestContextBase> RequestSucceeding;
+            public event Action<IResolveOperation, ResolveRequestContext> RequestSucceeding;
 
             public event Action<IResolveOperation, Exception> OperationFailing;
 

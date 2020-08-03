@@ -8,19 +8,19 @@ namespace Autofac.Core.Pipeline
     /// </summary>
     internal class ResolvePipeline : IResolvePipeline
     {
-        private readonly Action<ResolveRequestContextBase>? _entryPoint;
+        private readonly Action<ResolveRequestContext>? _entryPoint;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ResolvePipeline"/> class.
         /// </summary>
         /// <param name="entryPoint">Callback to invoke.</param>
-        public ResolvePipeline(Action<ResolveRequestContextBase>? entryPoint)
+        public ResolvePipeline(Action<ResolveRequestContext>? entryPoint)
         {
             _entryPoint = entryPoint;
         }
 
         /// <inheritdoc />
-        public void Invoke(ResolveRequestContextBase ctxt)
+        public void Invoke(ResolveRequestContext ctxt)
         {
             _entryPoint?.Invoke(ctxt);
         }

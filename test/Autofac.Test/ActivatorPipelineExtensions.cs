@@ -44,7 +44,7 @@ namespace Autofac.Test
                 // To get the sharing scope from what might be a container, we're going to resolve the lifetime scope.
                 var lifetimeScope = scope.Resolve<ILifetimeScope>() as LifetimeScope;
 
-                var request = new ResolveRequestContext(
+                var request = new DefaultResolveRequestContext(
                     new ResolveOperation(lifetimeScope, lifetimeScope.DiagnosticSource),
                     new ResolveRequest(new TypedService(typeof(T)), Mocks.GetResolvableImplementation(), parameters),
                     lifetimeScope,

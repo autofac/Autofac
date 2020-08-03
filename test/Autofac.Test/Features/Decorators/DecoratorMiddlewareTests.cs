@@ -14,7 +14,7 @@ namespace Autofac.Test.Features.Decorators
         {
             var decoratorService = new DecoratorService(typeof(object));
             var middleware = new DecoratorMiddleware(decoratorService, Mock.Of<IComponentRegistration>());
-            var contextMock = new Mock<ResolveRequestContextBase>();
+            var contextMock = new Mock<ResolveRequestContext>();
             var registrationMock = new Mock<IComponentRegistration>();
             contextMock.Setup(context => context.Instance).Returns(new object());
             contextMock.Setup(context => context.Registration).Returns(registrationMock.Object);

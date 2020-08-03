@@ -34,7 +34,7 @@ namespace Autofac.Core.Resolving.Middleware
     internal class DelegateMiddleware : IResolveMiddleware
     {
         private readonly string _descriptor;
-        private readonly Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> _callback;
+        private readonly Action<ResolveRequestContext, Action<ResolveRequestContext>> _callback;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DelegateMiddleware"/> class.
@@ -42,7 +42,7 @@ namespace Autofac.Core.Resolving.Middleware
         /// <param name="descriptor">The middleware description.</param>
         /// <param name="phase">The pipeline phase.</param>
         /// <param name="callback">The callback to execute.</param>
-        public DelegateMiddleware(string descriptor, PipelinePhase phase, Action<ResolveRequestContextBase, Action<ResolveRequestContextBase>> callback)
+        public DelegateMiddleware(string descriptor, PipelinePhase phase, Action<ResolveRequestContext, Action<ResolveRequestContext>> callback)
         {
             _descriptor = descriptor ?? throw new ArgumentNullException(nameof(descriptor));
             Phase = phase;
@@ -53,7 +53,7 @@ namespace Autofac.Core.Resolving.Middleware
         public PipelinePhase Phase { get; }
 
         /// <inheritdoc />
-        public void Execute(ResolveRequestContextBase context, Action<ResolveRequestContextBase> next)
+        public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
         {
             _callback(context, next);
         }

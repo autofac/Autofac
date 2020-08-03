@@ -41,8 +41,8 @@ namespace Autofac.Core.Resolving
         private const int SuccessListInitialCapacity = 32;
         private bool _ended;
 
-        private readonly List<ResolveRequestContext> _successfulRequests =
-            new List<ResolveRequestContext>(SuccessListInitialCapacity);
+        private readonly List<DefaultResolveRequestContext> _successfulRequests =
+            new List<DefaultResolveRequestContext>(SuccessListInitialCapacity);
 
         private int _nextCompleteSuccessfulRequestStartPos;
 
@@ -75,7 +75,7 @@ namespace Autofac.Core.Resolving
         /// <summary>
         /// Gets the active resolve request.
         /// </summary>
-        public ResolveRequestContextBase? ActiveRequestContext { get; private set; }
+        public ResolveRequestContext? ActiveRequestContext { get; private set; }
 
         /// <summary>
         /// Gets the current lifetime scope of the operation; based on the most recently executed request.
@@ -83,7 +83,7 @@ namespace Autofac.Core.Resolving
         public ISharingLifetimeScope CurrentScope { get; private set; }
 
         /// <inheritdoc/>
-        public IEnumerable<ResolveRequestContextBase> InProgressRequests => RequestStack;
+        public IEnumerable<ResolveRequestContext> InProgressRequests => RequestStack;
 
         /// <summary>
         /// Gets the <see cref="System.Diagnostics.DiagnosticListener" /> for the operation.
@@ -115,7 +115,7 @@ namespace Autofac.Core.Resolving
         public IDisposable EnterNewDependencyDetectionBlock() => RequestStack.EnterSegment();
 
         /// <inheritdoc/>
-        public SegmentedStack<ResolveRequestContextBase> RequestStack { get; } = new SegmentedStack<ResolveRequestContextBase>();
+        public SegmentedStack<ResolveRequestContext> RequestStack { get; } = new SegmentedStack<ResolveRequestContext>();
 
         /// <inheritdoc />
         public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request)
@@ -131,7 +131,7 @@ namespace Autofac.Core.Resolving
             }
 
             // Create a new request context.
-            var requestContext = new ResolveRequestContext(this, request, currentOperationScope, DiagnosticSource);
+            var requestContext = new DefaultResolveRequestContext(this, request, currentOperationScope, DiagnosticSource);
 
             // Raise our request-beginning event.
             var handler = ResolveRequestBeginning;
@@ -140,7 +140,7 @@ namespace Autofac.Core.Resolving
             RequestDepth++;
 
             // Track the last active request and scope in the call stack.
-            ResolveRequestContextBase? lastActiveRequest = ActiveRequestContext;
+            ResolveRequestContext? lastActiveRequest = ActiveRequestContext;
             var lastScope = CurrentScope;
 
             ActiveRequestContext = requestContext;
@@ -258,7 +258,7 @@ namespace Autofac.Core.Resolving
         /// to enable it to be optionally surrounded with diagnostics.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void InvokePipeline(ResolveRequest request, ResolveRequestContext requestContext)
+        private void InvokePipeline(ResolveRequest request, DefaultResolveRequestContext requestContext)
         {
             request.ResolvePipeline.Invoke(requestContext);
             if (requestContext.Instance == null)
