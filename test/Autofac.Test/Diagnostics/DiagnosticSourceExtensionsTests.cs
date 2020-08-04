@@ -170,11 +170,11 @@ namespace Autofac.Test.Diagnostics
                 Enumerable.Empty<Parameter>());
         }
 
-        private static ResolveRequestContext MockResolveRequestContext()
+        private static DefaultResolveRequestContext MockResolveRequestContext()
         {
             var operation = MockResolveOperation();
             var request = MockResolveRequest();
-            return new ResolveRequestContext(operation, request, operation.CurrentScope, operation.DiagnosticSource);
+            return new DefaultResolveRequestContext(operation, request, operation.CurrentScope, operation.DiagnosticSource);
         }
 
         private class MockSubscriber : DiagnosticTracerBase

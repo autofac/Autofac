@@ -47,7 +47,7 @@ namespace Autofac.Core.Resolving.Middleware
         public PipelinePhase Phase => PipelinePhase.Activation;
 
         /// <inheritdoc />
-        public void Execute(IResolveRequestContext context, Action<IResolveRequestContext> next)
+        public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
         {
             next(context);
 

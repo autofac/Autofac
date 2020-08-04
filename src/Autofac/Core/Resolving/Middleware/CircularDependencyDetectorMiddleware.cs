@@ -62,7 +62,7 @@ namespace Autofac.Core.Resolving.Middleware
         public PipelinePhase Phase => PipelinePhase.ResolveRequestStart;
 
         /// <inheritdoc/>
-        public void Execute(IResolveRequestContext context, Action<IResolveRequestContext> next)
+        public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
         {
             if (!(context.Operation is IDependencyTrackingResolveOperation dependencyTrackingResolveOperation))
             {
@@ -96,12 +96,15 @@ namespace Autofac.Core.Resolving.Middleware
             {
                 var registration = context.Registration;
 
-                if (requestStack.Any(requestEntry => requestEntry.Registration == registration))
+                foreach (var requestEntry in requestStack)
                 {
-                    throw new DependencyResolutionException(string.Format(
-                        CultureInfo.CurrentCulture,
-                        CircularDependencyDetectorMessages.CircularDependency,
-                        CreateDependencyGraphTo(registration, requestStack)));
+                    if (requestEntry.Registration == registration)
+                    {
+                        throw new DependencyResolutionException(string.Format(
+                            CultureInfo.CurrentCulture,
+                            CircularDependencyDetectorMessages.CircularDependency,
+                            CreateDependencyGraphTo(registration, requestStack)));
+                    }
                 }
             }
 
@@ -121,7 +124,7 @@ namespace Autofac.Core.Resolving.Middleware
         /// <inheritdoc/>
         public override string ToString() => nameof(CircularDependencyDetectorMiddleware);
 
-        private static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<IResolveRequestContext> requestStack)
+        private static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<ResolveRequestContext> requestStack)
         {
             if (registration == null) throw new ArgumentNullException(nameof(registration));
             if (requestStack == null) throw new ArgumentNullException(nameof(requestStack));

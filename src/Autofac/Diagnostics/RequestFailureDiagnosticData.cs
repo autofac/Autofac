@@ -18,7 +18,7 @@ namespace Autofac.Diagnostics
         /// <param name="operation">The pipeline resolve operation that this request is running within.</param>
         /// <param name="requestContext">The context for the resolve request that failed.</param>
         /// <param name="requestException">The exception that caused the failure.</param>
-        public RequestFailureDiagnosticData(IResolveOperation operation, IResolveRequestContext requestContext, Exception requestException)
+        public RequestFailureDiagnosticData(IResolveOperation operation, ResolveRequestContext requestContext, Exception requestException)
         {
             Operation = operation;
             RequestContext = requestContext;
@@ -33,7 +33,7 @@ namespace Autofac.Diagnostics
         /// <summary>
         /// Gets the context for the resolve request that failed.
         /// </summary>
-        public IResolveRequestContext RequestContext { get; private set; }
+        public ResolveRequestContext RequestContext { get; private set; }
 
         /// <summary>
         /// Gets the exception that caused the failure.

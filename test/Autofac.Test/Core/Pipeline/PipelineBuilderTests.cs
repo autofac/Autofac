@@ -9,6 +9,7 @@ using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Diagnostics;
+using Autofac.Features.Decorators;
 using Xunit;
 
 namespace Autofac.Test.Core.Pipeline
@@ -28,7 +29,7 @@ namespace Autofac.Test.Core.Pipeline
 
             var built = pipelineBuilder.Build();
 
-            built.Invoke(new MockPipelineRequestContext());
+            built.Invoke(new PipelineRequestContextStub());
 
             Assert.Collection(
                 order,
@@ -58,7 +59,7 @@ namespace Autofac.Test.Core.Pipeline
 
             var built = pipelineBuilder.Build();
 
-            built.Invoke(new MockPipelineRequestContext());
+            built.Invoke(new PipelineRequestContextStub());
 
             Assert.Collection(
                 order,
@@ -91,7 +92,7 @@ namespace Autofac.Test.Core.Pipeline
 
             var built = pipelineBuilder.Build();
 
-            built.Invoke(new MockPipelineRequestContext());
+            built.Invoke(new PipelineRequestContextStub());
 
             Assert.Collection(
                 order,
@@ -129,7 +130,7 @@ namespace Autofac.Test.Core.Pipeline
 
             var built = pipelineBuilder.Build();
 
-            built.Invoke(new MockPipelineRequestContext());
+            built.Invoke(new PipelineRequestContextStub());
 
             Assert.Collection(
                 order,
@@ -162,7 +163,7 @@ namespace Autofac.Test.Core.Pipeline
 
             var built = pipelineBuilder.Build();
 
-            built.Invoke(new MockPipelineRequestContext());
+            built.Invoke(new PipelineRequestContextStub());
 
             Assert.Collection(
                 order,
@@ -195,7 +196,7 @@ namespace Autofac.Test.Core.Pipeline
 
             var built = pipelineBuilder.Build();
 
-            built.Invoke(new MockPipelineRequestContext());
+            built.Invoke(new PipelineRequestContextStub());
 
             Assert.Collection(
                 order,
@@ -231,7 +232,7 @@ namespace Autofac.Test.Core.Pipeline
 
             var built = pipelineBuilder.Build();
 
-            built.Invoke(new MockPipelineRequestContext());
+            built.Invoke(new PipelineRequestContextStub());
 
             Assert.Collection(
                 order,
@@ -357,7 +358,7 @@ namespace Autofac.Test.Core.Pipeline
 
             var built = pipelineBuilder.Build();
 
-            built.Invoke(new MockPipelineRequestContext());
+            built.Invoke(new PipelineRequestContextStub());
 
             Assert.Collection(
                 order,
@@ -419,19 +420,58 @@ namespace Autofac.Test.Core.Pipeline
             }));
         }
 
-        private class MockPipelineRequestContext : ResolveRequestContext
+        private class PipelineRequestContextStub : ResolveRequestContext
         {
-            public MockPipelineRequestContext()
-                : base(
-                      new ResolveOperation(new MockLifetimeScope(), new DiagnosticListener("Autofac")),
-                      new ResolveRequest(new TypedService(typeof(int)), Mocks.GetResolvableImplementation(), Enumerable.Empty<Parameter>()),
-                      new MockLifetimeScope(),
-                      new DiagnosticListener("Autofac"))
+            private readonly DiagnosticListener _diagnosticSource;
+            private readonly ResolveRequest _resolveRequest;
+
+            public PipelineRequestContextStub()
             {
+                _diagnosticSource = new DiagnosticListener("Autofac");
+                _resolveRequest = new ResolveRequest(new TypedService(typeof(int)), Mocks.GetResolvableImplementation(), Enumerable.Empty<Parameter>());
+                Operation = new ResolveOperation(new LifetimeScopeStub(), _diagnosticSource);
             }
+
+            public override IResolveOperation Operation { get; }
+
+            public override ISharingLifetimeScope ActivationScope { get; protected set; } = null!;
+
+            public override IComponentRegistration Registration => _resolveRequest.Registration;
+
+            public override Service Service => _resolveRequest.Service;
+
+            public override IComponentRegistration? DecoratorTarget => _resolveRequest.DecoratorTarget;
+
+            public override object? Instance { get; set; }
+
+            public override bool NewInstanceActivated => Instance is { } && PhaseReached == PipelinePhase.Activation;
+
+            public override DiagnosticListener DiagnosticSource => _diagnosticSource;
+
+            public override IEnumerable<Parameter> Parameters
+            {
+                get => _resolveRequest.Parameters;
+                protected set
+                {
+                }
+            }
+
+            public override PipelinePhase PhaseReached { get; set; }
+
+            public override DecoratorContext? DecoratorContext { get; set; }
+
+            public override event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
+
+            public override void ChangeScope(ISharingLifetimeScope newScope) => throw new NotImplementedException();
+
+            public override void ChangeParameters(IEnumerable<Parameter> newParameters) => throw new NotImplementedException();
+
+            public override IComponentRegistry ComponentRegistry => ActivationScope.ComponentRegistry;
+
+            public override object ResolveComponent(ResolveRequest request) => throw new NotImplementedException();
         }
 
-        private class MockLifetimeScope : ISharingLifetimeScope
+        private class LifetimeScopeStub : ISharingLifetimeScope
         {
             public ISharingLifetimeScope RootLifetimeScope => throw new NotImplementedException();
 
