@@ -449,7 +449,7 @@ namespace Autofac.Core.Lifetime
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool IsTreeDisposed()
         {
-            return IsDisposed || (_parentScope is object && _parentScope.IsTreeDisposed());
+            return IsDisposed || (_parentScope?.IsTreeDisposed() ?? false);
         }
 
         /// <summary>
