@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Autofac.Core;
@@ -440,9 +441,9 @@ namespace Autofac.Test.Core.Pipeline
 
             public override Service Service => _resolveRequest.Service;
 
-            public override IComponentRegistration? DecoratorTarget => _resolveRequest.DecoratorTarget;
+            public override IComponentRegistration DecoratorTarget => _resolveRequest.DecoratorTarget;
 
-            public override object? Instance { get; set; }
+            public override object Instance { get; set; }
 
             public override bool NewInstanceActivated => Instance is { } && PhaseReached == PipelinePhase.Activation;
 
@@ -458,9 +459,13 @@ namespace Autofac.Test.Core.Pipeline
 
             public override PipelinePhase PhaseReached { get; set; }
 
-            public override DecoratorContext? DecoratorContext { get; set; }
+            public override DecoratorContext DecoratorContext { get; set; }
 
-            public override event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
+            public override event EventHandler<ResolveRequestCompletingEventArgs> RequestCompleting
+            {
+                add { }
+                remove { }
+            }
 
             public override void ChangeScope(ISharingLifetimeScope newScope) => throw new NotImplementedException();
 
