@@ -2,7 +2,7 @@
   "profiles": {
     "Autofac.BenchmarkProfiling": {
       "commandName": "Project",
-      "commandLineArgs": "KeyedNestedBenchmark 2"
+      "commandLineArgs": ""
     }
   }
 }
