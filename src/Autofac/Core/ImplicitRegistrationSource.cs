@@ -38,9 +38,9 @@ namespace Autofac.Core
     /// </summary>
     public abstract class ImplicitRegistrationSource : IRegistrationSource
     {
-        private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, IComponentRegistration valueRegistration);
+        private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration valueRegistration);
 
-        private static readonly MethodInfo CreateRegistrationMethod = typeof(ImplicitRegistrationSource).GetTypeInfo().GetDeclaredMethod(nameof(CreateRegistration));
+        private static readonly MethodInfo CreateRegistrationMethod = typeof(ImplicitRegistrationSource).GetDeclaredMethod(nameof(CreateRegistration));
 
         private readonly Type _type;
         private readonly ConcurrentDictionary<Type, RegistrationCreator> _methodCache;
@@ -67,7 +67,7 @@ namespace Autofac.Core
         }
 
         /// <inheritdoc />
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (registrationAccessor == null)
             {
@@ -79,7 +79,7 @@ namespace Autofac.Core
                 return Enumerable.Empty<IComponentRegistration>();
             }
 
-            var valueType = swt.ServiceType.GetTypeInfo().GenericTypeArguments[0];
+            var valueType = swt.ServiceType.GenericTypeArguments[0];
             var valueService = swt.ChangeType(valueType);
             var registrationCreator = _methodCache.GetOrAdd(valueType, t =>
             {
@@ -96,8 +96,9 @@ namespace Autofac.Core
         /// <summary>
         /// Gets the description of the registration source.
         /// </summary>
-        public virtual string Description => GetType().GetTypeInfo().Name;
+        public virtual string Description => GetType().Name;
 
+        /// <inheritdoc/>
         public override string ToString() => Description;
 
         /// <summary>
@@ -118,21 +119,21 @@ namespace Autofac.Core
         protected virtual IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> BuildRegistration(IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> registration)
             => registration;
 
-        private IComponentRegistration CreateRegistration<T>(Service providedService, Service valueService, IComponentRegistration valueRegistration)
+        private IComponentRegistration CreateRegistration<T>(Service providedService, Service valueService, ServiceRegistration serviceRegistration)
             where T : notnull
         {
             var registrationDelegate = RegistrationBuilder.ForDelegate(
                 (c, p) =>
                 {
-                    var request = new ResolveRequest(valueService, valueRegistration, p);
+                    var request = new ResolveRequest(valueService, serviceRegistration, p);
 
                     return ResolveInstance<T>(c, request);
                 });
 
             var rb = BuildRegistration(registrationDelegate)
                 .As(providedService)
-                .Targeting(valueRegistration, IsAdapterForIndividualComponents)
-                .InheritRegistrationOrderFrom(valueRegistration);
+                .Targeting(serviceRegistration.Registration)
+                .InheritRegistrationOrderFrom(serviceRegistration.Registration);
 
             return rb.CreateRegistration();
         }

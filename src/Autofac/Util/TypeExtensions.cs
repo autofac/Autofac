@@ -33,6 +33,9 @@ using System.Runtime.CompilerServices;
 
 namespace Autofac.Util
 {
+    /// <summary>
+    /// Provides helper methods for manipulating and inspecting types.
+    /// </summary>
     internal static class TypeExtensions
     {
         private static readonly ConcurrentDictionary<Type, bool> IsGenericEnumerableInterfaceCache = new ConcurrentDictionary<Type, bool>();
@@ -41,16 +44,26 @@ namespace Autofac.Util
 
         private static readonly ConcurrentDictionary<(Type, Type), bool> IsGenericTypeDefinedByCache = new ConcurrentDictionary<(Type, Type), bool>();
 
+        /// <summary>
+        /// For a delegate type, outputs the return type of the delegate.
+        /// </summary>
+        /// <param name="type">The delegate type.</param>
+        /// <returns>The delegate return type.</returns>
         public static Type FunctionReturnType(this Type type)
         {
-            var invoke = type.GetTypeInfo().GetDeclaredMethod("Invoke");
+            var invoke = type.GetDeclaredMethod("Invoke");
             Enforce.NotNull(invoke);
             return invoke.ReturnType;
         }
 
+        /// <summary>
+        /// Determine whether a given type is an open generic.
+        /// </summary>
+        /// <param name="type">The input type.</param>
+        /// <returns>True if the type is an open generic; false otherwise.</returns>
         public static bool IsOpenGeneric(this Type type)
         {
-            return type.GetTypeInfo().IsGenericTypeDefinition || type.GetTypeInfo().ContainsGenericParameters;
+            return type.IsGenericTypeDefinition || type.ContainsGenericParameters;
         }
 
         /// <summary>Returns the first concrete interface supported by the candidate type that
@@ -63,34 +76,45 @@ namespace Autofac.Util
             return FindAssignableTypesThatClose(@this, openGeneric);
         }
 
+        /// <summary>
+        /// Checks whether this type is a closed type of a given generic type.
+        /// </summary>
+        /// <param name="this">The type we are checking.</param>
+        /// <param name="openGeneric">The open generic type to validate against.</param>
+        /// <returns>True if <paramref name="this"/> is a closed type of <paramref name="openGeneric"/>. False otherwise.</returns>
         public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
         {
-            return TypesAssignableFrom(@this).Any(t => t.GetTypeInfo().IsGenericType && !@this.GetTypeInfo().ContainsGenericParameters && t.GetGenericTypeDefinition() == openGeneric);
+            return TypesAssignableFrom(@this).Any(t => t.IsGenericType && !@this.ContainsGenericParameters && t.GetGenericTypeDefinition() == openGeneric);
         }
 
+        /// <summary>
+        /// Determines whether a given generic type definition is compatible with the specified type parameters (i.e. is it possible to create a closed generic type from those parameters).
+        /// </summary>
+        /// <param name="genericTypeDefinition">The generic type definition.</param>
+        /// <param name="parameters">The set of parameters to check against.</param>
+        /// <returns>True if the parameters match the generic parameter constraints.</returns>
         public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
         {
-            var genericArgumentDefinitions = genericTypeDefinition.GetTypeInfo().GenericTypeParameters;
+            var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
 
             for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
             {
-                var argumentDefinitionTypeInfo = genericArgumentDefinitions[i].GetTypeInfo();
+                var genericArg = genericArgumentDefinitions[i];
                 var parameter = parameters[i];
-                var parameterTypeInfo = parameter.GetTypeInfo();
 
-                if (argumentDefinitionTypeInfo.GetGenericParameterConstraints()
+                if (genericArg.GetGenericParameterConstraints()
                     .Select(constraint => SubstituteGenericParameterConstraint(parameters, constraint))
                     .Any(constraint => !ParameterCompatibleWithTypeConstraint(parameter, constraint)))
                 {
                     return false;
                 }
 
-                var specialConstraints = argumentDefinitionTypeInfo.GenericParameterAttributes;
+                var specialConstraints = genericArg.GenericParameterAttributes;
 
                 if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
                     != GenericParameterAttributes.None)
                 {
-                    if (!parameterTypeInfo.IsValueType && parameterTypeInfo.DeclaredConstructors.Where(c => c.IsPublic).All(c => c.GetParameters().Length > 0))
+                    if (!parameter.IsValueType && parameter.GetDeclaredPublicConstructors().All(c => c.GetParameters().Length > 0))
                     {
                         return false;
                     }
@@ -99,7 +123,7 @@ namespace Autofac.Util
                 if ((specialConstraints & GenericParameterAttributes.ReferenceTypeConstraint)
                     != GenericParameterAttributes.None)
                 {
-                    if (parameterTypeInfo.IsValueType)
+                    if (parameter.IsValueType)
                     {
                         return false;
                     }
@@ -108,8 +132,8 @@ namespace Autofac.Util
                 if ((specialConstraints & GenericParameterAttributes.NotNullableValueTypeConstraint)
                     != GenericParameterAttributes.None)
                 {
-                    if (!parameterTypeInfo.IsValueType ||
-                        (parameterTypeInfo.IsGenericType && IsGenericTypeDefinedBy(parameter, typeof(Nullable<>))))
+                    if (!parameter.IsValueType ||
+                        (parameter.IsGenericType && IsGenericTypeDefinedBy(parameter, typeof(Nullable<>))))
                     {
                         return false;
                     }
@@ -119,16 +143,31 @@ namespace Autofac.Util
             return true;
         }
 
+        /// <summary>
+        /// Checks whether a type is compiler generated.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>True if the type is compiler generated; false otherwise.</returns>
         public static bool IsCompilerGenerated(this Type type)
         {
-            return type.GetTypeInfo().GetCustomAttributes<CompilerGeneratedAttribute>().Any();
+            return type.GetCustomAttributes<CompilerGeneratedAttribute>().Any();
         }
 
+        /// <summary>
+        /// Checks whether a given type is a delegate type.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>True if the type is a delegate; false otherwise.</returns>
         public static bool IsDelegate(this Type type)
         {
-            return type.GetTypeInfo().IsSubclassOf(typeof(Delegate));
+            return type.IsSubclassOf(typeof(Delegate));
         }
 
+        /// <summary>
+        /// Checks whether a given type is a generic enumerable interface type, e.g. <see cref="IEnumerable{T}" />, <see cref="IList{T}"/>, <see cref="ICollection{T}"/>, etc.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>True if the type is one of the supported enumerable interface types.</returns>
         public static bool IsGenericEnumerableInterfaceType(this Type type)
         {
             return IsGenericEnumerableInterfaceCache.GetOrAdd(
@@ -136,6 +175,11 @@ namespace Autofac.Util
                            || type.IsGenericListOrCollectionInterfaceType());
         }
 
+        /// <summary>
+        /// Checks whether a given type is a generic list of colleciton interface type, e.g. <see cref="IList{T}"/>, <see cref="ICollection{T}"/> and the read-only variants.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>True if the type is one of the supported list/collection types.</returns>
         public static bool IsGenericListOrCollectionInterfaceType(this Type type)
         {
             return IsGenericListOrCollectionInterfaceTypeCache.GetOrAdd(
@@ -145,12 +189,18 @@ namespace Autofac.Util
                            || t.IsGenericTypeDefinedBy(typeof(IReadOnlyList<>)));
         }
 
+        /// <summary>
+        /// Checks whether a given type is a closed generic defined by the specifed open generic.
+        /// </summary>
+        /// <param name="this">The type to check.</param>
+        /// <param name="openGeneric">The open generic to check against.</param>
+        /// <returns>True if the type is defined by the specified open generic; false otherwise.</returns>
         public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric)
         {
             return IsGenericTypeDefinedByCache.GetOrAdd(
                 (@this, openGeneric),
-                key => !key.Item1.GetTypeInfo().ContainsGenericParameters
-                    && key.Item1.GetTypeInfo().IsGenericType
+                key => !key.Item1.ContainsGenericParameters
+                    && key.Item1.IsGenericType
                     && key.Item1.GetGenericTypeDefinition() == key.Item2);
         }
 
@@ -174,15 +224,15 @@ namespace Autofac.Util
 
         private static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
         {
-            if (constraint.GetTypeInfo().IsAssignableFrom(parameter.GetTypeInfo()))
+            if (constraint.IsAssignableFrom(parameter))
             {
                 return true;
             }
 
             var allGenericParametersMatch = false;
-            var baseType = parameter.GetTypeInfo().BaseType ?? parameter;
-            if (!constraint.GetTypeInfo().IsInterface &&
-                baseType.GetTypeInfo().IsGenericType &&
+            var baseType = parameter.BaseType ?? parameter;
+            if (!constraint.IsInterface &&
+                baseType.IsGenericType &&
                 baseType.GenericTypeArguments.Length > 0 &&
                 baseType.GenericTypeArguments.Length == constraint.GenericTypeArguments.Length)
             {
@@ -191,36 +241,36 @@ namespace Autofac.Util
                 {
                     var paramArg = baseType.GenericTypeArguments[i];
                     var constraintArg = constraint.GenericTypeArguments[i];
-                    var constraintArgIsGeneric = constraintArg.GetTypeInfo().IsGenericType;
+                    var constraintArgIsGeneric = constraintArg.IsGenericType;
 
                     allGenericParametersMatch &= paramArg.IsClosedTypeOf(constraintArgIsGeneric ? constraintArg.GetGenericTypeDefinition() : constraintArg);
                 }
             }
 
             return allGenericParametersMatch ||
-                Traverse.Across(parameter, p => p.GetTypeInfo().BaseType)
-                       .Concat(parameter.GetTypeInfo().ImplementedInterfaces)
+                Traverse.Across(parameter, p => p.BaseType)
+                       .Concat(parameter.GetInterfaces())
                        .Any(p => ParameterEqualsConstraint(p, constraint));
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031", Justification = "Implementing a real TryMakeGenericType is not worth the effort.")]
         private static bool ParameterEqualsConstraint(Type parameter, Type constraint)
         {
-            var genericArguments = parameter.GetTypeInfo().GenericTypeArguments;
-            if (genericArguments.Length > 0 && constraint.GetTypeInfo().IsGenericType)
+            var genericArguments = parameter.GenericTypeArguments;
+            if (genericArguments.Length > 0 && constraint.IsGenericType)
             {
                 var typeDefinition = constraint.GetGenericTypeDefinition();
-                if (typeDefinition.GetTypeInfo().GenericTypeParameters.Length == genericArguments.Length)
+                if (typeDefinition.GetGenericArguments().Length == genericArguments.Length)
                 {
                     try
                     {
                         var genericType = typeDefinition.MakeGenericType(genericArguments);
-                        var constraintArguments = constraint.GetTypeInfo().GenericTypeArguments;
+                        var constraintArguments = constraint.GenericTypeArguments;
 
                         for (var i = 0; i < constraintArguments.Length; i++)
                         {
-                            var constraintArgument = constraintArguments[i].GetTypeInfo();
-                            if (!constraintArgument.IsGenericParameter && !constraintArgument.IsAssignableFrom(genericArguments[i].GetTypeInfo()))
+                            var constraintArgument = constraintArguments[i];
+                            if (!constraintArgument.IsGenericParameter && !constraintArgument.IsAssignableFrom(genericArguments[i]))
                             {
                                 return false;
                             }
@@ -240,8 +290,8 @@ namespace Autofac.Util
 
         private static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
         {
-            return candidateType.GetTypeInfo().ImplementedInterfaces.Concat(
-                Traverse.Across(candidateType, t => t.GetTypeInfo().BaseType));
+            return candidateType.GetInterfaces().Concat(
+                Traverse.Across(candidateType, t => t.BaseType));
         }
     }
 }

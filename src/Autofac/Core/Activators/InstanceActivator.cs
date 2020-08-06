@@ -59,6 +59,9 @@ namespace Autofac.Core.Activators
             return LimitType.Name + " (" + GetType().Name + ")";
         }
 
+        /// <summary>
+        /// Asserts that the activator has not been disposed.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected void CheckNotDisposed()
         {

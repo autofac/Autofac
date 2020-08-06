@@ -2,13 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using Autofac.Core;
+using Autofac.Diagnostics;
 using Autofac.Features.Decorators;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Autofac.Test.Features.Decorators
 {
     public class OpenGenericDecoratorTests
     {
+        private readonly ITestOutputHelper _outputHelper;
+
+        public OpenGenericDecoratorTests(ITestOutputHelper outputHelper)
+        {
+            _outputHelper = outputHelper;
+        }
+
         // ReSharper disable once UnusedTypeParameter
         public interface IService<T>
         {
@@ -206,6 +215,15 @@ namespace Autofac.Test.Features.Decorators
             builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IService<>));
             var container = builder.Build();
 
+            var tracer = new DefaultDiagnosticTracer();
+
+            container.SubscribeToDiagnostics(tracer);
+
+            tracer.OperationCompleted += (sender, args) =>
+            {
+                _outputHelper.WriteLine(args.TraceContent);
+            };
+
             var serviceRegistration = container.RegistrationFor<IService<int>>();
             var decoratedServiceRegistration = container.RegistrationFor<IDecoratedService<int>>();
 
@@ -232,6 +250,15 @@ namespace Autofac.Test.Features.Decorators
             builder.RegisterGeneric(typeof(ImplementorA<>)).As(typeof(IDecoratedService<>)).As(typeof(IService<>)).InstancePerLifetimeScope();
             builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IDecoratedService<>));
             var container = builder.Build();
+
+            var tracer = new DefaultDiagnosticTracer();
+
+            container.SubscribeToDiagnostics(tracer);
+
+            tracer.OperationCompleted += (sender, args) =>
+            {
+                _outputHelper.WriteLine(args.TraceContent);
+            };
 
             var serviceRegistration = container.RegistrationFor<IService<int>>();
             var decoratedServiceRegistration = container.RegistrationFor<IDecoratedService<int>>();

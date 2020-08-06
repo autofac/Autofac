@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Autofac.Core;
 using Autofac.Core.Registration;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Test.Scenarios.Parameterisation;
 using Autofac.Test.Util;
 using Xunit;
@@ -206,10 +207,10 @@ namespace Autofac.Test.Core
         {
             protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
             {
-                registration.Activating += (o, args) =>
+                registration.PipelineBuilding += (o, builder) => builder.Use(PipelinePhase.Activation, (ctxt, next) =>
                 {
-                    args.ReplaceInstance(new ReplaceableComponent { IsReplaced = true });
-                };
+                    ctxt.Instance = new ReplaceableComponent { IsReplaced = true };
+                });
             }
         }
 

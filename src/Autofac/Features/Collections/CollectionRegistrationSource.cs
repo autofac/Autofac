@@ -75,7 +75,11 @@ namespace Autofac.Features.Collections
         /// <param name="service">The service that was requested.</param>
         /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
         /// <returns>Registrations providing the service.</returns>
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Reliability",
+            "CA2000:Dispose objects before losing scope",
+            Justification = "Activator lifetime controlled by registry.")]
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
@@ -90,7 +94,7 @@ namespace Autofac.Features.Collections
 
             if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
             {
-                elementType = serviceType.GetTypeInfo().GenericTypeArguments[0];
+                elementType = serviceType.GenericTypeArguments[0];
                 limitType = elementType.MakeArrayType();
                 factory = GenerateArrayFactory(elementType);
             }
@@ -102,7 +106,7 @@ namespace Autofac.Features.Collections
             }
             else if (serviceType.IsGenericListOrCollectionInterfaceType())
             {
-                elementType = serviceType.GetTypeInfo().GenericTypeArguments[0];
+                elementType = serviceType.GenericTypeArguments[0];
                 limitType = typeof(List<>).MakeGenericType(elementType);
                 factory = GenerateListFactory(elementType);
             }
@@ -117,14 +121,15 @@ namespace Autofac.Features.Collections
                 (c, p) =>
                 {
                     var itemRegistrations = c.ComponentRegistry
-                        .RegistrationsFor(elementTypeService)
-                        .OrderBy(cr => cr.GetRegistrationOrder())
-                        .ToArray();
+                        .ServiceRegistrationsFor(elementTypeService)
+                        .Where(cr => !cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections))
+                        .OrderBy(cr => cr.Registration.GetRegistrationOrder())
+                        .ToList();
 
-                    var output = factory(itemRegistrations.Length);
+                    var output = factory(itemRegistrations.Count);
                     var isFixedSize = output.IsFixedSize;
 
-                    for (var i = 0; i < itemRegistrations.Length; i++)
+                    for (var i = 0; i < itemRegistrations.Count; i++)
                     {
                         var itemRegistration = itemRegistrations[i];
                         var resolveRequest = new ResolveRequest(elementTypeService, itemRegistration, p);
@@ -141,7 +146,7 @@ namespace Autofac.Features.Collections
             var registration = new ComponentRegistration(
                 Guid.NewGuid(),
                 activator,
-                new CurrentScopeLifetime(),
+                CurrentScopeLifetime.Instance,
                 InstanceSharing.None,
                 InstanceOwnership.ExternallyOwned,
                 new[] { service },
@@ -150,8 +155,10 @@ namespace Autofac.Features.Collections
             return new IComponentRegistration[] { registration };
         }
 
+        /// <inheritdoc/>
         public bool IsAdapterForIndividualComponents => false;
 
+        /// <inheritdoc/>
         public override string ToString()
             => CollectionRegistrationSourceResources.CollectionRegistrationSourceDescription;
 

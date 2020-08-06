@@ -28,10 +28,17 @@ using System.Threading;
 
 namespace Autofac.Util
 {
+    /// <summary>
+    /// Provides access to a unique sequenced number.
+    /// </summary>
     internal static class SequenceGenerator
     {
         private static long _lastSequence;
 
+        /// <summary>
+        /// Get the next unique sequence value.
+        /// </summary>
+        /// <returns>A new sequence value.</returns>
         internal static long GetNextUniqueSequence()
         {
             while (true)

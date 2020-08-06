@@ -24,12 +24,11 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Autofac.Core.Lifetime;
-using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
+using Autofac.Diagnostics;
 using Autofac.Util;
 
 namespace Autofac.Core
@@ -40,7 +39,7 @@ namespace Autofac.Core
     [DebuggerDisplay("Tag = {Tag}, IsDisposed = {IsDisposed}")]
     public class Container : Disposable, IContainer, IServiceProvider
     {
-        private readonly ILifetimeScope _rootLifetimeScope;
+        private readonly LifetimeScope _rootLifetimeScope;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Container"/> class.
@@ -99,6 +98,9 @@ namespace Autofac.Core
         {
             return _rootLifetimeScope.BeginLifetimeScope(tag, configurationAction);
         }
+
+        /// <inheritdoc/>
+        public DiagnosticListener DiagnosticSource => _rootLifetimeScope.DiagnosticSource;
 
         /// <summary>
         /// Gets the disposer associated with this container. Instances can be associated
@@ -166,11 +168,12 @@ namespace Autofac.Core
             base.Dispose(disposing);
         }
 
+        /// <inheritdoc/>
         protected override async ValueTask DisposeAsync(bool disposing)
         {
             if (disposing)
             {
-                await _rootLifetimeScope.DisposeAsync();
+                await _rootLifetimeScope.DisposeAsync().ConfigureAwait(false);
 
                 // Registries are not likely to have async tasks to dispose of,
                 // so we will leave it as a straight dispose.

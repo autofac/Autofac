@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using Autofac.Core.Resolving.Pipeline;
 using Xunit;
 
 namespace Autofac.Test
@@ -49,11 +49,16 @@ namespace Autofac.Test
             var activatedInstances = new List<object>();
 
             var builder = new ContainerBuilder();
-            builder.RegisterCallback(x =>
-                x.Registered += (sender, args) =>
-                {
-                    args.ComponentRegistration.Activating += (o, eventArgs) => activatedInstances.Add(eventArgs.Instance);
-                });
+            builder.RegisterCallback(x => x.Registered += (o, registration) =>
+            {
+                registration.ComponentRegistration.PipelineBuilding += (o, builder) =>
+                    builder.Use(PipelinePhase.Activation, (ctxt, next) =>
+                    {
+                        next(ctxt);
+
+                        activatedInstances.Add(ctxt.Instance);
+                    });
+            });
 
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
             builder.RegisterType<Controller>().PropertiesAutowired();

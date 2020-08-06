@@ -32,9 +32,15 @@ using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection
 {
+    /// <summary>
+    /// Provide helper methods for injecting property values.
+    /// </summary>
     internal static class AutowiringPropertyInjector
     {
-        public const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
+        /// <summary>
+        /// Name of the parameter containing the instance type provided when resolving an injected service.
+        /// </summary>
+        internal const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
 
         private static readonly ConcurrentDictionary<PropertyInfo, Action<object, object?>> PropertySetters =
             new ConcurrentDictionary<PropertyInfo, Action<object, object?>>();
@@ -43,8 +49,15 @@ namespace Autofac.Core.Activators.Reflection
             new ConcurrentDictionary<Type, PropertyInfo[]>();
 
         private static readonly MethodInfo CallPropertySetterOpenGenericMethod =
-            typeof(AutowiringPropertyInjector).GetTypeInfo().GetDeclaredMethod(nameof(CallPropertySetter));
+            typeof(AutowiringPropertyInjector).GetDeclaredMethod(nameof(CallPropertySetter));
 
+        /// <summary>
+        /// Inject properties onto an instance, filtered by a property selector.
+        /// </summary>
+        /// <param name="context">The component context to resolve dependencies from.</param>
+        /// <param name="instance">The instance to inject onto.</param>
+        /// <param name="propertySelector">The property selector.</param>
+        /// <param name="parameters">The set of parameters for the resolve that can be used to satisfy injectable properties.</param>
         public static void InjectProperties(IComponentContext context, object instance, IPropertySelector propertySelector, IEnumerable<Parameter> parameters)
         {
             if (context == null)
@@ -119,17 +132,17 @@ namespace Autofac.Core.Activators.Reflection
 
                 var propertyType = property.PropertyType;
 
-                if (propertyType.GetTypeInfo().IsValueType && !propertyType.GetTypeInfo().IsEnum)
+                if (propertyType.IsValueType && !propertyType.IsEnum)
                 {
                     continue;
                 }
 
-                if (propertyType.IsArray && propertyType.GetElementType().GetTypeInfo().IsValueType)
+                if (propertyType.IsArray && propertyType.GetElementType().IsValueType)
                 {
                     continue;
                 }
 
-                if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GetTypeInfo().GenericTypeArguments[0].GetTypeInfo().IsValueType)
+                if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GenericTypeArguments[0].IsValueType)
                 {
                     continue;
                 }

@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
+using Autofac.Diagnostics;
 using Autofac.Util;
 
 namespace Autofac.Core.Lifetime
@@ -51,8 +52,11 @@ namespace Autofac.Core.Lifetime
         private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new ConcurrentDictionary<Guid, object>();
         private readonly ConcurrentDictionary<(Guid, Guid), object> _sharedQualifiedInstances = new ConcurrentDictionary<(Guid, Guid), object>();
         private object? _anonymousTag;
-        private LifetimeScope? parentScope;
+        private LifetimeScope? _parentScope;
 
+        /// <summary>
+        /// Gets the id of the lifetime scope self-registration.
+        /// </summary>
         internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
 
         /// <summary>
@@ -70,10 +74,14 @@ namespace Autofac.Core.Lifetime
         /// <param name="componentRegistry">Components used in the scope.</param>
         /// <param name="parent">Parent scope.</param>
         protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent, object tag)
-            : this(componentRegistry, tag)
         {
-            parentScope = parent ?? throw new ArgumentNullException(nameof(parent));
-            RootLifetimeScope = parentScope.RootLifetimeScope;
+            ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
+            Tag = tag ?? throw new ArgumentNullException(nameof(tag));
+            _parentScope = parent ?? throw new ArgumentNullException(nameof(parent));
+
+            _sharedInstances[SelfRegistrationId] = this;
+            RootLifetimeScope = _parentScope.RootLifetimeScope;
+            DiagnosticSource = _parentScope.DiagnosticSource;
         }
 
         /// <summary>
@@ -83,10 +91,13 @@ namespace Autofac.Core.Lifetime
         /// <param name="componentRegistry">Components used in the scope.</param>
         public LifetimeScope(IComponentRegistry componentRegistry, object tag)
         {
-            _sharedInstances[SelfRegistrationId] = this;
             ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
             Tag = tag ?? throw new ArgumentNullException(nameof(tag));
+
+            _sharedInstances[SelfRegistrationId] = this;
             RootLifetimeScope = this;
+            DiagnosticSource = new DiagnosticListener("Autofac");
+            Disposer.AddInstanceForDisposal(DiagnosticSource);
         }
 
         /// <summary>
@@ -149,6 +160,12 @@ namespace Autofac.Core.Lifetime
             var handler = ChildLifetimeScopeBeginning;
             handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
         }
+
+        /// <summary>
+        /// Gets the <see cref="System.Diagnostics.DiagnosticListener"/> to which
+        /// trace events should be written.
+        /// </summary>
+        internal DiagnosticListener DiagnosticSource { get; }
 
         /// <summary>
         /// Begin a new anonymous sub-scope, with additional components available to it.
@@ -255,6 +272,11 @@ namespace Autofac.Core.Lifetime
                 {
                     var externalSource = new ExternalRegistrySource(parent.ComponentRegistry);
                     builder.RegisterSource(externalSource);
+
+                    // Add a source for the service pipeline stages.
+                    var externalServicePipelineSource = new ExternalRegistryServiceMiddlewareSource(parent.ComponentRegistry);
+                    builder.RegisterServiceMiddlewareSource(externalServicePipelineSource);
+
                     break;
                 }
 
@@ -274,7 +296,7 @@ namespace Autofac.Core.Lifetime
 
             CheckNotDisposed();
 
-            var operation = new ResolveOperation(this);
+            var operation = new ResolveOperation(this, DiagnosticSource);
             var handler = ResolveOperationBeginning;
             handler?.Invoke(this, new ResolveOperationBeginningEventArgs(operation));
             return operation.Execute(request);
@@ -283,7 +305,7 @@ namespace Autofac.Core.Lifetime
         /// <summary>
         /// Gets the parent of this node of the hierarchy, or null.
         /// </summary>
-        public ISharingLifetimeScope? ParentLifetimeScope => parentScope;
+        public ISharingLifetimeScope? ParentLifetimeScope => _parentScope;
 
         /// <summary>
         /// Gets the root of the sharing hierarchy.
@@ -383,12 +405,13 @@ namespace Autofac.Core.Lifetime
 
                 // ReSharper disable once InconsistentlySynchronizedField
                 _sharedInstances.Clear();
-                parentScope = null;
+                _parentScope = null;
             }
 
             base.Dispose(disposing);
         }
 
+        /// <inheritdoc/>
         protected override async ValueTask DisposeAsync(bool disposing)
         {
             if (disposing)
@@ -401,12 +424,12 @@ namespace Autofac.Core.Lifetime
                 }
                 finally
                 {
-                    await Disposer.DisposeAsync();
+                    await Disposer.DisposeAsync().ConfigureAwait(false);
                 }
 
                 // ReSharper disable once InconsistentlySynchronizedField
                 _sharedInstances.Clear();
-                parentScope = null;
+                _parentScope = null;
             }
 
             // Don't call the base (which would just call the normal Dispose).
@@ -426,7 +449,7 @@ namespace Autofac.Core.Lifetime
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool IsTreeDisposed()
         {
-            return IsDisposed || (parentScope is object && parentScope.IsTreeDisposed());
+            return IsDisposed || (_parentScope?.IsTreeDisposed() ?? false);
         }
 
         /// <summary>

@@ -123,9 +123,4 @@
   <data name="ErrorDuringActivation" xml:space="preserve">
     <value>An exception was thrown while activating {0}.</value>
   </data>
-  <data name="UnableToLocateLifetimeScope" xml:space="preserve">
-    <value>Unable to resolve the type '{0}' because the lifetime scope it belongs in can't be located. The following services are exposed by this registration:
-{1}
-Details</value>
-  </data>
 </root>

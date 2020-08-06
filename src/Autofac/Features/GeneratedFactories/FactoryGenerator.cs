@@ -89,9 +89,8 @@ namespace Autofac.Features.GeneratedFactories
         /// order to create the products of the factory.</param>
         /// <param name="delegateType">The delegate to provide as a factory.</param>
         /// <param name="parameterMapping">The parameter mapping mode to use.</param>
-        public FactoryGenerator(Type delegateType, Service service, IComponentRegistration productRegistration, ParameterMapping parameterMapping)
+        public FactoryGenerator(Type delegateType, Service service, ServiceRegistration productRegistration, ParameterMapping parameterMapping)
         {
-            if (productRegistration == null) throw new ArgumentNullException(nameof(productRegistration));
             Enforce.ArgumentTypeIsFunction(delegateType);
 
             _generator = CreateGenerator(
@@ -101,7 +100,7 @@ namespace Autofac.Features.GeneratedFactories
                     var newExpression = Expression.New(
                         RequestConstructor,
                         Expression.Constant(service, typeof(Service)),
-                        Expression.Constant(productRegistration, typeof(IComponentRegistration)),
+                        Expression.Constant(productRegistration, typeof(ServiceRegistration)),
                         Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),
                         Expression.Constant(null, typeof(IComponentRegistration)));
 
@@ -110,7 +109,7 @@ namespace Autofac.Features.GeneratedFactories
                     return Expression.Call(
                         activatorContextParam,
                         ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveComponent(
-                            new ResolveRequest(default!, default!, default(Parameter[])!, default))),
+                            new ResolveRequest(default!, default, default(Parameter[])!, default))),
                         newExpression);
                 },
                 delegateType,
@@ -137,7 +136,7 @@ namespace Autofac.Features.GeneratedFactories
             var activatorParamsParam = Expression.Parameter(typeof(IEnumerable<Parameter>), "p");
             var activatorParams = new[] { activatorContextParam, activatorParamsParam };
 
-            var invoke = delegateType.GetTypeInfo().GetDeclaredMethod("Invoke");
+            var invoke = delegateType.GetDeclaredMethod("Invoke");
 
             // [dps]*
             var creatorParams = invoke
@@ -151,7 +150,7 @@ namespace Autofac.Features.GeneratedFactories
                 // Issue #269:
                 // If we're resolving a Func<X1...XN>() and there are duplicate input parameter types
                 // and the parameter mapping is by type, we shouldn't be able to resolve it.
-                var arguments = delegateType.GetTypeInfo().GenericTypeArguments;
+                var arguments = delegateType.GenericTypeArguments;
                 var returnType = arguments.Last();
 
                 // Remove the return type to check the list of input types only.

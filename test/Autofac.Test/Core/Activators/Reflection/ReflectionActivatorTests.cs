@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac.Core;
@@ -12,18 +13,22 @@ namespace Autofac.Test.Core.Activators.Reflection
     public class ReflectionActivatorTests
     {
         [Fact]
-        public void ActivateInstance_DependenciesNotAvailable_ThrowsException()
+        public void Pipeline_DependenciesNotAvailable_ThrowsException()
         {
             var target = Factory.CreateReflectionActivator(typeof(DependsByCtor));
+
+            var container = Factory.CreateEmptyContainer();
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
             var ex = Assert.Throws<DependencyResolutionException>(
-                () => target.ActivateInstance(Factory.CreateEmptyContext(), Factory.NoParameters));
+                () => invoker(container, Factory.NoParameters));
 
             // I.e. the type of the missing dependency.
             Assert.Contains(nameof(DependsByProp), ex.Message);
         }
 
         [Fact]
-        public void ActivateInstance_ResolvesConstructorDependencies()
+        public void Pipeline_ResolvesConstructorDependencies()
         {
             var o = new object();
             const string s = "s";
@@ -34,7 +39,8 @@ namespace Autofac.Test.Core.Activators.Reflection
             var container = builder.Build();
 
             var target = Factory.CreateReflectionActivator(typeof(Dependent));
-            var instance = target.ActivateInstance(container, Factory.NoParameters);
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+            var instance = invoker(container, Factory.NoParameters);
 
             Assert.NotNull(instance);
             Assert.IsType<Dependent>(instance);
@@ -46,10 +52,12 @@ namespace Autofac.Test.Core.Activators.Reflection
         }
 
         [Fact]
-        public void ActivateInstance_ReturnsInstanceOfTargetType()
+        public void Pipeline_ReturnsInstanceOfTargetType()
         {
             var target = Factory.CreateReflectionActivator(typeof(object));
-            var instance = target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters);
+            var container = Factory.CreateEmptyContainer();
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+            var instance = invoker(Factory.CreateEmptyContainer(), Factory.NoParameters);
 
             Assert.NotNull(instance);
             Assert.IsType<object>(instance);
@@ -63,7 +71,8 @@ namespace Autofac.Test.Core.Activators.Reflection
             var container = builder.Build();
 
             var target = Factory.CreateReflectionActivator(typeof(MultipleConstructors));
-            var instance = target.ActivateInstance(container, Factory.NoParameters);
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+            var instance = invoker(container, Factory.NoParameters);
 
             Assert.NotNull(instance);
             Assert.IsType<MultipleConstructors>(instance);
@@ -79,8 +88,9 @@ namespace Autofac.Test.Core.Activators.Reflection
             };
 
             var target = Factory.CreateReflectionActivator(typeof(ThreeConstructors), parameters);
-
-            var instance = target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters);
+            var container = Factory.CreateEmptyContainer();
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+            var instance = invoker(Factory.CreateEmptyContainer(), Factory.NoParameters);
 
             Assert.NotNull(instance);
             Assert.IsType<ThreeConstructors>(instance);
@@ -95,7 +105,9 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var activator = Factory.CreateReflectionActivator(typeof(WithGenericCtor<string>));
             var parameters = new Parameter[] { new NamedParameter("t", "Hello") };
-            var instance = activator.ActivateInstance(Factory.CreateEmptyContainer(), parameters);
+            var container = Factory.CreateEmptyContainer();
+            var invoker = activator.GetPipelineInvoker(container.ComponentRegistry);
+            var instance = invoker(container, parameters);
             Assert.IsType<WithGenericCtor<string>>(instance);
         }
 
@@ -163,8 +175,12 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void NonPublicConstructorsIgnored()
         {
             var target = Factory.CreateReflectionActivator(typeof(InternalDefaultConstructor));
+
+            // Constructor finding happens at pipeline construction; not when the pipeline is invoked.
+            var invoker = target.GetPipelineInvoker(Factory.CreateEmptyComponentRegistry());
+
             var dx = Assert.Throws<DependencyResolutionException>(() =>
-                target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters));
+                invoker(Factory.CreateEmptyContainer(), Factory.NoParameters));
 
             Assert.Contains(typeof(DefaultConstructorFinder).Name, dx.Message);
         }
@@ -174,7 +190,9 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var setters = new Parameter[] { new NamedPropertyParameter("P", 1) };
             var activator = Factory.CreateReflectionActivator(typeof(PrivateSetProperty), Factory.NoParameters, setters);
-            var instance = activator.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters);
+            var container = Factory.CreateEmptyContainer();
+            var invoker = activator.GetPipelineInvoker(container.ComponentRegistry);
+            var instance = invoker(container, Factory.NoParameters);
             Assert.IsType<PrivateSetProperty>(instance);
         }
 
@@ -192,7 +210,9 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
-            var instance = (AcceptsObjectParameter)target.ActivateInstance(container, Factory.NoParameters);
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+            var instance = (AcceptsObjectParameter)invoker(container, Factory.NoParameters);
 
             Assert.Same(parameterInstance, instance.P);
             Assert.NotSame(containedInstance, instance.P);
@@ -209,7 +229,9 @@ namespace Autofac.Test.Core.Activators.Reflection
                 new NamedPropertyParameter("P2", p2),
             };
             var target = Factory.CreateReflectionActivator(typeof(R), Enumerable.Empty<Parameter>(), properties);
-            var instance = (R)target.ActivateInstance(new ContainerBuilder().Build(), Enumerable.Empty<Parameter>());
+            var container = Factory.CreateEmptyContainer();
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+            var instance = (R)invoker(container, Enumerable.Empty<Parameter>());
             Assert.Equal(1, instance.P1);
             Assert.Equal(2, instance.P2);
         }
@@ -219,7 +241,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var target = Factory.CreateReflectionActivator(typeof(NoPublicConstructor));
             var dx = Assert.Throws<NoConstructorsFoundException>(
-                () => target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters));
+                () => target.GetPipelineInvoker(Factory.CreateEmptyComponentRegistry()));
 
             Assert.Contains(typeof(NoPublicConstructor).FullName, dx.Message);
             Assert.Equal(typeof(NoPublicConstructor), dx.OffendingType);
@@ -232,7 +254,10 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
-            var instance = target.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
+            var container = Factory.CreateEmptyContainer();
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+            var instance = invoker(container, Factory.NoParameters);
 
             Assert.NotNull(instance);
             Assert.IsType<AcceptsObjectParameter>(instance);
@@ -250,7 +275,10 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameter), parameters);
 
-            var instance = target.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
+            var container = Factory.CreateEmptyContainer();
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+            var instance = invoker(container, Factory.NoParameters);
 
             Assert.NotNull(instance);
             Assert.IsType<AcceptsObjectParameter>(instance);
@@ -267,7 +295,10 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var target = Factory.CreateReflectionActivator(typeof(AcceptsIntParameter), parameters);
 
-            var instance = target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters);
+            var container = Factory.CreateEmptyContainer();
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+            var instance = invoker(container, Factory.NoParameters);
 
             Assert.NotNull(instance);
             Assert.IsType<AcceptsIntParameter>(instance);
@@ -285,7 +316,10 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var target = Factory.CreateReflectionActivator(typeof(AcceptsIntParameter), parameters);
 
-            var instance = target.ActivateInstance(Factory.CreateEmptyContainer(), Factory.NoParameters);
+            var container = Factory.CreateEmptyContainer();
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+            var instance = invoker(container, Factory.NoParameters);
 
             Assert.NotNull(instance);
             Assert.IsType<AcceptsIntParameter>(instance);
@@ -293,6 +327,25 @@ namespace Autofac.Test.Core.Activators.Reflection
             var typedInstance = (AcceptsIntParameter)instance;
 
             Assert.Equal(i, typedInstance.I);
+        }
+
+        [Fact]
+        public void ConstructorSelectorCannotReturnInvalidBinding()
+        {
+            var target = Factory.CreateReflectionActivator(typeof(ThreeConstructors), new MisbehavingConstructorSelector());
+
+            var container = Factory.CreateEmptyContainer();
+            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+            Assert.Throws<InvalidOperationException>(() => invoker(container, Factory.NoParameters));
+        }
+
+        private class MisbehavingConstructorSelector : IConstructorSelector
+        {
+            public BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters)
+            {
+                return constructorBindings.First(x => !x.CanInstantiate);
+            }
         }
 
         public class AcceptsIntParameter

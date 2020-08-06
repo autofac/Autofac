@@ -48,7 +48,7 @@ namespace Autofac.Core
         /// additional services, along with the implementation of s. It is not an error to return components
         /// that do not implement <paramref name="service"/>.
         /// </remarks>
-        IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor);
+        IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor);
 
         /// <summary>
         /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top

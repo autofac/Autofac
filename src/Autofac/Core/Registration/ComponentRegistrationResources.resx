@@ -112,12 +112,18 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ComponentPipelineHasNotBeenBuilt" xml:space="preserve">
+    <value>Component pipeline has not yet been built.</value>
+  </data>
+  <data name="PipelineNotBuilt" xml:space="preserve">
+    <value>Not Built</value>
+  </data>
   <data name="ToStringFormat" xml:space="preserve">
-    <value>Activator = {0}, Services = [{1}], Lifetime = {2}, Sharing = {3}, Ownership = {4}</value>
+    <value>Activator = {0}, Services = [{1}], Lifetime = {2}, Sharing = {3}, Ownership = {4}, Pipeline = {5}</value>
   </data>
 </root>

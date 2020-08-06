@@ -80,7 +80,7 @@ namespace Autofac.Features.Variance
         /// </remarks>
         public IEnumerable<IComponentRegistration> RegistrationsFor(
             Service service,
-            Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+            Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (service == null) throw new ArgumentNullException(nameof(service));
             if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
@@ -90,10 +90,10 @@ namespace Autofac.Features.Variance
                 || !IsCompatibleInterfaceType(swt.ServiceType, out var contravariantParameterIndex))
                 return Enumerable.Empty<IComponentRegistration>();
 
-            var args = swt.ServiceType.GetTypeInfo().GenericTypeArguments;
+            var args = swt.ServiceType.GenericTypeArguments;
             var definition = swt.ServiceType.GetGenericTypeDefinition();
             var contravariantParameter = args[contravariantParameterIndex];
-            if (contravariantParameter.GetTypeInfo().IsValueType)
+            if (contravariantParameter.IsValueType)
                 return Enumerable.Empty<IComponentRegistration>();
 
             var possibleSubstitutions = GetTypesAssignableFrom(contravariantParameter);
@@ -108,7 +108,7 @@ namespace Autofac.Features.Variance
             return variantRegistrations
                 .Select(vr => RegistrationBuilder
                     .ForDelegate((c, p) => c.ResolveComponent(new ResolveRequest(service, vr, p)))
-                    .Targeting(vr, IsAdapterForIndividualComponents)
+                    .Targeting(vr.Registration)
                     .As(service)
                     .WithMetadata(IsContravariantAdapter, true)
                     .CreateRegistration());
@@ -129,10 +129,10 @@ namespace Autofac.Features.Variance
 
         private static IEnumerable<Type> GetBagOfTypesAssignableFrom(Type type)
         {
-            if (type.GetTypeInfo().BaseType != null)
+            if (type.BaseType != null)
             {
-                yield return type.GetTypeInfo().BaseType;
-                foreach (var fromBase in GetBagOfTypesAssignableFrom(type.GetTypeInfo().BaseType))
+                yield return type.BaseType;
+                foreach (var fromBase in GetBagOfTypesAssignableFrom(type.BaseType))
                     yield return fromBase;
             }
             else
@@ -141,7 +141,7 @@ namespace Autofac.Features.Variance
                     yield return typeof(object);
             }
 
-            foreach (var ifce in type.GetTypeInfo().ImplementedInterfaces)
+            foreach (var ifce in type.GetInterfaces())
             {
                 if (ifce != type)
                 {
@@ -154,14 +154,14 @@ namespace Autofac.Features.Variance
 
         private static bool IsCompatibleInterfaceType(Type type, out int contravariantParameterIndex)
         {
-            if (type.GetTypeInfo().IsGenericType && type.GetTypeInfo().IsInterface)
+            if (type.IsGenericType && type.IsInterface)
             {
                 var contravariantWithIndex = type
                     .GetGenericTypeDefinition()
-                    .GetTypeInfo().GenericTypeParameters
+                    .GetGenericArguments()
                     .Select((c, i) => new
                     {
-                        IsContravariant = (c.GetTypeInfo().GenericParameterAttributes & GenericParameterAttributes.Contravariant) !=
+                        IsContravariant = (c.GenericParameterAttributes & GenericParameterAttributes.Contravariant) !=
                         GenericParameterAttributes.None,
                         Index = i,
                     })

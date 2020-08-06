@@ -123,4 +123,7 @@
   <data name="NotInitialized" xml:space="preserve">
     <value>The operation is not valid until the object is initialized.</value>
   </data>
+  <data name="ServicePipelineCannotBeBuilt" xml:space="preserve">
+    <value>The service pipeline cannot be built until the service has finished initialization.</value>
+  </data>
 </root>

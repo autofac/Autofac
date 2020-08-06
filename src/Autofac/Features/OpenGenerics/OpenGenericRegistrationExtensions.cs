@@ -31,28 +31,63 @@ using Autofac.Core;
 
 namespace Autofac.Features.OpenGenerics
 {
+    /// <summary>
+    /// Extension methods to support open generic registrations.
+    /// </summary>
     internal static class OpenGenericRegistrationExtensions
     {
+        /// <summary>
+        /// Register an un-parameterised generic type, e.g. Repository&lt;&gt;.
+        /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
+        /// </summary>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="implementer">The open generic implementation type.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
-            RegisterGeneric(ContainerBuilder builder, Type implementor)
+            RegisterGeneric(ContainerBuilder builder, Type implementer)
         {
             if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (implementor == null) throw new ArgumentNullException(nameof(implementor));
 
-            if (!implementor.GetTypeInfo().IsGenericTypeDefinition)
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericRegistrationExtensionsResources.ImplementorMustBeOpenGenericType, implementor));
-
-            var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
-                new TypedService(implementor),
-                new ReflectionActivatorData(implementor),
-                new DynamicRegistrationStyle());
+            var rb = CreateGenericBuilder(implementer);
 
             rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => cr.AddRegistrationSource(
-                new OpenGenericRegistrationSource(rb.RegistrationData, rb.ActivatorData)));
+                new OpenGenericRegistrationSource(rb.RegistrationData, rb.ResolvePipeline.Clone(), rb.ActivatorData)));
 
             return rb;
         }
 
+        /// <summary>
+        /// Creates an un-parameterised generic type, e.g. Repository&lt;&gt;, without registering it.
+        /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
+        /// </summary>
+        /// <param name="implementer">The open generic implementation type.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
+            CreateGenericBuilder(Type implementer)
+        {
+            if (implementer == null) throw new ArgumentNullException(nameof(implementer));
+
+            if (!implementer.IsGenericTypeDefinition)
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericRegistrationExtensionsResources.ImplementorMustBeOpenGenericType, implementer));
+
+            var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
+                new TypedService(implementer),
+                new ReflectionActivatorData(implementer),
+                new DynamicRegistrationStyle());
+
+            return rb;
+        }
+
+        /// <summary>
+        /// Decorate all components implementing open generic service <paramref name="decoratedServiceType"/>.
+        /// The <paramref name="fromKey"/> and <paramref name="toKey"/> parameters must be different values.
+        /// </summary>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="decoratedServiceType">Service type being decorated. Must be an open generic type.</param>
+        /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
+        /// <param name="toKey">Service key or name given to the decorated components.</param>
+        /// <param name="decoratorType">The type of the decorator. Must be an open generic type, and accept a parameter
+        /// of type <paramref name="decoratedServiceType"/>, which will be set to the instance being decorated.</param>
         public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
             RegisterGenericDecorator(ContainerBuilder builder, Type decoratorType, Type decoratedServiceType, object fromKey, object? toKey)
         {
@@ -66,7 +101,7 @@ namespace Autofac.Features.OpenGenerics
                 new DynamicRegistrationStyle());
 
             rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => cr.AddRegistrationSource(
-                new OpenGenericDecoratorRegistrationSource(rb.RegistrationData, rb.ActivatorData)));
+                new OpenGenericDecoratorRegistrationSource(rb.RegistrationData, rb.ResolvePipeline.Clone(), rb.ActivatorData)));
 
             return rb;
         }

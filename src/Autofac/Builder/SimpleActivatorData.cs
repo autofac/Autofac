@@ -39,9 +39,7 @@ namespace Autofac.Builder
         /// <param name="activator">The activator to return.</param>
         public SimpleActivatorData(IInstanceActivator activator)
         {
-            if (activator == null) throw new ArgumentNullException(nameof(activator));
-
-            Activator = activator;
+            Activator = activator ?? throw new ArgumentNullException(nameof(activator));
         }
 
         /// <summary>

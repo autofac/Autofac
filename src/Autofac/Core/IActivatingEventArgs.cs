@@ -1,4 +1,4 @@
-// This software is part of the Autofac IoC container
+﻿// This software is part of the Autofac IoC container
 // Copyright © 2011 Autofac Contributors
 // https://autofac.org
 //
@@ -35,6 +35,11 @@ namespace Autofac.Core
     [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
     public interface IActivatingEventArgs<out T>
     {
+        /// <summary>
+        /// Gets the service being resolved.
+        /// </summary>
+        Service Service { get; }
+
         /// <summary>
         /// Gets the context in which the activation occurred.
         /// </summary>

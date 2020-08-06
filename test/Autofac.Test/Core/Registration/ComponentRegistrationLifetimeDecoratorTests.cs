@@ -10,7 +10,7 @@ namespace Autofac.Test.Core.Registration
         public void DecoratorCallsDisposeOnInnerInstance()
         {
             var inner = Mocks.GetComponentRegistration();
-            var decorator = new ComponentRegistrationLifetimeDecorator(inner, new CurrentScopeLifetime());
+            var decorator = new ComponentRegistrationLifetimeDecorator(inner, CurrentScopeLifetime.Instance);
 
             decorator.Dispose();
 

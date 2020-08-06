@@ -10,7 +10,6 @@
 
 namespace Autofac.Core.Resolving {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace Autofac.Core.Resolving {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ResolveOperationResources {
@@ -40,7 +39,7 @@ namespace Autofac.Core.Resolving {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Resolving.ResolveOperationResources", typeof(ResolveOperationResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Resolving.ResolveOperationResources", typeof(ResolveOperationResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -76,6 +75,15 @@ namespace Autofac.Core.Resolving {
         internal static string MaxDepthExceeded {
             get {
                 return ResourceManager.GetString("MaxDepthExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resolve pipeline completed with a null value for the resolved instance..
+        /// </summary>
+        internal static string PipelineCompletedWithNoInstance {
+            get {
+                return ResourceManager.GetString("PipelineCompletedWithNoInstance", resourceCulture);
             }
         }
         

@@ -42,6 +42,9 @@ namespace Autofac.Builder
     {
         private readonly IDictionary<string, object?> _properties = new Dictionary<string, object?>();
 
+        /// <summary>
+        /// Gets the set of properties that have been provided.
+        /// </summary>
         internal IEnumerable<KeyValuePair<string, object?>> Properties => _properties;
 
         /// <summary>

@@ -3,6 +3,8 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Resolving;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.OpenGenerics;
 using Autofac.Test.Util;
 using Xunit;
@@ -32,7 +34,10 @@ namespace Autofac.Test.Features.OpenGenerics
                 typeof(I<int>),
                 r.Services.Cast<TypedService>().Single().ServiceType);
 
-            var activatedInstance = r.Activator.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
+            var container = new ContainerBuilder().Build();
+            var invoker = r.Activator.GetPipelineInvoker(container.ComponentRegistry);
+
+            var activatedInstance = invoker(container, Factory.NoParameters);
             Assert.IsType<A1<int>>(activatedInstance);
         }
 
@@ -234,12 +239,17 @@ namespace Autofac.Test.Features.OpenGenerics
             var source = ConstructSource(component, service);
 
             var closedServiceType = typeof(TClosedService);
-            var registrations = source.RegistrationsFor(new TypedService(closedServiceType), s => Enumerable.Empty<IComponentRegistration>());
+            var registrations = source.RegistrationsFor(new TypedService(closedServiceType), s => Enumerable.Empty<ServiceRegistration>());
             if (registrations.Count() != 1)
                 return false;
 
             var registration = registrations.Single();
-            var instance = registration.Activator.ActivateInstance(new ContainerBuilder().Build(), Factory.NoParameters);
+
+            var container = new ContainerBuilder().Build();
+
+            var invoker = registration.Activator.GetPipelineInvoker(container.ComponentRegistry);
+
+            var instance = invoker(container, Factory.NoParameters);
 
             Assert.True(closedServiceType.GetTypeInfo().IsAssignableFrom(instance.GetType().GetTypeInfo()));
             return true;
@@ -249,6 +259,7 @@ namespace Autofac.Test.Features.OpenGenerics
         {
             return new OpenGenericRegistrationSource(
                 new RegistrationData(new TypedService(service ?? component)),
+                new ResolvePipelineBuilder(PipelineType.Registration),
                 new ReflectionActivatorData(component));
         }
     }

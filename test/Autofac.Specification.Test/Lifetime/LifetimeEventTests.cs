@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Autofac.Core;
 using Autofac.Features.Metadata;
 using Autofac.Specification.Test.Util;
@@ -18,6 +20,25 @@ namespace Autofac.Specification.Test.Lifetime
             builder.RegisterType<MethodInjection>()
                 .InstancePerLifetimeScope()
                 .OnActivated(e => e.Instance.Method(pval));
+            var container = builder.Build();
+            var scope = container.BeginLifetimeScope();
+            var invokee = scope.Resolve<MethodInjection>();
+            Assert.Equal(pval, invokee.Param);
+        }
+
+        [Fact]
+        public void ActivatedAllowsTaskReturningHandler()
+        {
+            var pval = 12;
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MethodInjection>()
+                .InstancePerLifetimeScope()
+                .OnActivated(async e =>
+                {
+                    await Task.Delay(1);
+                    e.Instance.Method(pval);
+                });
+
             var container = builder.Build();
             var scope = container.BeginLifetimeScope();
             var invokee = scope.Resolve<MethodInjection>();
@@ -74,7 +95,7 @@ namespace Autofac.Specification.Test.Lifetime
         }
 
         [Fact]
-        public void MultilpeOnActivatingEventsCanPassReplacementOnward()
+        public void MultipleOnActivatingEventsCanPassReplacementOnward()
         {
             var builder = new ContainerBuilder();
 
@@ -124,6 +145,24 @@ namespace Autofac.Specification.Test.Lifetime
             var cb = new ContainerBuilder();
             cb.RegisterType<AService>()
                 .OnPreparing(e => e.Parameters = parameters)
+                .OnActivating(e => actual = e.Parameters);
+            var container = cb.Build();
+            container.Resolve<AService>();
+            Assert.False(parameters.Except(actual).Any());
+        }
+
+        [Fact]
+        public void AsyncPreparingCanProvideParametersToActivator()
+        {
+            IEnumerable<Parameter> parameters = new Parameter[] { new NamedParameter("n", 1) };
+            IEnumerable<Parameter> actual = null;
+            var cb = new ContainerBuilder();
+            cb.RegisterType<AService>()
+                .OnPreparing(async e =>
+                {
+                    await Task.Delay(1);
+                    e.Parameters = parameters;
+                })
                 .OnActivating(e => actual = e.Parameters);
             var container = cb.Build();
             container.Resolve<AService>();
@@ -248,6 +287,22 @@ namespace Autofac.Specification.Test.Lifetime
         }
 
         [Fact]
+        public void AsyncActivatingSupported()
+        {
+            var activatingRaised = 0;
+            var cb = new ContainerBuilder();
+            cb.RegisterType<AService>()
+                .OnActivating(async e =>
+                {
+                    await Task.Delay(1);
+                    activatingRaised++;
+                });
+            var container = cb.Build();
+            container.Resolve<AService>();
+            Assert.Equal(1, activatingRaised);
+        }
+
+        [Fact]
         public void ActivatingRaisedForFirstResolveInEachLifetimeScope()
         {
             var activatingRaised = 0;
@@ -276,14 +331,12 @@ namespace Autofac.Specification.Test.Lifetime
         public void ActivatingOnlyRaisedForAttachedRegistrations()
         {
             var activatingRaised = new List<IComponentRegistration>();
-            var activatingInstances = new List<IService>();
             var cb = new ContainerBuilder();
             cb.RegisterType<AService>()
                 .As<IService>()
                 .OnActivating(e =>
                 {
                     activatingRaised.Add(e.Component);
-                    activatingInstances.Add(e.Instance);
                 });
             cb.RegisterType<BService>()
                 .As<IService>();
@@ -291,8 +344,6 @@ namespace Autofac.Specification.Test.Lifetime
             container.Resolve<IEnumerable<IService>>();
             Assert.Single(activatingRaised);
             Assert.Equal(typeof(AService), activatingRaised[0].Activator.LimitType);
-            Assert.Single(activatingInstances);
-            Assert.IsType<AService>(activatingInstances[0]);
         }
 
         [Fact]
@@ -432,6 +483,74 @@ namespace Autofac.Specification.Test.Lifetime
             var dt = container.Resolve<DisposeTracker>();
             container.Dispose();
             Assert.False(dt.IsDisposed);
+        }
+
+        [Fact]
+        public void AsyncReleaseHandlersRunUnderNormalDisposal()
+        {
+            var builder = new ContainerBuilder();
+            object instance = null;
+            builder.RegisterType<DisposeTracker>()
+                .OnRelease(async i =>
+                {
+                    await Task.Delay(1);
+                    instance = i;
+                });
+
+            var container = builder.Build();
+            var dt = container.Resolve<DisposeTracker>();
+            container.Dispose();
+            Assert.Same(dt, instance);
+        }
+
+        [Fact]
+        public async Task AsyncReleaseHandlersRunUnderAsyncDisposal()
+        {
+            var asyncLocal = new AsyncLocal<int>();
+            asyncLocal.Value = 5;
+
+            var builder = new ContainerBuilder();
+            object instance = null;
+            builder.RegisterType<DisposeTracker>()
+                .OnRelease(async i =>
+                {
+                    await Task.Delay(1);
+
+                    // Assert that the async local is preserved.
+                    Assert.Equal(5, asyncLocal.Value);
+                    instance = i;
+                });
+
+            var container = builder.Build();
+            var dt = container.Resolve<DisposeTracker>();
+
+            await container.DisposeAsync();
+
+            Assert.Same(dt, instance);
+        }
+
+        [Fact]
+        public void EventRaisedFromComponentRegistrationCanGetServiceBeingResolved()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<MethodInjection>()
+                .OnPreparing((e) =>
+                {
+                    var service = e.Service as IServiceWithType;
+                    Assert.Equal(typeof(MethodInjection), service.ServiceType);
+                })
+                .OnActivating((e) =>
+                {
+                    var service = e.Service as IServiceWithType;
+                    Assert.Equal(typeof(MethodInjection), service.ServiceType);
+                })
+                .OnActivated((e) =>
+                {
+                    var service = e.Service as IServiceWithType;
+                    Assert.Equal(typeof(MethodInjection), service.ServiceType);
+                });
+
+            builder.Build().Resolve<MethodInjection>();
         }
 
         [Fact]

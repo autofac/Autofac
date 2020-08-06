@@ -10,7 +10,6 @@
 
 namespace Autofac.Core.Registration {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace Autofac.Core.Registration {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ServiceRegistrationInfoResources {
@@ -40,7 +39,7 @@ namespace Autofac.Core.Registration {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Registration.ServiceRegistrationInfoResources", typeof(ServiceRegistrationInfoResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Core.Registration.ServiceRegistrationInfoResources", typeof(ServiceRegistrationInfoResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -76,6 +75,15 @@ namespace Autofac.Core.Registration {
         internal static string NotInitialized {
             get {
                 return ResourceManager.GetString("NotInitialized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The service pipeline cannot be built until the service has finished initialization..
+        /// </summary>
+        internal static string ServicePipelineCannotBeBuilt {
+            get {
+                return ResourceManager.GetString("ServicePipelineCannotBeBuilt", resourceCulture);
             }
         }
     }

@@ -4,7 +4,7 @@
     <Description>Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.</Description>
     <!-- VersionPrefix patched by AppVeyor -->
     <VersionPrefix>0.0.1</VersionPrefix>
-    <TargetFrameworks>netstandard2.1;netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);CS1591;IDE0008</NoWarn>
@@ -12,7 +12,6 @@
     <AssemblyName>Autofac</AssemblyName>
     <AssemblyOriginatorKeyFile>../../Autofac.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
     <PackageId>Autofac</PackageId>
     <PackageTags>autofac;di;ioc;dependencyinjection</PackageTags>
     <PackageReleaseNotes>Release notes are at https://github.com/autofac/Autofac/releases</PackageReleaseNotes>
@@ -35,8 +34,8 @@
     <Product>Autofac</Product>
   </PropertyGroup>
 
-  <!-- Disable nullability warnings in netstandard2.0 and net461 -->
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net461'">
+  <!-- Disable nullability warnings in netstandard2.0 -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <NoWarn>$(NoWarn);8600;8601;8602;8603;8604</NoWarn>
   </PropertyGroup>
 
@@ -45,10 +44,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="2.9.8">
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.0-beta1.final">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0-beta2.final">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Condition="Exists('$(MSBuildThisFileDirectory)../../.git')">
@@ -57,14 +56,11 @@
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="4.7.1" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net461' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
 
   <ItemGroup>
@@ -98,10 +94,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ProvidedInstanceActivatorResources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Core\Activators\Reflection\ConstructorParameterBindingResources.Designer.cs">
+    <Compile Update="Core\Activators\Reflection\BoundConstructorResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>ConstructorParameterBindingResources.resx</DependentUpon>
+      <DependentUpon>BoundConstructorResources.resx</DependentUpon>
     </Compile>
     <Compile Update="Core\Activators\Reflection\MatchingSignatureConstructorSelectorResources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -128,6 +124,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ContainerResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Diagnostics\TracerMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TracerMessages.resx</DependentUpon>
+    </Compile>
     <Compile Update="Core\Lifetime\LifetimeScopeResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -153,15 +154,25 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ServiceRegistrationInfoResources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Core\Resolving\CircularDependencyDetectorResources.Designer.cs">
+    <Compile Update="Core\Resolving\Middleware\CircularDependencyDetectorMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>CircularDependencyDetectorResources.resx</DependentUpon>
+      <DependentUpon>CircularDependencyDetectorMessages.resx</DependentUpon>
     </Compile>
     <Compile Update="Core\Resolving\ComponentActivationResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ComponentActivationResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Resolving\Middleware\MiddlewareMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MiddlewareMessages.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Core\Resolving\Pipeline\ResolvePipelineBuilderMessages.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResolvePipelineBuilderMessages.resx</DependentUpon>
     </Compile>
     <Compile Update="Core\Resolving\ResolveOperationResources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -172,6 +183,11 @@
       <DependentUpon>DisposerResources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Core\Resolving\SegmentedStackResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SegmentedStackResources.resx</DependentUpon>
     </Compile>
     <Compile Update="Core\ServiceResources.Designer.cs">
       <DependentUpon>ServiceResources.resx</DependentUpon>
@@ -310,9 +326,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ProvidedInstanceActivatorResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Core\Activators\Reflection\ConstructorParameterBindingResources.resx">
+    <EmbeddedResource Update="Core\Activators\Reflection\BoundConstructorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>ConstructorParameterBindingResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>BoundConstructorResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\Activators\Reflection\MatchingSignatureConstructorSelectorResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -334,6 +350,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ContainerResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Diagnostics\TracerMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TracerMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Core\Lifetime\LifetimeScopeResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LifetimeScopeResources.Designer.cs</LastGenOutput>
@@ -354,13 +374,21 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ServiceRegistrationInfoResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Core\Resolving\CircularDependencyDetectorResources.resx">
+    <EmbeddedResource Update="Core\Resolving\Middleware\CircularDependencyDetectorMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>CircularDependencyDetectorResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>CircularDependencyDetectorMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\Resolving\ComponentActivationResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ComponentActivationResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Resolving\Middleware\MiddlewareMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MiddlewareMessages.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Resolving\Pipeline\ResolvePipelineBuilderMessages.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResolvePipelineBuilderMessages.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\Resolving\ResolveOperationResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -369,6 +397,10 @@
     <EmbeddedResource Update="Core\DisposerResources.resx">
       <LastGenOutput>DisposerResources.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\Resolving\SegmentedStackResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SegmentedStackResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\ServiceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

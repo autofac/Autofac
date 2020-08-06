@@ -54,13 +54,14 @@ namespace Autofac.Util
             _factory = factory;
         }
 
+        /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
             // Value retrieval for the disposal is deferred until
             // disposal runs to ensure any calls to, say, .ReplaceInstance()
             // during .OnActivating() will be accounted for.
             if (disposing)
-                _action(this._factory());
+                _action(_factory());
 
             base.Dispose(disposing);
         }

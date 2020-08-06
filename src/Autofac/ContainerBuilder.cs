@@ -58,7 +58,7 @@ namespace Autofac
     /// via extension methods in <see cref="RegistrationExtensions"/>.</remarks>
     /// <seealso cref="IContainer"/>
     /// <see cref="RegistrationExtensions"/>
-    public class ContainerBuilder
+    public sealed class ContainerBuilder
     {
         private readonly IList<DeferredCallback> _configurationCallbacks = new List<DeferredCallback>();
         private BuildCallbackService? _buildCallbacks;
@@ -173,9 +173,9 @@ namespace Autofac
         {
             Properties[MetadataKeys.ContainerBuildOptions] = options;
 
-            #pragma warning disable CA2000 // Dispose objects before losing scope
+#pragma warning disable CA2000 // Dispose objects before losing scope
             ComponentRegistryBuilder.Register(new SelfComponentRegistration());
-            #pragma warning restore CA2000 // Dispose objects before losing scope
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
             Build(ComponentRegistryBuilder, (options & ContainerBuildOptions.ExcludeDefaultModules) != ContainerBuildOptions.None);
 

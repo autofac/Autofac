@@ -36,13 +36,18 @@ namespace Autofac.Features.LazyDependencies
     /// </summary>
     internal class LazyRegistrationSource : ImplicitRegistrationSource
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LazyRegistrationSource"/> class.
+        /// </summary>
         public LazyRegistrationSource()
             : base(typeof(Lazy<>))
         {
         }
 
+        /// <inheritdoc/>
         public override string Description => LazyRegistrationSourceResources.LazyRegistrationSourceDescription;
 
+        /// <inheritdoc/>
         protected override object ResolveInstance<T>(IComponentContext context, ResolveRequest request)
         {
             var capturedContext = context.Resolve<IComponentContext>();

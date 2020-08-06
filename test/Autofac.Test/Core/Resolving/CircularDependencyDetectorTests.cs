@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Autofac.Core;
+﻿using Autofac.Core;
 using Xunit;
 
 namespace Autofac.Test.Core.Resolving

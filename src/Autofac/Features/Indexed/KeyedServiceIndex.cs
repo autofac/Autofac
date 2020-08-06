@@ -28,11 +28,20 @@ using Autofac.Core;
 
 namespace Autofac.Features.Indexed
 {
+    /// <summary>
+    /// Provides components by lookup operations via an index (key) type.
+    /// </summary>
+    /// <typeparam name="TKey">The index key type.</typeparam>
+    /// <typeparam name="TValue">The index value type.</typeparam>
     internal class KeyedServiceIndex<TKey, TValue> : IIndex<TKey, TValue>
         where TKey : notnull
     {
         private readonly IComponentContext _context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeyedServiceIndex{TKey, TValue}"/> class.
+        /// </summary>
+        /// <param name="context">The current component context.</param>
         public KeyedServiceIndex(IComponentContext context)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
@@ -40,8 +49,10 @@ namespace Autofac.Features.Indexed
             _context = context;
         }
 
+        /// <inheritdoc/>
         public TValue this[TKey key] => (TValue)_context.ResolveService(GetService(key));
 
+        /// <inheritdoc/>
         public bool TryGetValue(TKey key, out TValue value)
         {
             if (_context.TryResolveService(GetService(key), out var result))

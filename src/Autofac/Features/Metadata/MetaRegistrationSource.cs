@@ -34,13 +34,18 @@ namespace Autofac.Features.Metadata
     /// </summary>
     internal class MetaRegistrationSource : ImplicitRegistrationSource
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MetaRegistrationSource"/> class.
+        /// </summary>
         public MetaRegistrationSource()
             : base(typeof(Meta<>))
         {
         }
 
+        /// <inheritdoc/>
         public override string Description => MetaRegistrationSourceResources.MetaRegistrationSourceDescription;
 
+        /// <inheritdoc/>
         protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
             => new Meta<T>((T)ctx.ResolveComponent(request), request.Registration.Target.Metadata);
     }

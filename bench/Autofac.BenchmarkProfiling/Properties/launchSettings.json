@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Autofac.BenchmarkProfiling": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}

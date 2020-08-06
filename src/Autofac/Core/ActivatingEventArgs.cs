@@ -41,21 +41,28 @@ namespace Autofac.Core
         /// Initializes a new instance of the <see cref="ActivatingEventArgs{T}"/> class.
         /// </summary>
         /// <param name="context">The context.</param>
+        /// <param name="service">The service.</param>
         /// <param name="component">The component.</param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="instance">The instance.</param>
-        public ActivatingEventArgs(IComponentContext context, IComponentRegistration component, IEnumerable<Parameter> parameters, T instance)
+        public ActivatingEventArgs(IComponentContext context, Service service, IComponentRegistration component, IEnumerable<Parameter> parameters, T instance)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
             if (component == null) throw new ArgumentNullException(nameof(component));
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
             if (instance == null) throw new ArgumentNullException(nameof(instance));
 
+            Service = service;
             Context = context;
             Component = component;
             Parameters = parameters;
             _instance = instance;
         }
+
+        /// <summary>
+        /// Gets the service being resolved.
+        /// </summary>
+        public Service Service { get; }
 
         /// <summary>
         /// Gets the context in which the activation occurred.

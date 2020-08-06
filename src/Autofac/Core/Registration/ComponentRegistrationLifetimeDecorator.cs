@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -33,68 +34,66 @@ namespace Autofac.Core.Registration
     /// <summary>
     /// Wraps a component registration, switching its lifetime.
     /// </summary>
-    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the inner registration is responsible for disposal.")]
+    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2215", Justification = "The creator of the inner registration is responsible for disposal.")]
     internal class ComponentRegistrationLifetimeDecorator : Disposable, IComponentRegistration
     {
         private readonly IComponentRegistration _inner;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ComponentRegistrationLifetimeDecorator"/> class.
+        /// </summary>
+        /// <param name="inner">The inner registration.</param>
+        /// <param name="lifetime">The enforced lifetime.</param>
         public ComponentRegistrationLifetimeDecorator(IComponentRegistration inner, IComponentLifetime lifetime)
         {
             _inner = inner ?? throw new ArgumentNullException(nameof(inner));
             Lifetime = lifetime ?? throw new ArgumentNullException(nameof(lifetime));
         }
 
+        /// <inheritdoc/>
         public Guid Id => _inner.Id;
 
+        /// <inheritdoc/>
         public IInstanceActivator Activator => _inner.Activator;
 
+        /// <inheritdoc/>
         public IComponentLifetime Lifetime { get; }
 
+        /// <inheritdoc/>
         public InstanceSharing Sharing => _inner.Sharing;
 
+        /// <inheritdoc/>
         public InstanceOwnership Ownership => _inner.Ownership;
 
+        /// <inheritdoc/>
         public IEnumerable<Service> Services => _inner.Services;
 
+        /// <inheritdoc/>
         public IDictionary<string, object?> Metadata => _inner.Metadata;
 
+        /// <inheritdoc/>
         public IComponentRegistration Target => _inner.IsAdapting() ? _inner.Target : this;
 
-        public bool IsAdapterForIndividualComponent => _inner.IsAdapterForIndividualComponent;
+        /// <inheritdoc/>
+        public IResolvePipeline ResolvePipeline => _inner.ResolvePipeline;
 
-        public event EventHandler<PreparingEventArgs> Preparing
+        /// <inheritdoc/>
+        public RegistrationOptions Options => _inner.Options;
+
+        /// <inheritdoc/>
+        public event EventHandler<IResolvePipelineBuilder> PipelineBuilding
         {
-            add => _inner.Preparing += value;
-            remove => _inner.Preparing -= value;
+            add => _inner.PipelineBuilding += value;
+            remove => _inner.PipelineBuilding -= value;
         }
 
-        public void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters)
+        /// <inheritdoc/>
+        public void BuildResolvePipeline(IComponentRegistryServices registryServices)
         {
-            _inner.RaisePreparing(context, ref parameters);
+            _inner.BuildResolvePipeline(registryServices);
         }
 
-        public event EventHandler<ActivatingEventArgs<object>> Activating
-        {
-            add => _inner.Activating += value;
-            remove => _inner.Activating -= value;
-        }
-
-        public void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance)
-        {
-            _inner.RaiseActivating(context, parameters, ref instance);
-        }
-
-        public event EventHandler<ActivatedEventArgs<object>> Activated
-        {
-            add => _inner.Activated += value;
-            remove => _inner.Activated -= value;
-        }
-
-        public void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance)
-        {
-            _inner.RaiseActivated(context, parameters, instance);
-        }
-
+        /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
             _inner.Dispose();

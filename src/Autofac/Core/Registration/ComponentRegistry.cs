@@ -25,6 +25,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration
@@ -73,6 +74,9 @@ namespace Autofac.Core.Registration
         /// </summary>
         public IEnumerable<IRegistrationSource> Sources => _registeredServicesTracker.Sources;
 
+        /// <inheritdoc/>
+        public IEnumerable<IServiceMiddlewareSource> ServiceMiddlewareSources => _registeredServicesTracker.ServiceMiddlewareSources;
+
         /// <summary>
         /// Gets a value indicating whether the registry contains its own components.
         /// True if the registry contains its own components; false if it is forwarding
@@ -91,12 +95,19 @@ namespace Autofac.Core.Registration
         public bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration)
             => _registeredServicesTracker.TryGetRegistration(service, out registration);
 
+        /// <inheritdoc/>
+        public bool TryGetServiceRegistration(Service service, out ServiceRegistration serviceRegistration)
+            => _registeredServicesTracker.TryGetServiceRegistration(service, out serviceRegistration);
+
         /// <summary>
         /// Determines whether the specified service is registered.
         /// </summary>
         /// <param name="service">The service to test.</param>
         /// <returns>True if the service is registered.</returns>
         public bool IsRegistered(Service service) => _registeredServicesTracker.IsRegistered(service);
+
+        /// <inheritdoc/>
+        public IEnumerable<IResolveMiddleware> ServiceMiddlewareFor(Service service) => _registeredServicesTracker.ServiceMiddlewareFor(service);
 
         /// <summary>
         /// Selects from the available registrations after ensuring that any
@@ -108,9 +119,9 @@ namespace Autofac.Core.Registration
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
             => _registeredServicesTracker.RegistrationsFor(service);
 
-        /// <inheritdoc />
-        public IReadOnlyList<IComponentRegistration> DecoratorsFor(IServiceWithType service)
-            => _registeredServicesTracker.DecoratorsFor(service);
+        /// <inheritdoc/>
+        public IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service)
+            => _registeredServicesTracker.ServiceRegistrationsFor(service);
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.

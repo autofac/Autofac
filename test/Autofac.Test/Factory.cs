@@ -15,7 +15,7 @@ namespace Autofac.Test
     {
         public static IComponentRegistration CreateSingletonRegistration(IEnumerable<Service> services, IInstanceActivator activator)
         {
-            return CreateRegistration(services, activator, new RootScopeLifetime(), InstanceSharing.Shared);
+            return CreateRegistration(services, activator, RootScopeLifetime.Instance, InstanceSharing.Shared);
         }
 
         public static IComponentRegistration CreateSingletonRegistration(Type implementation)
@@ -80,6 +80,16 @@ namespace Autofac.Test
                 new MostParametersConstructorSelector(),
                 parameters,
                 properties);
+        }
+
+        public static ReflectionActivator CreateReflectionActivator(Type implementation, IConstructorSelector customSelector)
+        {
+            return new ReflectionActivator(
+                implementation,
+                new DefaultConstructorFinder(),
+                customSelector,
+                NoParameters,
+                NoProperties);
         }
 
         public static ProvidedInstanceActivator CreateProvidedInstanceActivator(object instance)

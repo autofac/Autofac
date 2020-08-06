@@ -25,7 +25,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving
 {
@@ -33,144 +36,263 @@ namespace Autofac.Core.Resolving
     /// A <see cref="ResolveOperation"/> is a component context that sequences and monitors the multiple
     /// activations that go into producing a single requested object graph.
     /// </summary>
-    [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the most nested lifetime scope is responsible for disposal.")]
-    internal class ResolveOperation : IComponentContext, IResolveOperation
+    internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     {
-        private readonly Stack<InstanceLookup> _activationStack = new Stack<InstanceLookup>();
-
-        // _successfulActivations can never be null, but the roslyn compiler doesn't look deeper than
-        // the initial constructor methods yet.
-        private List<InstanceLookup> _successfulActivations = default!;
-        private readonly ISharingLifetimeScope _mostNestedLifetimeScope;
-        private int _callDepth;
+        private const int SuccessListInitialCapacity = 32;
         private bool _ended;
 
+        private readonly List<DefaultResolveRequestContext> _successfulRequests =
+            new List<DefaultResolveRequestContext>(SuccessListInitialCapacity);
+
+        private int _nextCompleteSuccessfulRequestStartPos;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="ResolveOperation"/> class.
+        /// Initializes a new instance of the <see cref="ResolveOperation" /> class.
         /// </summary>
-        /// <param name="mostNestedLifetimeScope">The most nested scope in which to begin the operation. The operation
-        /// can move upward to less nested scopes as components with wider sharing scopes are activated.</param>
-        public ResolveOperation(ISharingLifetimeScope mostNestedLifetimeScope)
+        /// <param name="mostNestedLifetimeScope"> The most nested scope in which to begin the operation. The operation
+        /// can move upward to less nested scopes as components with wider sharing scopes are activated.
+        /// </param>
+        /// <param name="diagnosticSource">
+        /// The <see cref="System.Diagnostics.DiagnosticListener" /> to which trace events should be written.
+        /// </param>
+        public ResolveOperation(
+            ISharingLifetimeScope mostNestedLifetimeScope,
+            DiagnosticListener diagnosticSource)
         {
-            _mostNestedLifetimeScope = mostNestedLifetimeScope;
-
-            // Initialise _successfulActivations.
-            ResetSuccessfulActivations();
-        }
-
-        /// <inheritdoc />
-        public object ResolveComponent(ResolveRequest request)
-        {
-            return GetOrCreateInstance(_mostNestedLifetimeScope, request);
+            CurrentScope = mostNestedLifetimeScope ?? throw new ArgumentNullException(nameof(mostNestedLifetimeScope));
+            DiagnosticSource = diagnosticSource ?? throw new ArgumentNullException(nameof(diagnosticSource));
         }
 
         /// <summary>
         /// Execute the complete resolve operation.
         /// </summary>
         /// <param name="request">The resolution context.</param>
-        [SuppressMessage("CA1031", "CA1031", Justification = "General exception gets rethrown in a DependencyResolutionException.")]
         public object Execute(ResolveRequest request)
+        {
+            return ExecuteOperation(request);
+        }
+
+        /// <summary>
+        /// Gets the active resolve request.
+        /// </summary>
+        public ResolveRequestContext? ActiveRequestContext { get; private set; }
+
+        /// <summary>
+        /// Gets the current lifetime scope of the operation; based on the most recently executed request.
+        /// </summary>
+        public ISharingLifetimeScope CurrentScope { get; private set; }
+
+        /// <inheritdoc/>
+        public IEnumerable<ResolveRequestContext> InProgressRequests => RequestStack;
+
+        /// <summary>
+        /// Gets the <see cref="System.Diagnostics.DiagnosticListener" /> for the operation.
+        /// </summary>
+        public DiagnosticListener DiagnosticSource { get; }
+
+        /// <summary>
+        /// Gets the current request depth.
+        /// </summary>
+        public int RequestDepth { get; private set; }
+
+        /// <summary>
+        /// Gets the <see cref="ResolveRequest" /> that initiated the operation. Other nested requests may have been
+        /// issued as a result of this one.
+        /// </summary>
+        public ResolveRequest? InitiatingRequest { get; private set; }
+
+        /// <inheritdoc />
+        public event EventHandler<ResolveRequestBeginningEventArgs>? ResolveRequestBeginning;
+
+        /// <inheritdoc />
+        public event EventHandler<ResolveOperationEndingEventArgs>? CurrentOperationEnding;
+
+        /// <summary>
+        /// Enter a new dependency chain block where subsequent requests inside the operation are allowed to repeat
+        /// registrations from before the block.
+        /// </summary>
+        /// <returns>A disposable that should be disposed to exit the block.</returns>
+        public IDisposable EnterNewDependencyDetectionBlock() => RequestStack.EnterSegment();
+
+        /// <inheritdoc/>
+        public SegmentedStack<ResolveRequestContext> RequestStack { get; } = new SegmentedStack<ResolveRequestContext>();
+
+        /// <inheritdoc />
+        public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request)
+        {
+            if (request is null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            if (_ended)
+            {
+                throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
+            }
+
+            // Create a new request context.
+            var requestContext = new DefaultResolveRequestContext(this, request, currentOperationScope, DiagnosticSource);
+
+            // Raise our request-beginning event.
+            var handler = ResolveRequestBeginning;
+            handler?.Invoke(this, new ResolveRequestBeginningEventArgs(requestContext));
+
+            RequestDepth++;
+
+            // Track the last active request and scope in the call stack.
+            ResolveRequestContext? lastActiveRequest = ActiveRequestContext;
+            var lastScope = CurrentScope;
+
+            ActiveRequestContext = requestContext;
+            CurrentScope = currentOperationScope;
+
+            try
+            {
+                // Same basic flow in if/else, but doing a one-time check for diagnostics
+                // and choosing the "diagnostics enabled" version vs. the more common
+                // "no diagnostics enabled" path: hot-path optimization.
+                if (DiagnosticSource.IsEnabled())
+                {
+                    DiagnosticSource.RequestStart(this, requestContext);
+                    InvokePipeline(request, requestContext);
+                    DiagnosticSource.RequestSuccess(this, requestContext);
+                }
+                else
+                {
+                    InvokePipeline(request, requestContext);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (DiagnosticSource.IsEnabled())
+                {
+                    DiagnosticSource.RequestFailure(this, requestContext, ex);
+                }
+
+                throw;
+            }
+            finally
+            {
+                ActiveRequestContext = lastActiveRequest;
+                CurrentScope = lastScope;
+
+                // Raise the appropriate completion events.
+                if (RequestStack.Count == 0)
+                {
+                    CompleteRequests();
+                }
+
+                RequestDepth--;
+            }
+
+            // InvokePipeline throws if the instance is null but
+            // analyzers don't pick that up and get mad.
+            return requestContext.Instance!;
+        }
+
+        /// <summary>
+        /// Invoke this method to execute the operation for a given request.
+        /// </summary>
+        /// <param name="request">The resolve request.</param>
+        /// <returns>The resolved instance.</returns>
+        private object ExecuteOperation(ResolveRequest request)
         {
             object result;
 
             try
             {
-                result = ResolveComponent(request);
+                InitiatingRequest = request;
+                if (DiagnosticSource.IsEnabled())
+                {
+                    DiagnosticSource.OperationStart(this, request);
+                }
+
+                result = GetOrCreateInstance(CurrentScope, request);
             }
-            catch (ObjectDisposedException)
+            catch (ObjectDisposedException disposeException)
             {
+                if (DiagnosticSource.IsEnabled())
+                {
+                    DiagnosticSource.OperationFailure(this, disposeException);
+                }
+
                 throw;
             }
             catch (DependencyResolutionException dependencyResolutionException)
             {
+                if (DiagnosticSource.IsEnabled())
+                {
+                    DiagnosticSource.OperationFailure(this, dependencyResolutionException);
+                }
+
                 End(dependencyResolutionException);
                 throw;
             }
             catch (Exception exception)
             {
                 End(exception);
+                if (DiagnosticSource.IsEnabled())
+                {
+                    DiagnosticSource.OperationFailure(this, exception);
+                }
+
                 throw new DependencyResolutionException(ResolveOperationResources.ExceptionDuringResolve, exception);
+            }
+            finally
+            {
+                ResetSuccessfulRequests();
             }
 
             End();
+
+            if (DiagnosticSource.IsEnabled())
+            {
+                DiagnosticSource.OperationSuccess(this, result);
+            }
+
             return result;
         }
 
         /// <summary>
-        /// Continue building the object graph by instantiating <paramref name="request"/> in the
-        /// current <paramref name="currentOperationScope"/>.
+        /// Basic pipeline invocation steps used when retrieving an instance. Isolated
+        /// to enable it to be optionally surrounded with diagnostics.
         /// </summary>
-        /// <param name="currentOperationScope">The current scope of the operation.</param>
-        /// <param name="request">The resolve request.</param>
-        /// <returns>The resolved instance.</returns>
-        /// <exception cref="ArgumentNullException"/>
-        public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void InvokePipeline(ResolveRequest request, DefaultResolveRequestContext requestContext)
         {
-            if (_ended) throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
-
-            ++_callDepth;
-
-            if (_activationStack.Count > 0)
-                CircularDependencyDetector.CheckForCircularDependency(request.Registration, _activationStack, _callDepth);
-
-            var activation = new InstanceLookup(this, currentOperationScope, request);
-
-            _activationStack.Push(activation);
-
-            var handler = InstanceLookupBeginning;
-            handler?.Invoke(this, new InstanceLookupBeginningEventArgs(activation));
-
-            try
+            request.ResolvePipeline.Invoke(requestContext);
+            if (requestContext.Instance == null)
             {
-                var instance = activation.Execute();
-                _successfulActivations.Add(activation);
-
-                return instance;
+                throw new DependencyResolutionException(ResolveOperationResources.PipelineCompletedWithNoInstance);
             }
-            finally
+
+            _successfulRequests.Add(requestContext);
+        }
+
+        private void CompleteRequests()
+        {
+            var completed = _successfulRequests;
+            var count = completed.Count;
+            var startPosition = _nextCompleteSuccessfulRequestStartPos;
+            ResetSuccessfulRequests();
+
+            for (var i = startPosition; i < count; i++)
             {
-                // Issue #929: Allow the activation stack to be popped even if the activation failed.
-                // This allows try/catch to happen in lambda registrations without corrupting the stack.
-                _activationStack.Pop();
-
-                if (_activationStack.Count == 0)
-                {
-                    CompleteActivations();
-                }
-
-                --_callDepth;
+                completed[i].CompleteRequest();
             }
         }
 
-        public event EventHandler<ResolveOperationEndingEventArgs>? CurrentOperationEnding;
-
-        public event EventHandler<InstanceLookupBeginningEventArgs>? InstanceLookupBeginning;
-
-        private void CompleteActivations()
+        private void ResetSuccessfulRequests()
         {
-            List<InstanceLookup> completed = _successfulActivations;
-            int count = completed.Count;
-            ResetSuccessfulActivations();
-
-            for (int i = 0; i < count; i++)
-            {
-                completed[i].Complete();
-            }
+            _nextCompleteSuccessfulRequestStartPos = _successfulRequests.Count;
         }
-
-        private void ResetSuccessfulActivations()
-        {
-            _successfulActivations = new List<InstanceLookup>();
-        }
-
-        /// <summary>
-        /// Gets the services associated with the components that provide them.
-        /// </summary>
-        public IComponentRegistry ComponentRegistry => _mostNestedLifetimeScope.ComponentRegistry;
 
         private void End(Exception? exception = null)
         {
-            if (_ended) return;
+            if (_ended)
+            {
+                return;
+            }
 
             _ended = true;
             var handler = CurrentOperationEnding;

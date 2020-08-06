@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac assemblies." ToolsVersion="14.0">
-  <!-- https://github.com/dotnet/roslyn/blob/master/docs/compilers/Rule%20Set%20Format.md -->
+<RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac assemblies." ToolsVersion="16.0">
   <IncludeAll Action="Warning" />
   <Rules AnalyzerId="Microsoft.Usage" RuleNamespace="Microsoft.Usage">
     <!-- Implement standard exception constructors - not all of the exception constructors (e.g., parameterless) are desired in our system. -->
@@ -41,8 +40,6 @@
     <Rule Id="SA1501" Action="None" />
     <!-- Braces must not be omitted -->
     <Rule Id="SA1503" Action="None" />
-    <!-- Element must be documented -->
-    <Rule Id="SA1600" Action="None" />
     <!-- Parameter documentation mus be in the right order -->
     <Rule Id="SA1612" Action="None" />
     <!-- Return value must be documented -->

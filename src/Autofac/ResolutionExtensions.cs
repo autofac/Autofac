@@ -1061,13 +1061,13 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(context));
             }
 
-            if (!context.ComponentRegistry.TryGetRegistration(service, out var registration))
+            if (!context.ComponentRegistry.TryGetServiceRegistration(service, out var serviceRegistration))
             {
                 instance = null;
                 return false;
             }
 
-            instance = context.ResolveComponent(new ResolveRequest(service, registration, parameters));
+            instance = context.ResolveComponent(new ResolveRequest(service, serviceRegistration, parameters));
             return true;
         }
     }

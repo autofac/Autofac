@@ -36,7 +36,14 @@ namespace Autofac.Util
     /// </summary>
     internal static class ReflectionExtensions
     {
-        public static TDelegate CreateDelegate<TDelegate>(this MethodInfo method, object target)
+        /// <summary>
+        /// Create a typed delegate from a method info and the target object.
+        /// </summary>
+        /// <typeparam name="TDelegate">The delegate.</typeparam>
+        /// <param name="method">The method.</param>
+        /// <param name="target">The target object for the delegate.</param>
+        /// <returns>A constructed delegate.</returns>
+        public static TDelegate CreateDelegate<TDelegate>(this MethodInfo method, object? target)
             where TDelegate : Delegate
             => (TDelegate)method.CreateDelegate(typeof(TDelegate), target);
 
@@ -51,7 +58,7 @@ namespace Autofac.Util
             var mi = pi.Member as MethodInfo;
             if (mi != null && mi.IsSpecialName && mi.Name.StartsWith("set_", StringComparison.Ordinal) && mi.DeclaringType != null)
             {
-                prop = mi.DeclaringType.GetTypeInfo().GetDeclaredProperty(mi.Name.Substring(4));
+                prop = mi.DeclaringType.GetDeclaredProperty(mi.Name.Substring(4));
                 return true;
             }
 

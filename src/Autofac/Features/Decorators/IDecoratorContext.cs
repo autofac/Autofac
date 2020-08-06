@@ -28,6 +28,9 @@ using System.Collections.Generic;
 
 namespace Autofac.Features.Decorators
 {
+    /// <summary>
+    /// Defines the context interface used during the decoration process.
+    /// </summary>
     public interface IDecoratorContext
     {
         /// <summary>

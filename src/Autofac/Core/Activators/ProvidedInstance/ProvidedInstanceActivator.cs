@@ -24,9 +24,10 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using Autofac.Core.Resolving;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Activators.ProvidedInstance
 {
@@ -48,25 +49,25 @@ namespace Autofac.Core.Activators.ProvidedInstance
             _instance = instance;
         }
 
-        /// <summary>
-        /// Activate an instance in the provided context.
-        /// </summary>
-        /// <param name="context">Context in which to activate instances.</param>
-        /// <param name="parameters">Parameters to the instance.</param>
-        /// <returns>The activated instance.</returns>
-        /// <remarks>
-        /// The context parameter here should probably be ILifetimeScope in order to reveal Disposer,
-        /// but will wait until implementing a concrete use case to make the decision.
-        /// </remarks>
-        public object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
+        /// <inheritdoc/>
+        public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (pipelineBuilder is null) throw new ArgumentNullException(nameof(pipelineBuilder));
 
+            pipelineBuilder.Use(this.DisplayName(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
+            {
+                ctxt.Instance = GetInstance();
+
+                next(ctxt);
+            });
+        }
+
+        private object GetInstance()
+        {
             CheckNotDisposed();
 
             if (_activated)
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, this._instance.GetType()));
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, _instance.GetType()));
 
             _activated = true;
 
@@ -89,8 +90,10 @@ namespace Autofac.Core.Activators.ProvidedInstance
             // Only dispose of the instance here if it wasn't activated. If it was activated,
             // then either the owning lifetime scope will dispose of it automatically
             // (see InstanceLookup.Activate) or an OnRelease handler will take care of it.
-            if (disposing && DisposeInstance && _instance is IDisposable && !_activated)
-                ((IDisposable)_instance).Dispose();
+            if (disposing && DisposeInstance && _instance is IDisposable disposable && !_activated)
+            {
+                disposable.Dispose();
+            }
 
             base.Dispose(disposing);
         }

@@ -68,7 +68,7 @@ namespace Autofac.Features.ResolveAnything
         /// <returns>Registrations providing the service.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(
             Service service,
-            Func<Service, IEnumerable<IComponentRegistration>> registrationAccessor)
+            Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (registrationAccessor == null)
             {
@@ -81,23 +81,23 @@ namespace Autofac.Features.ResolveAnything
                 return Enumerable.Empty<IComponentRegistration>();
             }
 
-            var typeInfo = ts.ServiceType.GetTypeInfo();
-            if (!typeInfo.IsClass ||
-                typeInfo.IsSubclassOf(typeof(Delegate)) ||
-                typeInfo.IsAbstract ||
-                typeInfo.IsGenericTypeDefinition ||
+            var serviceType = ts.ServiceType;
+            if (!serviceType.IsClass ||
+                serviceType.IsSubclassOf(typeof(Delegate)) ||
+                serviceType.IsAbstract ||
+                serviceType.IsGenericTypeDefinition ||
                 !_predicate(ts.ServiceType) ||
                 registrationAccessor(service).Any())
             {
                 return Enumerable.Empty<IComponentRegistration>();
             }
 
-            if (typeInfo.IsGenericType && !ShouldRegisterGenericService(typeInfo))
+            if (serviceType.IsGenericType && !ShouldRegisterGenericService(serviceType))
             {
                 return Enumerable.Empty<IComponentRegistration>();
             }
 
-            var builder = RegistrationBuilder.ForType(ts.ServiceType);
+            var builder = RegistrationBuilder.ForType(serviceType);
             RegistrationConfiguration?.Invoke(builder);
             return new[] { builder.CreateRegistration() };
         }
@@ -128,7 +128,7 @@ namespace Autofac.Features.ResolveAnything
             return AnyConcreteTypeNotAlreadyRegisteredSourceResources.AnyConcreteTypeNotAlreadyRegisteredSourceDescription;
         }
 
-        private static bool ShouldRegisterGenericService(TypeInfo type)
+        private static bool ShouldRegisterGenericService(Type type)
         {
             var genericType = type.GetGenericTypeDefinition();
 

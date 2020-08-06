@@ -30,7 +30,7 @@ namespace Autofac.Core.Resolving
     /// <summary>
     /// Describes the commencement of a new resolve operation.
     /// </summary>
-    public class ResolveOperationBeginningEventArgs : EventArgs
+    public sealed class ResolveOperationBeginningEventArgs : EventArgs
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ResolveOperationBeginningEventArgs"/> class.

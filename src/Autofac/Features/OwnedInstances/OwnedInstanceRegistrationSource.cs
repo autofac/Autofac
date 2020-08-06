@@ -34,11 +34,15 @@ namespace Autofac.Features.OwnedInstances
     /// </summary>
     internal class OwnedInstanceRegistrationSource : ImplicitRegistrationSource
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OwnedInstanceRegistrationSource"/> class.
+        /// </summary>
         public OwnedInstanceRegistrationSource()
             : base(typeof(Owned<>))
         {
         }
 
+        /// <inheritdoc/>
         protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
         {
             var lifetime = ctx.Resolve<ILifetimeScope>().BeginLifetimeScope(request.Service);
@@ -54,9 +58,11 @@ namespace Autofac.Features.OwnedInstances
             }
         }
 
+        /// <inheritdoc/>
         protected override IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> BuildRegistration(IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> registration)
             => registration.ExternallyOwned();
 
+        /// <inheritdoc/>
         public override string Description => OwnedInstanceRegistrationSourceResources.OwnedInstanceRegistrationSourceDescription;
     }
 }

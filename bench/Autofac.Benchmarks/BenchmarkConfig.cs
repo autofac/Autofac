@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
@@ -17,7 +17,7 @@ namespace Autofac.Benchmarks
             var runFolder = DateTime.UtcNow.ToString("dd-MM-yyyy_hh-MM-ss");
             ArtifactsPath = Path.Combine(rootFolder, BenchmarkArtifactsFolder, runFolder);
 
-            Add(MemoryDiagnoser.Default);
+            AddDiagnoser(MemoryDiagnoser.Default);
         }
     }
 }

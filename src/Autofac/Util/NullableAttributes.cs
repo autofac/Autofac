@@ -1,7 +1,7 @@
 ﻿#pragma warning disable MA0048 // File name must match type name
 #pragma warning disable SA1402 // File may only contain a single type
 #pragma warning disable SA1649 // File name should match first type name
-#if NETSTANDARD2_0 || NET461
+#if NETSTANDARD2_0
 
 namespace System.Diagnostics.CodeAnalysis
 {
@@ -41,6 +41,9 @@ namespace System.Diagnostics.CodeAnalysis
         /// </param>
         public MaybeNullWhenAttribute(bool returnValue) => ReturnValue = returnValue;
 
+        /// <summary>
+        /// Gets a value indicating whether the return value is required to be true or false.
+        /// </summary>
         public bool ReturnValue { get; }
     }
 
@@ -55,6 +58,9 @@ namespace System.Diagnostics.CodeAnalysis
         /// </param>
         public NotNullWhenAttribute(bool returnValue) => ReturnValue = returnValue;
 
+        /// <summary>
+        /// Gets a value indicating whether the return value is required to be true or false.
+        /// </summary>
         public bool ReturnValue { get; }
     }
 
@@ -69,6 +75,9 @@ namespace System.Diagnostics.CodeAnalysis
         /// </param>
         public NotNullIfNotNullAttribute(string parameterName) => ParameterName = parameterName;
 
+        /// <summary>
+        /// Gets the name of the parameter.
+        /// </summary>
         public string ParameterName { get; }
     }
 
@@ -90,6 +99,9 @@ namespace System.Diagnostics.CodeAnalysis
         /// </param>
         public DoesNotReturnIfAttribute(bool parameterValue) => ParameterValue = parameterValue;
 
+        /// <summary>
+        /// Gets a value indicating whether the parameter value is expected to be true or false.
+        /// </summary>
         public bool ParameterValue { get; }
     }
 }

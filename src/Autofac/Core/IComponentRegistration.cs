@@ -1,4 +1,4 @@
-// This software is part of the Autofac IoC container
+﻿// This software is part of the Autofac IoC container
 // Copyright © 2011 Autofac Contributors
 // https://autofac.org
 //
@@ -26,6 +26,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Autofac.Core.Registration;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core
 {
@@ -76,57 +78,25 @@ namespace Autofac.Core
         IComponentRegistration Target { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the registration is a 1:1 adapter on top
-        /// of another component (e.g., Meta, Func, or Owned).
+        /// Gets the resolve pipeline for the component.
         /// </summary>
-        bool IsAdapterForIndividualComponent { get; }
+        IResolvePipeline ResolvePipeline { get; }
 
         /// <summary>
-        /// Fired when a new instance is required, prior to activation.
-        /// Can be used to provide Autofac with additional parameters, used during activation.
+        /// Gets the options for the registration.
         /// </summary>
-        event EventHandler<PreparingEventArgs> Preparing;
+        RegistrationOptions Options { get; }
 
         /// <summary>
-        /// Called by the container when an instance is required.
+        /// Provides an event that will be invoked just before a pipeline is built, and can be used to add additional middleware
+        /// at that point.
         /// </summary>
-        /// <param name="context">The context in which the instance will be activated.</param>
-        /// <param name="parameters">Parameters for activation. These may be modified by the event handler.</param>
-        [SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "1#", Justification = "The method may change the backing store of the parameter collection.")]
-        [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate", Justification = "This is the method that would raise the event.")]
-        void RaisePreparing(IComponentContext context, ref IEnumerable<Parameter> parameters);
+        public event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
 
         /// <summary>
-        /// Fired when a new instance is being activated. The instance can be
-        /// wrapped or switched at this time by setting the Instance property in
-        /// the provided event arguments.
+        /// Builds the resolve pipeline.
         /// </summary>
-        event EventHandler<ActivatingEventArgs<object>> Activating;
-
-        /// <summary>
-        /// Called by the container once an instance has been constructed.
-        /// </summary>
-        /// <param name="context">The context in which the instance was activated.</param>
-        /// <param name="parameters">The parameters supplied to the activator.</param>
-        /// <param name="instance">The instance.</param>
-        [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
-        [SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "2#", Justification = "The method may change the object as part of activation.")]
-        [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate", Justification = "This is the method that would raise the event.")]
-        void RaiseActivating(IComponentContext context, IEnumerable<Parameter> parameters, ref object instance);
-
-        /// <summary>
-        /// Fired when the activation process for a new instance is complete.
-        /// </summary>
-        event EventHandler<ActivatedEventArgs<object>> Activated;
-
-        /// <summary>
-        /// Called by the container once an instance has been fully constructed, including
-        /// any requested objects that depend on the instance.
-        /// </summary>
-        /// <param name="context">The context in which the instance was activated.</param>
-        /// <param name="parameters">The parameters supplied to the activator.</param>
-        /// <param name="instance">The instance.</param>
-        [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate", Justification = "This is the method that would raise the event.")]
-        void RaiseActivated(IComponentContext context, IEnumerable<Parameter> parameters, object instance);
+        /// <param name="registryServices">The available services.</param>
+        void BuildResolvePipeline(IComponentRegistryServices registryServices);
     }
 }

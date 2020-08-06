@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Autofac.Core;
+using Autofac.Diagnostics;
 using Xunit;
 
 namespace Autofac.Test.Features.Decorators
