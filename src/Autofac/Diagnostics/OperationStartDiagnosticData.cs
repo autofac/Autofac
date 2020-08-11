@@ -15,7 +15,7 @@ namespace Autofac.Diagnostics
         /// </summary>
         /// <param name="operation">The pipeline resolve operation that is about to run.</param>
         /// <param name="initiatingRequest">The request that is responsible for starting this operation.</param>
-        public OperationStartDiagnosticData(IResolveOperation operation, ResolveRequest initiatingRequest)
+        public OperationStartDiagnosticData(IResolveOperation operation, IResolveRequest initiatingRequest)
         {
             Operation = operation;
             InitiatingRequest = initiatingRequest;
@@ -29,6 +29,6 @@ namespace Autofac.Diagnostics
         /// <summary>
         /// Gets the request that is responsible for starting this operation.
         /// </summary>
-        public ResolveRequest InitiatingRequest { get; private set; }
+        public IResolveRequest InitiatingRequest { get; private set; }
     }
 }

@@ -162,7 +162,7 @@ namespace Autofac.Test.Diagnostics
             return new ResolveOperation(scope, container.DiagnosticSource);
         }
 
-        private static ResolveRequest MockResolveRequest()
+        private static IResolveRequest MockResolveRequest()
         {
             return new ResolveRequest(
                 new TypedService(typeof(string)),

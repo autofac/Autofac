@@ -424,7 +424,7 @@ namespace Autofac.Test.Core.Pipeline
         private class PipelineRequestContextStub : ResolveRequestContext
         {
             private readonly DiagnosticListener _diagnosticSource;
-            private readonly ResolveRequest _resolveRequest;
+            private readonly IResolveRequest _resolveRequest;
 
             public PipelineRequestContextStub()
             {
@@ -473,7 +473,7 @@ namespace Autofac.Test.Core.Pipeline
 
             public override IComponentRegistry ComponentRegistry => ActivationScope.ComponentRegistry;
 
-            public override object ResolveComponent(ResolveRequest request) => throw new NotImplementedException();
+            public override object ResolveComponent(IResolveRequest request) => throw new NotImplementedException();
         }
 
         private class LifetimeScopeStub : ISharingLifetimeScope
@@ -546,7 +546,7 @@ namespace Autofac.Test.Core.Pipeline
                 throw new NotImplementedException();
             }
 
-            public object ResolveComponent(ResolveRequest request)
+            public object ResolveComponent(IResolveRequest request)
             {
                 throw new NotImplementedException();
             }

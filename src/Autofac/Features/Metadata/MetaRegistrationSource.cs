@@ -46,7 +46,7 @@ namespace Autofac.Features.Metadata
         public override string Description => MetaRegistrationSourceResources.MetaRegistrationSourceDescription;
 
         /// <inheritdoc/>
-        protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
+        protected override object ResolveInstance<T>(IComponentContext ctx, IResolveRequest request)
             => new Meta<T>((T)ctx.ResolveComponent(request), request.Registration.Target.Metadata);
     }
 }

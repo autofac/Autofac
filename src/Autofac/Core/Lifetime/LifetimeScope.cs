@@ -290,7 +290,7 @@ namespace Autofac.Core.Lifetime
         }
 
         /// <inheritdoc />
-        public object ResolveComponent(ResolveRequest request)
+        public object ResolveComponent(IResolveRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 

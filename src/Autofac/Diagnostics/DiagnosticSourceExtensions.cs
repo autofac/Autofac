@@ -61,7 +61,7 @@ namespace Autofac.Diagnostics
         /// <param name="diagnosticSource">The diagnostic source to which events will be written.</param>
         /// <param name="operation">The pipeline resolve operation that is about to run.</param>
         /// <param name="initiatingRequest">The request that is responsible for starting this operation.</param>
-        public static void OperationStart(this DiagnosticListener diagnosticSource, IResolveOperation operation, ResolveRequest initiatingRequest)
+        public static void OperationStart(this DiagnosticListener diagnosticSource, IResolveOperation operation, IResolveRequest initiatingRequest)
         {
             if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationStart))
             {

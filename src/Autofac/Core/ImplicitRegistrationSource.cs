@@ -108,7 +108,7 @@ namespace Autofac.Core
         /// <param name="ctx">A component context to resolve services.</param>
         /// <param name="request">A resolve request.</param>
         /// <returns>An implicit type instance.</returns>
-        protected abstract object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
+        protected abstract object ResolveInstance<T>(IComponentContext ctx, IResolveRequest request)
             where T : notnull;
 
         /// <summary>

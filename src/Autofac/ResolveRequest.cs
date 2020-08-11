@@ -5,10 +5,8 @@ using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac
 {
-    /// <summary>
-    /// The details of an individual request to resolve a service.
-    /// </summary>
-    public class ResolveRequest
+    /// <inheritdoc />
+    internal sealed class ResolveRequest : IResolveRequest
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ResolveRequest"/> class.
@@ -26,29 +24,19 @@ namespace Autofac
             DecoratorTarget = decoratorTarget;
         }
 
-        /// <summary>
-        /// Gets the service being resolved.
-        /// </summary>
+        /// <inheritdoc/>
         public Service Service { get; }
 
-        /// <summary>
-        /// Gets the component registration for the service being resolved. This may be null if a service is being supplied without registrations.
-        /// </summary>
+        /// <inheritdoc/>
         public IComponentRegistration Registration { get; }
 
-        /// <summary>
-        /// Gets the resolve pipeline for the request.
-        /// </summary>
+        /// <inheritdoc/>
         public IResolvePipeline ResolvePipeline { get; }
 
-        /// <summary>
-        /// Gets the parameters used when resolving the service.
-        /// </summary>
+        /// <inheritdoc/>
         public IEnumerable<Parameter> Parameters { get; }
 
-        /// <summary>
-        /// Gets the component registration for the decorator target if configured.
-        /// </summary>
+        /// <inheritdoc/>
         public IComponentRegistration? DecoratorTarget { get; }
     }
 }

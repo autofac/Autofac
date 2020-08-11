@@ -48,7 +48,7 @@ namespace Autofac.Features.LazyDependencies
         public override string Description => LazyRegistrationSourceResources.LazyRegistrationSourceDescription;
 
         /// <inheritdoc/>
-        protected override object ResolveInstance<T>(IComponentContext context, ResolveRequest request)
+        protected override object ResolveInstance<T>(IComponentContext context, IResolveRequest request)
         {
             var capturedContext = context.Resolve<IComponentContext>();
             return new Lazy<T>(() => (T)capturedContext.ResolveComponent(request));
