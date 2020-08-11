@@ -110,7 +110,7 @@ namespace Autofac.Test
                 this.EnableAll();
             }
 
-            public event Action<IResolveOperation, IResolveRequest> OperationStarting;
+            public event Action<IResolveOperation, ResolveRequest> OperationStarting;
 
             public event Action<IResolveOperation, ResolveRequestContext> RequestStarting;
 

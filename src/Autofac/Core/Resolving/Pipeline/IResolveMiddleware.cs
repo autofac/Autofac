@@ -38,7 +38,7 @@ namespace Autofac.Core.Resolving.Pipeline
         PipelinePhase Phase { get; }
 
         /// <summary>
-        /// Invoked when this middleware is executed as part of an active <see cref="IResolveRequest"/>. The middleware should usually call
+        /// Invoked when this middleware is executed as part of an active <see cref="ResolveRequest"/>. The middleware should usually call
         /// the <paramref name="next"/> method in order to continue the pipeline, unless the middleware fully satisfies the request.
         /// </summary>
         /// <param name="context">The context for the resolve request.</param>

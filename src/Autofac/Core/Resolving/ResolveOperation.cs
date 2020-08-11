@@ -67,7 +67,7 @@ namespace Autofac.Core.Resolving
         /// Execute the complete resolve operation.
         /// </summary>
         /// <param name="request">The resolution context.</param>
-        public object Execute(IResolveRequest request)
+        public object Execute(ResolveRequest request)
         {
             return ExecuteOperation(request);
         }
@@ -96,10 +96,10 @@ namespace Autofac.Core.Resolving
         public int RequestDepth { get; private set; }
 
         /// <summary>
-        /// Gets the <see cref="IResolveRequest" /> that initiated the operation. Other nested requests may have been
+        /// Gets the <see cref="ResolveRequest" /> that initiated the operation. Other nested requests may have been
         /// issued as a result of this one.
         /// </summary>
-        public IResolveRequest? InitiatingRequest { get; private set; }
+        public ResolveRequest? InitiatingRequest { get; private set; }
 
         /// <inheritdoc />
         public event EventHandler<ResolveRequestBeginningEventArgs>? ResolveRequestBeginning;
@@ -118,7 +118,7 @@ namespace Autofac.Core.Resolving
         public SegmentedStack<ResolveRequestContext> RequestStack { get; } = new SegmentedStack<ResolveRequestContext>();
 
         /// <inheritdoc />
-        public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, IResolveRequest request)
+        public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request)
         {
             if (request is null)
             {
@@ -195,7 +195,7 @@ namespace Autofac.Core.Resolving
         /// </summary>
         /// <param name="request">The resolve request.</param>
         /// <returns>The resolved instance.</returns>
-        private object ExecuteOperation(IResolveRequest request)
+        private object ExecuteOperation(ResolveRequest request)
         {
             object result;
 
@@ -258,7 +258,7 @@ namespace Autofac.Core.Resolving
         /// to enable it to be optionally surrounded with diagnostics.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void InvokePipeline(IResolveRequest request, DefaultResolveRequestContext requestContext)
+        private void InvokePipeline(ResolveRequest request, DefaultResolveRequestContext requestContext)
         {
             request.ResolvePipeline.Invoke(requestContext);
             if (requestContext.Instance == null)

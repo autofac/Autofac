@@ -45,7 +45,7 @@ namespace Autofac.Features.GeneratedFactories
         // The explicit '!' default is ok because the code is never executed, it's just used by
         // the expression tree.
         private static readonly ConstructorInfo RequestConstructor
-            = ReflectionExtensions.GetConstructor(() => new ResolveRequest(default!, default!, default!, default));
+            = ReflectionExtensions.GetConstructor(() => new DefaultResolveRequest(default!, default!, default!, default));
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FactoryGenerator"/> class.
@@ -109,7 +109,7 @@ namespace Autofac.Features.GeneratedFactories
                     return Expression.Call(
                         activatorContextParam,
                         ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveComponent(
-                            new ResolveRequest(default!, default, default(Parameter[])!, default))),
+                            new DefaultResolveRequest(default!, default, default(Parameter[])!, default))),
                         newExpression);
                 },
                 delegateType,

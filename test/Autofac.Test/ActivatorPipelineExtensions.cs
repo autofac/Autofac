@@ -46,7 +46,7 @@ namespace Autofac.Test
 
                 var request = new DefaultResolveRequestContext(
                     new ResolveOperation(lifetimeScope, lifetimeScope.DiagnosticSource),
-                    new ResolveRequest(new TypedService(typeof(T)), Mocks.GetResolvableImplementation(), parameters),
+                    new DefaultResolveRequest(new TypedService(typeof(T)), Mocks.GetResolvableImplementation(), parameters),
                     lifetimeScope,
                     lifetimeScope.DiagnosticSource);
 

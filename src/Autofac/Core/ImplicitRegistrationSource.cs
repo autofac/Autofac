@@ -108,7 +108,7 @@ namespace Autofac.Core
         /// <param name="ctx">A component context to resolve services.</param>
         /// <param name="request">A resolve request.</param>
         /// <returns>An implicit type instance.</returns>
-        protected abstract object ResolveInstance<T>(IComponentContext ctx, IResolveRequest request)
+        protected abstract object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
             where T : notnull;
 
         /// <summary>
@@ -125,7 +125,7 @@ namespace Autofac.Core
             var registrationDelegate = RegistrationBuilder.ForDelegate(
                 (c, p) =>
                 {
-                    var request = new ResolveRequest(valueService, serviceRegistration, p);
+                    var request = new DefaultResolveRequest(valueService, serviceRegistration, p);
 
                     return ResolveInstance<T>(c, request);
                 });

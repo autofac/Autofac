@@ -91,7 +91,7 @@ namespace Autofac.Features.Metadata
                 .ForDelegate((c, p) =>
                 {
                     var metadata = metadataProvider(implementation.Registration.Target.Metadata);
-                    return new Meta<T, TMetadata>((T)c.ResolveComponent(new ResolveRequest(valueService, implementation, p)), metadata);
+                    return new Meta<T, TMetadata>((T)c.ResolveComponent(new DefaultResolveRequest(valueService, implementation, p)), metadata);
                 })
                 .As(providedService)
                 .Targeting(implementation.Registration);

@@ -132,7 +132,7 @@ namespace Autofac.Features.Collections
                     for (var i = 0; i < itemRegistrations.Count; i++)
                     {
                         var itemRegistration = itemRegistrations[i];
-                        var resolveRequest = new ResolveRequest(elementTypeService, itemRegistration, p);
+                        var resolveRequest = new DefaultResolveRequest(elementTypeService, itemRegistration, p);
                         var component = c.ResolveComponent(resolveRequest);
                         if (isFixedSize)
                             output[i] = component;

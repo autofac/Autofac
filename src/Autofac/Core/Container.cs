@@ -148,7 +148,7 @@ namespace Autofac.Core
         public IComponentRegistry ComponentRegistry { get; }
 
         /// <inheritdoc />
-        public object ResolveComponent(IResolveRequest request)
+        public object ResolveComponent(ResolveRequest request)
         {
             return _rootLifetimeScope.ResolveComponent(request);
         }

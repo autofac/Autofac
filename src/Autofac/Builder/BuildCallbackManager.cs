@@ -53,7 +53,7 @@ namespace Autofac.Builder
                     continue;
                 }
 
-                var request = new ResolveRequest(CallbackServiceType, srv, Enumerable.Empty<Parameter>());
+                var request = new DefaultResolveRequest(CallbackServiceType, srv, Enumerable.Empty<Parameter>());
                 var component = (BuildCallbackService)scope.ResolveComponent(request);
                 srv.Registration.Metadata[BuildCallbacksExecutedKey] = true;
 

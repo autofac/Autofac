@@ -36,7 +36,7 @@ namespace Autofac.Core.Resolving.Pipeline
     /// </summary>
     internal sealed class DefaultResolveRequestContext : ResolveRequestContext
     {
-        private readonly IResolveRequest _resolveRequest;
+        private readonly ResolveRequest _resolveRequest;
         private object? _instance;
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Autofac.Core.Resolving.Pipeline
         /// </param>
         internal DefaultResolveRequestContext(
             IResolveOperation owningOperation,
-            IResolveRequest request,
+            ResolveRequest request,
             ISharingLifetimeScope scope,
             DiagnosticListener diagnosticSource)
         {
@@ -115,7 +115,7 @@ namespace Autofac.Core.Resolving.Pipeline
             Parameters = newParameters ?? throw new ArgumentNullException(nameof(newParameters));
 
         /// <inheritdoc />
-        public override object ResolveComponent(IResolveRequest request) =>
+        public override object ResolveComponent(ResolveRequest request) =>
             Operation.GetOrCreateInstance(ActivationScope, request);
 
         /// <summary>

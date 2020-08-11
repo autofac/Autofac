@@ -72,7 +72,7 @@ namespace Autofac.Features.LightweightAdapters
                     {
                         var rb = RegistrationBuilder
                             .ForDelegate((c, p) => _activatorData.Adapter(
-                                c, Enumerable.Empty<Parameter>(), c.ResolveComponent(new ResolveRequest(_activatorData.FromService, r, p))))
+                                c, Enumerable.Empty<Parameter>(), c.ResolveComponent(new DefaultResolveRequest(_activatorData.FromService, r, p))))
                             .Targeting(r.Registration)
                             .InheritRegistrationOrderFrom(r.Registration);
 
@@ -101,7 +101,7 @@ namespace Autofac.Features.LightweightAdapters
                     {
                         var rb = RegistrationBuilder
                             .ForDelegate((c, p) => _activatorData.Adapter(
-                                c, p, c.ResolveComponent(new ResolveRequest(serviceToFind, r, Enumerable.Empty<Parameter>()))))
+                                c, p, c.ResolveComponent(new DefaultResolveRequest(serviceToFind, r, Enumerable.Empty<Parameter>()))))
                             .Targeting(r.Registration);
 
                         rb.RegistrationData.CopyFrom(_registrationData, true);

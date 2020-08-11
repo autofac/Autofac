@@ -31,7 +31,7 @@ using Autofac.Core.Resolving.Pipeline;
 namespace Autofac.Core
 {
     /// <summary>
-    /// Defines a combination of a service pipeline and a registration. Used to instantiate a <see cref="IResolveRequest"/>.
+    /// Defines a combination of a service pipeline and a registration. Used to instantiate a <see cref="ResolveRequest"/>.
     /// </summary>
     public struct ServiceRegistration : IEquatable<ServiceRegistration>
     {

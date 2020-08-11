@@ -49,6 +49,6 @@ namespace Autofac
         /// </returns>
         /// <exception cref="ComponentNotRegisteredException"/>
         /// <exception cref="DependencyResolutionException"/>
-        object ResolveComponent(IResolveRequest request);
+        object ResolveComponent(ResolveRequest request);
     }
 }

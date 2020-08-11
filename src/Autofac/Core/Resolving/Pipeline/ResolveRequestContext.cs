@@ -93,6 +93,6 @@ namespace Autofac.Core.Resolving.Pipeline
         public abstract IComponentRegistry ComponentRegistry { get; }
 
         /// <inheritdoc/>
-        public abstract object ResolveComponent(IResolveRequest request);
+        public abstract object ResolveComponent(ResolveRequest request);
     }
 }

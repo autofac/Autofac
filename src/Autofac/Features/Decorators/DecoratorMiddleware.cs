@@ -120,7 +120,7 @@ namespace Autofac.Features.Decorators
             // We're going to define a service registration that does not contain any service
             // pipeline additions.
             // Adding a service pipeline middleware to a decorator service is not valid anyway.
-            var resolveRequest = new ResolveRequest(
+            var resolveRequest = new DefaultResolveRequest(
                 _decoratorService,
                 new ServiceRegistration(ServicePipelines.DefaultServicePipeline, _decoratorRegistration),
                 resolveParameters,

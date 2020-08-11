@@ -43,7 +43,7 @@ namespace Autofac.Features.OwnedInstances
         }
 
         /// <inheritdoc/>
-        protected override object ResolveInstance<T>(IComponentContext ctx, IResolveRequest request)
+        protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
         {
             var lifetime = ctx.Resolve<ILifetimeScope>().BeginLifetimeScope(request.Service);
             try

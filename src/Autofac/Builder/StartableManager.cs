@@ -32,7 +32,7 @@ namespace Autofac.Builder
                 {
                     try
                     {
-                        var request = new ResolveRequest(startableService, registration, Enumerable.Empty<Parameter>());
+                        var request = new DefaultResolveRequest(startableService, registration, Enumerable.Empty<Parameter>());
                         componentContext.ResolveComponent(request);
                     }
                     finally
@@ -46,7 +46,7 @@ namespace Autofac.Builder
                 {
                     try
                     {
-                        var request = new ResolveRequest(autoActivateService, registration, Enumerable.Empty<Parameter>());
+                        var request = new DefaultResolveRequest(autoActivateService, registration, Enumerable.Empty<Parameter>());
                         componentContext.ResolveComponent(request);
                     }
                     catch (DependencyResolutionException ex)

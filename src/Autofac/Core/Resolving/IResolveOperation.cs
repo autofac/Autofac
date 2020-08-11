@@ -37,10 +37,10 @@ namespace Autofac.Core.Resolving
         int RequestDepth { get; }
 
         /// <summary>
-        /// Gets the <see cref="ResolveRequest" /> that initiated the operation. Other nested requests may have been
+        /// Gets the <see cref="DefaultResolveRequest" /> that initiated the operation. Other nested requests may have been
         /// issued as a result of this one.
         /// </summary>
-        IResolveRequest? InitiatingRequest { get; }
+        ResolveRequest? InitiatingRequest { get; }
 
         /// <summary>
         /// Raised when a resolve request starts.
@@ -58,6 +58,6 @@ namespace Autofac.Core.Resolving
         /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
         /// <param name="request">The resolve request.</param>
         /// <returns>The component instance.</returns>
-        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, IResolveRequest request);
+        object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request);
     }
 }

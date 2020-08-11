@@ -1,42 +1,37 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Autofac.Core;
-using Autofac.Core.Pipeline;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac
 {
-    /// <inheritdoc />
-    internal sealed class ResolveRequest : IResolveRequest
+    /// <summary>
+    /// The details of an individual request to resolve a service.
+    /// </summary>
+    public abstract class ResolveRequest
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ResolveRequest"/> class.
+        /// Gets the service being resolved.
         /// </summary>
-        /// <param name="service">The service being resolved.</param>
-        /// <param name="serviceRegistration">The component registration for the service.</param>
-        /// <param name="parameters">The parameters used when resolving the service.</param>
-        /// <param name="decoratorTarget">The target component to be decorated.</param>
-        public ResolveRequest(Service service, ServiceRegistration serviceRegistration, IEnumerable<Parameter> parameters, IComponentRegistration? decoratorTarget = null)
-        {
-            Service = service;
-            Registration = serviceRegistration.Registration;
-            ResolvePipeline = serviceRegistration.Pipeline;
-            Parameters = parameters;
-            DecoratorTarget = decoratorTarget;
-        }
+        public abstract Service Service { get; }
 
-        /// <inheritdoc/>
-        public Service Service { get; }
+        /// <summary>
+        /// Gets the component registration for the service being resolved. This may be null if a service is being supplied without registrations.
+        /// </summary>
+        public abstract IComponentRegistration Registration { get; }
 
-        /// <inheritdoc/>
-        public IComponentRegistration Registration { get; }
+        /// <summary>
+        /// Gets the resolve pipeline for the request.
+        /// </summary>
+        public abstract IResolvePipeline ResolvePipeline { get; }
 
-        /// <inheritdoc/>
-        public IResolvePipeline ResolvePipeline { get; }
+        /// <summary>
+        /// Gets the parameters used when resolving the service.
+        /// </summary>
+        public abstract IEnumerable<Parameter> Parameters { get; }
 
-        /// <inheritdoc/>
-        public IEnumerable<Parameter> Parameters { get; }
-
-        /// <inheritdoc/>
-        public IComponentRegistration? DecoratorTarget { get; }
+        /// <summary>
+        /// Gets the component registration for the decorator target if configured.
+        /// </summary>
+        public abstract IComponentRegistration? DecoratorTarget { get; }
     }
 }

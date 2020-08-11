@@ -78,7 +78,7 @@ namespace Autofac.Test.Core.Resolving
 
             var raisedEvents = new List<string>();
 
-            var request = new ResolveRequest(new TypedService(typeof(string)), scope.ResolvableImplementationFor<string>(), Enumerable.Empty<Parameter>());
+            var request = new DefaultResolveRequest(new TypedService(typeof(string)), scope.ResolvableImplementationFor<string>(), Enumerable.Empty<Parameter>());
 
             mockTracer.OperationStarting += (op, req) =>
             {
@@ -128,7 +128,7 @@ namespace Autofac.Test.Core.Resolving
 
             var raisedEvents = new List<string>();
 
-            var request = new ResolveRequest(new TypedService(typeof(string)), scope.ResolvableImplementationFor<string>(), Enumerable.Empty<Parameter>());
+            var request = new DefaultResolveRequest(new TypedService(typeof(string)), scope.ResolvableImplementationFor<string>(), Enumerable.Empty<Parameter>());
 
             mockTracer.OperationStarting += (op, req) =>
             {
