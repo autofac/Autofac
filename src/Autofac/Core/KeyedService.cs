@@ -39,11 +39,8 @@ namespace Autofac.Core
         /// <param name="serviceType">Type of the service.</param>
         public KeyedService(object serviceKey, Type serviceType)
         {
-            if (serviceKey == null) throw new ArgumentNullException(nameof(serviceKey));
-            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
-
-            ServiceKey = serviceKey;
-            ServiceType = serviceType;
+            ServiceKey = serviceKey ?? throw new ArgumentNullException(nameof(serviceKey));
+            ServiceType = serviceType ?? throw new ArgumentNullException(nameof(serviceType));
         }
 
         /// <summary>
@@ -74,17 +71,19 @@ namespace Autofac.Core
         public bool Equals(KeyedService? other)
         {
             if (other is null)
+            {
                 return false;
+            }
 
             return ServiceKey.Equals(other.ServiceKey) && ServiceType == other.ServiceType;
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="System.Object"/>.
+        /// Determines whether the specified <see cref="Object"/> is equal to the current <see cref="Object"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="System.Object"/>.</param>
+        /// <param name="obj">The <see cref="Object"/> to compare with the current <see cref="Object"/>.</param>
         /// <returns>
-        /// true if the specified <see cref="System.Object"/> is equal to the current <see cref="System.Object"/>; otherwise, false.
+        /// true if the specified <see cref="Object"/> is equal to the current <see cref="Object"/>; otherwise, false.
         /// </returns>
         public override bool Equals(object? obj)
         {
@@ -95,7 +94,7 @@ namespace Autofac.Core
         /// Serves as a hash function for a particular type.
         /// </summary>
         /// <returns>
-        /// A hash code for the current <see cref="System.Object"/>.
+        /// A hash code for the current <see cref="Object"/>.
         /// </returns>
         public override int GetHashCode()
         {
@@ -110,7 +109,10 @@ namespace Autofac.Core
         /// <returns>A new service with the service type.</returns>
         public Service ChangeType(Type newType)
         {
-            if (newType == null) throw new ArgumentNullException(nameof(newType));
+            if (newType == null)
+            {
+                throw new ArgumentNullException(nameof(newType));
+            }
 
             return new KeyedService(ServiceKey, newType);
         }

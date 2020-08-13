@@ -44,8 +44,15 @@ namespace Autofac
         /// </returns>
         public static ISourceRegistrar RegisterSource(this ContainerBuilder builder, IRegistrationSource registrationSource)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (registrationSource == null) throw new ArgumentNullException(nameof(registrationSource));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (registrationSource == null)
+            {
+                throw new ArgumentNullException(nameof(registrationSource));
+            }
 
             var registrar = new SourceRegistrar(builder);
             return registrar.RegisterSource(registrationSource);
@@ -65,7 +72,10 @@ namespace Autofac
         public static ISourceRegistrar RegisterSource<TRegistrationSource>(this ContainerBuilder builder)
             where TRegistrationSource : IRegistrationSource, new()
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             return builder.RegisterSource(new TRegistrationSource());
         }
@@ -84,7 +94,10 @@ namespace Autofac
         public static ISourceRegistrar RegisterSource<TRegistrationSource>(this ISourceRegistrar registrar)
             where TRegistrationSource : IRegistrationSource, new()
         {
-            if (registrar == null) throw new ArgumentNullException(nameof(registrar));
+            if (registrar == null)
+            {
+                throw new ArgumentNullException(nameof(registrar));
+            }
 
             return registrar.RegisterSource(new TRegistrationSource());
         }

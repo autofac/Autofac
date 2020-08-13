@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -39,7 +40,7 @@ namespace Autofac.Features.Metadata
     /// </summary>
     internal static class MetadataViewProvider
     {
-        private static readonly MethodInfo GetMetadataValueMethod = typeof(MetadataViewProvider).GetDeclaredMethod("GetMetadataValue");
+        private static readonly MethodInfo GetMetadataValueMethod = typeof(MetadataViewProvider).GetDeclaredMethod(nameof(GetMetadataValue));
 
         /// <summary>
         /// Generate a provider function that takes a dictionary of metadata, and outputs a typed metadata object.
@@ -49,7 +50,9 @@ namespace Autofac.Features.Metadata
         public static Func<IDictionary<string, object?>, TMetadata> GetMetadataViewProvider<TMetadata>()
         {
             if (typeof(TMetadata) == typeof(IDictionary<string, object>))
+            {
                 return m => (TMetadata)m;
+            }
 
             if (!typeof(TMetadata).IsClass)
             {
@@ -109,17 +112,17 @@ namespace Autofac.Features.Metadata
                 string.Format(CultureInfo.CurrentCulture, MetadataViewProviderResources.InvalidViewImplementation, typeof(TMetadata).Name));
         }
 
-        /// <summary>
-        /// Used via reflection.
-        /// </summary>
         private static TValue GetMetadataValue<TValue>(IDictionary<string, object> metadata, string name, DefaultValueAttribute defaultValue)
         {
-            object result;
-            if (metadata.TryGetValue(name, out result))
+            if (metadata.TryGetValue(name, out object result))
+            {
                 return (TValue)result;
+            }
 
             if (defaultValue != null)
+            {
                 return (TValue)defaultValue.Value;
+            }
 
             throw new DependencyResolutionException(
                 string.Format(CultureInfo.CurrentCulture, MetadataViewProviderResources.MissingMetadata, name));

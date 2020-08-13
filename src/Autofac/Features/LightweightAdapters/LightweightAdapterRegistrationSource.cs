@@ -49,21 +49,27 @@ namespace Autofac.Features.LightweightAdapters
             RegistrationData registrationData,
             LightweightAdapterActivatorData activatorData)
         {
-            if (registrationData == null) throw new ArgumentNullException(nameof(registrationData));
-            if (activatorData == null) throw new ArgumentNullException(nameof(activatorData));
-
-            _registrationData = registrationData;
-            _activatorData = activatorData;
+            _registrationData = registrationData ?? throw new ArgumentNullException(nameof(registrationData));
+            _activatorData = activatorData ?? throw new ArgumentNullException(nameof(activatorData));
 
             if (registrationData.Services.Contains(activatorData.FromService))
+            {
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, LightweightAdapterRegistrationSourceResources.FromAndToMustDiffer, activatorData.FromService));
+            }
         }
 
         /// <inheritdoc/>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
-            if (service == null) throw new ArgumentNullException(nameof(service));
-            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
+            if (registrationAccessor == null)
+            {
+                throw new ArgumentNullException(nameof(registrationAccessor));
+            }
 
             if (_registrationData.Services.Contains(service))
             {
@@ -82,14 +88,11 @@ namespace Autofac.Features.LightweightAdapters
                     });
             }
 
-            var requestedServiceWithType = service as IServiceWithType;
-            var adapteeServiceWithType = _activatorData.FromService as IServiceWithType;
-
             if (
                 //// requested and adaptee are services with type
                 //// not including decorators here
                 //// and if this registration source contains requested service's type
-                (requestedServiceWithType != null && adapteeServiceWithType != null) &&
+                (service is IServiceWithType requestedServiceWithType && _activatorData.FromService is IServiceWithType adapteeServiceWithType) &&
                 (requestedServiceWithType.ServiceType != adapteeServiceWithType.ServiceType) &&
                 _registrationData.Services.OfType<IServiceWithType>().Any(s => s.ServiceType == requestedServiceWithType.ServiceType))
             {

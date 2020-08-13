@@ -65,7 +65,10 @@ namespace Autofac.Core.Registration
         /// </exception>
         public ISourceRegistrar RegisterSource(IRegistrationSource registrationSource)
         {
-            if (registrationSource == null) throw new ArgumentNullException(nameof(registrationSource));
+            if (registrationSource == null)
+            {
+                throw new ArgumentNullException(nameof(registrationSource));
+            }
 
             _builder.RegisterCallback(cr => cr.AddRegistrationSource(registrationSource));
             return this;

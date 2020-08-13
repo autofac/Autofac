@@ -208,7 +208,9 @@ namespace Autofac.Test.Features.Collections
 
             DisposeTracker tracker;
             using (var ls = container.BeginLifetimeScope())
+            {
                 tracker = ls.Resolve<IEnumerable<DisposeTracker>>().First();
+            }
 
             Assert.True(tracker.IsDisposed);
         }

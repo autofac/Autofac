@@ -43,7 +43,10 @@ namespace Autofac.Core
         [SuppressMessage("CA1031", "CA1031", Justification = "Issue #799: If getting the property value throws an exception then assume it's set and skip it.")]
         public virtual bool InjectProperty(PropertyInfo propertyInfo, object instance)
         {
-            if (propertyInfo == null) return false;
+            if (propertyInfo == null)
+            {
+                return false;
+            }
 
             if (!propertyInfo.CanWrite || propertyInfo.SetMethod?.IsPublic != true)
             {

@@ -63,7 +63,10 @@ namespace Autofac.Features.AttributeFilters
                 this IRegistrationBuilder<TLimit, TReflectionActivatorData, TRegistrationStyle> builder)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             return builder.WithParameter(
                 (p, c) =>

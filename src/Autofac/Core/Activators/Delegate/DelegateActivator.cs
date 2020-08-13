@@ -54,7 +54,10 @@ namespace Autofac.Core.Activators.Delegate
         /// <inheritdoc/>
         public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)
         {
-            if (pipelineBuilder is null) throw new ArgumentNullException(nameof(pipelineBuilder));
+            if (pipelineBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(pipelineBuilder));
+            }
 
             pipelineBuilder.Use(this.DisplayName(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
             {
@@ -72,8 +75,15 @@ namespace Autofac.Core.Activators.Delegate
         /// <returns>The activated instance.</returns>
         private object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
 
             CheckNotDisposed();
 

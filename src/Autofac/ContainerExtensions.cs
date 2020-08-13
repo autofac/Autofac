@@ -50,8 +50,16 @@ namespace Autofac
         /// </remarks>
         public static void SubscribeToDiagnostics(this IContainer container, DiagnosticTracerBase tracer)
         {
-            if (container is null) throw new ArgumentNullException(nameof(container));
-            if (tracer is null) throw new ArgumentNullException(nameof(tracer));
+            if (container is null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
+            if (tracer is null)
+            {
+                throw new ArgumentNullException(nameof(tracer));
+            }
+
             container.DiagnosticSource.Subscribe(tracer, tracer.IsEnabled);
         }
 
@@ -78,7 +86,11 @@ namespace Autofac
         public static T SubscribeToDiagnostics<T>(this IContainer container)
             where T : DiagnosticTracerBase, new()
         {
-            if (container is null) throw new ArgumentNullException(nameof(container));
+            if (container is null)
+            {
+                throw new ArgumentNullException(nameof(container));
+            }
+
             var tracer = new T();
             container.SubscribeToDiagnostics(tracer);
             return tracer;

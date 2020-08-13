@@ -69,9 +69,20 @@ namespace Autofac
                 Type serviceType)
             where TScanningActivatorData : ScanningActivatorData
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (serviceNameMapping == null) throw new ArgumentNullException(nameof(serviceNameMapping));
-            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (serviceNameMapping == null)
+            {
+                throw new ArgumentNullException(nameof(serviceNameMapping));
+            }
+
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
 
             return registration.As(t => new KeyedService(serviceNameMapping(t), serviceType));
         }

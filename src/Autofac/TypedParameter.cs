@@ -73,9 +73,7 @@ namespace Autofac
         public TypedParameter(Type type, object? value)
             : base(value, pi => pi.ParameterType == type)
         {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-
-            Type = type;
+            Type = type ?? throw new ArgumentNullException(nameof(type));
         }
 
         /// <summary>

@@ -126,8 +126,15 @@ namespace Autofac.Core.Resolving.Middleware
 
         private static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<ResolveRequestContext> requestStack)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (requestStack == null) throw new ArgumentNullException(nameof(requestStack));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (requestStack == null)
+            {
+                throw new ArgumentNullException(nameof(requestStack));
+            }
 
             var dependencyGraph = Display(registration);
 

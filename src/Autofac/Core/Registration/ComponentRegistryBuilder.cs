@@ -100,7 +100,10 @@ namespace Autofac.Core.Registration
         /// <param name="registration">The component registration.</param>
         public void Register(IComponentRegistration registration)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             _registeredServicesTracker.AddRegistration(registration, false);
         }
@@ -129,7 +132,10 @@ namespace Autofac.Core.Registration
         /// component will not be changed.</param>
         public void Register(IComponentRegistration registration, bool preserveDefaults)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             _registeredServicesTracker.AddRegistration(registration, preserveDefaults);
         }
@@ -194,7 +200,9 @@ namespace Autofac.Core.Registration
         private EventHandler<ComponentRegisteredEventArgs>? GetRegistered()
         {
             if (Properties.TryGetValue(MetadataKeys.RegisteredPropertyKey, out var registered))
+            {
                 return (EventHandler<ComponentRegisteredEventArgs>?)registered;
+            }
 
             return null;
         }
@@ -203,7 +211,9 @@ namespace Autofac.Core.Registration
         private EventHandler<RegistrationSourceAddedEventArgs>? GetRegistrationSourceAdded()
         {
             if (Properties.TryGetValue(MetadataKeys.RegistrationSourceAddedPropertyKey, out var registrationSourceAdded))
+            {
                 return (EventHandler<RegistrationSourceAddedEventArgs>?)registrationSourceAdded;
+            }
 
             return null;
         }

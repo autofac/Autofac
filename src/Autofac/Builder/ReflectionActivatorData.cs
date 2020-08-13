@@ -66,8 +66,7 @@ namespace Autofac.Builder
 
             set
             {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                _implementer = value;
+                _implementer = value ?? throw new ArgumentNullException(nameof(value));
             }
         }
 
@@ -83,8 +82,7 @@ namespace Autofac.Builder
 
             set
             {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                _constructorFinder = value;
+                _constructorFinder = value ?? throw new ArgumentNullException(nameof(value));
             }
         }
 
@@ -100,8 +98,7 @@ namespace Autofac.Builder
 
             set
             {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                _constructorSelector = value;
+                _constructorSelector = value ?? throw new ArgumentNullException(nameof(value));
             }
         }
 

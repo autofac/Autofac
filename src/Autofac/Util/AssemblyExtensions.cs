@@ -50,7 +50,10 @@ namespace Autofac.Util
         {
             // Algorithm from StackOverflow answer here:
             // https://stackoverflow.com/questions/7889228/how-to-prevent-reflectiontypeloadexception-when-calling-assembly-gettypes
-            if (assembly == null) throw new ArgumentNullException(nameof(assembly));
+            if (assembly == null)
+            {
+                throw new ArgumentNullException(nameof(assembly));
+            }
 
             try
             {

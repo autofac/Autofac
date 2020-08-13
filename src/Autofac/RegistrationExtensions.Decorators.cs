@@ -61,9 +61,20 @@ namespace Autofac
                 object fromKey,
                 object? toKey = null)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
-            if (decoratedServiceType == null) throw new ArgumentNullException(nameof(decoratedServiceType));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (decoratorType == null)
+            {
+                throw new ArgumentNullException(nameof(decoratorType));
+            }
+
+            if (decoratedServiceType == null)
+            {
+                throw new ArgumentNullException(nameof(decoratedServiceType));
+            }
 
             return OpenGenericRegistrationExtensions.RegisterGenericDecorator(builder, decoratorType, decoratedServiceType, fromKey, toKey);
         }
@@ -87,8 +98,15 @@ namespace Autofac
                 object? toKey = null)
             where TService : notnull
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (decorator == null) throw new ArgumentNullException(nameof(decorator));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (decorator == null)
+            {
+                throw new ArgumentNullException(nameof(decorator));
+            }
 
             return LightweightAdapterRegistrationExtensions.RegisterDecorator(builder, decorator, fromKey, toKey);
         }
@@ -112,8 +130,15 @@ namespace Autofac
                 object? toKey = null)
             where TService : notnull
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (decorator == null) throw new ArgumentNullException(nameof(decorator));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (decorator == null)
+            {
+                throw new ArgumentNullException(nameof(decorator));
+            }
 
             return LightweightAdapterRegistrationExtensions.RegisterDecorator<TService>(builder, (c, p, f) => decorator(c, f), fromKey, toKey);
         }
@@ -137,8 +162,15 @@ namespace Autofac
                 object? toKey = null)
             where TService : notnull
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (decorator == null) throw new ArgumentNullException(nameof(decorator));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (decorator == null)
+            {
+                throw new ArgumentNullException(nameof(decorator));
+            }
 
             return LightweightAdapterRegistrationExtensions.RegisterDecorator<TService>(builder, (c, p, f) => decorator(f), fromKey, toKey);
         }
@@ -156,7 +188,10 @@ namespace Autofac
         public static void RegisterDecorator<TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool>? condition = null)
             where TDecorator : notnull, TService
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var decoratorService = new DecoratorService(typeof(TService), condition);
 
@@ -187,9 +222,20 @@ namespace Autofac
             Type serviceType,
             Func<IDecoratorContext, bool>? condition = null)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
-            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (decoratorType == null)
+            {
+                throw new ArgumentNullException(nameof(decoratorType));
+            }
+
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
 
             var decoratorService = new DecoratorService(serviceType, condition);
 
@@ -221,8 +267,15 @@ namespace Autofac
             Func<IDecoratorContext, bool>? condition = null)
             where TService : class
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (decorator == null) throw new ArgumentNullException(nameof(decorator));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (decorator == null)
+            {
+                throw new ArgumentNullException(nameof(decorator));
+            }
 
             var service = new DecoratorService(typeof(TService), condition);
 
@@ -266,9 +319,20 @@ namespace Autofac
             Type serviceType,
             Func<IDecoratorContext, bool>? condition = null)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
-            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (decoratorType == null)
+            {
+                throw new ArgumentNullException(nameof(decoratorType));
+            }
+
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
 
             var decoratorService = new DecoratorService(serviceType, condition);
 

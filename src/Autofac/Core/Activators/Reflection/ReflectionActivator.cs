@@ -64,14 +64,19 @@ namespace Autofac.Core.Activators.Reflection
             IEnumerable<Parameter> configuredProperties)
             : base(implementationType)
         {
-            if (constructorFinder == null) throw new ArgumentNullException(nameof(constructorFinder));
-            if (constructorSelector == null) throw new ArgumentNullException(nameof(constructorSelector));
-            if (configuredParameters == null) throw new ArgumentNullException(nameof(configuredParameters));
-            if (configuredProperties == null) throw new ArgumentNullException(nameof(configuredProperties));
+            if (configuredParameters == null)
+            {
+                throw new ArgumentNullException(nameof(configuredParameters));
+            }
+
+            if (configuredProperties == null)
+            {
+                throw new ArgumentNullException(nameof(configuredProperties));
+            }
 
             _implementationType = implementationType;
-            ConstructorFinder = constructorFinder;
-            ConstructorSelector = constructorSelector;
+            ConstructorFinder = constructorFinder ?? throw new ArgumentNullException(nameof(constructorFinder));
+            ConstructorSelector = constructorSelector ?? throw new ArgumentNullException(nameof(constructorSelector));
             _configuredProperties = configuredProperties.ToArray();
             _defaultParameters = configuredParameters.Concat(new Parameter[] { new AutowiringParameter(), new DefaultValueParameter() }).ToArray();
         }
@@ -89,8 +94,15 @@ namespace Autofac.Core.Activators.Reflection
         /// <inheritdoc/>
         public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)
         {
-            if (componentRegistryServices is null) throw new ArgumentNullException(nameof(componentRegistryServices));
-            if (pipelineBuilder is null) throw new ArgumentNullException(nameof(pipelineBuilder));
+            if (componentRegistryServices is null)
+            {
+                throw new ArgumentNullException(nameof(componentRegistryServices));
+            }
+
+            if (pipelineBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(pipelineBuilder));
+            }
 
             // Locate the possible constructors at container build time.
             var availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
@@ -129,8 +141,15 @@ namespace Autofac.Core.Activators.Reflection
         /// </remarks>
         private object ActivateInstance(IComponentContext context, IEnumerable<Parameter> parameters)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
 
             CheckNotDisposed();
 
@@ -194,17 +213,6 @@ namespace Autofac.Core.Activators.Reflection
             }
         }
 
-        private static IEnumerable<BoundConstructor> FilterToValidBindings(IEnumerable<BoundConstructor> allBindings)
-        {
-            foreach (var binding in allBindings)
-            {
-                if (binding.CanInstantiate)
-                {
-                    yield return binding;
-                }
-            }
-        }
-
         private string GetBindingFailureMessage(BoundConstructor[] constructorBindings)
         {
             var reasons = new StringBuilder();
@@ -226,7 +234,9 @@ namespace Autofac.Core.Activators.Reflection
         private void InjectProperties(object instance, IComponentContext context)
         {
             if (_configuredProperties.Length == 0)
+            {
                 return;
+            }
 
             var actualProperties = instance
                 .GetType()

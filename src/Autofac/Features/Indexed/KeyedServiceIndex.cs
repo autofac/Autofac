@@ -44,9 +44,7 @@ namespace Autofac.Features.Indexed
         /// <param name="context">The current component context.</param>
         public KeyedServiceIndex(IComponentContext context)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         /// <inheritdoc/>

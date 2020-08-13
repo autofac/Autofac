@@ -124,21 +124,21 @@ namespace Autofac.Core.Registration
             IDictionary<string, object?> metadata,
             RegistrationOptions options = RegistrationOptions.None)
         {
-            if (activator == null) throw new ArgumentNullException(nameof(activator));
-            if (lifetime == null) throw new ArgumentNullException(nameof(lifetime));
-            if (services == null) throw new ArgumentNullException(nameof(services));
-            if (metadata == null) throw new ArgumentNullException(nameof(metadata));
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
 
             Id = id;
-            Activator = activator;
-            Lifetime = lifetime;
+            Activator = activator ?? throw new ArgumentNullException(nameof(activator));
+            Lifetime = lifetime ?? throw new ArgumentNullException(nameof(lifetime));
             Sharing = sharing;
             Ownership = ownership;
 
             _lateBuildPipeline = pipelineBuilder;
 
             Services = Enforce.ArgumentElementNotNull(services, nameof(services));
-            Metadata = metadata;
+            Metadata = metadata ?? throw new ArgumentNullException(nameof(metadata));
             Options = options;
         }
 
@@ -168,8 +168,7 @@ namespace Autofac.Core.Registration
             RegistrationOptions options = RegistrationOptions.None)
             : this(id, activator, lifetime, sharing, ownership, pipelineBuilder, services, metadata, options)
         {
-            if (target == null) throw new ArgumentNullException(nameof(target));
-            _target = target;
+            _target = target ?? throw new ArgumentNullException(nameof(target));
 
             // Certain flags carry over from the target.
             Options = options | (_target.Options & OptionsCopiedFromTargetRegistration);
@@ -318,7 +317,9 @@ namespace Autofac.Core.Registration
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 Activator.Dispose();
+            }
 
             base.Dispose(disposing);
         }

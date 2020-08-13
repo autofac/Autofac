@@ -131,7 +131,10 @@ namespace Autofac.Builder
             where TSingleRegistrationStyle : SingleRegistrationStyle
             where TActivatorData : IConcreteActivatorData
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             return CreateRegistration(
                 builder.RegistrationStyle.Id,
@@ -182,18 +185,32 @@ namespace Autofac.Builder
             Service[] services,
             IComponentRegistration? target)
         {
-            if (activator == null) throw new ArgumentNullException(nameof(activator));
-            if (data == null) throw new ArgumentNullException(nameof(data));
-            if (pipelineBuilder is null) throw new ArgumentNullException(nameof(pipelineBuilder));
-            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (activator == null)
+            {
+                throw new ArgumentNullException(nameof(activator));
+            }
+
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
+
+            if (pipelineBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(pipelineBuilder));
+            }
+
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
 
             var limitType = activator.LimitType;
             if (limitType != typeof(object))
             {
                 foreach (var ts in services)
                 {
-                    var asServiceWithType = ts as IServiceWithType;
-                    if (asServiceWithType == null)
+                    if (!(ts is IServiceWithType asServiceWithType))
                     {
                         continue;
                     }
@@ -255,7 +272,10 @@ namespace Autofac.Builder
             where TSingleRegistrationStyle : SingleRegistrationStyle
             where TActivatorData : IConcreteActivatorData
         {
-            if (cr == null) throw new ArgumentNullException(nameof(cr));
+            if (cr == null)
+            {
+                throw new ArgumentNullException(nameof(cr));
+            }
 
             var registration = CreateRegistration(builder);
 
@@ -263,7 +283,9 @@ namespace Autofac.Builder
 
             var registeredEventArgs = new ComponentRegisteredEventArgs(cr, registration);
             foreach (var rh in builder.RegistrationStyle.RegisteredHandlers)
+            {
                 rh(cr, registeredEventArgs);
+            }
         }
     }
 }

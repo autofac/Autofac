@@ -1,4 +1,4 @@
-// This software is part of the Autofac IoC container
+﻿// This software is part of the Autofac IoC container
 // Copyright © 2011 Autofac Contributors
 // https://autofac.org
 //
@@ -52,11 +52,8 @@ namespace Autofac.Core
         /// <param name="componentRegistration">The component registration.</param>
         public ComponentRegisteredEventArgs(IComponentRegistryBuilder registryBuilder, IComponentRegistration componentRegistration)
         {
-            if (registryBuilder == null) throw new ArgumentNullException(nameof(registryBuilder));
-            if (componentRegistration == null) throw new ArgumentNullException(nameof(componentRegistration));
-
-            ComponentRegistryBuilder = registryBuilder;
-            ComponentRegistration = componentRegistration;
+            ComponentRegistryBuilder = registryBuilder ?? throw new ArgumentNullException(nameof(registryBuilder));
+            ComponentRegistration = componentRegistration ?? throw new ArgumentNullException(nameof(componentRegistration));
         }
     }
 }

@@ -56,7 +56,11 @@ namespace Autofac.Features.GeneratedFactories
         /// <param name="parameterMapping">The parameter mapping mode to use.</param>
         public FactoryGenerator(Type delegateType, Service service, ParameterMapping parameterMapping)
         {
-            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
             Enforce.ArgumentTypeIsFunction(delegateType);
 
             _generator = CreateGenerator(
@@ -119,7 +123,10 @@ namespace Autofac.Features.GeneratedFactories
         private static ParameterMapping GetParameterMapping(Type delegateType, ParameterMapping configuredParameterMapping)
         {
             if (configuredParameterMapping == ParameterMapping.Adaptive)
+            {
                 return DelegateTypeIsFunc(delegateType) ? ParameterMapping.ByType : ParameterMapping.ByName;
+            }
+
             return configuredParameterMapping;
         }
 
@@ -160,7 +167,7 @@ namespace Autofac.Features.GeneratedFactories
                     // There are duplicate input types - that's a problem. Throw
                     // when the function is invoked.
                     object[] argumentsArray = arguments.ToArray();
-                    var message = String.Format(CultureInfo.CurrentCulture, GeneratedFactoryRegistrationSourceResources.DuplicateTypesInTypeMappedFuncParameterList, returnType.AssemblyQualifiedName, String.Join(", ", argumentsArray));
+                    var message = string.Format(CultureInfo.CurrentCulture, GeneratedFactoryRegistrationSourceResources.DuplicateTypesInTypeMappedFuncParameterList, returnType.AssemblyQualifiedName, string.Join(", ", argumentsArray));
                     resolveCast = Expression.Throw(Expression.Constant(new DependencyResolutionException(message)), invoke.ReturnType);
                 }
             }
@@ -190,24 +197,17 @@ namespace Autofac.Features.GeneratedFactories
 
         private static Expression[] MapParameters(IEnumerable<ParameterExpression> creatorParams, ParameterMapping pm)
         {
-            switch (pm)
+            return pm switch
             {
-                case ParameterMapping.ByType:
-                    return creatorParams
-                        .Select(p => Expression.New(typeof(TypedParameter).GetMatchingConstructor(new[] { typeof(Type), typeof(object) }), Expression.Constant(p.Type, typeof(Type)), Expression.Convert(p, typeof(object))))
-                        .ToArray();
-
-                case ParameterMapping.ByPosition:
-                    return creatorParams
-                        .Select((p, i) => Expression.New(typeof(PositionalParameter).GetMatchingConstructor(new[] { typeof(int), typeof(object) }), Expression.Constant(i, typeof(int)), Expression.Convert(p, typeof(object))))
-                        .ToArray();
-
-                case ParameterMapping.ByName:
-                default:
-                    return creatorParams
-                        .Select(p => Expression.New(typeof(NamedParameter).GetMatchingConstructor(new[] { typeof(string), typeof(object) }), Expression.Constant(p.Name, typeof(string)), Expression.Convert(p, typeof(object))))
-                        .ToArray();
-            }
+                ParameterMapping.ByType => creatorParams
+                                            .Select(p => Expression.New(typeof(TypedParameter).GetMatchingConstructor(new[] { typeof(Type), typeof(object) }), Expression.Constant(p.Type, typeof(Type)), Expression.Convert(p, typeof(object))))
+                                            .ToArray(),
+                ParameterMapping.ByPosition => creatorParams
+                                                 .Select((p, i) => Expression.New(typeof(PositionalParameter).GetMatchingConstructor(new[] { typeof(int), typeof(object) }), Expression.Constant(i, typeof(int)), Expression.Convert(p, typeof(object))))
+                                                 .ToArray(),
+                _ => creatorParams.Select(p => Expression.New(typeof(NamedParameter).GetMatchingConstructor(new[] { typeof(string), typeof(object) }), Expression.Constant(p.Name, typeof(string)), Expression.Convert(p, typeof(object))))
+                                  .ToArray(),
+            };
         }
 
         /// <summary>
@@ -218,8 +218,15 @@ namespace Autofac.Features.GeneratedFactories
         /// <returns>A factory delegate that will work within the context.</returns>
         public Delegate GenerateFactory(IComponentContext context, IEnumerable<Parameter> parameters)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
 
             return _generator(context.Resolve<ILifetimeScope>(), parameters);
         }

@@ -46,12 +46,20 @@ namespace Autofac.Features.GeneratedFactories
         /// <returns>Registrations providing the service.</returns>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
-            if (service == null) throw new ArgumentNullException(nameof(service));
-            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
 
-            var ts = service as IServiceWithType;
-            if (ts == null || !ts.ServiceType.IsDelegate())
+            if (registrationAccessor == null)
+            {
+                throw new ArgumentNullException(nameof(registrationAccessor));
+            }
+
+            if (!(service is IServiceWithType ts) || !ts.ServiceType.IsDelegate())
+            {
                 return Enumerable.Empty<IComponentRegistration>();
+            }
 
             var resultType = ts.ServiceType.FunctionReturnType();
             var resultTypeService = ts.ChangeType(resultType);

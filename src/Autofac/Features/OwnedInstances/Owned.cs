@@ -99,10 +99,8 @@ namespace Autofac.Features.OwnedInstances
         /// <param name="lifetime">An IDisposable interface through which ownership can be released.</param>
         public Owned(T value, IDisposable lifetime)
         {
-            if (lifetime == null) throw new ArgumentNullException(nameof(lifetime));
-
             Value = value;
-            _lifetime = lifetime;
+            _lifetime = lifetime ?? throw new ArgumentNullException(nameof(lifetime));
         }
 
         /// <summary>

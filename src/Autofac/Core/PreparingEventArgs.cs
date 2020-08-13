@@ -45,14 +45,10 @@ namespace Autofac.Core
         /// <param name="parameters">The parameters.</param>
         public PreparingEventArgs(IComponentContext context, Service service, IComponentRegistration component, IEnumerable<Parameter> parameters)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            if (component == null) throw new ArgumentNullException(nameof(component));
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
-
-            Context = context;
+            Context = context ?? throw new ArgumentNullException(nameof(context));
             Service = service;
-            Component = component;
-            _parameters = parameters;
+            Component = component ?? throw new ArgumentNullException(nameof(component));
+            _parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
         }
 
         /// <summary>
@@ -82,8 +78,7 @@ namespace Autofac.Core
 
             set
             {
-                if (value == null) throw new ArgumentNullException(nameof(value));
-                _parameters = value;
+                _parameters = value ?? throw new ArgumentNullException(nameof(value));
             }
         }
     }

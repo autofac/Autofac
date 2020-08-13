@@ -82,19 +82,30 @@ namespace Autofac.Features.Variance
             Service service,
             Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
-            if (service == null) throw new ArgumentNullException(nameof(service));
-            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
+            if (registrationAccessor == null)
+            {
+                throw new ArgumentNullException(nameof(registrationAccessor));
+            }
 
             if (!(service is IServiceWithType swt)
                 || service is DecoratorService
                 || !IsCompatibleInterfaceType(swt.ServiceType, out var contravariantParameterIndex))
+            {
                 return Enumerable.Empty<IComponentRegistration>();
+            }
 
             var args = swt.ServiceType.GenericTypeArguments;
             var definition = swt.ServiceType.GetGenericTypeDefinition();
             var contravariantParameter = args[contravariantParameterIndex];
             if (contravariantParameter.IsValueType)
+            {
                 return Enumerable.Empty<IComponentRegistration>();
+            }
 
             var possibleSubstitutions = GetTypesAssignableFrom(contravariantParameter);
             var variations = possibleSubstitutions
@@ -133,12 +144,16 @@ namespace Autofac.Features.Variance
             {
                 yield return type.BaseType;
                 foreach (var fromBase in GetBagOfTypesAssignableFrom(type.BaseType))
+                {
                     yield return fromBase;
+                }
             }
             else
             {
                 if (type != typeof(object))
+                {
                     yield return typeof(object);
+                }
             }
 
             foreach (var ifce in type.GetInterfaces())
@@ -147,7 +162,9 @@ namespace Autofac.Features.Variance
                 {
                     yield return ifce;
                     foreach (var fromIfce in GetBagOfTypesAssignableFrom(ifce))
+                    {
                         yield return fromIfce;
+                    }
                 }
             }
         }
@@ -175,7 +192,7 @@ namespace Autofac.Features.Variance
                 }
             }
 
-            contravariantParameterIndex = default(int);
+            contravariantParameterIndex = default;
             return false;
         }
 

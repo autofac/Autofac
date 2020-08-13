@@ -74,7 +74,10 @@ namespace Autofac.Test.Core
             protected CustomDependencyResolutionException(SerializationInfo info, StreamingContext context)
                 : base(info, context)
             {
-                if (info == null) throw new ArgumentNullException(nameof(info));
+                if (info == null)
+                {
+                    throw new ArgumentNullException(nameof(info));
+                }
 
                 Value = info.GetInt32(nameof(Value));
             }

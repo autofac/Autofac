@@ -54,20 +54,24 @@ namespace Autofac.Features.LazyDependencies
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
             if (registrationAccessor == null)
+            {
                 throw new ArgumentNullException(nameof(registrationAccessor));
-
-            var swt = service as IServiceWithType;
+            }
 
             var lazyType = typeof(Lazy<,>);
-            if (swt == null || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
+            if (!(service is IServiceWithType swt) || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
+            {
                 return Enumerable.Empty<IComponentRegistration>();
+            }
 
             var genericTypeArguments = swt.ServiceType.GenericTypeArguments;
             var valueType = genericTypeArguments[0];
             var metaType = genericTypeArguments[1];
 
             if (!metaType.IsClass)
+            {
                 return Enumerable.Empty<IComponentRegistration>();
+            }
 
             var valueService = swt.ChangeType(valueType);
 

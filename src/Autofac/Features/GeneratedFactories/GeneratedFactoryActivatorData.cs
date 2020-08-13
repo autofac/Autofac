@@ -45,11 +45,8 @@ namespace Autofac.Features.GeneratedFactories
         /// <param name="productService">The service used to provide the products of the factory.</param>
         public GeneratedFactoryActivatorData(Type delegateType, Service productService)
         {
-            if (delegateType == null) throw new ArgumentNullException(nameof(delegateType));
-            if (productService == null) throw new ArgumentNullException(nameof(productService));
-
-            _delegateType = delegateType;
-            _productService = productService;
+            _delegateType = delegateType ?? throw new ArgumentNullException(nameof(delegateType));
+            _productService = productService ?? throw new ArgumentNullException(nameof(productService));
         }
 
         /// <summary>

@@ -56,9 +56,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <param name="finder">The finder function.</param>
         public DefaultConstructorFinder(Func<Type, ConstructorInfo[]> finder)
         {
-            if (finder == null) throw new ArgumentNullException(nameof(finder));
-
-            _finder = finder;
+            _finder = finder ?? throw new ArgumentNullException(nameof(finder));
         }
 
         /// <summary>

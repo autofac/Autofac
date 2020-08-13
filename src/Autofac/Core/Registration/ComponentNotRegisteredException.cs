@@ -1,4 +1,4 @@
-// This software is part of the Autofac IoC container
+﻿// This software is part of the Autofac IoC container
 // Copyright © 2011 Autofac Contributors
 // https://autofac.org
 //
@@ -57,7 +57,10 @@ namespace Autofac.Core.Registration
 
         private static string FormatMessage(Service service)
         {
-            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
 
             return string.Format(CultureInfo.CurrentCulture, ComponentNotRegisteredExceptionResources.Message, service);
         }

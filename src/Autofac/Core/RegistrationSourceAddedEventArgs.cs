@@ -42,11 +42,8 @@ namespace Autofac.Core
         /// <exception cref="ArgumentNullException"></exception>
         public RegistrationSourceAddedEventArgs(IComponentRegistryBuilder componentRegistry, IRegistrationSource registrationSource)
         {
-            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
-            if (registrationSource == null) throw new ArgumentNullException(nameof(registrationSource));
-
-            ComponentRegistry = componentRegistry;
-            RegistrationSource = registrationSource;
+            ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
+            RegistrationSource = registrationSource ?? throw new ArgumentNullException(nameof(registrationSource));
         }
 
         /// <summary>

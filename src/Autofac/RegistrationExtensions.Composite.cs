@@ -60,7 +60,10 @@ namespace Autofac
             where TComposite : notnull, TService
             where TService : notnull
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var rb = builder.RegisterType<TComposite>().As<TService>();
 
@@ -90,7 +93,10 @@ namespace Autofac
             Type compositeType,
             Type serviceType)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var rb = builder.RegisterType(compositeType).As(serviceType);
 
@@ -118,7 +124,10 @@ namespace Autofac
             Func<IComponentContext, IEnumerable<Parameter>, IEnumerable<TService>, TService> compositeDelegate)
             where TService : notnull
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var rb = builder.Register((ctxt, p) =>
             {
@@ -176,7 +185,10 @@ namespace Autofac
             Type compositeType,
             Type serviceType)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var rb = builder.RegisterGeneric(compositeType).As(serviceType);
 
