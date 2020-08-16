@@ -24,8 +24,11 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Autofac.Builder;
+using Autofac.Core;
 using Autofac.Features.OpenGenerics;
 
 namespace Autofac
@@ -47,6 +50,30 @@ namespace Autofac
             RegisterGeneric(this ContainerBuilder builder, Type implementer)
         {
             return OpenGenericRegistrationExtensions.RegisterGeneric(builder, implementer);
+        }
+
+        /// <summary>
+        /// Register a delegate that can provide instances of an open generic registration.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="factory">A delegate that receives an array of <see cref="Type"/>, containing the generic type arguments of the requested service.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle>
+            RegisterGeneric(this ContainerBuilder builder, Func<IComponentContext, Type[], object> factory)
+        {
+            return builder.RegisterGeneric((ctxt, parameters, types) => factory(ctxt, types));
+        }
+
+        /// <summary>
+        /// Register a delegate that can provide instances of an open generic registration.
+        /// </summary>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="factory">A delegate that receives an array of <see cref="Type"/>, containing the generic type arguments of the requested service.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle>
+            RegisterGeneric(this ContainerBuilder builder, Func<IComponentContext, IEnumerable<Parameter>, Type[], object> factory)
+        {
+            return OpenGenericRegistrationExtensions.RegisterGeneric(builder, factory);
         }
     }
 }

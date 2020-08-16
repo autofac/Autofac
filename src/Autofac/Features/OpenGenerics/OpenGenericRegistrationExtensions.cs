@@ -24,10 +24,13 @@
 // OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Activators.Delegate;
 
 namespace Autofac.Features.OpenGenerics
 {
@@ -60,6 +63,29 @@ namespace Autofac.Features.OpenGenerics
         }
 
         /// <summary>
+        /// Register an un-parameterised generic type, e.g. Repository&lt;&gt;.
+        /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
+        /// </summary>
+        /// <param name="builder">Container builder.</param>
+        /// <param name="factory">The open generic implementation type.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle>
+            RegisterGeneric(ContainerBuilder builder, Func<IComponentContext, IEnumerable<Parameter>, Type[], object> factory)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            var rb = CreateGenericBuilder(factory);
+
+            rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => cr.AddRegistrationSource(
+                new OpenGenericDelegateRegistrationSource(rb.RegistrationData, rb.ResolvePipeline.Clone(), rb.ActivatorData)));
+
+            return rb;
+        }
+
+        /// <summary>
         /// Creates an un-parameterised generic type, e.g. Repository&lt;&gt;, without registering it.
         /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
         /// </summary>
@@ -81,6 +107,22 @@ namespace Autofac.Features.OpenGenerics
             var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
                 new TypedService(implementer),
                 new ReflectionActivatorData(implementer),
+                new DynamicRegistrationStyle());
+
+            return rb;
+        }
+
+        public static IRegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle>
+            CreateGenericBuilder(Func<IComponentContext, IEnumerable<Parameter>, Type[], object> factory)
+        {
+            if (factory == null)
+            {
+                throw new ArgumentNullException(nameof(factory));
+            }
+
+            var rb = new RegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle>(
+                new TypedService(typeof(object)),
+                new OpenGenericDelegateActivatorData(factory),
                 new DynamicRegistrationStyle());
 
             return rb;
