@@ -147,7 +147,6 @@ namespace Autofac.Test.Features.LightweightAdapters
             [Fact]
             public void ParametersGoToTheDecoratedInstance()
             {
-                _ = new Implementer1();
                 var resolved = _container.Resolve<IParameterizedService>(TypedParameter.From<IService>(new Implementer1()));
                 var dec2 = Assert.IsType<ParameterizedDecorator2>(resolved);
                 Assert.Empty(dec2.Parameters);

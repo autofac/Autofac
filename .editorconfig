@@ -33,8 +33,6 @@ csharp_indent_case_contents_when_block = true
 csharp_indent_switch_labels = true
 csharp_indent_labels = one_less_than_current
 
-csharp_prefer_braces = true
-
 ; Modifier preferences
 csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:suggestion
 
@@ -72,7 +70,6 @@ dotnet_naming_rule.static_readonly_fields_should_be_pascal_case.style    = pasca
 dotnet_naming_symbols.static_readonly_fields.applicable_kinds   = field
 dotnet_naming_symbols.static_readonly_fields.required_modifiers = static, readonly
 dotnet_naming_symbols.static_readonly_fields.applicable_accessibilities = private, internal, private_protected
-
 
 ; Internal and private fields should be _camelCase
 dotnet_naming_rule.camel_case_for_private_internal_fields.severity = suggestion
