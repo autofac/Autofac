@@ -26,11 +26,8 @@ namespace Autofac.Util
         /// </param>
         public AsyncReleaseAction(Func<TLimit, ValueTask> action, Func<TLimit> factory)
         {
-            if (action == null) throw new ArgumentNullException(nameof(action));
-            if (factory == null) throw new ArgumentNullException(nameof(factory));
-
-            _action = action;
-            _factory = factory;
+            _action = action ?? throw new ArgumentNullException(nameof(action));
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         /// <inheritdoc/>

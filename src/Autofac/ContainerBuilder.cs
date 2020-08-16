@@ -123,7 +123,10 @@ namespace Autofac
         /// <param name="configurationCallback">Callback to execute.</param>
         public DeferredCallback RegisterCallback(Action<IComponentRegistryBuilder> configurationCallback)
         {
-            if (configurationCallback == null) throw new ArgumentNullException(nameof(configurationCallback));
+            if (configurationCallback == null)
+            {
+                throw new ArgumentNullException(nameof(configurationCallback));
+            }
 
             var c = new DeferredCallback(configurationCallback);
             _configurationCallbacks.Add(c);
@@ -142,7 +145,10 @@ namespace Autofac
         /// </remarks>
         public ContainerBuilder RegisterBuildCallback(Action<ILifetimeScope> buildCallback)
         {
-            if (buildCallback == null) throw new ArgumentNullException(nameof(buildCallback));
+            if (buildCallback == null)
+            {
+                throw new ArgumentNullException(nameof(buildCallback));
+            }
 
             if (_buildCallbacks == null)
             {
@@ -183,7 +189,9 @@ namespace Autofac
 
             var result = new Container(componentRegistry);
             if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
+            {
                 StartableManager.StartStartableComponents(Properties, result);
+            }
 
             // Run any build callbacks.
             BuildCallbackManager.RunBuildCallbacks(result);
@@ -203,24 +211,37 @@ namespace Autofac
         /// <param name="componentRegistry">An existing registry to make the registrations in.</param>
         internal void UpdateRegistry(IComponentRegistryBuilder componentRegistry)
         {
-            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
+            if (componentRegistry == null)
+            {
+                throw new ArgumentNullException(nameof(componentRegistry));
+            }
+
             Build(componentRegistry, true);
         }
 
         private void Build(IComponentRegistryBuilder componentRegistry, bool excludeDefaultModules)
         {
-            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
+            if (componentRegistry == null)
+            {
+                throw new ArgumentNullException(nameof(componentRegistry));
+            }
 
             if (_wasBuilt)
+            {
                 throw new InvalidOperationException(ContainerBuilderResources.BuildCanOnlyBeCalledOnce);
+            }
 
             _wasBuilt = true;
 
             if (!excludeDefaultModules)
+            {
                 RegisterDefaultAdapters(componentRegistry);
+            }
 
             foreach (var callback in _configurationCallbacks)
+            {
                 callback.Callback(componentRegistry);
+            }
         }
 
         private void RegisterDefaultAdapters(IComponentRegistryBuilder componentRegistry)

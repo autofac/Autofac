@@ -76,7 +76,10 @@ namespace Autofac
         /// <param name="componentRegistry">Component registry to apply configuration to.</param>
         public void Configure(IComponentRegistryBuilder componentRegistry)
         {
-            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
+            if (componentRegistry == null)
+            {
+                throw new ArgumentNullException(nameof(componentRegistry));
+            }
 
             var moduleBuilder = new ContainerBuilder(componentRegistry.Properties);
 
@@ -127,14 +130,22 @@ namespace Autofac
 
         private void AttachToRegistrations(IComponentRegistryBuilder componentRegistry)
         {
-            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
+            if (componentRegistry == null)
+            {
+                throw new ArgumentNullException(nameof(componentRegistry));
+            }
+
             componentRegistry.Registered +=
                 (sender, e) => AttachToComponentRegistration(e.ComponentRegistryBuilder, e.ComponentRegistration);
         }
 
         private void AttachToSources(IComponentRegistryBuilder componentRegistry)
         {
-            if (componentRegistry == null) throw new ArgumentNullException(nameof(componentRegistry));
+            if (componentRegistry == null)
+            {
+                throw new ArgumentNullException(nameof(componentRegistry));
+            }
+
             componentRegistry.RegistrationSourceAdded +=
                 (sender, e) => AttachToRegistrationSource(e.ComponentRegistry, e.RegistrationSource);
         }
@@ -152,7 +163,9 @@ namespace Autofac
                 var thisType = GetType();
                 var baseType = thisType.BaseType;
                 if (baseType != typeof(Module))
+                {
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ModuleResources.ThisAssemblyUnavailable, thisType, baseType));
+                }
 
                 return thisType.Assembly;
             }

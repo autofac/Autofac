@@ -52,10 +52,8 @@ namespace Autofac.Core
         /// </param>
         protected ConstantParameter(object? value, Predicate<ParameterInfo> predicate)
         {
-            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
-
             Value = value;
-            _predicate = predicate;
+            _predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
         }
 
         /// <summary>
@@ -69,8 +67,15 @@ namespace Autofac.Core
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, [NotNullWhen(returnValue: true)] out Func<object?>? valueProvider)
         {
-            if (pi == null) throw new ArgumentNullException(nameof(pi));
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (pi == null)
+            {
+                throw new ArgumentNullException(nameof(pi));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
             if (_predicate(pi))
             {

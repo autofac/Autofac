@@ -152,8 +152,15 @@ namespace Autofac.Features.AttributeFilters
         /// </exception>
         public override object ResolveParameter(ParameterInfo parameter, IComponentContext context)
         {
-            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
             // GetElementType currently is the effective equivalent of "Determine if the type
             // is in IEnumerable and if it is, get the type being enumerated." This doesn't support
@@ -175,8 +182,15 @@ namespace Autofac.Features.AttributeFilters
         /// <returns>true if parameter can be resolved; otherwise, false.</returns>
         public override bool CanResolveParameter(ParameterInfo parameter, IComponentContext context)
         {
-            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
             // GetElementType currently is the effective equivalent of "Determine if the type
             // is in IEnumerable and if it is, get the type being enumerated." This doesn't support

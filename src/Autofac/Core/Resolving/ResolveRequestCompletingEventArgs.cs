@@ -39,7 +39,10 @@ namespace Autofac.Core.Resolving
         /// <param name="requestContext">The resolve request context that is completing.</param>
         public ResolveRequestCompletingEventArgs(ResolveRequestContext requestContext)
         {
-            if (requestContext is null) throw new ArgumentNullException(nameof(requestContext));
+            if (requestContext is null)
+            {
+                throw new ArgumentNullException(nameof(requestContext));
+            }
 
             RequestContext = requestContext;
         }

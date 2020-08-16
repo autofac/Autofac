@@ -80,7 +80,10 @@ namespace Autofac.Features.LightweightAdapters
         private static Service ServiceWithKey<TService>(object? key)
         {
             if (key == null)
+            {
                 return new TypedService(typeof(TService));
+            }
+
             return new KeyedService(key, typeof(TService));
         }
 

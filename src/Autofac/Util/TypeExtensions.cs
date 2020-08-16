@@ -218,7 +218,11 @@ namespace Autofac.Util
 
         private static Type SubstituteGenericParameterConstraint(Type[] parameters, Type constraint)
         {
-            if (!constraint.IsGenericParameter) return constraint;
+            if (!constraint.IsGenericParameter)
+            {
+                return constraint;
+            }
+
             return parameters[constraint.GenericParameterPosition];
         }
 

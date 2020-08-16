@@ -72,7 +72,10 @@ namespace Autofac
         public PositionalParameter(int position, object value)
             : base(value, pi => pi.Position == position && (pi.Member is ConstructorInfo))
         {
-            if (position < 0) throw new ArgumentOutOfRangeException(nameof(position));
+            if (position < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(position));
+            }
 
             Position = position;
         }

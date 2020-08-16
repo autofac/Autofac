@@ -241,7 +241,9 @@ namespace Autofac.Test.Features.OpenGenerics
             var closedServiceType = typeof(TClosedService);
             var registrations = source.RegistrationsFor(new TypedService(closedServiceType), s => Enumerable.Empty<ServiceRegistration>());
             if (registrations.Count() != 1)
+            {
                 return false;
+            }
 
             var registration = registrations.Single();
 

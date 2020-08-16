@@ -109,8 +109,15 @@ namespace Autofac
         /// <returns>A registrar to assist with fluent addition of sources.</returns>
         public static IServiceMiddlewareSourceRegistrar RegisterServiceMiddlewareSource(this ContainerBuilder builder, IServiceMiddlewareSource serviceMiddlewareSource)
         {
-            if (builder is null) throw new ArgumentNullException(nameof(builder));
-            if (serviceMiddlewareSource is null) throw new ArgumentNullException(nameof(serviceMiddlewareSource));
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (serviceMiddlewareSource is null)
+            {
+                throw new ArgumentNullException(nameof(serviceMiddlewareSource));
+            }
 
             var registrar = new ServiceMiddlewareSourceRegistrar(builder);
             return registrar.RegisterServiceMiddlewareSource(serviceMiddlewareSource);

@@ -44,7 +44,7 @@ namespace Autofac.Core
 
         // Need to use a semaphore instead of a simple object to lock on, because
         // we need to synchronise an awaitable block.
-        private SemaphoreSlim _synchRoot = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _synchRoot = new SemaphoreSlim(1, 1);
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
@@ -165,7 +165,10 @@ namespace Autofac.Core
 
         private void AddInternal(object instance)
         {
-            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
 
             if (IsDisposed)
             {

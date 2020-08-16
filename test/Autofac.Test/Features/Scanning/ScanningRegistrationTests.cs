@@ -397,8 +397,8 @@ namespace Autofac.Test.Features.Scanning
         {
             var cb = new ContainerBuilder();
             var config = cb.RegisterAssemblyTypes(ScenarioAssembly);
-            if (configuration != null)
-                configuration(config);
+            configuration?.Invoke(config);
+
             return cb.Build();
         }
 
@@ -416,11 +416,9 @@ namespace Autofac.Test.Features.Scanning
                 .Where(t => t == typeof(ScannedComponentWithName))
                 .WithMetadataFrom<IHaveName>());
 
-            IComponentRegistration r;
-            c.ComponentRegistry.TryGetRegistration(new TypedService(typeof(ScannedComponentWithName)), out r);
+            c.ComponentRegistry.TryGetRegistration(new TypedService(typeof(ScannedComponentWithName)), out IComponentRegistration r);
 
-            object name;
-            r.Metadata.TryGetValue("Name", out name);
+            r.Metadata.TryGetValue("Name", out object name);
 
             Assert.Equal("My Name", name);
         }
@@ -471,7 +469,7 @@ namespace Autofac.Test.Features.Scanning
             // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
             var c = RegisterScenarioAssembly();
             var privateType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+PrivateComponent", true);
-            var internalType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
+            _ = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
             c.AssertRegistered<NestedComponent>();
             Assert.True(c.IsRegistered(privateType));
         }

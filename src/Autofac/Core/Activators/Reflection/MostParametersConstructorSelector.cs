@@ -44,8 +44,15 @@ namespace Autofac.Core.Activators.Reflection
         /// <exception cref='DependencyResolutionException'>A single unambiguous match could not be chosen.</exception>
         public BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters)
         {
-            if (constructorBindings == null) throw new ArgumentNullException(nameof(constructorBindings));
-            if (constructorBindings.Length == 0) throw new ArgumentOutOfRangeException(nameof(constructorBindings));
+            if (constructorBindings == null)
+            {
+                throw new ArgumentNullException(nameof(constructorBindings));
+            }
+
+            if (constructorBindings.Length == 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(constructorBindings));
+            }
 
             if (constructorBindings.Length == 1)
             {

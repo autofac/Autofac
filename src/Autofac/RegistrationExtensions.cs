@@ -55,8 +55,15 @@ namespace Autofac
         /// <param name="registration">The component to add.</param>
         public static void RegisterComponent(this ContainerBuilder builder, IComponentRegistration registration)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             builder.RegisterCallback(cr => cr.Register(registration));
         }
@@ -74,8 +81,15 @@ namespace Autofac
             RegisterInstance<T>(this ContainerBuilder builder, T instance)
             where T : class
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
 
             var activator = new ProvidedInstanceActivator(instance);
 
@@ -127,7 +141,10 @@ namespace Autofac
             RegisterType<TImplementer>(this ContainerBuilder builder)
             where TImplementer : notnull
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var rb = RegistrationBuilder.ForType<TImplementer>();
 
@@ -145,8 +162,15 @@ namespace Autofac
         public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>
             RegisterType(this ContainerBuilder builder, Type implementationType)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (implementationType == null)
+            {
+                throw new ArgumentNullException(nameof(implementationType));
+            }
 
             var rb = RegistrationBuilder.ForType(implementationType);
 
@@ -168,7 +192,10 @@ namespace Autofac
                 Func<IComponentContext, T> @delegate)
             where T : notnull
         {
-            if (@delegate == null) throw new ArgumentNullException(nameof(@delegate));
+            if (@delegate == null)
+            {
+                throw new ArgumentNullException(nameof(@delegate));
+            }
 
             return builder.Register((c, p) => @delegate(c));
         }
@@ -186,8 +213,15 @@ namespace Autofac
                 Func<IComponentContext, IEnumerable<Parameter>, T> @delegate)
             where T : notnull
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (@delegate == null) throw new ArgumentNullException(nameof(@delegate));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (@delegate == null)
+            {
+                throw new ArgumentNullException(nameof(@delegate));
+            }
 
             var rb = RegistrationBuilder.ForDelegate(@delegate);
 
@@ -210,7 +244,10 @@ namespace Autofac
                 this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             registration.RegistrationStyle.PreserveDefaults = true;
             return registration;
@@ -231,7 +268,10 @@ namespace Autofac
                 Func<Type, IEnumerable<KeyValuePair<string, object?>>> metadataMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             registration.ActivatorData.ConfigurationActions.Add((t, rb) => rb.WithMetadata(metadataMapping(t)));
             return registration;
@@ -260,9 +300,15 @@ namespace Autofac
                 var attrs = t.GetCustomAttributes(true).OfType<TAttribute>().ToList();
 
                 if (attrs.Count == 0)
+                {
                     throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MetadataAttributeNotFound, typeof(TAttribute), t));
+                }
+
                 if (attrs.Count != 1)
+                {
                     throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MultipleMetadataAttributesSameType, typeof(TAttribute), t));
+                }
+
                 var attr = attrs[0];
                 return metadataProperties.Select(p => new KeyValuePair<string, object?>(p.Name, p.GetValue(attr, null)));
             });
@@ -285,7 +331,10 @@ namespace Autofac
                 Func<Type, object> metadataValueMapping)
             where TScanningActivatorData : ScanningActivatorData
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             return registration.WithMetadata(t =>
                 new[] { new KeyValuePair<string, object?>(metadataKey, metadataValueMapping(t)) });
@@ -306,10 +355,12 @@ namespace Autofac
                 IConstructorFinder constructorFinder)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (constructorFinder == null) throw new ArgumentNullException(nameof(constructorFinder));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
-            registration.ActivatorData.ConstructorFinder = constructorFinder;
+            registration.ActivatorData.ConstructorFinder = constructorFinder ?? throw new ArgumentNullException(nameof(constructorFinder));
             return registration;
         }
 
@@ -328,7 +379,10 @@ namespace Autofac
                 Func<Type, ConstructorInfo[]> finder)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             return registration.FindConstructorsWith(new DefaultConstructorFinder(finder));
         }
@@ -344,7 +398,10 @@ namespace Autofac
             PropertiesAutowired<TLimit, TActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration, PropertyWiringOptions wiringFlags = PropertyWiringOptions.None)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             var preserveSetValues = (int)(wiringFlags & PropertyWiringOptions.PreserveSetValues) != 0;
             var allowCircularDependencies = (int)(wiringFlags & PropertyWiringOptions.AllowCircularDependencies) != 0;
@@ -365,7 +422,10 @@ namespace Autofac
             this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration,
             Func<PropertyInfo, object, bool> propertySelector)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             return registration.PropertiesAutowired(new DelegatePropertySelector(propertySelector));
         }
@@ -385,13 +445,22 @@ namespace Autofac
                 params Type[] signature)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (signature == null) throw new ArgumentNullException(nameof(signature));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (signature == null)
+            {
+                throw new ArgumentNullException(nameof(signature));
+            }
 
             // Unfortunately this could cause some false positives in rare AOP/dynamic subclassing
             // scenarios. If it becomes a problem we'll address it then.
             if (registration.ActivatorData.ImplementationType.GetMatchingConstructor(signature) == null)
+            {
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.NoMatchingConstructorExists, registration.ActivatorData.ImplementationType));
+            }
 
             return registration.UsingConstructor(new MatchingSignatureConstructorSelector(signature));
         }
@@ -411,10 +480,12 @@ namespace Autofac
                 IConstructorSelector constructorSelector)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (constructorSelector == null) throw new ArgumentNullException(nameof(constructorSelector));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
-            registration.ActivatorData.ConstructorSelector = constructorSelector;
+            registration.ActivatorData.ConstructorSelector = constructorSelector ?? throw new ArgumentNullException(nameof(constructorSelector));
             return registration;
         }
 
@@ -433,8 +504,15 @@ namespace Autofac
                 Expression<Func<TLimit>> constructorSelector)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (constructorSelector == null) throw new ArgumentNullException(nameof(constructorSelector));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (constructorSelector == null)
+            {
+                throw new ArgumentNullException(nameof(constructorSelector));
+            }
 
             var constructor = ReflectionExtensions.GetConstructor(constructorSelector);
             var parameterTypes = constructor.GetParameters().Select(p => p.ParameterType).ToArray();
@@ -476,8 +554,15 @@ namespace Autofac
                 Parameter parameter)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
 
             registration.ActivatorData.ConfiguredParameters.Add(parameter);
             return registration;
@@ -500,8 +585,15 @@ namespace Autofac
                 Func<ParameterInfo, IComponentContext, object?> valueProvider)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (parameterSelector == null) throw new ArgumentNullException(nameof(parameterSelector));
-            if (valueProvider == null) throw new ArgumentNullException(nameof(valueProvider));
+            if (parameterSelector == null)
+            {
+                throw new ArgumentNullException(nameof(parameterSelector));
+            }
+
+            if (valueProvider == null)
+            {
+                throw new ArgumentNullException(nameof(valueProvider));
+            }
 
             return registration.WithParameter(
                 new ResolvedParameter(parameterSelector, valueProvider));
@@ -522,10 +614,15 @@ namespace Autofac
                 IEnumerable<Parameter> parameters)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
 
             foreach (var param in parameters)
+            {
                 registration.WithParameter(param);
+            }
 
             return registration;
         }
@@ -565,8 +662,15 @@ namespace Autofac
                 Parameter property)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (property == null) throw new ArgumentNullException(nameof(property));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (property == null)
+            {
+                throw new ArgumentNullException(nameof(property));
+            }
 
             registration.ActivatorData.ConfiguredProperties.Add(property);
             return registration;
@@ -590,13 +694,26 @@ namespace Autofac
                 TProperty propertyValue)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (propertyExpression == null) throw new ArgumentNullException(nameof(propertyExpression));
-            if (propertyValue == null) throw new ArgumentNullException(nameof(propertyValue));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (propertyExpression == null)
+            {
+                throw new ArgumentNullException(nameof(propertyExpression));
+            }
+
+            if (propertyValue == null)
+            {
+                throw new ArgumentNullException(nameof(propertyValue));
+            }
 
             var propertyInfo = (propertyExpression.Body as MemberExpression)?.Member as PropertyInfo;
             if (propertyInfo == null)
+            {
                 throw new ArgumentOutOfRangeException(nameof(propertyExpression), RegistrationExtensionsResources.ExpressionDoesNotReferToProperty);
+            }
 
             return registration.WithProperty(new NamedPropertyParameter(propertyInfo.Name, propertyValue));
         }
@@ -616,11 +733,20 @@ namespace Autofac
                 IEnumerable<Parameter> properties)
             where TReflectionActivatorData : ReflectionActivatorData
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (properties == null) throw new ArgumentNullException(nameof(properties));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (properties == null)
+            {
+                throw new ArgumentNullException(nameof(properties));
+            }
 
             foreach (var prop in properties)
+            {
                 registration.WithProperty(prop);
+            }
 
             return registration;
         }
@@ -645,8 +771,15 @@ namespace Autofac
                 IComponentRegistration target)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (target == null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
 
             registration.RegistrationStyle.Target = target.Target;
 
@@ -681,7 +814,10 @@ namespace Autofac
             AutoActivate<TLimit, TActivatorData, TRegistrationStyle>(
             this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             registration.RegistrationData.AddService(new AutoActivateService());
             return registration;
@@ -705,7 +841,10 @@ namespace Autofac
             InstancePerRequest<TLimit, TActivatorData, TStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration, params object[] lifetimeScopeTags)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             var tags = new[] { MatchingScopeLifetimeTags.RequestLifetimeScopeTag }.Concat(lifetimeScopeTags).ToArray();
             return registration.InstancePerMatchingLifetimeScope(tags);

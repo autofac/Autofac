@@ -124,7 +124,9 @@ namespace Autofac.Features.OpenGenerics
         private static Type[] TryMapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
         {
             if (serviceTypeDefinition == implementationType)
+            {
                 return serviceGenericArguments;
+            }
 
             var implementationGenericArgumentDefinitions = implementationType.GetGenericArguments();
             var serviceArgumentDefinitions = serviceType.IsInterface ?
@@ -161,7 +163,9 @@ namespace Autofac.Features.OpenGenerics
                 .FirstOrDefault();
 
             if (matchingRegularType != null)
+            {
                 return matchingRegularType;
+            }
 
             return serviceArgumentDefinitionToArgument
                 .Where(argdef => argdef.Key.IsGenericType && argdef.Value.GenericTypeArguments.Length > 0)
@@ -178,8 +182,15 @@ namespace Autofac.Features.OpenGenerics
         /// <param name="services">The set of open generic services.</param>
         public static void EnforceBindable(Type implementationType, IEnumerable<Service> services)
         {
-            if (implementationType == null) throw new ArgumentNullException(nameof(implementationType));
-            if (services == null) throw new ArgumentNullException(nameof(services));
+            if (implementationType == null)
+            {
+                throw new ArgumentNullException(nameof(implementationType));
+            }
+
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
 
             if (!implementationType.IsGenericTypeDefinition)
             {
@@ -198,12 +209,16 @@ namespace Autofac.Features.OpenGenerics
                 if (service.ServiceType.IsInterface)
                 {
                     if (GetInterface(implementationType, service.ServiceType) == null)
+                    {
                         throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.InterfaceIsNotImplemented, implementationType, service));
+                    }
                 }
                 else
                 {
                     if (!Traverse.Across(implementationType, t => t.BaseType).Any(t => IsCompatibleGenericClassDefinition(t, service.ServiceType)))
+                    {
                         throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.TypesAreNotConvertible, implementationType, service));
+                    }
                 }
             }
         }

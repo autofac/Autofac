@@ -24,7 +24,10 @@ namespace Autofac.Test.Features.LightweightAdapters
             {
                 var builder = new ContainerBuilder();
                 foreach (var command in _commands)
+                {
                     builder.RegisterInstance(command);
+                }
+
                 builder.RegisterAdapter<Command, ToolbarButton>(cmd => new ToolbarButton(cmd))
                     .As<IToolbarButton>();
                 var container = builder.Build();
@@ -120,17 +123,12 @@ namespace Autofac.Test.Features.LightweightAdapters
 
         public class Decorator : IService
         {
-            private readonly IService _decorated;
-
             public Decorator(IService decorated)
             {
-                _decorated = decorated;
+                Decorated = decorated;
             }
 
-            public IService Decorated
-            {
-                get { return _decorated; }
-            }
+            public IService Decorated { get; }
         }
 
         public class DecoratorParameterization
@@ -149,7 +147,6 @@ namespace Autofac.Test.Features.LightweightAdapters
             [Fact]
             public void ParametersGoToTheDecoratedInstance()
             {
-                var expected = new Implementer1();
                 var resolved = _container.Resolve<IParameterizedService>(TypedParameter.From<IService>(new Implementer1()));
                 var dec2 = Assert.IsType<ParameterizedDecorator2>(resolved);
                 Assert.Empty(dec2.Parameters);
@@ -168,7 +165,7 @@ namespace Autofac.Test.Features.LightweightAdapters
             {
                 public ParameterizedImplementer(IEnumerable<Parameter> parameters)
                 {
-                    this.Parameters = parameters;
+                    Parameters = parameters;
                 }
 
                 public IEnumerable<Parameter> Parameters { get; }
@@ -178,8 +175,8 @@ namespace Autofac.Test.Features.LightweightAdapters
             {
                 public ParameterizedDecorator1(IParameterizedService implementer, IEnumerable<Parameter> parameters)
                 {
-                    this.Implementer = implementer;
-                    this.Parameters = parameters;
+                    Implementer = implementer;
+                    Parameters = parameters;
                 }
 
                 public IParameterizedService Implementer { get; }
@@ -191,8 +188,8 @@ namespace Autofac.Test.Features.LightweightAdapters
             {
                 public ParameterizedDecorator2(IParameterizedService implementer, IEnumerable<Parameter> parameters)
                 {
-                    this.Implementer = implementer;
-                    this.Parameters = parameters;
+                    Implementer = implementer;
+                    Parameters = parameters;
                 }
 
                 public IParameterizedService Implementer { get; }

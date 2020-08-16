@@ -47,16 +47,11 @@ namespace Autofac.Core
         /// <param name="instance">The instance.</param>
         public ActivatingEventArgs(IComponentContext context, Service service, IComponentRegistration component, IEnumerable<Parameter> parameters, T instance)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            if (component == null) throw new ArgumentNullException(nameof(component));
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
-            if (instance == null) throw new ArgumentNullException(nameof(instance));
-
             Service = service;
-            Context = context;
-            Component = component;
-            Parameters = parameters;
-            _instance = instance;
+            Context = context ?? throw new ArgumentNullException(nameof(context));
+            Component = component ?? throw new ArgumentNullException(nameof(component));
+            Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
+            _instance = instance ?? throw new ArgumentNullException(nameof(instance));
         }
 
         /// <summary>
@@ -89,7 +84,11 @@ namespace Autofac.Core
 
             set
             {
-                if (value == null) throw new ArgumentNullException(nameof(value));
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+
                 _instance = value;
             }
         }

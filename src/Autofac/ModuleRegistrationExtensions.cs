@@ -50,7 +50,10 @@ namespace Autofac
         /// </returns>
         public static IModuleRegistrar RegisterAssemblyModules(this ContainerBuilder builder, params Assembly[] assemblies)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var registrar = new ModuleRegistrar(builder);
             return registrar.RegisterAssemblyModules<IModule>(assemblies);
@@ -70,7 +73,10 @@ namespace Autofac
         /// </returns>
         public static IModuleRegistrar RegisterAssemblyModules(this IModuleRegistrar registrar, params Assembly[] assemblies)
         {
-            if (registrar == null) throw new ArgumentNullException(nameof(registrar));
+            if (registrar == null)
+            {
+                throw new ArgumentNullException(nameof(registrar));
+            }
 
             return registrar.RegisterAssemblyModules<IModule>(assemblies);
         }
@@ -91,7 +97,10 @@ namespace Autofac
         public static IModuleRegistrar RegisterAssemblyModules<TModule>(this ContainerBuilder builder, params Assembly[] assemblies)
             where TModule : IModule
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var registrar = new ModuleRegistrar(builder);
             return registrar.RegisterAssemblyModules(typeof(TModule), assemblies);
@@ -113,7 +122,10 @@ namespace Autofac
         public static IModuleRegistrar RegisterAssemblyModules<TModule>(this IModuleRegistrar registrar, params Assembly[] assemblies)
             where TModule : IModule
         {
-            if (registrar == null) throw new ArgumentNullException(nameof(registrar));
+            if (registrar == null)
+            {
+                throw new ArgumentNullException(nameof(registrar));
+            }
 
             return registrar.RegisterAssemblyModules(typeof(TModule), assemblies);
         }
@@ -133,8 +145,15 @@ namespace Autofac
         /// </returns>
         public static IModuleRegistrar RegisterAssemblyModules(this ContainerBuilder builder, Type moduleType, params Assembly[] assemblies)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (moduleType == null) throw new ArgumentNullException(nameof(moduleType));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (moduleType == null)
+            {
+                throw new ArgumentNullException(nameof(moduleType));
+            }
 
             var registrar = new ModuleRegistrar(builder);
             return registrar.RegisterAssemblyModules(moduleType, assemblies);
@@ -155,8 +174,15 @@ namespace Autofac
         /// </returns>
         public static IModuleRegistrar RegisterAssemblyModules(this IModuleRegistrar registrar, Type moduleType, params Assembly[] assemblies)
         {
-            if (registrar == null) throw new ArgumentNullException(nameof(registrar));
-            if (moduleType == null) throw new ArgumentNullException(nameof(moduleType));
+            if (registrar == null)
+            {
+                throw new ArgumentNullException(nameof(registrar));
+            }
+
+            if (moduleType == null)
+            {
+                throw new ArgumentNullException(nameof(moduleType));
+            }
 
             var moduleFinder = new ContainerBuilder();
 
@@ -190,7 +216,10 @@ namespace Autofac
         public static IModuleRegistrar RegisterModule<TModule>(this ContainerBuilder builder)
             where TModule : IModule, new()
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var registrar = new ModuleRegistrar(builder);
             return registrar.RegisterModule<TModule>();
@@ -211,7 +240,10 @@ namespace Autofac
         public static IModuleRegistrar RegisterModule<TModule>(this IModuleRegistrar registrar)
             where TModule : IModule, new()
         {
-            if (registrar == null) throw new ArgumentNullException(nameof(registrar));
+            if (registrar == null)
+            {
+                throw new ArgumentNullException(nameof(registrar));
+            }
 
             return registrar.RegisterModule(new TModule());
         }
@@ -230,8 +262,15 @@ namespace Autofac
         /// </returns>
         public static IModuleRegistrar RegisterModule(this ContainerBuilder builder, IModule module)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (module == null) throw new ArgumentNullException(nameof(module));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (module == null)
+            {
+                throw new ArgumentNullException(nameof(module));
+            }
 
             var registrar = new ModuleRegistrar(builder);
             return registrar.RegisterModule(module);

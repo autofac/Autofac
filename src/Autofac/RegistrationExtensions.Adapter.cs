@@ -56,8 +56,15 @@ namespace Autofac
             where TFrom : notnull
             where TTo : notnull
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (adapter == null) throw new ArgumentNullException(nameof(adapter));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (adapter == null)
+            {
+                throw new ArgumentNullException(nameof(adapter));
+            }
 
             return LightweightAdapterRegistrationExtensions.RegisterAdapter(builder, adapter);
         }
@@ -80,8 +87,15 @@ namespace Autofac
             where TFrom : notnull
             where TTo : notnull
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (adapter == null) throw new ArgumentNullException(nameof(adapter));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (adapter == null)
+            {
+                throw new ArgumentNullException(nameof(adapter));
+            }
 
             return builder.RegisterAdapter<TFrom, TTo>((c, p, f) => adapter(c, f));
         }
@@ -104,8 +118,15 @@ namespace Autofac
             where TFrom : notnull
             where TTo : notnull
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (adapter == null) throw new ArgumentNullException(nameof(adapter));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (adapter == null)
+            {
+                throw new ArgumentNullException(nameof(adapter));
+            }
 
             return builder.RegisterAdapter<TFrom, TTo>((c, p, f) => adapter(f));
         }

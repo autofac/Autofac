@@ -131,7 +131,10 @@ namespace Autofac.Core.Registration
         /// <inheritdoc />
         public void AddRegistrationSource(IRegistrationSource source)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
 
             _dynamicRegistrationSources.Insert(0, source);
 
@@ -160,7 +163,10 @@ namespace Autofac.Core.Registration
         /// <inheritdoc />
         public bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration)
         {
-            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
 
             var info = GetInitializedServiceInfo(service);
             return info.TryGetRegistration(out registration);
@@ -169,7 +175,10 @@ namespace Autofac.Core.Registration
         /// <inheritdoc/>
         public bool TryGetServiceRegistration(Service service, out ServiceRegistration serviceData)
         {
-            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
 
             var info = GetInitializedServiceInfo(service);
 
@@ -186,7 +195,10 @@ namespace Autofac.Core.Registration
         /// <inheritdoc />
         public bool IsRegistered(Service service)
         {
-            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
 
             return GetInitializedServiceInfo(service).IsRegistered;
         }
@@ -194,7 +206,10 @@ namespace Autofac.Core.Registration
         /// <inheritdoc />
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
         {
-            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
 
             var info = GetInitializedServiceInfo(service);
             return info.Implementations.ToList();
@@ -203,7 +218,10 @@ namespace Autofac.Core.Registration
         /// <inheritdoc/>
         public IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service)
         {
-            if (service == null) throw new ArgumentNullException(nameof(service));
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
 
             var info = GetInitializedServiceInfo(service);
 
@@ -224,7 +242,9 @@ namespace Autofac.Core.Registration
         protected override void Dispose(bool disposing)
         {
             foreach (var registration in _registrations)
+            {
                 registration.Dispose();
+            }
 
             base.Dispose(disposing);
         }
@@ -265,7 +285,10 @@ namespace Autofac.Core.Registration
                         foreach (var additionalService in provided.Services)
                         {
                             var additionalInfo = GetServiceInfo(additionalService);
-                            if (additionalInfo.IsInitialized || additionalInfo == info) continue;
+                            if (additionalInfo.IsInitialized || additionalInfo == info)
+                            {
+                                continue;
+                            }
 
                             if (!additionalInfo.IsInitializing)
                             {

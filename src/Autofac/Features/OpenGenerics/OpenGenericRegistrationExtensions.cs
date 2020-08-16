@@ -46,7 +46,10 @@ namespace Autofac.Features.OpenGenerics
         public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
             RegisterGeneric(ContainerBuilder builder, Type implementer)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             var rb = CreateGenericBuilder(implementer);
 
@@ -65,10 +68,15 @@ namespace Autofac.Features.OpenGenerics
         public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
             CreateGenericBuilder(Type implementer)
         {
-            if (implementer == null) throw new ArgumentNullException(nameof(implementer));
+            if (implementer == null)
+            {
+                throw new ArgumentNullException(nameof(implementer));
+            }
 
             if (!implementer.IsGenericTypeDefinition)
+            {
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericRegistrationExtensionsResources.ImplementorMustBeOpenGenericType, implementer));
+            }
 
             var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
                 new TypedService(implementer),
@@ -91,9 +99,20 @@ namespace Autofac.Features.OpenGenerics
         public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
             RegisterGenericDecorator(ContainerBuilder builder, Type decoratorType, Type decoratedServiceType, object fromKey, object? toKey)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-            if (decoratorType == null) throw new ArgumentNullException(nameof(decoratorType));
-            if (decoratedServiceType == null) throw new ArgumentNullException(nameof(decoratedServiceType));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            if (decoratorType == null)
+            {
+                throw new ArgumentNullException(nameof(decoratorType));
+            }
+
+            if (decoratedServiceType == null)
+            {
+                throw new ArgumentNullException(nameof(decoratedServiceType));
+            }
 
             var rb = new RegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>(
                 (Service)GetServiceWithKey(decoratedServiceType, toKey),
@@ -109,7 +128,10 @@ namespace Autofac.Features.OpenGenerics
         private static IServiceWithType GetServiceWithKey(Type serviceType, object? key)
         {
             if (key == null)
+            {
                 return new TypedService(serviceType);
+            }
+
             return new KeyedService(key, serviceType);
         }
     }

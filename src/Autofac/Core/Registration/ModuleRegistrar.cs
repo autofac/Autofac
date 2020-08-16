@@ -50,9 +50,7 @@ namespace Autofac.Core.Registration
         /// </exception>
         public ModuleRegistrar(ContainerBuilder builder)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
-
-            _builder = builder;
+            _builder = builder ?? throw new ArgumentNullException(nameof(builder));
         }
 
         /// <summary>
@@ -68,7 +66,10 @@ namespace Autofac.Core.Registration
         /// </exception>
         public IModuleRegistrar RegisterModule(IModule module)
         {
-            if (module == null) throw new ArgumentNullException(nameof(module));
+            if (module == null)
+            {
+                throw new ArgumentNullException(nameof(module));
+            }
 
             _builder.RegisterCallback(module.Configure);
             return this;

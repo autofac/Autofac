@@ -52,7 +52,10 @@ namespace Autofac.Core.Activators.ProvidedInstance
         /// <inheritdoc/>
         public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)
         {
-            if (pipelineBuilder is null) throw new ArgumentNullException(nameof(pipelineBuilder));
+            if (pipelineBuilder is null)
+            {
+                throw new ArgumentNullException(nameof(pipelineBuilder));
+            }
 
             pipelineBuilder.Use(this.DisplayName(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
             {
@@ -67,7 +70,9 @@ namespace Autofac.Core.Activators.ProvidedInstance
             CheckNotDisposed();
 
             if (_activated)
+            {
                 throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, _instance.GetType()));
+            }
 
             _activated = true;
 
@@ -101,7 +106,10 @@ namespace Autofac.Core.Activators.ProvidedInstance
         [SuppressMessage("CA2222", "CA2222", Justification = "False positive. GetType doesn't hide an inherited member.")]
         private static Type GetType(object instance)
         {
-            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
 
             return instance.GetType();
         }

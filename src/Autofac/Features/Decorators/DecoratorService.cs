@@ -61,7 +61,10 @@ namespace Autofac.Features.Decorators
         /// <inheritdoc />
         public Service ChangeType(Type newType)
         {
-            if (newType == null) throw new ArgumentNullException(nameof(newType));
+            if (newType == null)
+            {
+                throw new ArgumentNullException(nameof(newType));
+            }
 
             return new DecoratorService(newType, Condition);
         }
@@ -69,16 +72,32 @@ namespace Autofac.Features.Decorators
         /// <inheritdoc />
         public bool Equals(DecoratorService other)
         {
-            if (other is null) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (other is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             return ServiceType == other.ServiceType;
         }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (obj is null) return false;
-            if (ReferenceEquals(this, obj)) return true;
+            if (obj is null)
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
             return obj.GetType() == GetType() && Equals((DecoratorService)obj);
         }
 

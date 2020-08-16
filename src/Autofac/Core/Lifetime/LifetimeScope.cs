@@ -137,7 +137,10 @@ namespace Autofac.Core.Lifetime
 
         private void CheckTagIsUnique(object tag)
         {
-            if (ReferenceEquals(tag, _anonymousTag)) return;
+            if (ReferenceEquals(tag, _anonymousTag))
+            {
+                return;
+            }
 
             ISharingLifetimeScope parentScope = this;
             while (parentScope != RootLifetimeScope)
@@ -213,7 +216,10 @@ namespace Autofac.Core.Lifetime
         /// </example>
         public ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction)
         {
-            if (configurationAction == null) throw new ArgumentNullException(nameof(configurationAction));
+            if (configurationAction == null)
+            {
+                throw new ArgumentNullException(nameof(configurationAction));
+            }
 
             CheckNotDisposed();
             CheckTagIsUnique(tag);
@@ -260,7 +266,9 @@ namespace Autofac.Core.Lifetime
             foreach (var source in ComponentRegistry.Sources)
             {
                 if (source.IsAdapterForIndividualComponents)
+                {
                     builder.RegisterSource(source);
+                }
             }
 
             // Issue #272: Only the most nested parent registry with HasLocalComponents is registered as an external source
@@ -292,7 +300,10 @@ namespace Autofac.Core.Lifetime
         /// <inheritdoc />
         public object ResolveComponent(ResolveRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
 
             CheckNotDisposed();
 
@@ -315,14 +326,23 @@ namespace Autofac.Core.Lifetime
         /// <inheritdoc />
         public object CreateSharedInstance(Guid id, Func<object> creator)
         {
-            if (creator == null) throw new ArgumentNullException(nameof(creator));
+            if (creator == null)
+            {
+                throw new ArgumentNullException(nameof(creator));
+            }
+
             lock (_synchRoot)
             {
-                if (_sharedInstances.TryGetValue(id, out var result)) return result;
+                if (_sharedInstances.TryGetValue(id, out var result))
+                {
+                    return result;
+                }
 
                 result = creator();
                 if (_sharedInstances.ContainsKey(id))
+                {
                     throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
+                }
 
                 _sharedInstances.TryAdd(id, result);
 
@@ -333,7 +353,11 @@ namespace Autofac.Core.Lifetime
         /// <inheritdoc/>
         public object CreateSharedInstance(Guid primaryId, Guid? qualifyingId, Func<object> creator)
         {
-            if (creator == null) throw new ArgumentNullException(nameof(creator));
+            if (creator == null)
+            {
+                throw new ArgumentNullException(nameof(creator));
+            }
+
             if (qualifyingId == null)
             {
                 return CreateSharedInstance(primaryId, creator);
@@ -343,11 +367,16 @@ namespace Autofac.Core.Lifetime
             {
                 var instanceKey = (primaryId, qualifyingId.Value);
 
-                if (_sharedQualifiedInstances.TryGetValue(instanceKey, out var result)) return result;
+                if (_sharedQualifiedInstances.TryGetValue(instanceKey, out var result))
+                {
+                    return result;
+                }
 
                 result = creator();
                 if (_sharedQualifiedInstances.ContainsKey(instanceKey))
+                {
                     throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
+                }
 
                 _sharedQualifiedInstances.TryAdd(instanceKey, result);
 
@@ -439,7 +468,9 @@ namespace Autofac.Core.Lifetime
         private void CheckNotDisposed()
         {
             if (IsTreeDisposed())
+            {
                 throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
+            }
         }
 
         /// <summary>
@@ -463,7 +494,10 @@ namespace Autofac.Core.Lifetime
         /// </returns>
         public object? GetService(Type serviceType)
         {
-            if (serviceType == null) throw new ArgumentNullException(nameof(serviceType));
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
 
             return this.ResolveOptional(serviceType);
         }

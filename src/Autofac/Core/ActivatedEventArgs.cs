@@ -48,17 +48,11 @@ namespace Autofac.Core
             IEnumerable<Parameter> parameters,
             T instance)
         {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-            if (component == null) throw new ArgumentNullException(nameof(component));
-            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
-            if (instance == null) throw new ArgumentNullException(nameof(instance));
-            if (service == null) throw new ArgumentNullException(nameof(service));
-
-            Context = context;
-            Component = component;
-            Parameters = parameters;
-            Instance = instance;
-            Service = service;
+            Context = context ?? throw new ArgumentNullException(nameof(context));
+            Component = component ?? throw new ArgumentNullException(nameof(component));
+            Parameters = parameters ?? throw new ArgumentNullException(nameof(parameters));
+            Instance = instance ?? throw new ArgumentNullException(nameof(instance));
+            Service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         /// <summary>

@@ -43,9 +43,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <param name="signature">Signature to match.</param>
         public MatchingSignatureConstructorSelector(params Type[] signature)
         {
-            if (signature == null) throw new ArgumentNullException(nameof(signature));
-
-            _signature = signature;
+            _signature = signature ?? throw new ArgumentNullException(nameof(signature));
         }
 
         /// <summary>
@@ -56,7 +54,10 @@ namespace Autofac.Core.Activators.Reflection
         /// <returns>The best constructor.</returns>
         public BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters)
         {
-            if (constructorBindings == null) throw new ArgumentNullException(nameof(constructorBindings));
+            if (constructorBindings == null)
+            {
+                throw new ArgumentNullException(nameof(constructorBindings));
+            }
 
             var matchingCount = 0;
             var validCount = 0;

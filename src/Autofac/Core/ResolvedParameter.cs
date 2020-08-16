@@ -45,11 +45,8 @@ namespace Autofac.Core
         /// <param name="valueAccessor">A function that supplies the parameter value given the context.</param>
         public ResolvedParameter(Func<ParameterInfo, IComponentContext, bool> predicate, Func<ParameterInfo, IComponentContext, object?> valueAccessor)
         {
-            if (predicate == null) throw new ArgumentNullException(nameof(predicate));
-            if (valueAccessor == null) throw new ArgumentNullException(nameof(valueAccessor));
-
-            _predicate = predicate;
-            _valueAccessor = valueAccessor;
+            _predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
+            _valueAccessor = valueAccessor ?? throw new ArgumentNullException(nameof(valueAccessor));
         }
 
         /// <summary>
@@ -63,8 +60,15 @@ namespace Autofac.Core
         /// <returns>True if a value can be supplied; otherwise, false.</returns>
         public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, [NotNullWhen(returnValue: true)] out Func<object?>? valueProvider)
         {
-            if (pi == null) throw new ArgumentNullException(nameof(pi));
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (pi == null)
+            {
+                throw new ArgumentNullException(nameof(pi));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
             if (_predicate(pi, context))
             {
@@ -88,7 +92,10 @@ namespace Autofac.Core
         /// </remarks>
         public static ResolvedParameter ForNamed<TService>(string serviceName)
         {
-            if (serviceName == null) throw new ArgumentNullException(nameof(serviceName));
+            if (serviceName == null)
+            {
+                throw new ArgumentNullException(nameof(serviceName));
+            }
 
             return ForKeyed<TService>(serviceName);
         }
@@ -103,7 +110,10 @@ namespace Autofac.Core
         /// <returns>A configured <see cref="ResolvedParameter"/> instance.</returns>
         public static ResolvedParameter ForKeyed<TService>(object serviceKey)
         {
-            if (serviceKey == null) throw new ArgumentNullException(nameof(serviceKey));
+            if (serviceKey == null)
+            {
+                throw new ArgumentNullException(nameof(serviceKey));
+            }
 
             var ks = new KeyedService(serviceKey, typeof(TService));
             return new ResolvedParameter(

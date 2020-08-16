@@ -42,7 +42,6 @@ namespace Autofac.Core.Registration
     {
         private volatile bool _isInitialized;
 
-        [SuppressMessage("Microsoft.Performance", "CA1823:AvoidUnusedPrivateFields", Justification = "The _service field is useful in debugging and diagnostics.")]
         private readonly Service _service;
 
         private IComponentRegistration? _fixedRegistration;
@@ -233,7 +232,9 @@ namespace Autofac.Core.Registration
             else
             {
                 if (originatedFromSource)
+                {
                     throw new ArgumentOutOfRangeException(nameof(originatedFromSource));
+                }
 
                 _defaultImplementations.Add(registration);
             }
@@ -335,7 +336,9 @@ namespace Autofac.Core.Registration
         private void EnforceDuringInitialization()
         {
             if (!IsInitializing)
+            {
                 throw new InvalidOperationException(ServiceRegistrationInfoResources.NotDuringInitialization);
+            }
         }
 
         /// <summary>
@@ -359,6 +362,12 @@ namespace Autofac.Core.Registration
 
             IsInitialized = true;
             _sourcesToQuery = null;
+        }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return _service.ToString();
         }
 
         private IResolvePipeline BuildPipeline()

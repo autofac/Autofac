@@ -130,8 +130,15 @@ namespace Autofac.Features.AttributeFilters
         /// </exception>
         public override object? ResolveParameter(ParameterInfo parameter, IComponentContext context)
         {
-            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
             context.TryResolveKeyed(Key, parameter.ParameterType, out var value);
             return value;
@@ -145,8 +152,16 @@ namespace Autofac.Features.AttributeFilters
         /// <returns>true if parameter can be resolved; otherwise, false.</returns>
         public override bool CanResolveParameter(ParameterInfo parameter, IComponentContext context)
         {
-            if (parameter == null) throw new ArgumentNullException(nameof(parameter));
-            if (context == null) throw new ArgumentNullException(nameof(context));
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             return context.ComponentRegistry.IsRegistered(new KeyedService(Key, parameter.ParameterType));
         }
     }

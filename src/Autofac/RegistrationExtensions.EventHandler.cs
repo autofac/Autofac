@@ -56,8 +56,15 @@ namespace Autofac
                 Action<ComponentRegisteredEventArgs> handler)
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (handler == null) throw new ArgumentNullException(nameof(handler));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
 
             registration.RegistrationStyle.RegisteredHandlers.Add((s, e) => handler(e));
 
@@ -77,8 +84,15 @@ namespace Autofac
                 this IRegistrationBuilder<TLimit, ScanningActivatorData, TRegistrationStyle> registration,
                 Action<ComponentRegisteredEventArgs> handler)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (handler == null) throw new ArgumentNullException(nameof(handler));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (handler == null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
 
             registration.ActivatorData.ConfigurationActions.Add((t, rb) => rb.OnRegistered(handler));
 
@@ -100,8 +114,15 @@ namespace Autofac
                 this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration,
                 Action<TLimit> releaseAction)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (releaseAction == null) throw new ArgumentNullException(nameof(releaseAction));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (releaseAction == null)
+            {
+                throw new ArgumentNullException(nameof(releaseAction));
+            }
 
             // Issue #677: We can't use the standard .OnActivating() handler
             // mechanism because it creates a strongly-typed "clone" of the
@@ -143,8 +164,15 @@ namespace Autofac
                 this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration,
                 Func<TLimit, ValueTask> releaseAction)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
-            if (releaseAction == null) throw new ArgumentNullException(nameof(releaseAction));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (releaseAction == null)
+            {
+                throw new ArgumentNullException(nameof(releaseAction));
+            }
 
             registration.ExternallyOwned();
 

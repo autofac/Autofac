@@ -45,7 +45,10 @@ namespace Autofac.Core.Lifetime
         /// <returns>The scope for the component.</returns>
         public ISharingLifetimeScope FindScope(ISharingLifetimeScope mostNestedVisibleScope)
         {
-            if (mostNestedVisibleScope == null) throw new ArgumentNullException(nameof(mostNestedVisibleScope));
+            if (mostNestedVisibleScope == null)
+            {
+                throw new ArgumentNullException(nameof(mostNestedVisibleScope));
+            }
 
             return mostNestedVisibleScope.RootLifetimeScope;
         }

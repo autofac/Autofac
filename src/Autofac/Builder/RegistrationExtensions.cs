@@ -51,7 +51,10 @@ namespace Autofac.Builder
         public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType)
         {
-            if (delegateType == null) throw new ArgumentNullException(nameof(delegateType));
+            if (delegateType == null)
+            {
+                throw new ArgumentNullException(nameof(delegateType));
+            }
 
             Enforce.ArgumentTypeIsFunction(delegateType);
 
@@ -71,7 +74,10 @@ namespace Autofac.Builder
         public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
             RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType, Service service)
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<Delegate>(builder, delegateType, service);
         }
@@ -89,7 +95,10 @@ namespace Autofac.Builder
             RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder, Service service)
             where TDelegate : class
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             return GeneratedFactoryRegistrationExtensions.RegisterGeneratedFactory<TDelegate>(builder, typeof(TDelegate), service);
         }
@@ -106,7 +115,10 @@ namespace Autofac.Builder
             RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder)
             where TDelegate : class
         {
-            if (builder == null) throw new ArgumentNullException(nameof(builder));
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
 
             Enforce.ArgumentTypeIsFunction(typeof(TDelegate));
 
@@ -132,7 +144,10 @@ namespace Autofac.Builder
             where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             registration.ActivatorData.ParameterMapping = ParameterMapping.ByName;
             return registration;
@@ -156,7 +171,10 @@ namespace Autofac.Builder
             where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             registration.ActivatorData.ParameterMapping = ParameterMapping.ByPosition;
             return registration;
@@ -180,7 +198,10 @@ namespace Autofac.Builder
             where TGeneratedFactoryActivatorData : GeneratedFactoryActivatorData
             where TSingleRegistrationStyle : SingleRegistrationStyle
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             registration.ActivatorData.ParameterMapping = ParameterMapping.ByType;
             return registration;

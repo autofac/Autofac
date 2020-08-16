@@ -46,7 +46,9 @@ namespace Autofac.Util
         {
             var wasDisposed = Interlocked.Exchange(ref _isDisposed, DisposedFlag);
             if (wasDisposed == DisposedFlag)
+            {
                 return;
+            }
 
             Dispose(true);
             GC.SuppressFinalize(this);
@@ -90,7 +92,7 @@ namespace Autofac.Util
                 return DisposeAsync(true);
             }
 
-            return default(ValueTask);
+            return default;
         }
 
         /// <summary>

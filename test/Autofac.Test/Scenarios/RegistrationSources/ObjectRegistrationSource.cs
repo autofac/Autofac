@@ -24,7 +24,9 @@ namespace Autofac.Test.Scenarios.RegistrationSources
         {
             var objectService = new TypedService(typeof(object));
             if (service == objectService)
+            {
                 yield return Factory.CreateSingletonObjectRegistration(_instance);
+            }
         }
 
         public bool IsAdapterForIndividualComponents

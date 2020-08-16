@@ -81,11 +81,20 @@ namespace Autofac.Features.Collections
             Justification = "Activator lifetime controlled by registry.")]
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
-            if (service == null) throw new ArgumentNullException(nameof(service));
-            if (registrationAccessor == null) throw new ArgumentNullException(nameof(registrationAccessor));
+            if (service == null)
+            {
+                throw new ArgumentNullException(nameof(service));
+            }
+
+            if (registrationAccessor == null)
+            {
+                throw new ArgumentNullException(nameof(registrationAccessor));
+            }
 
             if (!(service is IServiceWithType swt) || service is DecoratorService)
+            {
                 return Enumerable.Empty<IComponentRegistration>();
+            }
 
             var serviceType = swt.ServiceType;
             Type? elementType = null;
@@ -112,7 +121,9 @@ namespace Autofac.Features.Collections
             }
 
             if (elementType == null || factory == null || limitType == null)
+            {
                 return Enumerable.Empty<IComponentRegistration>();
+            }
 
             var elementTypeService = swt.ChangeType(elementType);
 
@@ -135,9 +146,13 @@ namespace Autofac.Features.Collections
                         var resolveRequest = new ResolveRequest(elementTypeService, itemRegistration, p);
                         var component = c.ResolveComponent(resolveRequest);
                         if (isFixedSize)
+                        {
                             output[i] = component;
+                        }
                         else
+                        {
                             output.Add(component);
+                        }
                     }
 
                     return output;

@@ -50,8 +50,7 @@ namespace Autofac.Core.Activators.Reflection
         public NoConstructorsFoundException(Type offendingType, string message)
             : base(message)
         {
-            if (offendingType == null) throw new ArgumentNullException(nameof(offendingType));
-            OffendingType = offendingType;
+            OffendingType = offendingType ?? throw new ArgumentNullException(nameof(offendingType));
         }
 
         /// <summary>
@@ -73,8 +72,7 @@ namespace Autofac.Core.Activators.Reflection
         public NoConstructorsFoundException(Type offendingType, string message, Exception innerException)
             : base(message, innerException)
         {
-            if (offendingType == null) throw new ArgumentNullException(nameof(offendingType));
-            OffendingType = offendingType;
+            OffendingType = offendingType ?? throw new ArgumentNullException(nameof(offendingType));
         }
 
         /// <summary>
@@ -88,7 +86,10 @@ namespace Autofac.Core.Activators.Reflection
 
         private static string FormatMessage(Type offendingType)
         {
-            if (offendingType == null) throw new ArgumentNullException(nameof(offendingType));
+            if (offendingType == null)
+            {
+                throw new ArgumentNullException(nameof(offendingType));
+            }
 
             return string.Format(CultureInfo.CurrentCulture, NoConstructorsFoundExceptionResources.Message, offendingType.FullName);
         }

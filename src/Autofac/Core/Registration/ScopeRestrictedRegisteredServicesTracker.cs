@@ -28,14 +28,19 @@ namespace Autofac.Core.Registration
         /// <param name="originatedFromSource">Indicates whether this is an explicitly added registration or that it has been added by a different source.</param>
         public override void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
         {
-            if (registration == null) throw new ArgumentNullException(nameof(registration));
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
 
             var toRegister = registration;
 
             if (registration.Lifetime is RootScopeLifetime && !(registration is ExternalComponentRegistration))
-                #pragma warning disable CA2000 // Dispose objects before losing scope
+            {
+#pragma warning disable CA2000 // Dispose objects before losing scope
                 toRegister = new ComponentRegistrationLifetimeDecorator(registration, _restrictedRootScopeLifetime);
-                #pragma warning restore CA2000 // Dispose objects before losing scope
+#pragma warning restore CA2000 // Dispose objects before losing scope
+            }
 
             base.AddRegistration(toRegister, preserveDefaults, originatedFromSource);
         }

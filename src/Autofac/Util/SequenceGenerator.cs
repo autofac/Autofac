@@ -45,10 +45,16 @@ namespace Autofac.Util
             {
                 var last = Interlocked.Read(ref _lastSequence);
                 var next = DateTime.UtcNow.Ticks;
-                if (next <= last) next = last + 1;
+                if (next <= last)
+                {
+                    next = last + 1;
+                }
 
                 var replaced = Interlocked.CompareExchange(ref _lastSequence, next, last);
-                if (replaced == last) return next;
+                if (replaced == last)
+                {
+                    return next;
+                }
             }
         }
     }
