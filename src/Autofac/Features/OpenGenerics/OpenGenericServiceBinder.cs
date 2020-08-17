@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using Autofac.Core;
 using Autofac.Util;
 
@@ -79,7 +78,7 @@ namespace Autofac.Features.OpenGenerics
         public static bool TryBindOpenGenericDelegate(
             Service closedService,
             IEnumerable<Service> configuredOpenGenericServices,
-            Func<IComponentContext, IEnumerable<Parameter>, Type[], object> openGenericFactory,
+            Func<IComponentContext, Type[], IEnumerable<Parameter>, object> openGenericFactory,
             [NotNullWhen(returnValue: true)] out Func<IComponentContext, IEnumerable<Parameter>, object>? constructedFactory,
             [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
         {
@@ -148,10 +147,20 @@ namespace Autofac.Features.OpenGenerics
             return false;
         }
 
+        /// <summary>
+        /// Given a closed generic service (that is being requested), creates a regular delegate callback
+        /// and associated services from the open generic delegate and services.
+        /// </summary>
+        /// <param name="serviceWithType">The closed generic service to bind.</param>
+        /// <param name="configuredOpenGenericServices">The set of configured open generic services.</param>
+        /// <param name="openGenericFactory">The open generic factory delegate.</param>
+        /// <param name="constructedFactory">The built closed generic implementation type.</param>
+        /// <param name="constructedServices">The built closed generic services.</param>
+        /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
         public static bool TryBindOpenGenericDelegateService(
             IServiceWithType serviceWithType,
             IEnumerable<Service> configuredOpenGenericServices,
-            Func<IComponentContext, IEnumerable<Parameter>, Type[], object> openGenericFactory,
+            Func<IComponentContext, Type[], IEnumerable<Parameter>, object> openGenericFactory,
             [NotNullWhen(returnValue: true)] out Func<IComponentContext, IEnumerable<Parameter>, object>? constructedFactory,
             [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
         {
@@ -162,14 +171,7 @@ namespace Autofac.Features.OpenGenerics
 
                 if (configuredOpenGenericServices.Cast<IServiceWithType>().Any(s => s.Equals(definitionService)))
                 {
-                    constructedFactory = (ctx, parameters) =>
-                    {
-                        var instance = openGenericFactory(ctx, parameters, serviceGenericArguments);
-
-                        //if (instance is object && serviceWithType. instance. instance.GetType().IsAssignableFrom)
-
-                        return instance;
-                    };
+                    constructedFactory = (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
 
                     var implementedServices = configuredOpenGenericServices
                         .OfType<IServiceWithType>()

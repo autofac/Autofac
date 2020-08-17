@@ -61,7 +61,7 @@ namespace Autofac
         public static IRegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle>
             RegisterGeneric(this ContainerBuilder builder, Func<IComponentContext, Type[], object> factory)
         {
-            return builder.RegisterGeneric((ctxt, parameters, types) => factory(ctxt, types));
+            return builder.RegisterGeneric((ctxt, types, parameters) => factory(ctxt, types));
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Autofac
         /// <param name="factory">A delegate that receives an array of <see cref="Type"/>, containing the generic type arguments of the requested service.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle>
-            RegisterGeneric(this ContainerBuilder builder, Func<IComponentContext, IEnumerable<Parameter>, Type[], object> factory)
+            RegisterGeneric(this ContainerBuilder builder, Func<IComponentContext, Type[], IEnumerable<Parameter>, object> factory)
         {
             return OpenGenericRegistrationExtensions.RegisterGeneric(builder, factory);
         }

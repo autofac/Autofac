@@ -244,6 +244,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>OpenGenericDecoratorRegistrationSourceResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Features\OpenGenerics\OpenGenericDelegateRegistrationSourceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OpenGenericDelegateRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
     <Compile Update="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -445,6 +450,10 @@
     <EmbeddedResource Update="Features\OpenGenerics\OpenGenericDecoratorRegistrationSourceResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>OpenGenericDecoratorRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Features\OpenGenerics\OpenGenericDelegateRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericDelegateRegistrationSourceResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
