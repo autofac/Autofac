@@ -67,7 +67,7 @@ namespace Autofac.Features.OpenGenerics
         /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
         /// </summary>
         /// <param name="builder">Container builder.</param>
-        /// <param name="factory">The open generic implementation type.</param>
+        /// <param name="factory">Delegate responsible for generating an instance of a closed generic based on the open generic type being registered.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle>
             RegisterGeneric(ContainerBuilder builder, Func<IComponentContext, Type[], IEnumerable<Parameter>, object> factory)
@@ -116,7 +116,7 @@ namespace Autofac.Features.OpenGenerics
         /// Creates a registration builder for an un-parameterised generic type, e.g. Repository&lt;&gt;, without registering it.
         /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
         /// </summary>
-        /// <param name="factory">The factory method.</param>
+        /// <param name="factory">Delegate responsible for generating an instance of a closed generic based on the open generic type being registered.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle>
             CreateGenericBuilder(Func<IComponentContext, Type[], IEnumerable<Parameter>, object> factory)

@@ -56,7 +56,7 @@ namespace Autofac
         /// Register a delegate that can provide instances of an open generic registration.
         /// </summary>
         /// <param name="builder">The container builder.</param>
-        /// <param name="factory">A delegate that receives an array of <see cref="Type"/>, containing the generic type arguments of the requested service.</param>
+        /// <param name="factory">Delegate responsible for generating an instance of a closed generic based on the open generic type being registered. It will be called with the current <see cref="IComponentContext"/> and the array of generic type arguments expected to be in the closed generic.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle>
             RegisterGeneric(this ContainerBuilder builder, Func<IComponentContext, Type[], object> factory)
@@ -68,7 +68,7 @@ namespace Autofac
         /// Register a delegate that can provide instances of an open generic registration.
         /// </summary>
         /// <param name="builder">The container builder.</param>
-        /// <param name="factory">A delegate that receives an array of <see cref="Type"/>, containing the generic type arguments of the requested service.</param>
+        /// <param name="factory">Delegate responsible for generating an instance of a closed generic based on the open generic type being registered. It will be called with the current <see cref="IComponentContext"/>, the array of generic type arguments expected to be in the closed generic, and any parameters passed to the resolve operation.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle>
             RegisterGeneric(this ContainerBuilder builder, Func<IComponentContext, Type[], IEnumerable<Parameter>, object> factory)

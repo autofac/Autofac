@@ -18,7 +18,7 @@ namespace Autofac.Features.OpenGenerics
         /// <param name="factory">The factory method that will create a closed generic instance.</param>
         public OpenGenericDelegateActivatorData(Func<IComponentContext, Type[], IEnumerable<Parameter>, object> factory)
         {
-            Factory = factory;
+            Factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
         /// <summary>

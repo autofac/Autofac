@@ -71,7 +71,7 @@ namespace Autofac.Features.OpenGenerics
         /// </summary>
         /// <param name="closedService">The closed generic service to bind.</param>
         /// <param name="configuredOpenGenericServices">The set of configured open generic services.</param>
-        /// <param name="openGenericFactory">The open generic factory delegate.</param>
+        /// <param name="openGenericFactory">Delegate responsible for generating an instance of a closed generic based on the open generic type being registered.</param>
         /// <param name="constructedFactory">The built closed generic implementation type.</param>
         /// <param name="constructedServices">The built closed generic services.</param>
         /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
@@ -153,7 +153,7 @@ namespace Autofac.Features.OpenGenerics
         /// </summary>
         /// <param name="serviceWithType">The closed generic service to bind.</param>
         /// <param name="configuredOpenGenericServices">The set of configured open generic services.</param>
-        /// <param name="openGenericFactory">The open generic factory delegate.</param>
+        /// <param name="openGenericFactory">Delegate responsible for generating an instance of a closed generic based on the open generic type being registered.</param>
         /// <param name="constructedFactory">The built closed generic implementation type.</param>
         /// <param name="constructedServices">The built closed generic services.</param>
         /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
