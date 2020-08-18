@@ -26,7 +26,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
@@ -311,7 +313,7 @@ namespace Autofac
         public static TService Resolve<TService>(this IComponentContext context, IEnumerable<Parameter> parameters)
             where TService : notnull
         {
-            return (TService)Resolve(context, typeof(TService), parameters);
+            return CastInstance<TService>(Resolve(context, typeof(TService), parameters));
         }
 
         /// <summary>
@@ -410,7 +412,7 @@ namespace Autofac
         public static TService ResolveKeyed<TService>(this IComponentContext context, object serviceKey, IEnumerable<Parameter> parameters)
             where TService : notnull
         {
-            return (TService)ResolveService(context, new KeyedService(serviceKey, typeof(TService)), parameters);
+            return CastInstance<TService>(ResolveService(context, new KeyedService(serviceKey, typeof(TService)), parameters));
         }
 
         /// <summary>
@@ -513,7 +515,7 @@ namespace Autofac
         public static TService ResolveNamed<TService>(this IComponentContext context, string serviceName, IEnumerable<Parameter> parameters)
             where TService : notnull
         {
-            return (TService)ResolveService(context, new KeyedService(serviceName, typeof(TService)), parameters);
+            return CastInstance<TService>(ResolveService(context, new KeyedService(serviceName, typeof(TService)), parameters));
         }
 
         /// <summary>
@@ -614,7 +616,7 @@ namespace Autofac
         public static TService? ResolveOptional<TService>(this IComponentContext context, IEnumerable<Parameter> parameters)
             where TService : class
         {
-            return (TService?)ResolveOptionalService(context, new TypedService(typeof(TService)), parameters);
+            return CastInstance<TService?>(ResolveOptionalService(context, new TypedService(typeof(TService)), parameters));
         }
 
         /// <summary>
@@ -713,7 +715,7 @@ namespace Autofac
         public static TService? ResolveOptionalKeyed<TService>(this IComponentContext context, object serviceKey, IEnumerable<Parameter> parameters)
             where TService : class
         {
-            return (TService?)ResolveOptionalService(context, new KeyedService(serviceKey, typeof(TService)), parameters);
+            return CastInstance<TService?>(ResolveOptionalService(context, new KeyedService(serviceKey, typeof(TService)), parameters));
         }
 
         /// <summary>
@@ -830,8 +832,7 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            object? instance;
-            context.TryResolveService(service, parameters, out instance);
+            context.TryResolveService(service, parameters, out object? instance);
             return instance;
         }
 
@@ -936,12 +937,10 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(context));
             }
 
-            object? component;
-
             // Null annotation attributes only work if placed directly in an if statement.
-            if (context.TryResolve(typeof(T), out component))
+            if (context.TryResolve(typeof(T), out object? component))
             {
-                instance = (T)component;
+                instance = CastInstance<T>(component);
 
                 return true;
             }
@@ -1069,6 +1068,26 @@ namespace Autofac
 
             instance = context.ResolveComponent(new ResolveRequest(service, serviceRegistration, parameters));
             return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static TService CastInstance<TService>(object? instance)
+        {
+            try
+            {
+                // Allow a cast from null object to null TService.
+                return (TService)instance!;
+            }
+            catch (InvalidCastException castException)
+            {
+                throw new DependencyResolutionException(
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        ResolutionExtensionsResources.CouldNotCastInstance,
+                        instance!.GetType(),
+                        typeof(TService)),
+                    castException);
+            }
         }
     }
 }

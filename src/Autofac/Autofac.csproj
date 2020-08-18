@@ -244,6 +244,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>OpenGenericDecoratorRegistrationSourceResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Features\OpenGenerics\OpenGenericDelegateRegistrationSourceResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>OpenGenericDelegateRegistrationSourceResources.resx</DependentUpon>
+    </Compile>
     <Compile Update="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -278,6 +283,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>RegistrationExtensionsResources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="ResolutionExtensionsResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResolutionExtensionsResources.resx</DependentUpon>
     </Compile>
     <Compile Update="TypeExtensionsResources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -446,6 +456,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>OpenGenericDecoratorRegistrationSourceResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Features\OpenGenerics\OpenGenericDelegateRegistrationSourceResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>OpenGenericDelegateRegistrationSourceResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Features\OpenGenerics\OpenGenericRegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>OpenGenericRegistrationExtensionsResources.Designer.cs</LastGenOutput>
@@ -473,6 +487,10 @@
     <EmbeddedResource Update="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ResolutionExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResolutionExtensionsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="TypeExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using Autofac.Core;
 using Autofac.Util;
 
@@ -62,6 +61,33 @@ namespace Autofac.Features.OpenGenerics
             }
 
             constructedImplementationType = null;
+            constructedServices = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Given a closed generic service (that is being requested), creates a closed generic implementation type
+        /// and associated services from the open generic implementation and services.
+        /// </summary>
+        /// <param name="closedService">The closed generic service to bind.</param>
+        /// <param name="configuredOpenGenericServices">The set of configured open generic services.</param>
+        /// <param name="openGenericFactory">Delegate responsible for generating an instance of a closed generic based on the open generic type being registered.</param>
+        /// <param name="constructedFactory">The built closed generic implementation type.</param>
+        /// <param name="constructedServices">The built closed generic services.</param>
+        /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
+        public static bool TryBindOpenGenericDelegate(
+            Service closedService,
+            IEnumerable<Service> configuredOpenGenericServices,
+            Func<IComponentContext, Type[], IEnumerable<Parameter>, object> openGenericFactory,
+            [NotNullWhen(returnValue: true)] out Func<IComponentContext, IEnumerable<Parameter>, object>? constructedFactory,
+            [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
+        {
+            if (closedService is IServiceWithType swt)
+            {
+                return TryBindOpenGenericDelegateService(swt, configuredOpenGenericServices, openGenericFactory, out constructedFactory, out constructedServices);
+            }
+
+            constructedFactory = null;
             constructedServices = null;
             return false;
         }
@@ -117,6 +143,49 @@ namespace Autofac.Features.OpenGenerics
             }
 
             constructedImplementationType = null;
+            constructedServices = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Given a closed generic service (that is being requested), creates a regular delegate callback
+        /// and associated services from the open generic delegate and services.
+        /// </summary>
+        /// <param name="serviceWithType">The closed generic service to bind.</param>
+        /// <param name="configuredOpenGenericServices">The set of configured open generic services.</param>
+        /// <param name="openGenericFactory">Delegate responsible for generating an instance of a closed generic based on the open generic type being registered.</param>
+        /// <param name="constructedFactory">The built closed generic implementation type.</param>
+        /// <param name="constructedServices">The built closed generic services.</param>
+        /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
+        public static bool TryBindOpenGenericDelegateService(
+            IServiceWithType serviceWithType,
+            IEnumerable<Service> configuredOpenGenericServices,
+            Func<IComponentContext, Type[], IEnumerable<Parameter>, object> openGenericFactory,
+            [NotNullWhen(returnValue: true)] out Func<IComponentContext, IEnumerable<Parameter>, object>? constructedFactory,
+            [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
+        {
+            if (serviceWithType.ServiceType.IsGenericType && !serviceWithType.ServiceType.IsGenericTypeDefinition)
+            {
+                var definitionService = (IServiceWithType)serviceWithType.ChangeType(serviceWithType.ServiceType.GetGenericTypeDefinition());
+                var serviceGenericArguments = serviceWithType.ServiceType.GetGenericArguments();
+
+                if (configuredOpenGenericServices.Cast<IServiceWithType>().Any(s => s.Equals(definitionService)))
+                {
+                    constructedFactory = (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
+
+                    var implementedServices = configuredOpenGenericServices
+                        .OfType<IServiceWithType>()
+                        .Where(s => s.ServiceType.GetGenericArguments().Length == serviceGenericArguments.Length)
+                        .Select(s => new { ServiceWithType = s, GenericService = s.ServiceType.MakeGenericType(serviceGenericArguments) })
+                        .Select(p => p.ServiceWithType.ChangeType(p.GenericService))
+                        .ToArray();
+
+                    constructedServices = implementedServices;
+                    return true;
+                }
+            }
+
+            constructedFactory = null;
             constructedServices = null;
             return false;
         }

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Autofac.Features.OpenGenerics {
+namespace Autofac {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace Autofac.Features.OpenGenerics {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class OpenGenericServiceBinderResources {
+    internal class ResolutionExtensionsResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal OpenGenericServiceBinderResources() {
+        internal ResolutionExtensionsResources() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Autofac.Features.OpenGenerics {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.Features.OpenGenerics.OpenGenericServiceBinderResources", typeof(OpenGenericServiceBinderResources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.ResolutionExtensionsResources", typeof(ResolutionExtensionsResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,47 +61,11 @@ namespace Autofac.Features.OpenGenerics {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The type &apos;{0}&apos; does not implement the interface &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Resolved instance of type &apos;{0}&apos; could not be cast to the requested service type &apos;{1}&apos;..
         /// </summary>
-        internal static string ImplementorDoesntImplementService {
+        internal static string CouldNotCastInstance {
             get {
-                return ResourceManager.GetString("ImplementorDoesntImplementService", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The implementation type &apos;{0}&apos; is not an open generic type definition..
-        /// </summary>
-        internal static string ImplementorMustBeOpenGenericTypeDefinition {
-            get {
-                return ResourceManager.GetString("ImplementorMustBeOpenGenericTypeDefinition", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The implementation type &apos;{0}&apos; does not support the interface &apos;{1}&apos;..
-        /// </summary>
-        internal static string InterfaceIsNotImplemented {
-            get {
-                return ResourceManager.GetString("InterfaceIsNotImplemented", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The service &apos;{0}&apos; is not an open generic type definition..
-        /// </summary>
-        internal static string ServiceTypeMustBeOpenGenericTypeDefinition {
-            get {
-                return ResourceManager.GetString("ServiceTypeMustBeOpenGenericTypeDefinition", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The service &apos;{1}&apos; is not assignable from implementation type &apos;{0}&apos;..
-        /// </summary>
-        internal static string TypesAreNotConvertible {
-            get {
-                return ResourceManager.GetString("TypesAreNotConvertible", resourceCulture);
+                return ResourceManager.GetString("CouldNotCastInstance", resourceCulture);
             }
         }
     }
