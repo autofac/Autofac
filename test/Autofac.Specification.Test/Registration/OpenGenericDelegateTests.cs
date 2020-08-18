@@ -5,7 +5,7 @@ using Autofac.Core;
 using Autofac.Core.Registration;
 using Xunit;
 
-namespace Autofac.Test.Features.OpenGenerics
+namespace Autofac.Specification.Test.Registration
 {
     public class OpenGenericDelegateTests
     {
@@ -135,7 +135,24 @@ namespace Autofac.Test.Features.OpenGenerics
 
             var container = builder.Build();
 
-            Assert.Throws<InvalidCastException>(() => container.Resolve<IInterfaceA<string>>());
+            var innerException = Assert.Throws<DependencyResolutionException>(() => container.Resolve<IInterfaceA<string>>()).InnerException;
+
+            Assert.IsType<InvalidCastException>(innerException);
+        }
+
+        [Fact]
+        public void ExceptionThrownByDelegateIsWrapped()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric((ctxt, types) => throw new DivideByZeroException())
+                   .As(typeof(IInterfaceA<>));
+
+            var container = builder.Build();
+
+            var innerException = Assert.Throws<DependencyResolutionException>(() => container.Resolve<IInterfaceA<int>>()).InnerException;
+
+            Assert.IsType<DivideByZeroException>(innerException);
         }
     }
 }

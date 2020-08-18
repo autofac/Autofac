@@ -284,6 +284,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>RegistrationExtensionsResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="ResolutionExtensionsResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ResolutionExtensionsResources.resx</DependentUpon>
+    </Compile>
     <Compile Update="TypeExtensionsResources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -482,6 +487,10 @@
     <EmbeddedResource Update="RegistrationExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>RegistrationExtensionsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ResolutionExtensionsResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResolutionExtensionsResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="TypeExtensionsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
