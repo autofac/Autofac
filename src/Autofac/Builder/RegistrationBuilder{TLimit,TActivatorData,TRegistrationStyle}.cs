@@ -680,5 +680,18 @@ namespace Autofac.Builder
             configurationAction(epConfiguration);
             return WithMetadata(epConfiguration.Properties);
         }
+
+        /// <inheritdoc/>
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Pipeline(Action<IResolvePipelineBuilder> configurationAction)
+        {
+            if (configurationAction is null)
+            {
+                throw new ArgumentNullException(nameof(configurationAction));
+            }
+
+            configurationAction(ResolvePipeline);
+
+            return this;
+        }
     }
 }

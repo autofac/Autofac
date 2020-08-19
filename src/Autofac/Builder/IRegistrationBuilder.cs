@@ -328,5 +328,12 @@ namespace Autofac.Builder
         /// </param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> WithMetadata<TMetadata>(Action<MetadataConfiguration<TMetadata>> configurationAction);
+
+        /// <summary>
+        /// Provides access to the registration's pipeline builder, allowing custom middleware to be added.
+        /// </summary>
+        /// <param name="configurationAction">An action that can configure the registration's pipeline.</param>
+        /// <returns>A registration builder allowing further configuration of the component.</returns>
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Pipeline(Action<IResolvePipelineBuilder> configurationAction);
     }
 }
