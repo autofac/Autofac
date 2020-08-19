@@ -682,7 +682,7 @@ namespace Autofac.Builder
         }
 
         /// <inheritdoc/>
-        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Pipeline(Action<IResolvePipelineBuilder> configurationAction)
+        public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> ConfigurePipeline(Action<IResolvePipelineBuilder> configurationAction)
         {
             if (configurationAction is null)
             {

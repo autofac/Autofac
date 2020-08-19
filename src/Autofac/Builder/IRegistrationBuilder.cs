@@ -334,6 +334,6 @@ namespace Autofac.Builder
         /// </summary>
         /// <param name="configurationAction">An action that can configure the registration's pipeline.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> Pipeline(Action<IResolvePipelineBuilder> configurationAction);
+        IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> ConfigurePipeline(Action<IResolvePipelineBuilder> configurationAction);
     }
 }
