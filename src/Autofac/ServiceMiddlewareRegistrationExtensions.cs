@@ -26,6 +26,7 @@
 using System;
 using Autofac.Core;
 using Autofac.Core.Registration;
+using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac
@@ -35,6 +36,8 @@ namespace Autofac
     /// </summary>
     public static class ServiceMiddlewareRegistrationExtensions
     {
+        private const string AnonymousDescriptor = "anonymous";
+
         /// <summary>
         /// Register a resolve middleware for a particular service.
         /// </summary>
@@ -72,6 +75,57 @@ namespace Autofac
         public static void RegisterServiceMiddleware<TService>(this ContainerBuilder builder, IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
         {
             builder.RegisterServiceMiddleware(typeof(TService), middleware, insertionMode);
+        }
+
+        /// <summary>
+        /// Register a resolve middleware for services providing a particular type.
+        /// </summary>
+        /// <typeparam name="TService">The service type.</typeparam>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="phase">The phase of the pipeline the middleware should run at.</param>
+        /// <param name="callback">
+        /// A callback invoked to run your middleware.
+        /// This callback takes a <see cref="ResolveRequestContext"/>, containing the context for the resolve request, plus
+        /// a callback to invoke to continue the pipeline.
+        /// </param>
+        public static void RegisterServiceMiddleware<TService>(this ContainerBuilder builder, PipelinePhase phase, Action<ResolveRequestContext, Action<ResolveRequestContext>> callback)
+        {
+            builder.RegisterServiceMiddleware<TService>(AnonymousDescriptor, phase, MiddlewareInsertionMode.EndOfPhase, callback);
+        }
+
+        /// <summary>
+        /// Register a resolve middleware for services providing a particular type.
+        /// </summary>
+        /// <typeparam name="TService">The service type.</typeparam>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="descriptor">A description for the middleware; this will show up in any resolve tracing.</param>
+        /// <param name="phase">The phase of the pipeline the middleware should run at.</param>
+        /// <param name="callback">
+        /// A callback invoked to run your middleware.
+        /// This callback takes a <see cref="ResolveRequestContext"/>, containing the context for the resolve request, plus
+        /// a callback to invoke to continue the pipeline.
+        /// </param>
+        public static void RegisterServiceMiddleware<TService>(this ContainerBuilder builder, string descriptor, PipelinePhase phase, Action<ResolveRequestContext, Action<ResolveRequestContext>> callback)
+        {
+            builder.RegisterServiceMiddleware<TService>(descriptor, phase, MiddlewareInsertionMode.EndOfPhase, callback);
+        }
+
+        /// <summary>
+        /// Register a resolve middleware for services providing a particular type.
+        /// </summary>
+        /// <typeparam name="TService">The service type.</typeparam>
+        /// <param name="builder">The container builder.</param>
+        /// <param name="descriptor">A description for the middleware; this will show up in any resolve tracing.</param>
+        /// <param name="phase">The phase of the pipeline the middleware should run at.</param>
+        /// <param name="callback">
+        /// A callback invoked to run your middleware.
+        /// This callback takes a <see cref="ResolveRequestContext"/>, containing the context for the resolve request, plus
+        /// a callback to invoke to continue the pipeline.
+        /// </param>
+        /// <param name="insertionMode">The insertion mode of the middleware (start or end of phase).</param>
+        public static void RegisterServiceMiddleware<TService>(this ContainerBuilder builder, string descriptor, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContext, Action<ResolveRequestContext>> callback)
+        {
+            builder.RegisterServiceMiddleware(typeof(TService), new DelegateMiddleware(descriptor, phase, callback), insertionMode);
         }
 
         /// <summary>
