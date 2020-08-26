@@ -58,8 +58,8 @@ namespace Autofac.Features.Decorators
             ImplementationType = implementationType;
             ServiceType = serviceType;
             CurrentInstance = currentInstance;
-            AppliedDecoratorTypes = appliedDecoratorTypes ?? new List<Type>(0);
-            AppliedDecorators = appliedDecorators ?? new List<object>(0);
+            AppliedDecoratorTypes = appliedDecoratorTypes ?? Array.Empty<Type>();
+            AppliedDecorators = appliedDecorators ?? Array.Empty<object>();
         }
 
         /// <summary>
