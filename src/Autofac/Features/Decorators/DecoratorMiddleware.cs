@@ -84,7 +84,17 @@ namespace Autofac.Features.Decorators
 
             var serviceType = swt.ServiceType;
 
-            context.DecoratorContext ??= DecoratorContext.Create(context.Instance.GetType(), serviceType, context.Instance);
+            if (context.DecoratorContext is null)
+            {
+                context.DecoratorContext = DecoratorContext.Create(context.Instance.GetType(), serviceType, context.Instance);
+            }
+            else
+            {
+                // Update the context with the previous decorator's output.
+                // Doing this here, rather than in the decorator middleware that resulted in the instance
+                // means we do not need to needlessly update the decorator context on the final decorator.
+                context.DecoratorContext = context.DecoratorContext.UpdateContext(context.Instance);
+            }
 
             if (!_decoratorService.Condition(context.DecoratorContext))
             {
@@ -131,8 +141,6 @@ namespace Autofac.Features.Decorators
                 var decoratedInstance = context.ResolveComponent(resolveRequest);
 
                 context.Instance = decoratedInstance;
-
-                context.DecoratorContext = context.DecoratorContext.UpdateContext(decoratedInstance);
             }
         }
 
