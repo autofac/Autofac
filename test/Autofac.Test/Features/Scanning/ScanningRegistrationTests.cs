@@ -491,5 +491,53 @@ namespace Autofac.Test.Features.Scanning
             var c = RegisterScenarioAssembly();
             c.AssertRegistered<NestedComponent.PublicComponent>();
         }
+
+        [Fact]
+        public void ScannedAssembliesPreparingEventFires()
+        {
+            var preparingCalled = false;
+
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(AComponent).GetTypeInfo().Assembly)
+                .OnPreparing(args => preparingCalled = true);
+
+            var c = cb.Build();
+
+            var a = c.Resolve<AComponent>();
+
+            Assert.True(preparingCalled);
+        }
+
+        [Fact]
+        public void ScannedAssembliesActivatedEventFires()
+        {
+            var activatedCalled = false;
+
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(AComponent).GetTypeInfo().Assembly)
+                .OnActivated(args => activatedCalled = true);
+
+            var c = cb.Build();
+
+            var a = c.Resolve<AComponent>();
+
+            Assert.True(activatedCalled);
+        }
+
+        [Fact]
+        public void ScannedAssembliesActivatingEventFires()
+        {
+            var activatingCalled = false;
+
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyTypes(typeof(AComponent).GetTypeInfo().Assembly)
+                .OnActivating(args => activatingCalled = true);
+
+            var c = cb.Build();
+
+            var a = c.Resolve<AComponent>();
+
+            Assert.True(activatingCalled);
+        }
     }
 }
