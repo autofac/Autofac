@@ -127,6 +127,9 @@ namespace Autofac.Features.Scanning
                     .WithParameters(rb.ActivatorData.ConfiguredParameters)
                     .WithProperties(rb.ActivatorData.ConfiguredProperties);
 
+                // Copy middleware from the scanning registration.
+                scanned.ResolvePipeline.UseRange(rb.ResolvePipeline.Middleware);
+
                 scanned.RegistrationData.CopyFrom(rb.RegistrationData, false);
 
                 foreach (var action in rb.ActivatorData.ConfigurationActions)
