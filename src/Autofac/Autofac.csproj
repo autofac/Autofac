@@ -20,10 +20,9 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/autofac/Autofac</RepositoryUrl>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateNeutralResourcesLanguageAttribute>false</GenerateNeutralResourcesLanguageAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
+    <AssemblyTitle>Autofac</AssemblyTitle>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <Copyright>Copyright © 2015 Autofac Contributors</Copyright>
     <CodeAnalysisRuleSet>../../build/Analyzers.ruleset</CodeAnalysisRuleSet>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedAllSources>true</EmbedAllSources>
