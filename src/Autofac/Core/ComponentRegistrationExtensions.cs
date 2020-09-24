@@ -30,8 +30,7 @@ namespace Autofac.Core
                 throw new ArgumentNullException(nameof(registration));
             }
 
-            var lifetime = registration.Lifetime as MatchingScopeLifetime;
-            if (lifetime != null)
+            if (registration.Lifetime is MatchingScopeLifetime lifetime)
             {
                 return lifetime.TagsToMatch;
             }
