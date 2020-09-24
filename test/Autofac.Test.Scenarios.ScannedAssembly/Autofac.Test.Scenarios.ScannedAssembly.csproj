@@ -19,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="..\..\build\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Autofac\Autofac.csproj" />
   </ItemGroup>
 

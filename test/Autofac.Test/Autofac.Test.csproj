@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AdditionalFiles Include="..\..\build\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="TestResults\**" />
     <EmbeddedResource Remove="TestResults\**" />
     <None Remove="TestResults\**" />

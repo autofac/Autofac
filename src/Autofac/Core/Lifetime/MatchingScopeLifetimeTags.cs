@@ -1,4 +1,7 @@
-﻿namespace Autofac.Core.Lifetime
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT license. See LICENSE in the project root for license information.
+
+namespace Autofac.Core.Lifetime
 {
     /// <summary>
     /// Well-known tags used in setting up matching lifetime scopes.

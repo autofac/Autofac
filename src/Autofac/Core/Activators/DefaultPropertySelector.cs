@@ -1,4 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT license. See LICENSE in the project root for license information.
+
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace Autofac.Core

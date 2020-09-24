@@ -1,4 +1,7 @@
-﻿using Autofac.Builder;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT license. See LICENSE in the project root for license information.
+
+using Autofac.Builder;
 
 namespace Autofac.Core.Resolving.Middleware
 {
