@@ -14,7 +14,7 @@ namespace Autofac.Test.Features.OpenGenerics
         {
         }
 
-        private IContainer _container;
+        private readonly IContainer _container;
 
         public GenericsForNullableScenarioTests()
         {

@@ -112,7 +112,7 @@ namespace Autofac.Test.Features.Variance
 
         public class WhenAHandlerForAConcreteTypeIsRegistered
         {
-            private IContainer _container;
+            private readonly IContainer _container;
 
             public WhenAHandlerForAConcreteTypeIsRegistered()
             {
@@ -155,7 +155,7 @@ namespace Autofac.Test.Features.Variance
 
         public class WhenAHandlerForAnInterfaceTypeIsRegistered
         {
-            private IContainer _container;
+            private readonly IContainer _container;
 
             public WhenAHandlerForAnInterfaceTypeIsRegistered()
             {
@@ -210,7 +210,7 @@ namespace Autofac.Test.Features.Variance
 
         public class WhenAHandlerForObjectIsRegistered
         {
-            private IContainer _container;
+            private readonly IContainer _container;
 
             public WhenAHandlerForObjectIsRegistered()
             {

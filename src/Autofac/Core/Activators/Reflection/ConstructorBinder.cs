@@ -38,7 +38,7 @@ namespace Autofac.Core.Activators.Reflection
     {
         private static readonly Func<ConstructorInfo, Func<object?[], object>> FactoryBuilder = GetConstructorInvoker;
 
-        private static ConcurrentDictionary<ConstructorInfo, Func<object?[], object>> _factoryCache = new ConcurrentDictionary<ConstructorInfo, Func<object?[], object>>();
+        private static readonly ConcurrentDictionary<ConstructorInfo, Func<object?[], object>> FactoryCache = new ConcurrentDictionary<ConstructorInfo, Func<object?[], object>>();
 
         private readonly ParameterInfo[] _constructorArgs;
         private readonly Func<object?[], object>? _factory;
@@ -60,7 +60,7 @@ namespace Autofac.Core.Activators.Reflection
             if (_illegalParameter is null)
             {
                 // Build the invoker.
-                _factory = _factoryCache.GetOrAdd(constructorInfo, FactoryBuilder);
+                _factory = FactoryCache.GetOrAdd(constructorInfo, FactoryBuilder);
             }
         }
 

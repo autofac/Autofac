@@ -78,7 +78,7 @@ namespace Autofac.Test.Features.GeneratedFactories
                 _qs = qs;
             }
 
-            private QuoteService _qs;
+            private readonly QuoteService _qs;
 
             public string Symbol { get; private set; }
 

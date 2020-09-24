@@ -17,7 +17,7 @@ namespace Autofac.Test.Compilation
     {
         private string? _body;
 
-        private List<MetadataReference> _references = new List<MetadataReference>
+        private readonly List<MetadataReference> _references = new List<MetadataReference>
         {
             // Bring in the appropriate SDK package
             MetadataReference.CreateFromFile(Assembly.Load(typeof(ContainerBuilder).Assembly.GetReferencedAssemblies().First()).Location),
@@ -83,7 +83,7 @@ namespace Autofac.Test.Compilation
                 using Autofac;
 
                 namespace Autofac.Test.Compilation {{
-                
+
                     public class TestClass
                     {{
                         public static void Run()

@@ -66,7 +66,7 @@ namespace Autofac.Test.Features.OpenGenerics
 
         private const string ParameterValue = "Abc";
 
-        private IContainer _container;
+        private readonly IContainer _container;
 
         public OpenGenericDecoratorTests()
         {
