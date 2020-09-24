@@ -56,6 +56,9 @@ namespace Autofac.Benchmarks
             container.Resolve<FourConstructors>();
         }
 
+        // Disable "unused parameter" warnings for test types.
+#pragma warning disable IDE0060
+
         private class OneConstructor
         {
             public OneConstructor(D1 d1)
@@ -138,5 +141,7 @@ namespace Autofac.Benchmarks
         private class D4
         {
         }
+
+#pragma warning restore IDE0060
     }
 }

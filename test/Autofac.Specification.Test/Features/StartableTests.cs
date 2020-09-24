@@ -167,6 +167,9 @@ namespace Autofac.Specification.Test.Features
             Assert.Equal(expectedStartCount, StartableDependency.Count);
         }
 
+        // Disable "unused parameter" warnings for test types.
+#pragma warning disable IDE0060
+
         private class ComponentTakesStartableDependency : IStartable
         {
             public ComponentTakesStartableDependency(StartableTakesDependency dependency, bool expectStarted)
@@ -250,5 +253,8 @@ namespace Autofac.Specification.Test.Features
                 WasStarted = true;
             }
         }
+
+#pragma warning disable IDE0060
+
     }
 }

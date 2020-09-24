@@ -33,6 +33,9 @@ namespace Autofac.Benchmarks
             _container = builder.Build();
         }
 
+        // Disable "unused parameter" warnings for test types.
+#pragma warning disable IDE0060
+
         internal class A
         {
             public A(B1 b1, B2 b2) { }
@@ -61,5 +64,8 @@ namespace Autofac.Benchmarks
         internal class D1 { }
 
         internal class D2 { }
+
+#pragma warning restore IDE0060
+
     }
 }

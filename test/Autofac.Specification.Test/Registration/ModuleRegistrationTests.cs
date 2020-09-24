@@ -125,6 +125,9 @@ namespace Autofac.Specification.Test.Registration
             Assert.IsType<Composite1>(container.Resolve<I1>());
         }
 
+        // Disable "unused parameter" warnings for test types.
+#pragma warning disable IDE0060
+
         private class Module1 : Module
         {
             protected override void Load(ContainerBuilder builder)
@@ -194,5 +197,8 @@ namespace Autofac.Specification.Test.Registration
                 builder.RegisterType<object>().SingleInstance();
             }
         }
+
+#pragma warning disable IDE0060
+
     }
 }

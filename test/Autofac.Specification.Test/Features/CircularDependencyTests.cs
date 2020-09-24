@@ -273,6 +273,9 @@ namespace Autofac.Specification.Test.Features
             }
         }
 
+        // Disable "unused parameter" warnings for test types.
+#pragma warning disable IDE0060
+
         private class AThatDependsOnB
         {
             public AThatDependsOnB(BThatCreatesA bThatCreatesA)
@@ -354,5 +357,8 @@ namespace Autofac.Specification.Test.Features
                 _id = id;
             }
         }
+
+#pragma warning restore IDE0060
+
     }
 }

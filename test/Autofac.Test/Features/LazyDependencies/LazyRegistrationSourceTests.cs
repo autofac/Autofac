@@ -59,6 +59,9 @@ namespace Autofac.Test.Features.LazyDependencies
             Assert.NotNull(container.Resolve<A>());
         }
 
+        // Disable "unused parameter" warnings for test types.
+#pragma warning disable IDE0060
+
         private class A
         {
             public A(Lazy<B> b)
@@ -70,5 +73,8 @@ namespace Autofac.Test.Features.LazyDependencies
         {
             public A A { get; set; }
         }
+
+#pragma warning restore IDE0060
+
     }
 }

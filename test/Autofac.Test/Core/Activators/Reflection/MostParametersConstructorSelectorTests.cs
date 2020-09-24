@@ -23,6 +23,52 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Throws<ArgumentOutOfRangeException>(() => target.SelectConstructorBinding(new BoundConstructor[] { }, Enumerable.Empty<Parameter>()));
         }
 
+        [Fact]
+        public void ChoosesCorrectConstructor()
+        {
+            var constructors = GetBindingsForAllConstructorsOf<ThreeConstructors>();
+            var target = new MostParametersConstructorSelector();
+
+            var chosen = target.SelectConstructorBinding(constructors, Enumerable.Empty<Parameter>());
+
+            Assert.Equal(2, chosen.TargetConstructor.GetParameters().Length);
+        }
+
+        [Fact]
+        public void IgnoresInvalidConstructor()
+        {
+            var constructors = GetBindingsForAllConstructorsOf<OneValidConstructorOneInvalid>();
+            var target = new MostParametersConstructorSelector();
+
+            var chosen = target.SelectConstructorBinding(constructors, Enumerable.Empty<Parameter>());
+
+            Assert.Single(chosen.TargetConstructor.GetParameters());
+        }
+
+        [Fact]
+        public void WhenMultipleConstructorsWithTheSameLengthResolvable_ExceptionIsThrown()
+        {
+            var constructors = GetBindingsForAllConstructorsOf<TwoConstructors>();
+            var target = new MostParametersConstructorSelector();
+
+            Assert.Throws<DependencyResolutionException>(() => target.SelectConstructorBinding(constructors, Enumerable.Empty<Parameter>()));
+        }
+
+        private static BoundConstructor[] GetBindingsForAllConstructorsOf<TTarget>()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance("test");
+            builder.Register(ctx => 1);
+            var container = builder.Build();
+
+            return typeof(TTarget).GetTypeInfo().DeclaredConstructors
+                .Select(ci => new ConstructorBinder(ci).Bind(new[] { new AutowiringParameter() }, container))
+                .ToArray();
+        }
+
+        // Disable "unused parameter" warnings for test types.
+#pragma warning disable IDE0060
+
         public class ThreeConstructors
         {
             public ThreeConstructors()
@@ -49,28 +95,6 @@ namespace Autofac.Test.Core.Activators.Reflection
             }
         }
 
-        [Fact]
-        public void ChoosesCorrectConstructor()
-        {
-            var constructors = GetBindingsForAllConstructorsOf<ThreeConstructors>();
-            var target = new MostParametersConstructorSelector();
-
-            var chosen = target.SelectConstructorBinding(constructors, Enumerable.Empty<Parameter>());
-
-            Assert.Equal(2, chosen.TargetConstructor.GetParameters().Length);
-        }
-
-        [Fact]
-        public void IgnoresInvalidConstructor()
-        {
-            var constructors = GetBindingsForAllConstructorsOf<OneValidConstructorOneInvalid>();
-            var target = new MostParametersConstructorSelector();
-
-            var chosen = target.SelectConstructorBinding(constructors, Enumerable.Empty<Parameter>());
-
-            Assert.Single(chosen.TargetConstructor.GetParameters());
-        }
-
         private class TwoConstructors
         {
             public TwoConstructors(int i)
@@ -82,25 +106,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             }
         }
 
-        [Fact]
-        public void WhenMultipleConstructorsWithTheSameLengthResolvable_ExceptionIsThrown()
-        {
-            var constructors = GetBindingsForAllConstructorsOf<TwoConstructors>();
-            var target = new MostParametersConstructorSelector();
+#pragma warning restore IDE0060
 
-            Assert.Throws<DependencyResolutionException>(() => target.SelectConstructorBinding(constructors, Enumerable.Empty<Parameter>()));
-        }
-
-        private static BoundConstructor[] GetBindingsForAllConstructorsOf<TTarget>()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterInstance("test");
-            builder.Register(ctx => 1);
-            var container = builder.Build();
-
-            return typeof(TTarget).GetTypeInfo().DeclaredConstructors
-                .Select(ci => new ConstructorBinder(ci).Bind(new[] { new AutowiringParameter() }, container))
-                .ToArray();
-        }
     }
 }

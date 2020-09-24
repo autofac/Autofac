@@ -8,17 +8,6 @@ namespace Autofac.Test.Core.Activators.Reflection
 {
     public class DefaultConstructorFinderTests
     {
-        internal class HasConstructors
-        {
-            public HasConstructors()
-            {
-            }
-
-            private HasConstructors(int value)
-            {
-            }
-        }
-
         [Fact]
         public void FindsPublicConstructorsOnlyByDefault()
         {
@@ -44,5 +33,22 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Single(constructors);
             Assert.Contains(privateConstructor, constructors);
         }
+
+        // Disable "unused parameter" warnings for test types.
+#pragma warning disable IDE0060
+
+        internal class HasConstructors
+        {
+            public HasConstructors()
+            {
+            }
+
+            private HasConstructors(int value)
+            {
+            }
+        }
+
+#pragma warning restore IDE0060
+
     }
 }
