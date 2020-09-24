@@ -36,7 +36,7 @@ namespace Autofac.Core.Activators.Reflection
     /// </summary>
     public class ConstructorBinder
     {
-        private static readonly Func<ConstructorInfo, Func<object?[], object>> _factoryBuilder = GetConstructorInvoker;
+        private static readonly Func<ConstructorInfo, Func<object?[], object>> FactoryBuilder = GetConstructorInvoker;
 
         private static ConcurrentDictionary<ConstructorInfo, Func<object?[], object>> _factoryCache = new ConcurrentDictionary<ConstructorInfo, Func<object?[], object>>();
 
@@ -60,7 +60,7 @@ namespace Autofac.Core.Activators.Reflection
             if (_illegalParameter is null)
             {
                 // Build the invoker.
-                _factory = _factoryCache.GetOrAdd(constructorInfo, _factoryBuilder);
+                _factory = _factoryCache.GetOrAdd(constructorInfo, FactoryBuilder);
             }
         }
 
