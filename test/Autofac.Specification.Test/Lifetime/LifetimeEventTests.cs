@@ -506,8 +506,10 @@ namespace Autofac.Specification.Test.Lifetime
         [Fact]
         public async Task AsyncReleaseHandlersRunUnderAsyncDisposal()
         {
-            var asyncLocal = new AsyncLocal<int>();
-            asyncLocal.Value = 5;
+            var asyncLocal = new AsyncLocal<int>
+            {
+                Value = 5
+            };
 
             var builder = new ContainerBuilder();
             object instance = null;

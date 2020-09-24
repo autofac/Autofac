@@ -79,7 +79,7 @@ namespace Autofac.BenchmarkProfiling
                     return;
                 }
             }
-                
+
             var benchInstance = Activator.CreateInstance(selectedCase.Descriptor.Type);
 
             var setupAction = BenchmarkActionFactory.CreateGlobalSetup(selectedCase.Descriptor, benchInstance);
@@ -106,9 +106,10 @@ namespace Autofac.BenchmarkProfiling
             {
                 // Do a lot.
                 workloadAction(10000);
-            }));
-
-            runThread.Name = "Workload Thread";
+            }))
+            {
+                Name = "Workload Thread"
+            };
 
             runThread.Start();
             runThread.Join();
@@ -135,7 +136,7 @@ namespace Autofac.BenchmarkProfiling
                 }
                 else
                 {
-                    Console.Error.WriteLine($" #{idx,-2} - {benchCase.Descriptor.DisplayInfo} ({benchCase.Parameters.DisplayInfo})");                    
+                    Console.Error.WriteLine($" #{idx,-2} - {benchCase.Descriptor.DisplayInfo} ({benchCase.Parameters.DisplayInfo})");
                 }
             }
         }
