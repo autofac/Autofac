@@ -302,24 +302,15 @@ namespace Autofac.Specification.Test.Features
         // circular dependency.
         private class ComponentConsumer
         {
-            private Dependency _dependency;
-
-            private IService _service;
-
             public ComponentConsumer(IService service, Dependency dependency)
             {
-                _service = service;
-                _dependency = dependency;
             }
         }
 
         private class Dependency
         {
-            private IService _service;
-
             public Dependency(IService service)
             {
-                _service = service;
             }
         }
 
@@ -350,11 +341,8 @@ namespace Autofac.Specification.Test.Features
 
         private class ServiceImpl : IService
         {
-            private Guid _id;
-
             public ServiceImpl(Guid id)
             {
-                _id = id;
             }
         }
 

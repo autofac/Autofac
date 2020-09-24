@@ -28,6 +28,9 @@ namespace Autofac.Test.Core
             Assert.Equal(expected, finder.InjectProperty(property, instance));
         }
 
+        // Disable "unused parameter" warnings for test types.
+#pragma warning disable IDE0051
+
         private class HasProperties
         {
             public Test PublicPropertyNoDefault { get; set; }
@@ -62,5 +65,8 @@ namespace Autofac.Test.Core
         private class Test
         {
         }
+
+#pragma warning disable IDE0051
+
     }
 }

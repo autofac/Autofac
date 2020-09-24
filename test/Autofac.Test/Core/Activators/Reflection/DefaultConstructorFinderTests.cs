@@ -35,7 +35,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         }
 
         // Disable "unused parameter" warnings for test types.
-#pragma warning disable IDE0060
+#pragma warning disable IDE0051,IDE0060
 
         internal class HasConstructors
         {
@@ -48,7 +48,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             }
         }
 
-#pragma warning restore IDE0060
+#pragma warning restore IDE0051,IDE0060
 
     }
 }

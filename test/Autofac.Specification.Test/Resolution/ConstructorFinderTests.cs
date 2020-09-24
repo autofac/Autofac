@@ -105,6 +105,9 @@ namespace Autofac.Specification.Test.Resolution
             Assert.True(finderCalled);
         }
 
+        // Disable "unused parameter" warnings for test types.
+#pragma warning disable IDE0051
+
         public class A1
         {
         }
@@ -153,5 +156,8 @@ namespace Autofac.Specification.Test.Resolution
 
             public A1 A1 { get; set; }
         }
+
+#pragma warning restore IDE0051
+
     }
 }
