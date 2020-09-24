@@ -12,10 +12,7 @@ namespace Autofac.Test.Util
         {
             IsDisposed = true;
 
-            if (Disposing != null)
-            {
-                Disposing(this, EventArgs.Empty);
-            }
+            Disposing?.Invoke(this, EventArgs.Empty);
         }
     }
 }
