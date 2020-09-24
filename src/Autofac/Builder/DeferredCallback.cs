@@ -23,13 +23,8 @@ namespace Autofac.Builder
         /// </exception>
         public DeferredCallback(Action<IComponentRegistryBuilder> callback)
         {
-            if (callback == null)
-            {
-                throw new ArgumentNullException(nameof(callback));
-            }
-
             Id = Guid.NewGuid();
-            Callback = callback;
+            Callback = callback ?? throw new ArgumentNullException(nameof(callback));
         }
 
         /// <summary>
@@ -51,12 +46,7 @@ namespace Autofac.Builder
 
             set
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                _callback = value;
+                _callback = value ?? throw new ArgumentNullException(nameof(value));
             }
         }
 
