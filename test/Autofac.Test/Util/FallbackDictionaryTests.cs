@@ -11,16 +11,20 @@ namespace Autofac.Test.Util
         [Fact]
         public void Add_LocalContainsKey()
         {
-            var dict = new FallbackDictionary<string, object>();
-            dict.Add("key", true);
+            var dict = new FallbackDictionary<string, object>
+            {
+                { "key", true }
+            };
             Assert.Throws<ArgumentException>(() => dict.Add("key", false));
         }
 
         [Fact]
         public void Add_ParentContainsKey()
         {
-            var parent = new Dictionary<string, object>();
-            parent["key"] = true;
+            var parent = new Dictionary<string, object>
+            {
+                ["key"] = true
+            };
 
             var dict = new FallbackDictionary<string, object>(parent);
             Assert.Throws<ArgumentException>(() => dict.Add("key", false));
@@ -29,12 +33,16 @@ namespace Autofac.Test.Util
         [Fact]
         public void Contains_LocalAndParent()
         {
-            var parent = new Dictionary<string, object>();
-            parent.Add("first", 1);
-            parent.Add("second", 2);
+            var parent = new Dictionary<string, object>
+            {
+                { "first", 1 },
+                { "second", 2 }
+            };
 
-            var dict = new FallbackDictionary<string, object>(parent);
-            dict.Add("third", 3);
+            var dict = new FallbackDictionary<string, object>(parent)
+            {
+                { "third", 3 }
+            };
 
             Assert.Contains(new KeyValuePair<string, object>("first", 1), dict);
             Assert.Contains(new KeyValuePair<string, object>("second", 2), dict);
@@ -44,9 +52,11 @@ namespace Autofac.Test.Util
         [Fact]
         public void Contains_LocalOnly()
         {
-            var dict = new FallbackDictionary<string, object>();
-            dict.Add("first", 1);
-            dict.Add("second", 2);
+            var dict = new FallbackDictionary<string, object>
+            {
+                { "first", 1 },
+                { "second", 2 }
+            };
 
             Assert.Contains(new KeyValuePair<string, object>("first", 1), dict);
             Assert.Contains(new KeyValuePair<string, object>("second", 2), dict);
@@ -55,9 +65,11 @@ namespace Autofac.Test.Util
         [Fact]
         public void Contains_ParentOnly()
         {
-            var parent = new Dictionary<string, object>();
-            parent.Add("first", 1);
-            parent.Add("second", 2);
+            var parent = new Dictionary<string, object>
+            {
+                { "first", 1 },
+                { "second", 2 }
+            };
 
             var dict = new FallbackDictionary<string, object>(parent);
 
@@ -68,13 +80,17 @@ namespace Autofac.Test.Util
         [Fact]
         public void Contains_UsesOverrides()
         {
-            var parent = new Dictionary<string, object>();
-            parent["first"] = 1;
-            parent["second"] = 2;
+            var parent = new Dictionary<string, object>
+            {
+                ["first"] = 1,
+                ["second"] = 2
+            };
 
-            var dict = new FallbackDictionary<string, object>(parent);
-            dict["second"] = "two";
-            dict["third"] = 3;
+            var dict = new FallbackDictionary<string, object>(parent)
+            {
+                ["second"] = "two",
+                ["third"] = 3
+            };
 
             Assert.Contains(new KeyValuePair<string, object>("first", 1), dict);
             Assert.DoesNotContain(new KeyValuePair<string, object>("second", 2), dict);
@@ -92,13 +108,17 @@ namespace Autofac.Test.Util
         [Fact]
         public void Count_IgnoresOverrides()
         {
-            var parent = new Dictionary<string, object>();
-            parent["first"] = 1;
-            parent["second"] = 2;
+            var parent = new Dictionary<string, object>
+            {
+                ["first"] = 1,
+                ["second"] = 2
+            };
 
-            var dict = new FallbackDictionary<string, object>(parent);
-            dict["second"] = "two";
-            dict["third"] = 3;
+            var dict = new FallbackDictionary<string, object>(parent)
+            {
+                ["second"] = "two",
+                ["third"] = 3
+            };
 
             Assert.Equal(3, dict.Count);
         }
@@ -106,12 +126,16 @@ namespace Autofac.Test.Util
         [Fact]
         public void Count_LocalAndParent()
         {
-            var parent = new Dictionary<string, object>();
-            parent.Add("first", 1);
-            parent.Add("second", 2);
+            var parent = new Dictionary<string, object>
+            {
+                { "first", 1 },
+                { "second", 2 }
+            };
 
-            var dict = new FallbackDictionary<string, object>(parent);
-            dict.Add("third", 3);
+            var dict = new FallbackDictionary<string, object>(parent)
+            {
+                { "third", 3 }
+            };
 
             Assert.Equal(3, dict.Count);
         }
@@ -119,9 +143,11 @@ namespace Autofac.Test.Util
         [Fact]
         public void Count_LocalOnly()
         {
-            var dict = new FallbackDictionary<string, object>();
-            dict.Add("first", 1);
-            dict.Add("second", 2);
+            var dict = new FallbackDictionary<string, object>
+            {
+                { "first", 1 },
+                { "second", 2 }
+            };
 
             Assert.Equal(2, dict.Count);
         }
@@ -129,9 +155,11 @@ namespace Autofac.Test.Util
         [Fact]
         public void Count_ParentOnly()
         {
-            var parent = new Dictionary<string, object>();
-            parent.Add("first", 1);
-            parent.Add("second", 2);
+            var parent = new Dictionary<string, object>
+            {
+                { "first", 1 },
+                { "second", 2 }
+            };
 
             var dict = new FallbackDictionary<string, object>(parent);
 
@@ -147,13 +175,17 @@ namespace Autofac.Test.Util
         [Fact]
         public void GetEnumerator_UsesOverrides()
         {
-            var parent = new Dictionary<string, object>();
-            parent["first"] = 1;
-            parent["second"] = 2;
+            var parent = new Dictionary<string, object>
+            {
+                ["first"] = 1,
+                ["second"] = 2
+            };
 
-            var dict = new FallbackDictionary<string, object>(parent);
-            dict["second"] = "two";
-            dict["third"] = 3;
+            var dict = new FallbackDictionary<string, object>(parent)
+            {
+                ["second"] = "two",
+                ["third"] = 3
+            };
 
             var list = new List<KeyValuePair<string, object>>();
             foreach (var kvp in dict)
@@ -177,13 +209,17 @@ namespace Autofac.Test.Util
         [Fact]
         public void Keys_IgnoresDuplicatesInOverrides()
         {
-            var parent = new Dictionary<string, object>();
-            parent["first"] = 1;
-            parent["second"] = 2;
+            var parent = new Dictionary<string, object>
+            {
+                ["first"] = 1,
+                ["second"] = 2
+            };
 
-            var dict = new FallbackDictionary<string, object>(parent);
-            dict["second"] = "two";
-            dict["third"] = 3;
+            var dict = new FallbackDictionary<string, object>(parent)
+            {
+                ["second"] = "two",
+                ["third"] = 3
+            };
 
             Assert.Equal(3, dict.Keys.Count);
             Assert.Contains("first", dict.Keys);
@@ -194,12 +230,16 @@ namespace Autofac.Test.Util
         [Fact]
         public void Keys_LocalAndParent()
         {
-            var parent = new Dictionary<string, object>();
-            parent.Add("first", 1);
-            parent.Add("second", 2);
+            var parent = new Dictionary<string, object>
+            {
+                { "first", 1 },
+                { "second", 2 }
+            };
 
-            var dict = new FallbackDictionary<string, object>(parent);
-            dict.Add("third", 3);
+            var dict = new FallbackDictionary<string, object>(parent)
+            {
+                { "third", 3 }
+            };
 
             Assert.Equal(3, dict.Keys.Count);
             Assert.Contains("first", dict.Keys);
@@ -210,9 +250,11 @@ namespace Autofac.Test.Util
         [Fact]
         public void Keys_LocalOnly()
         {
-            var dict = new FallbackDictionary<string, object>();
-            dict.Add("first", 1);
-            dict.Add("second", 2);
+            var dict = new FallbackDictionary<string, object>
+            {
+                { "first", 1 },
+                { "second", 2 }
+            };
 
             Assert.Equal(2, dict.Keys.Count);
             Assert.Contains("first", dict.Keys);
@@ -222,9 +264,11 @@ namespace Autofac.Test.Util
         [Fact]
         public void Keys_ParentOnly()
         {
-            var parent = new Dictionary<string, object>();
-            parent.Add("first", 1);
-            parent.Add("second", 2);
+            var parent = new Dictionary<string, object>
+            {
+                { "first", 1 },
+                { "second", 2 }
+            };
 
             var dict = new FallbackDictionary<string, object>(parent);
 
@@ -236,13 +280,17 @@ namespace Autofac.Test.Util
         [Fact]
         public void Keys_Values_SameOrder()
         {
-            var parent = new Dictionary<string, object>();
-            parent["first"] = 1;
-            parent["second"] = 2;
+            var parent = new Dictionary<string, object>
+            {
+                ["first"] = 1,
+                ["second"] = 2
+            };
 
-            var dict = new FallbackDictionary<string, object>(parent);
-            dict["second"] = "two";
-            dict["third"] = 3;
+            var dict = new FallbackDictionary<string, object>(parent)
+            {
+                ["second"] = "two",
+                ["third"] = 3
+            };
 
             var keys = dict.Keys.ToArray();
             var values = dict.Values.ToArray();
@@ -258,12 +306,16 @@ namespace Autofac.Test.Util
         [Fact]
         public void Values_LocalAndParent()
         {
-            var parent = new Dictionary<string, object>();
-            parent.Add("first", 1);
-            parent.Add("second", 2);
+            var parent = new Dictionary<string, object>
+            {
+                { "first", 1 },
+                { "second", 2 }
+            };
 
-            var dict = new FallbackDictionary<string, object>(parent);
-            dict.Add("third", 3);
+            var dict = new FallbackDictionary<string, object>(parent)
+            {
+                { "third", 3 }
+            };
 
             Assert.Equal(3, dict.Values.Count);
             Assert.Contains(1, dict.Values);
@@ -274,9 +326,11 @@ namespace Autofac.Test.Util
         [Fact]
         public void Values_LocalOnly()
         {
-            var dict = new FallbackDictionary<string, object>();
-            dict.Add("first", 1);
-            dict.Add("second", 2);
+            var dict = new FallbackDictionary<string, object>
+            {
+                { "first", 1 },
+                { "second", 2 }
+            };
 
             Assert.Equal(2, dict.Values.Count);
             Assert.Contains(1, dict.Values);
@@ -286,9 +340,11 @@ namespace Autofac.Test.Util
         [Fact]
         public void Values_ParentOnly()
         {
-            var parent = new Dictionary<string, object>();
-            parent.Add("first", 1);
-            parent.Add("second", 2);
+            var parent = new Dictionary<string, object>
+            {
+                { "first", 1 },
+                { "second", 2 }
+            };
 
             var dict = new FallbackDictionary<string, object>(parent);
 
@@ -300,13 +356,17 @@ namespace Autofac.Test.Util
         [Fact]
         public void Values_UsesOverrides()
         {
-            var parent = new Dictionary<string, object>();
-            parent["first"] = 1;
-            parent["second"] = 2;
+            var parent = new Dictionary<string, object>
+            {
+                ["first"] = 1,
+                ["second"] = 2
+            };
 
-            var dict = new FallbackDictionary<string, object>(parent);
-            dict["second"] = "two";
-            dict["third"] = 3;
+            var dict = new FallbackDictionary<string, object>(parent)
+            {
+                ["second"] = "two",
+                ["third"] = 3
+            };
 
             Assert.Equal(3, dict.Values.Count);
             Assert.Contains(1, dict.Values);
