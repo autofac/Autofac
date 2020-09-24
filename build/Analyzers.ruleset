@@ -46,8 +46,6 @@
     <Rule Id="SA1625" Action="None" />
     <!-- Exception documentation must not be empty -->
     <Rule Id="SA1627" Action="None" />
-    <!-- File must have header -->
-    <Rule Id="SA1633" Action="None" />
     <!-- Enable XML documentation output-->
     <Rule Id="SA1652" Action="None" />
   </Rules>
