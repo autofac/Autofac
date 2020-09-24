@@ -30,8 +30,7 @@ namespace Autofac.Test
 
             var namedParam = new NamedParameter("a", new A());
 
-            Func<object> vp;
-            Assert.True(namedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out vp));
+            Assert.True(namedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
         }
 
         private static System.Reflection.ParameterInfo AParamOfCConstructor()
@@ -52,8 +51,7 @@ namespace Autofac.Test
 
             var namedParam = new NamedParameter("b", new B());
 
-            Func<object> vp;
-            Assert.False(namedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out vp));
+            Assert.False(namedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
         }
     }
 }

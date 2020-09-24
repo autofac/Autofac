@@ -47,8 +47,7 @@ namespace Autofac.Core
         public NamedPropertyParameter(string name, object value)
             : base(value, pi =>
             {
-                PropertyInfo? prop;
-                return pi.TryGetDeclaringProperty(out prop) &&
+                return pi.TryGetDeclaringProperty(out PropertyInfo? prop) &&
                     prop.Name == name;
             })
         {

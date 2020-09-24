@@ -54,9 +54,8 @@ namespace Autofac.Test.Features.OpenGenerics
             var cb = new ContainerBuilder();
             cb.RegisterGeneric(typeof(G<>)).As(typeof(IG<>));
             var container = cb.Build();
-            IComponentRegistration cr;
             Assert.True(container.ComponentRegistry.TryGetRegistration(
-                new TypedService(typeof(IG<int>)), out cr));
+                new TypedService(typeof(IG<int>)), out IComponentRegistration cr));
             Assert.Equal(typeof(G<int>), cr.Activator.LimitType);
         }
 

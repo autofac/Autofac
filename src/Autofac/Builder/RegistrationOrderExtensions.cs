@@ -39,8 +39,7 @@ namespace Autofac.Builder
         /// <returns>The original registration order value.</returns>
         internal static long GetRegistrationOrder(this IComponentRegistration registration)
         {
-            object? value;
-            return registration.Metadata.TryGetValue(MetadataKeys.RegistrationOrderMetadataKey, out value) ? (long)value! : long.MaxValue;
+            return registration.Metadata.TryGetValue(MetadataKeys.RegistrationOrderMetadataKey, out object? value) ? (long)value! : long.MaxValue;
         }
 
         /// <summary>

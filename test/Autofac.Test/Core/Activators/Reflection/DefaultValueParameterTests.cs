@@ -51,9 +51,8 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void DoesNotProvideValueWhenNoDefaultAvailable()
         {
             var dvp = new DefaultValueParameter();
-            Func<object> vp;
             var dp = GetTestParameter("s").DefaultValue;
-            Assert.False(dvp.CanSupplyValue(GetTestParameter("s"), new ContainerBuilder().Build(), out vp));
+            Assert.False(dvp.CanSupplyValue(GetTestParameter("s"), new ContainerBuilder().Build(), out Func<object> vp));
         }
 
         [Fact]
@@ -61,9 +60,8 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var dvp = new DefaultValueParameter();
             var u = GetTestParameter("t");
-            Func<object> vp;
             var dp = u.DefaultValue;
-            Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out vp));
+            Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out Func<object> vp));
             Assert.Equal("Hello", vp());
         }
 
@@ -72,8 +70,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var dvp = new DefaultValueParameter();
             var u = GetTestParameter("guid");
-            Func<object> vp;
-            Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out vp));
+            Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out Func<object> vp));
             Assert.Equal(default(Guid), vp());
         }
 
@@ -82,8 +79,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var dvp = new DefaultValueParameter();
             var u = GetTestParameter("dt");
-            Func<object> vp;
-            Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out vp));
+            Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out Func<object> vp));
             Assert.Equal(default(DateTime), vp());
         }
 
@@ -92,8 +88,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var dvp = new DefaultValueParameter();
 
-            Func<object> vp;
-            Assert.False(dvp.CanSupplyValue(GetDynamicBuildParameter(0), new ContainerBuilder().Build(), out vp));
+            Assert.False(dvp.CanSupplyValue(GetDynamicBuildParameter(0), new ContainerBuilder().Build(), out Func<object> vp));
         }
 
         [Fact]
@@ -101,8 +96,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var dvp = new DefaultValueParameter();
 
-            Func<object> vp;
-            Assert.True(dvp.CanSupplyValue(GetDynamicBuildParameter(1), new ContainerBuilder().Build(), out vp));
+            Assert.True(dvp.CanSupplyValue(GetDynamicBuildParameter(1), new ContainerBuilder().Build(), out Func<object> vp));
             Assert.Equal("Hello", vp());
         }
 
@@ -111,8 +105,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var dvp = new DefaultValueParameter();
 
-            Func<object> vp;
-            Assert.False(dvp.CanSupplyValue(GetDynamicMethodParameter(), new ContainerBuilder().Build(), out vp));
+            Assert.False(dvp.CanSupplyValue(GetDynamicMethodParameter(), new ContainerBuilder().Build(), out Func<object> vp));
         }
     }
 }

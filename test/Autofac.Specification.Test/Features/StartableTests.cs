@@ -113,7 +113,9 @@ namespace Autofac.Specification.Test.Features
             // Issue #916
             var builder = new ContainerBuilder();
             builder.RegisterType<StartableCreatesLifetimeScope>().As<IStartable>().SingleInstance();
-            var container = builder.Build();
+
+            // Assert.DoesNotThrow, basically.
+            builder.Build();
         }
 
         [Fact]

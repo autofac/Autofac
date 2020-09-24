@@ -85,32 +85,28 @@ namespace Autofac.Test.Core
         public void MatchesPropertySetterByName()
         {
             var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
-            Func<object> vp;
-            Assert.True(cp.CanSupplyValue(PropertySetValueParameter(), new ContainerBuilder().Build(), out vp));
+            Assert.True(cp.CanSupplyValue(PropertySetValueParameter(), new ContainerBuilder().Build(), out Func<object> vp));
         }
 
         [Fact]
         public void DoesNotMatchePropertySetterWithDifferentName()
         {
             var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
-            Func<object> vp;
-            Assert.False(cp.CanSupplyValue(WrongPropertySetValueParameter(), new ContainerBuilder().Build(), out vp));
+            Assert.False(cp.CanSupplyValue(WrongPropertySetValueParameter(), new ContainerBuilder().Build(), out Func<object> vp));
         }
 
         [Fact]
         public void DoesNotMatchConstructorParameters()
         {
             var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
-            Func<object> vp;
-            Assert.False(cp.CanSupplyValue(ConstructorParameter(), new ContainerBuilder().Build(), out vp));
+            Assert.False(cp.CanSupplyValue(ConstructorParameter(), new ContainerBuilder().Build(), out Func<object> vp));
         }
 
         [Fact]
         public void DoesNotMatchRegularMethodParameters()
         {
             var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
-            Func<object> vp;
-            Assert.False(cp.CanSupplyValue(MethodParameter(), new ContainerBuilder().Build(), out vp));
+            Assert.False(cp.CanSupplyValue(MethodParameter(), new ContainerBuilder().Build(), out Func<object> vp));
         }
     }
 }

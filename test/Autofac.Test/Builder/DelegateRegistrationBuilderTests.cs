@@ -20,9 +20,8 @@ namespace Autofac.Test.Builder
             var cb = new ContainerBuilder();
             cb.Register(c => "Hello").As<object>();
             var container = cb.Build();
-            IComponentRegistration cr;
             Assert.True(container.ComponentRegistry.TryGetRegistration(
-                new TypedService(typeof(object)), out cr));
+                new TypedService(typeof(object)), out IComponentRegistration cr));
             Assert.Equal(typeof(string), cr.Activator.LimitType);
         }
     }

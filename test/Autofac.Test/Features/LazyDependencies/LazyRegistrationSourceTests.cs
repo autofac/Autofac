@@ -63,7 +63,6 @@ namespace Autofac.Test.Features.LazyDependencies
         {
             public A(Lazy<B> b)
             {
-                var myB = b.Value;
             }
         }
 

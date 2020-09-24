@@ -215,10 +215,8 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(context));
             }
 
-            object? component;
-
             // Null annotation attributes only work if placed directly in an if statement.
-            if (context.TryResolve(typeof(T), out component))
+            if (context.TryResolve(typeof(T), out object? component))
             {
                 instance = (T)component;
 

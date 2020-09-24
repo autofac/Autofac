@@ -28,9 +28,7 @@ namespace Autofac.Test.Features.Indexed
 
             var idx = CreateTarget(cpt, key);
 
-            string val;
-
-            Assert.True(idx.TryGetValue(key, out val));
+            Assert.True(idx.TryGetValue(key, out string val));
             Assert.Same(cpt, val);
         }
 
@@ -50,10 +48,7 @@ namespace Autofac.Test.Features.Indexed
             var cpt = "Hello";
 
             var idx = CreateTarget(cpt, key);
-
-            string val;
-
-            Assert.False(idx.TryGetValue(key + 1, out val));
+            Assert.False(idx.TryGetValue(key + 1, out _));
         }
     }
 }

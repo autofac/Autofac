@@ -18,8 +18,7 @@ namespace Autofac.Specification.Test.Registration
                     .AssignableTo(typeof(IMyService)));
 
             Assert.Single(container.ComponentRegistry.Registrations);
-            object obj;
-            Assert.True(container.TryResolve(typeof(MyComponent), out obj));
+            Assert.True(container.TryResolve(typeof(MyComponent), out object obj));
             Assert.False(container.TryResolve(typeof(MyComponent2), out obj));
         }
 
