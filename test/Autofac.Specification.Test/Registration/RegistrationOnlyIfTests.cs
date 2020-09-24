@@ -122,32 +122,22 @@ namespace Autofac.Specification.Test.Registration
 
         public class Decorator<T> : IService<T>
         {
-            private readonly IService<T> _decorated;
-
             public Decorator(IService<T> decorated)
             {
-                _decorated = decorated;
+                Decorated = decorated;
             }
 
-            public IService<T> Decorated
-            {
-                get { return _decorated; }
-            }
+            public IService<T> Decorated { get; }
         }
 
         public class Decorator : IService
         {
-            private readonly IService _decorated;
-
             public Decorator(IService decorated)
             {
-                _decorated = decorated;
+                Decorated = decorated;
             }
 
-            public IService Decorated
-            {
-                get { return _decorated; }
-            }
+            public IService Decorated { get; }
         }
 
         public class ServiceA : IService

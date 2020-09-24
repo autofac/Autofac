@@ -37,17 +37,12 @@ namespace Autofac.Test.Features.OpenGenerics
 
         public abstract class Decorator<T> : IService<T>
         {
-            private readonly IService<T> _decorated;
-
             protected Decorator(IService<T> decorated)
             {
-                _decorated = decorated;
+                Decorated = decorated;
             }
 
-            public IService<T> Decorated
-            {
-                get { return _decorated; }
-            }
+            public IService<T> Decorated { get; }
         }
 
         public class DecoratorA<T> : Decorator<T>
@@ -60,18 +55,13 @@ namespace Autofac.Test.Features.OpenGenerics
 
         public class DecoratorB<T> : Decorator<T>
         {
-            private readonly string _parameter;
-
             public DecoratorB(IService<T> decorated, string parameter)
                 : base(decorated)
             {
-                _parameter = parameter;
+                Parameter = parameter;
             }
 
-            public string Parameter
-            {
-                get { return _parameter; }
-            }
+            public string Parameter { get; }
         }
 
         private const string ParameterValue = "Abc";
