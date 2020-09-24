@@ -243,12 +243,12 @@ namespace Autofac.Specification.Test.Registration
 
             public AddressBook(Func<Person> partyFactory)
             {
-                this._partyFactory = partyFactory;
+                _partyFactory = partyFactory;
             }
 
             public Person Add()
             {
-                return this._partyFactory();
+                return _partyFactory();
             }
         }
 

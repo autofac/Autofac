@@ -24,7 +24,7 @@ namespace Autofac.Specification.Test.Registration
         {
             public WithParam(int i, int j)
             {
-                this.Value = i + j;
+                Value = i + j;
             }
 
             public int Value { get; private set; }

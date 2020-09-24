@@ -184,7 +184,7 @@ namespace Autofac.Specification.Test
             {
                 void BuildCallback(ILifetimeScope c)
                 {
-                    this.Called++;
+                    Called++;
                 }
 
                 builder.RegisterBuildCallback(BuildCallback)

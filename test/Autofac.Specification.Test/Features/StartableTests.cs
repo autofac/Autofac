@@ -191,7 +191,7 @@ namespace Autofac.Specification.Test.Features
 
             public void Start()
             {
-                this.StartCount++;
+                StartCount++;
             }
         }
 
@@ -202,24 +202,24 @@ namespace Autofac.Specification.Test.Features
 
             public StartableCreatesLifetimeScope(ILifetimeScope scope)
             {
-                this._scope = scope;
+                _scope = scope;
             }
 
             public void Start()
             {
-                using (var nested = this._scope.BeginLifetimeScope("tag", b => { }))
+                using (var nested = _scope.BeginLifetimeScope("tag", b => { }))
                 {
                 }
 
-                using (var nested = this._scope.BeginLifetimeScope(b => { }))
+                using (var nested = _scope.BeginLifetimeScope(b => { }))
                 {
                 }
 
-                using (var nested = this._scope.BeginLifetimeScope("tag"))
+                using (var nested = _scope.BeginLifetimeScope("tag"))
                 {
                 }
 
-                using (var nested = this._scope.BeginLifetimeScope())
+                using (var nested = _scope.BeginLifetimeScope())
                 {
                 }
             }
@@ -245,7 +245,7 @@ namespace Autofac.Specification.Test.Features
 
             public void Start()
             {
-                this.WasStarted = true;
+                WasStarted = true;
             }
         }
     }

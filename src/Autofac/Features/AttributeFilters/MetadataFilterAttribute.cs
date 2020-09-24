@@ -72,8 +72,8 @@ namespace Autofac.Features.AttributeFilters
     ///     [MetadataFilter("Target", "Solution")] IEnumerable&lt;IAdapter&gt; adapters,
     ///     [MetadataFilter("LoggerName", "Solution")] ILogger logger)
     ///   {
-    ///     this.Adapters = adapters.ToList();
-    ///     this.Logger = logger;
+    ///     Adapters = adapters.ToList();
+    ///     Logger = logger;
     ///   }
     /// }
     /// </code>

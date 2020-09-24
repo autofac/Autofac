@@ -210,8 +210,8 @@ namespace Autofac.Test.Core
 
             public ComplexConsumer(int number, string text)
             {
-                this.Number = number;
-                this.Text = text;
+                Number = number;
+                Text = text;
             }
         }
     }

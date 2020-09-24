@@ -630,7 +630,7 @@ namespace Autofac.Specification.Test.Lifetime
 
             public void Method(int param)
             {
-                this.Param = param;
+                Param = param;
             }
         }
     }

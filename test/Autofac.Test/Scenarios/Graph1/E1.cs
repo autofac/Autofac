@@ -10,8 +10,8 @@ namespace Autofac.Test.Scenarios.Graph1
     {
         public E1(B1 b, IC1 c)
         {
-            this.B = b;
-            this.C = c;
+            B = b;
+            C = c;
         }
 
         public B1 B { get; private set; }

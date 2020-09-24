@@ -1197,7 +1197,7 @@ namespace Autofac.Specification.Test.Features
         {
             protected Decorator(IDecoratedService decorated)
             {
-                this.Decorated = decorated;
+                Decorated = decorated;
             }
 
             public IDecoratedService Decorated { get; }
@@ -1224,7 +1224,7 @@ namespace Autofac.Specification.Test.Features
             public DecoratorWithContextA(IDecoratedService decorated, IDecoratorContext context)
                 : base(decorated)
             {
-                this.Context = context;
+                Context = context;
             }
 
             public IDecoratorContext Context { get; }
@@ -1236,7 +1236,7 @@ namespace Autofac.Specification.Test.Features
             public DecoratorWithContextB(IDecoratedService decorated, IDecoratorContext context)
                 : base(decorated)
             {
-                this.Context = context;
+                Context = context;
             }
 
             public IDecoratorContext Context { get; }
@@ -1246,7 +1246,7 @@ namespace Autofac.Specification.Test.Features
         {
             public DecoratorWithFunc(Func<IDecoratedService> decorated)
             {
-                this.Decorated = decorated();
+                Decorated = decorated();
             }
 
             public IDecoratedService Decorated { get; }
@@ -1256,7 +1256,7 @@ namespace Autofac.Specification.Test.Features
         {
             public DecoratorWithLazy(Lazy<IDecoratedService> decorated)
             {
-                this.Decorated = decorated.Value;
+                Decorated = decorated.Value;
             }
 
             public IDecoratedService Decorated { get; }
@@ -1267,7 +1267,7 @@ namespace Autofac.Specification.Test.Features
             public DecoratorWithParameter(IDecoratedService decorated, string parameter)
                 : base(decorated)
             {
-                this.Parameter = parameter;
+                Parameter = parameter;
             }
 
             public string Parameter { get; }
@@ -1285,7 +1285,7 @@ namespace Autofac.Specification.Test.Features
 
             public void Dispose()
             {
-                this.DisposeCallCount++;
+                DisposeCallCount++;
             }
         }
 
@@ -1298,7 +1298,7 @@ namespace Autofac.Specification.Test.Features
 
             public void Dispose()
             {
-                this.DisposeCallCount++;
+                DisposeCallCount++;
             }
         }
 
@@ -1318,7 +1318,7 @@ namespace Autofac.Specification.Test.Features
         {
             public ImplementorWithParameters(string parameter)
             {
-                this.Parameter = parameter;
+                Parameter = parameter;
             }
 
             public IDecoratedService Decorated => this;
@@ -1341,7 +1341,7 @@ namespace Autofac.Specification.Test.Features
 
             public void Start()
             {
-                this.Started = true;
+                Started = true;
             }
         }
 
@@ -1357,7 +1357,7 @@ namespace Autofac.Specification.Test.Features
 
             public void Start()
             {
-                this.Decorated.Start();
+                Decorated.Start();
             }
         }
     }

@@ -126,12 +126,12 @@ namespace Autofac.Specification.Test.Registration
 
             public Decorator(IService<T> decorated)
             {
-                this._decorated = decorated;
+                _decorated = decorated;
             }
 
             public IService<T> Decorated
             {
-                get { return this._decorated; }
+                get { return _decorated; }
             }
         }
 
@@ -141,12 +141,12 @@ namespace Autofac.Specification.Test.Registration
 
             public Decorator(IService decorated)
             {
-                this._decorated = decorated;
+                _decorated = decorated;
             }
 
             public IService Decorated
             {
-                get { return this._decorated; }
+                get { return _decorated; }
             }
         }
 

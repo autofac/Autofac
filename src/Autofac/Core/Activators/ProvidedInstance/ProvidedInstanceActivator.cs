@@ -71,7 +71,7 @@ namespace Autofac.Core.Activators.ProvidedInstance
 
             if (_activated)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, _instance.GetType()));
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, _instance.GetType()));
             }
 
             _activated = true;

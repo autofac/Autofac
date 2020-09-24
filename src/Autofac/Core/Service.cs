@@ -40,10 +40,10 @@ namespace Autofac.Core
         public abstract string Description { get; }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents the current <see cref="System.Object"/>.
+        /// Returns a <see cref="string"/> that represents the current <see cref="object"/>.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents the current <see cref="System.Object"/>.
+        /// A <see cref="string"/> that represents the current <see cref="object"/>.
         /// </returns>
         public override string ToString()
         {
@@ -73,11 +73,11 @@ namespace Autofac.Core
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="System.Object"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="object"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="System.Object"/>.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="object"/>.</param>
         /// <returns>
-        /// true if the specified <see cref="System.Object"/> is equal to the current <see cref="System.Object"/>; otherwise, false.
+        /// true if the specified <see cref="object"/> is equal to the current <see cref="object"/>; otherwise, false.
         /// </returns>
         /// <exception cref="System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
         [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations", Justification = "This is an attempt to make Equals 'abstract' when it normally isn't.")]
@@ -90,7 +90,7 @@ namespace Autofac.Core
         /// Serves as a hash function for a particular type.
         /// </summary>
         /// <returns>
-        /// A hash code for the current <see cref="System.Object"/>.
+        /// A hash code for the current <see cref="object"/>.
         /// </returns>
         [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations", Justification = "This is an attempt to make GetHashCode 'abstract' when it normally isn't.")]
         public override int GetHashCode()

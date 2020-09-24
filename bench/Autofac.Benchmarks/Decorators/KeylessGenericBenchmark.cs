@@ -21,7 +21,7 @@ namespace Autofac.Benchmarks.Decorators
                 typeof(GenericCommandHandlerTwo<>),
                 typeof(ICommandHandler<>));
 
-            this.Container = builder.Build();
+            Container = builder.Build();
         }
     }
 }

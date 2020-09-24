@@ -377,7 +377,7 @@ namespace Autofac.Specification.Test.Features
 
             public ConstructorParamNotAttachedToProperty(string id)
             {
-                this._id = id;
+                _id = id;
             }
 
             public string Name { get; set; }
@@ -398,13 +398,13 @@ namespace Autofac.Specification.Test.Features
             {
                 private get
                 {
-                    this.GetterCalled = true;
+                    GetterCalled = true;
                     return null;
                 }
 
                 set
                 {
-                    this.SetterCalled = true;
+                    SetterCalled = true;
                 }
             }
         }

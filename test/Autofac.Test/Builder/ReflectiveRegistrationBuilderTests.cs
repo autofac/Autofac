@@ -88,17 +88,17 @@ namespace Autofac.Test.Builder
         {
             public MultipleConstructors(A1 a1)
             {
-                this.CalledCtor = 1;
+                CalledCtor = 1;
             }
 
             public MultipleConstructors(A1 a1, A2 a2)
             {
-                this.CalledCtor = 2;
+                CalledCtor = 2;
             }
 
             public MultipleConstructors(A1 a1, A2 a2, string s1)
             {
-                this.CalledCtor = 3;
+                CalledCtor = 3;
             }
 
             public int CalledCtor { get; private set; }

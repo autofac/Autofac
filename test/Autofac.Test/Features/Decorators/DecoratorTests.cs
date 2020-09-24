@@ -224,7 +224,7 @@ namespace Autofac.Test.Features.Decorators
         {
             protected Decorator(IDecoratedService decorated)
             {
-                this.Decorated = decorated;
+                Decorated = decorated;
             }
 
             public IDecoratedService Decorated { get; }

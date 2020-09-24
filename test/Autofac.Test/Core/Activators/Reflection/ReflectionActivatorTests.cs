@@ -352,7 +352,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             public AcceptsIntParameter(int i)
             {
-                this.I = i;
+                I = i;
             }
 
             public int I { get; private set; }
@@ -362,7 +362,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             public AcceptsObjectParameter(object p)
             {
-                this.P = p;
+                P = p;
             }
 
             public object P { get; private set; }
@@ -404,17 +404,17 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             public ThreeConstructors()
             {
-                this.CalledConstructorParameterCount = 0;
+                CalledConstructorParameterCount = 0;
             }
 
             public ThreeConstructors(int i)
             {
-                this.CalledConstructorParameterCount = 1;
+                CalledConstructorParameterCount = 1;
             }
 
             public ThreeConstructors(int i, string s)
             {
-                this.CalledConstructorParameterCount = 2;
+                CalledConstructorParameterCount = 2;
             }
 
             public int CalledConstructorParameterCount { get; private set; }

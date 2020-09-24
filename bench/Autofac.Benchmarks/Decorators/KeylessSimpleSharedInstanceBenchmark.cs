@@ -21,7 +21,7 @@ namespace Autofac.Benchmarks.Decorators
                 .As<ICommandHandler>()
                 .InstancePerLifetimeScope();
             builder.RegisterDecorator<CommandHandlerDecoratorOne, ICommandHandler>();
-            this.Container = builder.Build();
+            Container = builder.Build();
         }
     }
 }

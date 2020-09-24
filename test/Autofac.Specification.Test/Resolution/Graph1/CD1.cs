@@ -10,8 +10,8 @@ namespace Autofac.Specification.Test.Resolution.Graph1
     {
         public CD1(A1 a, B1 b)
         {
-            this.A = a;
-            this.B = b;
+            A = a;
+            B = b;
         }
 
         public A1 A { get; private set; }

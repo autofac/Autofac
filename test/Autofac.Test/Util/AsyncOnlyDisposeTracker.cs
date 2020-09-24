@@ -15,9 +15,9 @@ namespace Autofac.Test.Util
 
             IsAsyncDisposed = true;
 
-            if (this.Disposing != null)
+            if (Disposing != null)
             {
-                this.Disposing(this, EventArgs.Empty);
+                Disposing(this, EventArgs.Empty);
             }
         }
     }

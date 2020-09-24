@@ -210,7 +210,7 @@ namespace Autofac.Specification.Test.Lifetime
         {
             public B(A a)
             {
-                this.A = a;
+                A = a;
             }
 
             public A A { get; private set; }

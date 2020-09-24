@@ -69,8 +69,8 @@ namespace Autofac.Features.AttributeFilters
     ///     [KeyFilter("Solution")] IEnumerable&lt;IAdapter&gt; adapters,
     ///     [KeyFilter("Solution")] ILogger logger)
     ///   {
-    ///     this.Adapters = adapters.ToList();
-    ///     this.Logger = logger;
+    ///     Adapters = adapters.ToList();
+    ///     Logger = logger;
     ///   }
     /// }
     /// </code>

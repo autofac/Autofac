@@ -7,7 +7,7 @@ namespace Autofac.Benchmarks.Decorators.Scenario
         private readonly ICommandHandler _decorated;
         public CommandHandlerDecoratorOne(ICommandHandler decorated)
         {
-            this._decorated = decorated;
+            _decorated = decorated;
         }
     }
 }

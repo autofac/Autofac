@@ -14,7 +14,7 @@ namespace Autofac.Specification.Test.Registration
         public void OnlyServicesAssignableToASpecificTypeAreRegisteredFromAssemblies()
         {
             var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
-                b.RegisterAssemblyTypes(this.GetType().GetTypeInfo().Assembly)
+                b.RegisterAssemblyTypes(GetType().GetTypeInfo().Assembly)
                     .AssignableTo(typeof(IMyService)));
 
             Assert.Single(container.ComponentRegistry.Registrations);

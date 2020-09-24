@@ -102,7 +102,7 @@ namespace Autofac.Test.Features.OwnedInstances
         {
             public ClassWithFactory(string name)
             {
-                this.Name = name;
+                Name = name;
             }
 
             public delegate Owned<ClassWithFactory> OwnedFactory(string name);
@@ -116,14 +116,14 @@ namespace Autofac.Test.Features.OwnedInstances
 
             public ExposesScopeTag(ILifetimeScope myScope)
             {
-                this._myScope = myScope;
+                _myScope = myScope;
             }
 
             public object Tag
             {
                 get
                 {
-                    return this._myScope.Tag;
+                    return _myScope.Tag;
                 }
             }
         }

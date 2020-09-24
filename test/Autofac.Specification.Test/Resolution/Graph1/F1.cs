@@ -10,7 +10,7 @@ namespace Autofac.Specification.Test.Resolution.Graph1
     {
         public F1(IList<A1> aList)
         {
-            this.AList = aList;
+            AList = aList;
         }
 
         public IList<A1> AList { get; private set; }

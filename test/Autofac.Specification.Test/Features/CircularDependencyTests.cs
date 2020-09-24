@@ -305,8 +305,8 @@ namespace Autofac.Specification.Test.Features
 
             public ComponentConsumer(IService service, Dependency dependency)
             {
-                this._service = service;
-                this._dependency = dependency;
+                _service = service;
+                _dependency = dependency;
             }
         }
 
@@ -316,7 +316,7 @@ namespace Autofac.Specification.Test.Features
 
             public Dependency(IService service)
             {
-                this._service = service;
+                _service = service;
             }
         }
 
@@ -351,7 +351,7 @@ namespace Autofac.Specification.Test.Features
 
             public ServiceImpl(Guid id)
             {
-                this._id = id;
+                _id = id;
             }
         }
     }

@@ -57,11 +57,11 @@ namespace Autofac.Core
         public override string Description => _id.ToString();
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="System.Object"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="object"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="System.Object"/>.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="object"/>.</param>
         /// <returns>
-        /// true if the specified <see cref="System.Object"/> is equal to the current <see cref="System.Object"/>; otherwise, false.
+        /// true if the specified <see cref="object"/> is equal to the current <see cref="object"/>; otherwise, false.
         /// </returns>
         /// <exception cref="System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
         public override bool Equals(object obj)
@@ -75,7 +75,7 @@ namespace Autofac.Core
         /// Serves as a hash function for a particular type.
         /// </summary>
         /// <returns>
-        /// A hash code for the current <see cref="System.Object"/>.
+        /// A hash code for the current <see cref="object"/>.
         /// </returns>
         public override int GetHashCode()
         {

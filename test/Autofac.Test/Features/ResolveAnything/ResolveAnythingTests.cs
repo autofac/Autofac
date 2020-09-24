@@ -272,7 +272,7 @@ namespace Autofac.Test.Features.ResolveAnything
         {
             public RegisterTypeWithCtorParam(string stringParam = "MyString")
             {
-                this.StringParam = stringParam;
+                StringParam = stringParam;
             }
 
             public string StringParam { get; }

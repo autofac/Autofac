@@ -42,11 +42,11 @@ namespace Autofac.Core
         public override string Description => "AutoActivate";
 
         /// <summary>
-        /// Determines whether the specified <see cref="Object"/> is equal to the current <see cref="Object"/>.
+        /// Determines whether the specified <see cref="object"/> is equal to the current <see cref="object"/>.
         /// </summary>
-        /// <param name="obj">The <see cref="Object"/> to compare with the current <see cref="Object"/>.</param>
+        /// <param name="obj">The <see cref="object"/> to compare with the current <see cref="object"/>.</param>
         /// <returns>
-        /// <see langword="true" /> if the specified <see cref="Object"/> is not <see langword="null" />
+        /// <see langword="true" /> if the specified <see cref="object"/> is not <see langword="null" />
         /// and is an <see cref="AutoActivateService"/>; otherwise, <see langword="false" />.
         /// </returns>
         /// <remarks>
@@ -64,7 +64,7 @@ namespace Autofac.Core
         /// Serves as a hash function for a particular type.
         /// </summary>
         /// <returns>
-        /// A hash code for the current <see cref="System.Object"/>. Always <c>0</c> for this type.
+        /// A hash code for the current <see cref="object"/>. Always <c>0</c> for this type.
         /// </returns>
         /// <remarks>
         /// <para>

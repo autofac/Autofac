@@ -107,7 +107,7 @@ namespace Autofac.Test
         {
             public MockTracer()
             {
-                this.EnableAll();
+                EnableAll();
             }
 
             public event Action<IResolveOperation, ResolveRequest> OperationStarting;

@@ -21,7 +21,7 @@ namespace Autofac.Benchmarks.Decorators
                 (c, inner) => new CommandHandlerDecoratorOne(inner),
                 fromKey: "handler");
 
-            this.Container = builder.Build();
+            Container = builder.Build();
         }
     }
 }

@@ -86,7 +86,7 @@ namespace Autofac.Test.Concurrency
         {
             for (var i = 0; i < 100; i++)
             {
-                await this.ResolveWhileTheScopeIsDisposing_ObjectDisposedExceptionThrownOnly();
+                await ResolveWhileTheScopeIsDisposing_ObjectDisposedExceptionThrownOnly();
             }
         }
 

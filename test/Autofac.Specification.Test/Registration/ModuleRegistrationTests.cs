@@ -190,7 +190,7 @@ namespace Autofac.Specification.Test.Registration
                     throw new ArgumentNullException(nameof(builder));
                 }
 
-                this.ConfigureCalled = true;
+                ConfigureCalled = true;
                 builder.RegisterType<object>().SingleInstance();
             }
         }

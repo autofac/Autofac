@@ -118,10 +118,10 @@ namespace Autofac.Features.ResolveAnything
         public Action<IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>>? RegistrationConfiguration { get; set; }
 
         /// <summary>
-        /// Returns a <see cref="System.String"/> that represents the current <see cref="System.Object"/>.
+        /// Returns a <see cref="string"/> that represents the current <see cref="object"/>.
         /// </summary>
         /// <returns>
-        /// A <see cref="System.String"/> that represents the current <see cref="System.Object"/>.
+        /// A <see cref="string"/> that represents the current <see cref="object"/>.
         /// </returns>
         public override string ToString()
         {

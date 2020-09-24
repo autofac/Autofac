@@ -10,8 +10,8 @@ namespace Autofac.Specification.Test.Util
 
         public void Dispose()
         {
-            this.IsDisposed = true;
-            this.Disposing?.Invoke(this, EventArgs.Empty);
+            IsDisposed = true;
+            Disposing?.Invoke(this, EventArgs.Empty);
         }
     }
 }

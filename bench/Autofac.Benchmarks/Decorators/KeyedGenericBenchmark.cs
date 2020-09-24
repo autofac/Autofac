@@ -23,7 +23,7 @@ namespace Autofac.Benchmarks.Decorators
                     typeof(ICommandHandler<>),
                     fromKey: "handler");
 
-            this.Container = builder.Build();
+            Container = builder.Build();
         }
     }
 }

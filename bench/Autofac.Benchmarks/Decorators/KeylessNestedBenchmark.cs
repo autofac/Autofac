@@ -20,7 +20,7 @@ namespace Autofac.Benchmarks.Decorators
             builder.RegisterDecorator<CommandHandlerDecoratorOne, ICommandHandler>();
             builder.RegisterDecorator<CommandHandlerDecoratorTwo, ICommandHandler>();
 
-            this.Container = builder.Build();
+            Container = builder.Build();
         }
     }
 }

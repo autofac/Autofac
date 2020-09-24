@@ -13,7 +13,7 @@ namespace Autofac.Specification.Test.Features.PropertyInjection
 
         public string PrivateStringAccessor()
         {
-            return this.PrivateString;
+            return PrivateString;
         }
     }
 }

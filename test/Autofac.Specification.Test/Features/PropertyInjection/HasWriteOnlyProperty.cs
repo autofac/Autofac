@@ -10,13 +10,13 @@ namespace Autofac.Specification.Test.Features.PropertyInjection
         {
             set
             {
-                this._val = value;
+                _val = value;
             }
         }
 
         public string GetVal()
         {
-            return this._val;
+            return _val;
         }
     }
 }

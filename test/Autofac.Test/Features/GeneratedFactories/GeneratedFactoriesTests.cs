@@ -383,9 +383,9 @@ namespace Autofac.Test.Features.GeneratedFactories
             // because of the redundant types in the constructor.
             public DuplicateConstructorParameterTypes(int a, int b, string c)
             {
-                this.A = a;
-                this.B = b;
-                this.C = c;
+                A = a;
+                B = b;
+                C = c;
             }
         }
     }
