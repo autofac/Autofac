@@ -47,7 +47,7 @@ namespace Autofac.Test.Features.LazyDependencies
             Assert.False(lazy.IsValueCreated);
         }
 
-        [Fact(Skip = "#718")]
+        [Fact]
         public void LazyWorksWithCircularPropertyDependencies()
         {
             var builder = new ContainerBuilder();
