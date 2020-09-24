@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F65B03DB
 		build\Autofac.Build.psm1 = build\Autofac.Build.psm1
 		build\Documentation.proj = build\Documentation.proj
 		build\Documentation.shfbproj = build\Documentation.shfbproj
+		build\stylecop.json = build\stylecop.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bench", "bench", "{48F40A36-C829-4895-99B3-1634CC6594E0}"

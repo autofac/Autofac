@@ -3,7 +3,7 @@
   "settings": {
     "documentationRules": {
       "companyName": "Autofac Project",
-      "copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} license. See {licenseFile} in the project root for license information.",
+      "copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} License. See {licenseFile} in the project root for license information.",
       "variables": {
         "licenseFile": "LICENSE",
         "licenseName": "MIT"
