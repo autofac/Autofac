@@ -42,13 +42,13 @@ namespace Autofac.Specification.Test.Resolution
         {
             yield return new object[]
             {
-                (Expression<Func<MultipleConstructors>>)(() => new MultipleConstructors(default(A1), default(A2))),
+                (Expression<Func<MultipleConstructors>>)(() => new MultipleConstructors(default, default)),
                 2
             };
 
             yield return new object[]
             {
-                (Expression<Func<MultipleConstructors>>)(() => new MultipleConstructors(default(A1))),
+                (Expression<Func<MultipleConstructors>>)(() => new MultipleConstructors(default)),
                 1
             };
         }

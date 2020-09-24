@@ -13,7 +13,7 @@ namespace Autofac.Test.Core.Activators.Reflection
     {
         public class HasDefaultValues
         {
-            public HasDefaultValues(string s, string t = "Hello", DateTime dt = default(DateTime), Guid guid = default(Guid))
+            public HasDefaultValues(string s, string t = "Hello", DateTime dt = default, Guid guid = default)
             {
             }
         }
