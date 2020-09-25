@@ -984,6 +984,23 @@ namespace Autofac.Specification.Test.Features
             Assert.IsType<ImplementorA>(instance.Decorated);
         }
 
+        [Fact]
+        public void DecoratorsApplyToNamedAndDefaultServices()
+        {
+            // Issue #529, #880: Old decorator syntax failed if a component
+            // being decorated was registered with both As<T>() and Named<T>().
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<ImplementorA>().As<IDecoratedService>().Named<IDecoratedService>("service");
+            builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+            var container = builder.Build();
+
+            var instance = container.Resolve<IDecoratedService>();
+
+            Assert.IsType<DecoratorA>(instance);
+            Assert.IsType<ImplementorA>(instance.Decorated);
+        }
+
         [Theory]
         [InlineData(typeof(IDecoratedService), typeof(ISomeOtherService))]
         [InlineData(typeof(ISomeOtherService), typeof(IDecoratedService))]
