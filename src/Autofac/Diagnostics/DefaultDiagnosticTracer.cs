@@ -198,7 +198,7 @@ namespace Autofac.Diagnostics
                     builder.AppendLine(TracerMessages.ExitBrace);
                     builder.AppendException(TracerMessages.OperationFailed, data.OperationException);
 
-                    OnOperationCompleted(new OperationTraceCompletedArgs<string>(data.Operation, builder.ToString()));
+                    OnOperationCompleted(new OperationTraceCompletedArgs<string>(data.Operation, false, builder.ToString()));
                 }
                 finally
                 {
@@ -223,7 +223,7 @@ namespace Autofac.Diagnostics
                     builder.AppendLine(TracerMessages.ExitBrace);
                     builder.AppendFormattedLine(TracerMessages.OperationSucceeded, data.ResolvedInstance);
 
-                    OnOperationCompleted(new OperationTraceCompletedArgs<string>(data.Operation, builder.ToString()));
+                    OnOperationCompleted(new OperationTraceCompletedArgs<string>(data.Operation, true, builder.ToString()));
                 }
                 finally
                 {
