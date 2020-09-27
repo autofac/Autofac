@@ -27,6 +27,7 @@ namespace Autofac.Specification.Test.Diagnostics
             {
                 Assert.Same(tracer, sender);
                 lastOpResult = args.TraceContent;
+                Assert.True(args.OperationSucceeded);
             };
 
             container.Resolve<string>();
@@ -52,6 +53,7 @@ namespace Autofac.Specification.Test.Diagnostics
             {
                 Assert.Same(tracer, sender);
                 lastOpResult = args.TraceContent;
+                Assert.False(args.OperationSucceeded);
             };
 
             try
