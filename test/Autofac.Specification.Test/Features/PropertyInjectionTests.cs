@@ -373,6 +373,22 @@ namespace Autofac.Specification.Test.Features
             Assert.False(instance.GetterCalled);
         }
 
+        [Fact]
+        public void DecoratedInstanceWithPropertyInjectionAllowingCircularReferencesStillInjects()
+        {
+            var val = "Value";
+
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance(val);
+            builder.RegisterType<DecoratedService>().As<IMyService>().PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+            builder.RegisterDecorator<ServiceDecorator, IMyService>();
+
+            var container = builder.Build();
+            var instance = container.Resolve<IMyService>();
+
+            instance.AssertProp();
+        }
+
         private class ConstructorParamNotAttachedToProperty
         {
             [SuppressMessage("SA1401", "SA1401")]
@@ -409,6 +425,39 @@ namespace Autofac.Specification.Test.Features
                 {
                     SetterCalled = true;
                 }
+            }
+        }
+
+        private interface IMyService
+        {
+            void AssertProp();
+        }
+
+        private sealed class DecoratedService : IMyService
+        {
+            public string Prop { get; set; }
+
+            public void AssertProp()
+            {
+                if (Prop is null)
+                {
+                    throw new NullReferenceException();
+                }
+            }
+        }
+
+        private sealed class ServiceDecorator : IMyService
+        {
+            private readonly IMyService _decorating;
+
+            public ServiceDecorator(IMyService decorating)
+            {
+                _decorating = decorating;
+            }
+
+            public void AssertProp()
+            {
+                _decorating.AssertProp();
             }
         }
     }

@@ -584,11 +584,13 @@ namespace Autofac.Builder
 
                 if (allowCircularDependencies)
                 {
+                    var capturedInstance = ctxt.Instance;
+
                     // If we are allowing circular deps, then we need to run when all requests have completed (similar to Activated).
                     ctxt.RequestCompleting += (o, args) =>
                     {
                         var evCtxt = args.RequestContext;
-                        AutowiringPropertyInjector.InjectProperties(evCtxt, evCtxt.Instance!, propertySelector, evCtxt.Parameters);
+                        AutowiringPropertyInjector.InjectProperties(evCtxt, capturedInstance!, propertySelector, evCtxt.Parameters);
                     };
                 }
                 else
