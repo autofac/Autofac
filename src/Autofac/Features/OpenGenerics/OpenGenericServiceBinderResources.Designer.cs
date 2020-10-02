@@ -79,15 +79,6 @@ namespace Autofac.Features.OpenGenerics {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The implementation type &apos;{0}&apos; does not support the interface &apos;{1}&apos;..
-        /// </summary>
-        internal static string InterfaceIsNotImplemented {
-            get {
-                return ResourceManager.GetString("InterfaceIsNotImplemented", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The service &apos;{0}&apos; is not an open generic type definition..
         /// </summary>
         internal static string ServiceTypeMustBeOpenGenericTypeDefinition {

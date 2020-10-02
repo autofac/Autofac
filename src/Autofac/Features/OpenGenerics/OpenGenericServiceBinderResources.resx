@@ -123,9 +123,6 @@
   <data name="ImplementorMustBeOpenGenericTypeDefinition" xml:space="preserve">
     <value>The implementation type '{0}' is not an open generic type definition.</value>
   </data>
-  <data name="InterfaceIsNotImplemented" xml:space="preserve">
-    <value>The implementation type '{0}' does not support the interface '{1}'.</value>
-  </data>
   <data name="ServiceTypeMustBeOpenGenericTypeDefinition" xml:space="preserve">
     <value>The service '{0}' is not an open generic type definition.</value>
   </data>
