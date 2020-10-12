@@ -59,6 +59,7 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 - [Autofac](https://github.com/autofac/Autofac) - Core dependency resolution and common functions (this repo).
 - [Autofac.AspNetCore.Multitenant](https://github.com/autofac/Autofac.AspNetCore.Multitenant) - Multitenant DI support for ASP.NET Core applications.
 - [Autofac.Configuration](https://github.com/autofac/Autofac.Configuration) - JSON/XML file-based configuration support.
+- [Autofac.Diagnostics.DotGraph](https://github.com/autofac/Autofac.Diagnostics.DotGraph) - Diagnostics support to enable DOT graph visualization of resolve requests.
 - [Autofac.Extensions.DependencyInjection](https://github.com/autofac/Autofac.Extensions.DependencyInjection) - .NET Core integration for Autofac.
 - [Autofac.Extras.AggregateService](https://github.com/autofac/Autofac.Extras.AggregateService) - Dynamic aggregate service implementation generation.
 - [Autofac.Extras.AttributeMetadata](https://github.com/autofac/Autofac.Extras.AttributeMetadata) - Metadata scanning/filtering through attributes.
@@ -76,6 +77,7 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 - [Autofac.Mvc](https://github.com/autofac/Autofac.Mvc) - ASP.NET MVC integration.
 - [Autofac.Mvc.Owin](https://github.com/autofac/Autofac.Mvc.Owin) - OWIN support for ASP.NET MVC.
 - [Autofac.Owin](https://github.com/autofac/Autofac.Owin) - Core OWIN support - shared middleware for request lifetime integration.
+- [Autofac.Pooling](https://github.com/autofac/Autofac.Pooling) - Support for pooled instance lifetime scopes.
 - [Autofac.ServiceFabric](https://github.com/autofac/Autofac.ServiceFabric) - Application integration for Service Fabric services.
 - [Autofac.SignalR](https://github.com/autofac/Autofac.SignalR) - Application integration for SignalR.
 - [Autofac.Wcf](https://github.com/autofac/Autofac.Wcf) - WCF service hosting.
@@ -85,7 +87,5 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 
 ## Contributing / Pull Requests
 
-Refer to the [Contributor Guide](https://github.com/autofac/Autofac/blob/master/CONTRIBUTING.md)
+Refer to the [Contributor Guide](https://github.com/autofac/.github/blob/master/CONTRIBUTING.md)
 for setting up and building Autofac source.
-
-
