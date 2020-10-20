@@ -49,6 +49,19 @@ namespace Autofac.Specification.Test.Registration
             Assert.IsType<ServiceA>(container.Resolve<IService>());
         }
 
+        [Fact(Skip = "Issue #1217")]
+        public void IfNotRegistered_CanBeDecorated()
+        {
+            // Order here is important - the IfNotRegistered needs to happen
+            // before the decorator.
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ServiceA>().As<IService>().IfNotRegistered(typeof(IService));
+            builder.RegisterDecorator<Decorator, IService>();
+            var container = builder.Build();
+            var result = container.Resolve<IService>();
+            Assert.IsType<Decorator>(result);
+        }
+
         [Fact]
         public void OnlyIf_CanFilterEnumerableServices()
         {
