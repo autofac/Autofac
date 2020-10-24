@@ -76,6 +76,9 @@ namespace Autofac.Core.Registration
         /// <returns>A new component registry with the configured component registrations.</returns>
         public IComponentRegistry Build()
         {
+            // Mark our tracker as complete; no more adjustments to the registry will be made after this point.
+            _registeredServicesTracker.Complete();
+
             // Go through all our registrations and build the component pipeline for each one.
             foreach (var registration in _registeredServicesTracker.Registrations)
             {

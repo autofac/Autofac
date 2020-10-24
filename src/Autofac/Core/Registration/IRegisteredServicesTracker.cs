@@ -51,6 +51,12 @@ namespace Autofac.Core.Registration
         event EventHandler<IRegistrationSource> RegistrationSourceAdded;
 
         /// <summary>
+        /// Should be called prior to the construction of a <see cref="ComponentRegistry" /> to
+        /// indicate that the tracker is complete, and requested service information should no longer be ephemeral.
+        /// </summary>
+        void Complete();
+
+        /// <summary>
         /// Gets the registered components.
         /// </summary>
         IEnumerable<IComponentRegistration> Registrations { get; }

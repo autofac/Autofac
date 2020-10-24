@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Specification.Test.Registration.Adapters;
 using Autofac.Test.Scenarios.ScannedAssembly;
 using Xunit;
@@ -49,7 +50,17 @@ namespace Autofac.Specification.Test.Registration
             Assert.IsType<ServiceA>(container.Resolve<IService>());
         }
 
-        [Fact(Skip = "Issue #1217")]
+        [Fact]
+        public void IfNotRegistered_CanFilterMultipleTimes()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ServiceA>().As<IService>().IfNotRegistered(typeof(IService));
+            builder.RegisterType<ServiceB>().As<IService>().IfNotRegistered(typeof(IService));
+            var container = builder.Build();
+            Assert.IsType<ServiceA>(container.Resolve<IService>());
+        }
+
+        [Fact]
         public void IfNotRegistered_CanBeDecorated()
         {
             // Order here is important - the IfNotRegistered needs to happen
@@ -60,6 +71,36 @@ namespace Autofac.Specification.Test.Registration
             var container = builder.Build();
             var result = container.Resolve<IService>();
             Assert.IsType<Decorator>(result);
+        }
+
+        [Fact]
+        public void IfNotRegistered_CanConditionGenericService()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterGeneric(typeof(SimpleGeneric<>)).IfNotRegistered(typeof(SimpleGeneric<int>));
+            var container = builder.Build();
+
+            var result = container.Resolve<SimpleGeneric<int>>();
+            Assert.IsType<SimpleGeneric<int>>(result);
+        }
+
+        [Fact]
+        public void IfNotRegistered_CanHaveServiceMiddleware()
+        {
+            var builder = new ContainerBuilder();
+            var middlewareInvoked = false;
+
+            builder.RegisterType<ServiceA>().As<IService>().IfNotRegistered(typeof(IService));
+
+            builder.RegisterServiceMiddleware<IService>(PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            {
+                next(ctxt);
+                middlewareInvoked = true;
+            });
+
+            var container = builder.Build();
+            var result = container.Resolve<IService>();
+            Assert.True(middlewareInvoked);
         }
 
         [Fact]
