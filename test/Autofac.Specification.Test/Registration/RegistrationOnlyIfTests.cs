@@ -98,14 +98,15 @@ namespace Autofac.Specification.Test.Registration
         public void IfNotRegistered_CanConditionGenericServiceWithMultipleInterfaces()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterGeneric(typeof(MultiServiceGeneric<>)).As(typeof(IService<>)).As(typeof(IService2<>)).IfNotRegistered(typeof(SimpleGeneric<int>));
+            builder.RegisterGeneric(typeof(MultiServiceGeneric<>)).As(typeof(IService<>)).As(typeof(IService2<>));
+            builder.RegisterGeneric(typeof(MultiServiceGeneric<>)).As(typeof(IService<>)).IfNotRegistered(typeof(IService2<int>));
             var container = builder.Build();
 
             var result = container.Resolve<IService<int>>();
             Assert.IsType<MultiServiceGeneric<int>>(result);
 
             var result2 = container.Resolve<IService2<int>>();
-            Assert.IsType<MultiServiceGeneric<int>>(result);
+            Assert.IsType<MultiServiceGeneric<int>>(result2);
         }
 
         [Fact]

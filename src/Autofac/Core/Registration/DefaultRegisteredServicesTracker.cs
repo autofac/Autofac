@@ -305,6 +305,12 @@ namespace Autofac.Core.Registration
                                 continue;
                             }
 
+                            if (_ephemeralServiceInfo is object)
+                            {
+                                // Use ephemeral info for additional services.
+                                additionalInfo = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+                            }
+
                             if (!additionalInfo.IsInitializing)
                             {
                                 BeginServiceInfoInitialization(additionalService, additionalInfo, ExcludeSource(_dynamicRegistrationSources, next));
