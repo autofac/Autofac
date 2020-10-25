@@ -61,6 +61,16 @@ namespace Autofac.Specification.Test.Registration
         }
 
         [Fact]
+        public void IfNotRegistered_CanFilterAndRegisterMultipleServices()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ServiceMulti>().As<IService>().As<IService2>().IfNotRegistered(typeof(IService));
+            var container = builder.Build();
+            Assert.IsType<ServiceMulti>(container.Resolve<IService>());
+            Assert.IsType<ServiceMulti>(container.Resolve<IService2>());
+        }
+
+        [Fact]
         public void IfNotRegistered_CanBeDecorated()
         {
             // Order here is important - the IfNotRegistered needs to happen
@@ -82,6 +92,20 @@ namespace Autofac.Specification.Test.Registration
 
             var result = container.Resolve<SimpleGeneric<int>>();
             Assert.IsType<SimpleGeneric<int>>(result);
+        }
+
+        [Fact]
+        public void IfNotRegistered_CanConditionGenericServiceWithMultipleInterfaces()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterGeneric(typeof(MultiServiceGeneric<>)).As(typeof(IService<>)).As(typeof(IService2<>)).IfNotRegistered(typeof(SimpleGeneric<int>));
+            var container = builder.Build();
+
+            var result = container.Resolve<IService<int>>();
+            Assert.IsType<MultiServiceGeneric<int>>(result);
+
+            var result2 = container.Resolve<IService2<int>>();
+            Assert.IsType<MultiServiceGeneric<int>>(result);
         }
 
         [Fact]
@@ -209,7 +233,23 @@ namespace Autofac.Specification.Test.Registration
         {
         }
 
+        public interface IService2
+        {
+        }
+
+        public class ServiceMulti : IService, IService2
+        {
+        }
+
         public class SimpleGeneric<T>
+        {
+        }
+
+        public interface IService2<T>
+        {
+        }
+
+        public class MultiServiceGeneric<T> : IService<T>, IService2<T>
         {
         }
     }
