@@ -72,11 +72,6 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
-        /// Gets the target registration of a service redirection applied by a particular piece of middleware.
-        /// </summary>
-        public IComponentRegistration? RedirectionTargetRegistration { get; private set; }
-
-        /// <summary>
         /// Gets or sets a value representing the current initialization depth. Will always be zero for initialized service blocks.
         /// </summary>
         public int InitializationDepth { get; set; }
