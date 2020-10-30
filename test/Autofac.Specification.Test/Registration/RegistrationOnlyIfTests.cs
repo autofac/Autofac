@@ -129,6 +129,78 @@ namespace Autofac.Specification.Test.Registration
         }
 
         [Fact]
+        public void IfNotRegistered_CanBeDecoratedByModuleWhenModuleRegistered1st()
+        {
+            var builder = new ContainerBuilder();
+
+            var module = new MyModule(build =>
+            {
+                build.RegisterDecorator<Decorator, IService>();
+            });
+
+            builder.RegisterModule(module);
+            builder.RegisterType<ServiceA>().As<IService>().IfNotRegistered(typeof(IService));
+
+            var container = builder.Build();
+            var result = container.Resolve<IService>();
+            Assert.IsType<Decorator>(result);
+        }
+
+        [Fact]
+        public void IfNotRegistered_CanBeDecoratedByModuleWhenModuleRegistered2nd()
+        {
+            var builder = new ContainerBuilder();
+
+            var module = new MyModule(build =>
+            {
+                build.RegisterDecorator<Decorator, IService>();
+            });
+
+            builder.RegisterType<ServiceA>().As<IService>().IfNotRegistered(typeof(IService));
+            builder.RegisterModule(module);
+
+            var container = builder.Build();
+            var result = container.Resolve<IService>();
+            Assert.IsType<Decorator>(result);
+        }
+
+        [Fact]
+        public void IfNotRegistered_ConditionalInModuleIsDecoratedWhenModuleRegistered1st()
+        {
+            var builder = new ContainerBuilder();
+
+            var module = new MyModule(build =>
+            {
+                build.RegisterType<ServiceA>().As<IService>().IfNotRegistered(typeof(IService));
+            });
+
+            builder.RegisterModule(module);
+            builder.RegisterDecorator<Decorator, IService>();
+
+            var container = builder.Build();
+            var result = container.Resolve<IService>();
+            Assert.IsType<Decorator>(result);
+        }
+
+        [Fact]
+        public void IfNotRegistered_ConditionalInModuleIsDecoratedWhenModuleRegistered2nd()
+        {
+            var builder = new ContainerBuilder();
+
+            var module = new MyModule(build =>
+            {
+                build.RegisterType<ServiceA>().As<IService>().IfNotRegistered(typeof(IService));
+            });
+
+            builder.RegisterDecorator<Decorator, IService>();
+            builder.RegisterModule(module);
+
+            var container = builder.Build();
+            var result = container.Resolve<IService>();
+            Assert.IsType<Decorator>(result);
+        }
+
+        [Fact]
         public void OnlyIf_CanFilterEnumerableServices()
         {
             var builder = new ContainerBuilder();
@@ -252,6 +324,21 @@ namespace Autofac.Specification.Test.Registration
 
         public class MultiServiceGeneric<T> : IService<T>, IService2<T>
         {
+        }
+
+        public class MyModule : Module
+        {
+            private readonly Action<ContainerBuilder> _callback;
+
+            public MyModule(Action<ContainerBuilder> callback)
+            {
+                _callback = callback;
+            }
+
+            protected override void Load(ContainerBuilder builder)
+            {
+                _callback(builder);
+            }
         }
     }
 }
