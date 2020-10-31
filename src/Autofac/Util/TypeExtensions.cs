@@ -230,7 +230,7 @@ namespace Autofac.Util
             }
 
             return allGenericParametersMatch ||
-                Traverse.Across(parameter, p => p.BaseType)
+                Traverse.Across(parameter, p => p.BaseType!)
                        .Concat(parameter.GetInterfaces())
                        .Any(p => ParameterEqualsConstraint(p, constraint));
         }
@@ -273,7 +273,7 @@ namespace Autofac.Util
         private static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
         {
             return candidateType.GetInterfaces().Concat(
-                Traverse.Across(candidateType, t => t.BaseType));
+                Traverse.Across(candidateType, t => t.BaseType!));
         }
     }
 }

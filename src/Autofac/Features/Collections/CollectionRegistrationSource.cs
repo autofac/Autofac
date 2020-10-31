@@ -87,7 +87,8 @@ namespace Autofac.Features.Collections
             }
             else if (serviceType.IsArray)
             {
-                elementType = serviceType.GetElementType();
+                // GetElementType always non-null if IsArray is true.
+                elementType = serviceType.GetElementType()!;
                 limitType = serviceType;
                 factory = GenerateArrayFactory(elementType);
             }
@@ -160,7 +161,9 @@ namespace Autofac.Features.Collections
             var parameter = Expression.Parameter(typeof(int));
             var genericType = typeof(List<>).MakeGenericType(elementType);
             var constructor = genericType.GetMatchingConstructor(new[] { typeof(int) });
-            var newList = Expression.New(constructor, parameter);
+
+            // We know that List<> has the constructor we need.
+            var newList = Expression.New(constructor!, parameter);
             return Expression.Lambda<Func<int, IList>>(newList, parameter).Compile();
         }
 

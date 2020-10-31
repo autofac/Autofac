@@ -29,7 +29,7 @@ namespace Autofac.Core
         /// Gets a human-readable description of the service.
         /// </summary>
         /// <value>The description.</value>
-        public override string Description => ServiceType.FullName;
+        public override string Description => ServiceType.FullName!;
 
         /// <summary>
         /// Indicates whether the current object is equal to another object of the same type.
@@ -56,7 +56,7 @@ namespace Autofac.Core
         /// true if the specified <see cref="object"/> is equal to the current <see cref="object"/>; otherwise, false.
         /// </returns>
         /// <exception cref="NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return Equals(obj as TypedService);
         }

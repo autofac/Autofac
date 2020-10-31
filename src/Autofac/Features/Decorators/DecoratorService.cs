@@ -48,7 +48,7 @@ namespace Autofac.Features.Decorators
         }
 
         /// <inheritdoc />
-        public bool Equals(DecoratorService other)
+        public bool Equals(DecoratorService? other)
         {
             if (other is null)
             {
@@ -64,7 +64,7 @@ namespace Autofac.Features.Decorators
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {

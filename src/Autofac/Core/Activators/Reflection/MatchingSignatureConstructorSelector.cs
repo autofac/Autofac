@@ -69,7 +69,8 @@ namespace Autofac.Core.Activators.Reflection
                 throw new ArgumentException(MatchingSignatureConstructorSelectorResources.AtLeastOneBindingRequired);
             }
 
-            var targetTypeName = constructorBindings[0].TargetConstructor.DeclaringType.Name;
+            // DeclaringType will be non-null for constructors.
+            var targetTypeName = constructorBindings[0].TargetConstructor.DeclaringType!.Name;
             var signature = string.Join(", ", _signature.Select(t => t.Name).ToArray());
 
             if (matchingCount == 0)

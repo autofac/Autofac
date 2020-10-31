@@ -59,7 +59,7 @@ namespace Autofac.Core
         /// </returns>
         /// <exception cref="System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
         [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations", Justification = "This is an attempt to make Equals 'abstract' when it normally isn't.")]
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             throw new NotImplementedException(ServiceResources.MustOverrideEquals);
         }

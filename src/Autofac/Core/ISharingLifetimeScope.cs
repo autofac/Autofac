@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Core
 {
@@ -26,7 +27,7 @@ namespace Autofac.Core
         /// <param name="id">Key to look up.</param>
         /// <param name="value">The instance that has the specified key.</param>
         /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
-        bool TryGetSharedInstance(Guid id, out object value);
+        bool TryGetSharedInstance(Guid id, [NotNullWhen(true)] out object? value);
 
         /// <summary>
         /// Try to retrieve a shared instance based on a primary GUID key and
@@ -39,7 +40,7 @@ namespace Autofac.Core
         /// </param>
         /// <param name="value">The instance that has the specified keys.</param>
         /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
-        bool TryGetSharedInstance(Guid primaryId, Guid? qualifyingId, out object value);
+        bool TryGetSharedInstance(Guid primaryId, Guid? qualifyingId, [NotNullWhen(true)] out object? value);
 
         /// <summary>
         /// Creates a shared instance with a GUID key.

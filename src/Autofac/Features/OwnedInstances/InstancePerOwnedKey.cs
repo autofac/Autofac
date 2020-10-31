@@ -21,11 +21,11 @@ namespace Autofac.Features.OwnedInstances
             => _serviceWithType = typedService;
 
         /// <inheritdoc/>
-        public bool Equals(IServiceWithType other)
+        public bool Equals(IServiceWithType? other)
             => other != null && _serviceWithType.ServiceType == other.ServiceType;
 
         /// <inheritdoc/>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => obj is IServiceWithType serviceWithType && Equals(serviceWithType);
 
         /// <inheritdoc/>

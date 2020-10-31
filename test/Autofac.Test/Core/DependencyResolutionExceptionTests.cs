@@ -94,6 +94,7 @@ namespace Autofac.Test.Core
             }
         }
 
+        // Consider removing this test, or marking it as .NET Standard Only. Binary formatter serialisation has been obsoleted by Microsoft.
         [Fact]
         public void SupportCustomRuntimeSerialization()
         {

@@ -121,7 +121,7 @@ namespace Autofac.Util
                     constructorCallExpression));
             }
 
-            return callExpression.Constructor;
+            return callExpression.Constructor!;
         }
     }
 }

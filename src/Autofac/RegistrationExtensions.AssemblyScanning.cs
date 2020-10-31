@@ -410,7 +410,8 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(registration));
             }
 
-            return registration.InNamespace(typeof(T).Namespace);
+            // Namespace is always non-null for concrete type parameters.
+            return registration.InNamespace(typeof(T).Namespace!);
         }
 
         /// <summary>
