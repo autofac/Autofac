@@ -8,9 +8,9 @@ using Xunit;
 
 #if NET5_0
 
-namespace Autofac.Test.Scenarios.Records
+namespace Autofac.Test.Core.Activators.Reflection
 {
-    public class CanResolveRecords
+    public class RecordTests
     {
         private record Component(IOtherService service, IOtherService2 service2);
 
