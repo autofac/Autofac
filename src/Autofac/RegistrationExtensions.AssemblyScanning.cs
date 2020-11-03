@@ -19,12 +19,15 @@ namespace Autofac
     [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
     public static partial class RegistrationExtensions
     {
+        private const string AssemblyScanningWarning = "Assembly Scanning is unlikely to be compatible with member-level trimming; the linker will not be able to determine which types to preserve.";
+
         /// <summary>
         /// Register all types in an assembly.
         /// </summary>
         /// <param name="builder">Container builder.</param>
         /// <param name="assemblies">The assemblies from which to register types.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
+        [RequiresUnreferencedCode(AssemblyScanningWarning)]
         public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
             RegisterAssemblyTypes(this ContainerBuilder builder, params Assembly[] assemblies)
         {
