@@ -63,6 +63,8 @@ namespace Autofac.Test.Core
             Assert.Equal(A.Message, inner.InnerException.Message);
         }
 
+#if !NET5_0
+
         [Serializable]
         public class CustomDependencyResolutionException : DependencyResolutionException
         {
@@ -109,5 +111,6 @@ namespace Autofac.Test.Core
                 Assert.Equal(123, exception.Value);
             }
         }
+#endif
     }
 }
