@@ -72,11 +72,6 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
-        /// Gets the target registration of a service redirection applied by a particular piece of middleware.
-        /// </summary>
-        public IComponentRegistration? RedirectionTargetRegistration { get; private set; }
-
-        /// <summary>
         /// Gets or sets a value representing the current initialization depth. Will always be zero for initialized service blocks.
         /// </summary>
         public int InitializationDepth { get; set; }
@@ -166,7 +161,6 @@ namespace Autofac.Core.Registration
         }
 
         private bool Any =>
-            RedirectionTargetRegistration is object ||
             _defaultImplementations.Count > 0 ||
             _sourceImplementations != null ||
             _preserveDefaultImplementations != null;
@@ -364,6 +358,44 @@ namespace Autofac.Core.Registration
                 // Nothing custom, use an empty pipeline.
                 return ServicePipelines.DefaultServicePipeline;
             }
+        }
+
+        /// <summary>
+        /// Creates a copy of an uninitialized <see cref="ServiceRegistrationInfo"/>, preserving existing registrations and custom middleware.
+        /// </summary>
+        /// <returns>A new service registration info block.</returns>
+        /// <exception cref="InvalidOperationException">Thrown if the service registration has been initialized already.</exception>
+        public ServiceRegistrationInfo CloneUninitialized()
+        {
+            if (InitializationDepth != 0 || IsInitializing || IsInitialized)
+            {
+                throw new InvalidOperationException(ServiceRegistrationInfoResources.NotAfterInitialization);
+            }
+
+            var copy = new ServiceRegistrationInfo(_service)
+            {
+                _fixedRegistration = _fixedRegistration,
+                _defaultImplementation = _defaultImplementation,
+            };
+
+            if (_sourceImplementations is object)
+            {
+                copy._sourceImplementations = new List<IComponentRegistration>(_sourceImplementations);
+            }
+
+            if (_preserveDefaultImplementations is object)
+            {
+                copy._preserveDefaultImplementations = new List<IComponentRegistration>(_preserveDefaultImplementations);
+            }
+
+            copy._defaultImplementations.AddRange(_defaultImplementations);
+
+            if (_customPipelineBuilder is object)
+            {
+                copy._customPipelineBuilder = _customPipelineBuilder.Clone();
+            }
+
+            return copy;
         }
 
         /// <inheritdoc/>

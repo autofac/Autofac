@@ -39,6 +39,9 @@ namespace Autofac.Core.Registration
 
         private readonly List<IServiceMiddlewareSource> _servicePipelineSources = new List<IServiceMiddlewareSource>();
 
+        private Dictionary<Service, ServiceRegistrationInfo>? _ephemeralServiceInfo;
+        private bool _trackerPopulationComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker"/> class.
         /// </summary>
@@ -93,16 +96,30 @@ namespace Autofac.Core.Registration
             foreach (var service in registration.Services)
             {
                 var info = GetServiceInfo(service);
+
+                // We are in an ephemeral initialization; use the ephemeral set.
+                if (_ephemeralServiceInfo is object)
+                {
+                    info = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+                }
+
                 info.AddImplementation(registration, preserveDefaults, originatedFromDynamicSource);
             }
 
-            _registrations.Add(registration);
-            var handler = Registered;
-            handler?.Invoke(this, registration);
-
-            if (originatedFromDynamicSource)
+            if (_ephemeralServiceInfo is null)
             {
-                registration.BuildResolvePipeline(this);
+                // Only when we are keeping the populated service information will we store registrations and
+                // build pipelines for them.
+                // The Registrations collection is only available to consumers once the tracker is contained with a ContainerRegistry
+                // and the Complete method has been called.
+                _registrations.Add(registration);
+                var handler = Registered;
+                handler?.Invoke(this, registration);
+
+                if (originatedFromDynamicSource)
+                {
+                    registration.BuildResolvePipeline(this);
+                }
             }
         }
 
@@ -213,6 +230,12 @@ namespace Autofac.Core.Registration
             return list;
         }
 
+        /// <inheritdoc/>
+        public void Complete()
+        {
+            _trackerPopulationComplete = true;
+        }
+
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
         /// </summary>
@@ -229,10 +252,24 @@ namespace Autofac.Core.Registration
 
         private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
         {
+            var createdEphemeralSet = false;
+
             var info = GetServiceInfo(service);
             if (info.IsInitialized)
             {
                 return info;
+            }
+
+            if (!_trackerPopulationComplete)
+            {
+                // We need an ephemeral set for this pre-complete intialization.
+                if (_ephemeralServiceInfo is null)
+                {
+                    _ephemeralServiceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
+                    createdEphemeralSet = true;
+                }
+
+                info = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
             }
 
             var succeeded = false;
@@ -268,6 +305,12 @@ namespace Autofac.Core.Registration
                                 continue;
                             }
 
+                            if (_ephemeralServiceInfo is object)
+                            {
+                                // Use ephemeral info for additional services.
+                                additionalInfo = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+                            }
+
                             if (!additionalInfo.IsInitializing)
                             {
                                 BeginServiceInfoInitialization(additionalService, additionalInfo, ExcludeSource(_dynamicRegistrationSources, next));
@@ -278,7 +321,10 @@ namespace Autofac.Core.Registration
                             }
                         }
 
-                        AddRegistration(provided, true, true);
+                        AddRegistration(
+                            provided,
+                            preserveDefaults: true,
+                            originatedFromDynamicSource: true);
                     }
                 }
 
@@ -296,6 +342,14 @@ namespace Autofac.Core.Registration
                 if (lockTaken)
                 {
                     Monitor.Exit(info);
+                }
+
+                // This method was the entry point to an ephemeral service info initialization.
+                // We need to discard it, so the next set of ephemeral service info is done from scratch.
+                if (createdEphemeralSet)
+                {
+                    _ephemeralServiceInfo?.Clear();
+                    _ephemeralServiceInfo = null;
                 }
             }
 
@@ -329,6 +383,20 @@ namespace Autofac.Core.Registration
         private ServiceRegistrationInfo GetServiceInfo(Service service)
         {
             return _serviceInfo.GetOrAdd(service, RegInfoFactory);
+        }
+
+        private static ServiceRegistrationInfo GetEphemeralServiceInfo(Dictionary<Service, ServiceRegistrationInfo> ephemeralSet, Service service, ServiceRegistrationInfo info)
+        {
+            if (ephemeralSet.TryGetValue(service, out var ephemeral))
+            {
+                return ephemeral;
+            }
+
+            var newCopy = info.CloneUninitialized();
+
+            ephemeralSet.Add(service, newCopy);
+
+            return newCopy;
         }
     }
 }

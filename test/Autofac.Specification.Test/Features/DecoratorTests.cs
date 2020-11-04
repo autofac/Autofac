@@ -1208,6 +1208,82 @@ namespace Autofac.Specification.Test.Features
             Assert.True(implementation.Started);
         }
 
+        [Fact]
+        public void OpenGenericCanBeDecoratedFromInsideAModuleDecoratorRegisteredFirst()
+        {
+            var activatedInstances = new List<object>();
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterModule(new MyModule(b => b.RegisterGenericDecorator(typeof(GenericDecorator<>), typeof(IGenericService<>))));
+
+            builder.RegisterGeneric(typeof(GenericComponent<>)).As(typeof(IGenericService<>));
+
+            var container = builder.Build();
+
+            var instance = container.Resolve<IGenericService<int>>();
+
+            Assert.IsType<GenericDecorator<int>>(instance);
+            Assert.IsType<GenericComponent<int>>(((GenericDecorator<int>)instance).Decorated);
+        }
+
+        [Fact]
+        public void OpenGenericCanBeDecoratedFromInsideAModuleDecoratorRegisteredSecond()
+        {
+            var activatedInstances = new List<object>();
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(GenericComponent<>)).As(typeof(IGenericService<>));
+
+            builder.RegisterModule(new MyModule(b => b.RegisterGenericDecorator(typeof(GenericDecorator<>), typeof(IGenericService<>))));
+
+            var container = builder.Build();
+
+            var instance = container.Resolve<IGenericService<int>>();
+
+            Assert.IsType<GenericDecorator<int>>(instance);
+            Assert.IsType<GenericComponent<int>>(((GenericDecorator<int>)instance).Decorated);
+        }
+
+        [Fact]
+        public void OpenGenericInModuleCanBeDecoratoredByDecoratorOutsideModuleWhereModuleRegisteredFirst()
+        {
+            var activatedInstances = new List<object>();
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterModule(new MyModule(b => b.RegisterGeneric(typeof(GenericComponent<>)).As(typeof(IGenericService<>))));
+
+            builder.RegisterGenericDecorator(typeof(GenericDecorator<>), typeof(IGenericService<>));
+
+            var container = builder.Build();
+
+            var instance = container.Resolve<IGenericService<int>>();
+
+            Assert.IsType<GenericDecorator<int>>(instance);
+            Assert.IsType<GenericComponent<int>>(((GenericDecorator<int>)instance).Decorated);
+        }
+
+        [Fact]
+        public void OpenGenericInModuleCanBeDecoratoredByDecoratorOutsideModuleWhereModuleRegisteredSecond()
+        {
+            var activatedInstances = new List<object>();
+
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGenericDecorator(typeof(GenericDecorator<>), typeof(IGenericService<>));
+
+            builder.RegisterModule(new MyModule(b => b.RegisterGeneric(typeof(GenericComponent<>)).As(typeof(IGenericService<>))));
+
+            var container = builder.Build();
+
+            var instance = container.Resolve<IGenericService<int>>();
+
+            Assert.IsType<GenericDecorator<int>>(instance);
+            Assert.IsType<GenericComponent<int>>(((GenericDecorator<int>)instance).Decorated);
+        }
+
         private class MyMetadata
         {
             public int A { get; set; }
@@ -1379,6 +1455,39 @@ namespace Autofac.Specification.Test.Features
             {
                 Decorated.Start();
             }
+        }
+
+        private class MyModule : Module
+        {
+            private readonly Action<ContainerBuilder> _callback;
+
+            public MyModule(Action<ContainerBuilder> callback)
+            {
+                _callback = callback;
+            }
+
+            protected override void Load(ContainerBuilder builder)
+            {
+                _callback(builder);
+            }
+        }
+
+        private interface IGenericService<T>
+        {
+        }
+
+        private class GenericComponent<T> : IGenericService<T>
+        {
+        }
+
+        private class GenericDecorator<T> : IGenericService<T>
+        {
+            public GenericDecorator(IGenericService<T> decorated)
+            {
+                Decorated = decorated;
+            }
+
+            public IGenericService<T> Decorated { get; }
         }
     }
 }

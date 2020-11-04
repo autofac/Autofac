@@ -61,6 +61,15 @@ namespace Autofac.Core.Registration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The operation is only valid before the object is initialized..
+        /// </summary>
+        internal static string NotAfterInitialization {
+            get {
+                return ResourceManager.GetString("NotAfterInitialization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The operation is only valid during initialization..
         /// </summary>
         internal static string NotDuringInitialization {

@@ -23,12 +23,7 @@ namespace Autofac.Core.Registration
             _restrictedRootScopeLifetime = restrictedRootScopeLifetime;
         }
 
-        /// <summary>
-        /// Adds a registration to the list of registered services.
-        /// </summary>
-        /// <param name="registration">The registration to add.</param>
-        /// <param name="preserveDefaults">Indicates whehter the defaults should be preserved.</param>
-        /// <param name="originatedFromSource">Indicates whether this is an explicitly added registration or that it has been added by a different source.</param>
+        /// <inheritdoc/>
         public override void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
         {
             if (registration == null)
