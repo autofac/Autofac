@@ -161,7 +161,8 @@ namespace Autofac.Core.Activators.Reflection
         {
             for (var idx = 0; idx < constructorArgs.Length; idx++)
             {
-                if (constructorArgs[idx].ParameterType.IsPointer)
+                var arg = constructorArgs[idx].ParameterType;
+                if (arg.IsPointer || arg.IsByRef)
                 {
                     // Boo.
                     return constructorArgs[idx];

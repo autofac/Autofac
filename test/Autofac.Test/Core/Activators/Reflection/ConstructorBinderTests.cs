@@ -22,6 +22,11 @@ namespace Autofac.Test.Core.Activators.Reflection
             }
         }
 
+        public class ServiceWithInParameter
+        {
+            public ServiceWithInParameter(in int input) { }
+        }
+
         public class CtorWithDoubleParam
         {
             public double Value { get; }
@@ -56,7 +61,8 @@ namespace Autofac.Test.Core.Activators.Reflection
             var dx = Assert.Throws<DependencyResolutionException>(() =>
                 cpb.Instantiate());
 
-            Assert.Contains(typeof(ThrowsInCtor).Name, dx.Message);
+            Assert.Contains(nameof(ThrowsInCtor), dx.Message);
+            Assert.NotNull(dx.InnerException);
             Assert.Equal(ThrowsInCtor.Message, dx.InnerException.Message);
         }
 
@@ -78,6 +84,16 @@ namespace Autofac.Test.Core.Activators.Reflection
             var instance = (CtorWithInt)cpb.Instantiate();
 
             Assert.Equal(1, instance.Value);
+        }
+
+        [Fact]
+        public void WhenUsingByRefParameterExceptionIsThrownForIllegalParameter() // added for issue 1126
+        {
+            var constructorInfo = typeof(ServiceWithInParameter).GetTypeInfo().DeclaredConstructors.Single();
+            var constructorBinder = new ConstructorBinder(constructorInfo);
+            var boundConstructor = constructorBinder.Bind(new[] { new PositionalParameter(0, 111) }, new ContainerBuilder().Build());
+            Assert.False(boundConstructor.CanInstantiate);
+            Assert.Throws<InvalidOperationException>(() => boundConstructor.Instantiate());
         }
     }
 }
