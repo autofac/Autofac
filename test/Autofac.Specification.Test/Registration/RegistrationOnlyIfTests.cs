@@ -99,7 +99,7 @@ namespace Autofac.Specification.Test.Registration
         {
             var builder = new ContainerBuilder();
             builder.RegisterGeneric(typeof(MultiServiceGeneric<>)).As(typeof(IService<>)).As(typeof(IService2<>));
-            builder.RegisterGeneric(typeof(MultiServiceGeneric<>)).As(typeof(IService<>)).IfNotRegistered(typeof(IService2<int>));
+            builder.RegisterGeneric(typeof(MultiServiceGeneric2<>)).As(typeof(IService<>)).IfNotRegistered(typeof(IService2<int>));
             var container = builder.Build();
 
             var result = container.Resolve<IService<int>>();
@@ -323,6 +323,10 @@ namespace Autofac.Specification.Test.Registration
         }
 
         public class MultiServiceGeneric<T> : IService<T>, IService2<T>
+        {
+        }
+
+        public class MultiServiceGeneric2<T> : IService<T>, IService2<T>
         {
         }
 
