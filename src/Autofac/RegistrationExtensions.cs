@@ -396,7 +396,7 @@ namespace Autofac
         /// <param name="registration">Registration to set policy on.</param>
         /// <param name="propertySelector">Policy to be used when searching for properties to inject.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
-        [RequiresUnreferencedCode("Autowired Properties with a custom selector may not be compatible with member-level trimming.")]
+        [RequiresUnreferencedCode("Autowired properties with a custom selector may not be compatible with member-level trimming.")]
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle> PropertiesAutowired<TLimit, TActivatorData, TStyle>(
             this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration,
             Func<PropertyInfo, object, bool> propertySelector)

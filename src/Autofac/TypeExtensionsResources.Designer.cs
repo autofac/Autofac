@@ -61,7 +61,7 @@ namespace Autofac {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Requested type member cannot be found..
         /// </summary>
         internal static string MemberNotFound {
             get {
