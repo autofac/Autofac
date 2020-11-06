@@ -1,4 +1,4 @@
-# EXIT CODES
+﻿# EXIT CODES
 # 1: dotnet packaging failure
 # 2: dotnet publishing failure
 # 3: Unit test failure
@@ -36,8 +36,8 @@ function Install-DotNetCli {
     )
 
     if ($null -ne (Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
-        $installedVersion = dotnet --version
-        if ($installedVersion -eq $Version) {
+        $installedVersions = dotnet --list-sdks
+        if ([bool]($installedVersions -match $Version)) {
             Write-Message ".NET Core SDK version $Version is already installed"
             return;
         }
