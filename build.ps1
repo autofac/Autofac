@@ -65,7 +65,7 @@ try {
         # Generate Coverage Report
         Write-Message "Generating Codecov Report"
         Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-        & bash codecov.sh -f "coverage.info"
+        & bash codecov.sh -f "coverage.*.json"
     }
 
     # Finished

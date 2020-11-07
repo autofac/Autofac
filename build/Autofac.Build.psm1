@@ -184,8 +184,7 @@ function Invoke-Test {
                 --configuration Release `
                 --logger:trx `
                 /p:CollectCoverage=true `
-                /p:CoverletOutput="..\..\" `
-                /p:MergeWith="..\..\coverage.json" `
+                /p:CoverletOutput='../../' `
                 /p:CoverletOutputFormat="json%2clcov" `
                 /p:ExcludeByAttribute=CompilerGeneratedAttribute `
                 /p:ExcludeByAttribute=GeneratedCodeAttribute
