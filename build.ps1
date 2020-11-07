@@ -13,11 +13,9 @@ try {
     $artifactsPath = "$PSScriptRoot/artifacts"
     $packagesPath = "$artifactsPath/packages"
 
-    $globalJson = (Get-Content "$PSScriptRoot/global.json" | ConvertFrom-Json);
+    $globalJson = (Get-Content "$PSScriptRoot/global.json" | ConvertFrom-Json -NoEnumerate);
 
     $sdkVersion = $globalJson.sdk.version
-
-    $previousVersion = $globalJson.previousSdk.version;
 
     # Clean up artifacts folder
     if (Test-Path $artifactsPath) {
@@ -28,11 +26,11 @@ try {
     # Install dotnet CLI
     Write-Message "Installing .NET Core SDK version $sdkVersion"
     Install-DotNetCli -Version $sdkVersion
-
-    if ($previousVersion)
+    
+    foreach ($additional in $globalJson.additionalSdks)
     {
-        Write-Message "Installing Previous .NET Core SDK version $previousVersion"
-        Install-DotNetCli -Version $previousVersion;
+        Write-Message "Installing Additional .NET Core SDK version $additional"
+        Install-DotNetCli -Version $additional;
     }
 
     # Write out dotnet information

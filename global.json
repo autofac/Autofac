@@ -4,7 +4,7 @@
     "rollForward": "latestFeature"
   },
 
-  "previousSdk": {
-    "version": "3.1.302"
-  }
+  "additionalSdks": [
+    "3.1.302"
+  ]
 }
