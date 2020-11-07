@@ -184,7 +184,7 @@ function Invoke-Test {
                 --configuration Release `
                 --logger:trx `
                 /p:CollectCoverage=true `
-                /p:CoverletOutput='../../' `
+                /p:CoverletOutput="../../artifacts/coverage/$($Project.Name)/" `
                 /p:CoverletOutputFormat="json%2clcov" `
                 /p:ExcludeByAttribute=CompilerGeneratedAttribute `
                 /p:ExcludeByAttribute=GeneratedCodeAttribute

@@ -3,8 +3,4 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(CollectCoverage)' == 'true'">
-    <MergeWith>$(CoverletOutput)/coverage.$(TargetFramework).json</MergeWith>
-  </PropertyGroup>
 </Project>
