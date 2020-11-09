@@ -863,34 +863,6 @@ namespace Autofac.Specification.Test.Features
             }
         }
 
-        [Fact(Skip = "Issue #967")]
-        public void DecoratorParameterSupportsFunc()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
-            builder.RegisterDecorator<DecoratorWithFunc, IDecoratedService>();
-            var container = builder.Build();
-
-            var instance = container.Resolve<IDecoratedService>();
-
-            Assert.IsType<DecoratorWithFunc>(instance);
-            Assert.IsType<ImplementorA>(instance.Decorated);
-        }
-
-        [Fact(Skip = "Issue #967")]
-        public void DecoratorParameterSupportsLazy()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<ImplementorA>().As<IDecoratedService>();
-            builder.RegisterDecorator<DecoratorWithLazy, IDecoratedService>();
-            var container = builder.Build();
-
-            var instance = container.Resolve<IDecoratedService>();
-
-            Assert.IsType<DecoratorWithLazy>(instance);
-            Assert.IsType<ImplementorA>(instance.Decorated);
-        }
-
         [Fact]
         public void DecoratorRegisteredAsLambdaCanAcceptAdditionalParameters()
         {
