@@ -46,7 +46,7 @@ function Install-DotNetCli {
 
             if ($versionPart -eq $Version)
             {
-                Write-Message ".NET Core SDK version $Version is already installed"
+                Write-Message ".NET Core SDK version $Version is already installed."
                 return;
             }
         }
