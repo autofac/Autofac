@@ -26,7 +26,7 @@ namespace Autofac.Core.Resolving.Middleware
         OnActivated,
 
         /// <summary>
-        /// Event type for the OnRelease event registered by <see cref="RegistrationExtensions.OnRelease{TLimit, TActivatorData, TRegistrationStyle}(IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}, System.Action{TLimit})"/>
+        /// Event type for the OnRelease event registered by <see cref="RegistrationExtensions.OnRelease{TLimit, TActivatorData, TRegistrationStyle}(IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}, System.Action{TLimit})"/>.
         /// </summary>
         OnRelease
     }
