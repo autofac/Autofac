@@ -363,10 +363,10 @@ namespace Autofac.Core.Lifetime
         }
 
         /// <inheritdoc />
-        public bool TryGetSharedInstance(Guid id, out object value) => _sharedInstances.TryGetValue(id, out value);
+        public bool TryGetSharedInstance(Guid id, [NotNullWhen(true)] out object? value) => _sharedInstances.TryGetValue(id, out value);
 
         /// <inheritdoc/>
-        public bool TryGetSharedInstance(Guid primaryId, Guid? qualifyingId, out object value)
+        public bool TryGetSharedInstance(Guid primaryId, Guid? qualifyingId, [NotNullWhen(true)] out object? value)
         {
             return qualifyingId == null
                 ? TryGetSharedInstance(primaryId, out value)

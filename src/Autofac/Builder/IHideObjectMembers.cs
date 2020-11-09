@@ -36,7 +36,7 @@ namespace Autofac.Builder
         /// </summary>
         /// <returns>Standard result.</returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        string ToString();
+        string? ToString();
 
         /// <summary>
         /// Standard System.Object member.

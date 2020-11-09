@@ -57,7 +57,8 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(@this));
             }
 
-            return IsInNamespace(@this, typeof(T).Namespace);
+            // Namespace is always non-null for concrete type parameters.
+            return IsInNamespace(@this, typeof(T).Namespace!);
         }
 
         /// <summary>
@@ -122,7 +123,14 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(methodName));
             }
 
-            return @this.GetMethod(methodName, DeclaredOnlyFlags);
+            var foundMethod = @this.GetMethod(methodName, DeclaredOnlyFlags);
+
+            if (foundMethod is null)
+            {
+                throw new ArgumentException(TypeExtensionsResources.MemberNotFound);
+            }
+
+            return foundMethod;
         }
 
         /// <summary>
@@ -144,7 +152,14 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(propertyName));
             }
 
-            return @this.GetProperty(propertyName, DeclaredOnlyFlags);
+            var foundProperty = @this.GetProperty(propertyName, DeclaredOnlyFlags);
+
+            if (foundProperty is null)
+            {
+                throw new ArgumentException(TypeExtensionsResources.MemberNotFound);
+            }
+
+            return foundProperty;
         }
 
         /// <summary>
@@ -185,7 +200,7 @@ namespace Autofac
         /// <param name="type">The type being tested.</param>
         /// <param name="constructorParameterTypes">The types of the contractor to find.</param>
         /// <returns>The <see cref="ConstructorInfo"/> is a match is found; otherwise, <c>null</c>.</returns>
-        public static ConstructorInfo GetMatchingConstructor(this Type type, Type[] constructorParameterTypes)
+        public static ConstructorInfo? GetMatchingConstructor(this Type type, Type[] constructorParameterTypes)
         {
             return type.GetDeclaredConstructors().FirstOrDefault(
                 c => c.GetParameters().Select(p => p.ParameterType).SequenceEqual(constructorParameterTypes));

@@ -116,7 +116,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-            RegisterType<TImplementer>(this ContainerBuilder builder)
+            RegisterType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImplementer>(this ContainerBuilder builder)
             where TImplementer : notnull
         {
             if (builder == null)
@@ -138,7 +138,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-            RegisterType(this ContainerBuilder builder, Type implementationType)
+            RegisterType(this ContainerBuilder builder, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type implementationType)
         {
             if (builder == null)
             {
@@ -373,7 +373,7 @@ namespace Autofac
         /// <param name="wiringFlags">Set wiring options such as circular dependency wiring support.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
         public static IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle>
-            PropertiesAutowired<TLimit, TActivatorData, TRegistrationStyle>(
+            PropertiesAutowired<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TLimit, TActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> registration, PropertyWiringOptions wiringFlags = PropertyWiringOptions.None)
         {
             if (registration == null)
@@ -396,6 +396,7 @@ namespace Autofac
         /// <param name="registration">Registration to set policy on.</param>
         /// <param name="propertySelector">Policy to be used when searching for properties to inject.</param>
         /// <returns>A registration builder allowing further configuration of the component.</returns>
+        [RequiresUnreferencedCode("Autowired properties with a custom selector may not be compatible with member-level trimming.")]
         public static IRegistrationBuilder<TLimit, TActivatorData, TStyle> PropertiesAutowired<TLimit, TActivatorData, TStyle>(
             this IRegistrationBuilder<TLimit, TActivatorData, TStyle> registration,
             Func<PropertyInfo, object, bool> propertySelector)

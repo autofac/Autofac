@@ -1,4 +1,4 @@
-// Copyright (c) Autofac Project. All rights reserved.
+﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
@@ -52,7 +52,7 @@ namespace Autofac.Diagnostics
     /// </para>
     /// </remarks>
     /// <seealso cref="DefaultDiagnosticTracer"/>
-    public abstract class DiagnosticTracerBase : IObserver<KeyValuePair<string, object>>
+    public abstract class DiagnosticTracerBase : IObserver<KeyValuePair<string, object?>>
     {
         /// <summary>
         /// The list of event names to which this observer is subscribed.
@@ -207,7 +207,7 @@ namespace Autofac.Diagnostics
         /// <summary>
         /// Notifies the observer that the provider has finished sending push-based notifications.
         /// </summary>
-        void IObserver<KeyValuePair<string, object>>.OnCompleted()
+        void IObserver<KeyValuePair<string, object?>>.OnCompleted()
         {
             // If there was something to dispose or clean up, here's where it would
             // happen, but we don't have anything like that.
@@ -219,7 +219,7 @@ namespace Autofac.Diagnostics
         /// <param name="error">
         /// An object that provides additional information about the error.
         /// </param>
-        void IObserver<KeyValuePair<string, object>>.OnError(Exception error)
+        void IObserver<KeyValuePair<string, object?>>.OnError(Exception error)
         {
             // The internal diagnostic source isn't really going to experience an
             // error condition (which is not the same as _reporting errors_) so
@@ -232,7 +232,7 @@ namespace Autofac.Diagnostics
         /// <param name="value">
         /// The current notification information.
         /// </param>
-        void IObserver<KeyValuePair<string, object>>.OnNext(KeyValuePair<string, object> value)
+        void IObserver<KeyValuePair<string, object?>>.OnNext(KeyValuePair<string, object?> value)
         {
             // This is what gets called when a new diagnostic event occurs.
             Write(value.Key, value.Value);
@@ -400,7 +400,7 @@ namespace Autofac.Diagnostics
         /// options.
         /// </para>
         /// </remarks>
-        protected virtual void Write(string diagnosticName, object data)
+        protected virtual void Write(string diagnosticName, object? data)
         {
             if (data == null || !IsEnabled(diagnosticName))
             {

@@ -98,9 +98,9 @@ namespace Autofac.Features.OpenGenerics
                         openGenericImplementationType, serviceWithType.ServiceType, definitionService.ServiceType, serviceGenericArguments);
 
                     if (implementorGenericArguments.All(a => a != null) &&
-                        openGenericImplementationType.IsCompatibleWithGenericParameterConstraints(implementorGenericArguments))
+                        openGenericImplementationType.IsCompatibleWithGenericParameterConstraints(implementorGenericArguments!))
                     {
-                        var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments);
+                        var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments!);
 
                         var implementedServices = configuredOpenGenericServices
                             .Cast<IServiceWithType>()
@@ -168,7 +168,7 @@ namespace Autofac.Features.OpenGenerics
             return false;
         }
 
-        private static Type[] TryMapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
+        private static Type?[] TryMapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
         {
             if (serviceTypeDefinition == implementationType)
             {
@@ -191,7 +191,7 @@ namespace Autofac.Features.OpenGenerics
             return exactMatch ?? availableArguments[0];
         }
 
-        private static Type[] TryFindServiceArgumentsForImplementation(Type implementationType, IEnumerable<Type> serviceGenericArguments, IEnumerable<Type> serviceArgumentDefinitions)
+        private static Type?[] TryFindServiceArgumentsForImplementation(Type implementationType, IEnumerable<Type> serviceGenericArguments, IEnumerable<Type> serviceArgumentDefinitions)
         {
             var serviceArgumentDefinitionToArgumentMapping =
                 serviceArgumentDefinitions.Zip(serviceGenericArguments, (a, b) => new KeyValuePair<Type, Type>(a, b));
@@ -208,7 +208,7 @@ namespace Autofac.Features.OpenGenerics
                 .Where(i => i.Name == serviceType.Name && i.Namespace == serviceType.Namespace)
                 .ToArray();
 
-        private static Type TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<KeyValuePair<Type, Type>> serviceArgumentDefinitionToArgument)
+        private static Type? TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<KeyValuePair<Type, Type>> serviceArgumentDefinitionToArgument)
         {
             var matchingRegularType = serviceArgumentDefinitionToArgument
                 .Where(argdef => !argdef.Key.IsGenericType && implementationGenericArgumentDefinition.Name == argdef.Key.Name)
@@ -269,7 +269,7 @@ namespace Autofac.Features.OpenGenerics
                 }
                 else
                 {
-                    if (!Traverse.Across(implementationType, t => t.BaseType).Any(t => IsCompatibleGenericClassDefinition(t, service.ServiceType)))
+                    if (!Traverse.Across(implementationType, t => t.BaseType!).Any(t => IsCompatibleGenericClassDefinition(t, service.ServiceType)))
                     {
                         throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.TypesAreNotConvertible, implementationType, service));
                     }

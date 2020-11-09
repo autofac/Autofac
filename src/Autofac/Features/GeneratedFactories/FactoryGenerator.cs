@@ -178,12 +178,12 @@ namespace Autofac.Features.GeneratedFactories
             return pm switch
             {
                 ParameterMapping.ByType => creatorParams
-                                            .Select(p => Expression.New(typeof(TypedParameter).GetMatchingConstructor(new[] { typeof(Type), typeof(object) }), Expression.Constant(p.Type, typeof(Type)), Expression.Convert(p, typeof(object))))
+                                            .Select(p => Expression.New(typeof(TypedParameter).GetMatchingConstructor(new[] { typeof(Type), typeof(object) })!, Expression.Constant(p.Type, typeof(Type)), Expression.Convert(p, typeof(object))))
                                             .ToArray(),
                 ParameterMapping.ByPosition => creatorParams
-                                                 .Select((p, i) => Expression.New(typeof(PositionalParameter).GetMatchingConstructor(new[] { typeof(int), typeof(object) }), Expression.Constant(i, typeof(int)), Expression.Convert(p, typeof(object))))
+                                                 .Select((p, i) => Expression.New(typeof(PositionalParameter).GetMatchingConstructor(new[] { typeof(int), typeof(object) })!, Expression.Constant(i, typeof(int)), Expression.Convert(p, typeof(object))))
                                                  .ToArray(),
-                _ => creatorParams.Select(p => Expression.New(typeof(NamedParameter).GetMatchingConstructor(new[] { typeof(string), typeof(object) }), Expression.Constant(p.Name, typeof(string)), Expression.Convert(p, typeof(object))))
+                _ => creatorParams.Select(p => Expression.New(typeof(NamedParameter).GetMatchingConstructor(new[] { typeof(string), typeof(object) })!, Expression.Constant(p.Name, typeof(string)), Expression.Convert(p, typeof(object))))
                                   .ToArray(),
             };
         }

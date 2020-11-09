@@ -1,4 +1,4 @@
-# EXIT CODES
+﻿# EXIT CODES
 # 1: dotnet packaging failure
 # 2: dotnet publishing failure
 # 3: Unit test failure
@@ -36,10 +36,19 @@ function Install-DotNetCli {
     )
 
     if ($null -ne (Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
-        $installedVersion = dotnet --version
-        if ($installedVersion -eq $Version) {
-            Write-Message ".NET Core SDK version $Version is already installed"
-            return;
+        $installedVersions = dotnet --list-sdks
+
+        foreach ($sdkListLine in $installedVersions)
+        {
+            $splitParts = $sdkListLine.Split(" ");
+
+            $versionPart = $splitParts[0];
+
+            if ($versionPart -eq $Version)
+            {
+                Write-Message ".NET Core SDK version $Version is already installed"
+                return;
+            }
         }
     }
 
@@ -175,8 +184,7 @@ function Invoke-Test {
                 --configuration Release `
                 --logger:trx `
                 /p:CollectCoverage=true `
-                /p:CoverletOutput="..\..\" `
-                /p:MergeWith="..\..\coverage.json" `
+                /p:CoverletOutput="../../artifacts/coverage/$($Project.Name)/" `
                 /p:CoverletOutputFormat="json%2clcov" `
                 /p:ExcludeByAttribute=CompilerGeneratedAttribute `
                 /p:ExcludeByAttribute=GeneratedCodeAttribute

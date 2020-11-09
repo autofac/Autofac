@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 
@@ -13,6 +14,7 @@ namespace Autofac.Util
     /// Dictionary used to allow local property get/set and fall back to parent values.
     /// </summary>
     internal class FallbackDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+        where TKey : notnull
     {
         /// <summary>
         /// Storage for local values set in the dictionary.
@@ -304,7 +306,9 @@ namespace Autofac.Util
         /// <returns>
         /// <see langword="true" /> if the dictionary or parent contains an element with the specified key; otherwise, <see langword="false" />.
         /// </returns>
-        public bool TryGetValue(TKey key, out TValue value)
+        #pragma warning disable CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member because of nullability attributes. https://github.com/dotnet/roslyn/issues/42552
+        public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
+        #pragma warning restore CS8767
         {
             if (_localValues.TryGetValue(key, out value))
             {

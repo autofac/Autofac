@@ -160,7 +160,7 @@ namespace Autofac
         /// <param name="serviceType">Service type to provide a composite for.</param>
         public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> RegisterGenericComposite(
             this ContainerBuilder builder,
-            Type compositeType,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type compositeType,
             Type serviceType)
         {
             if (builder == null)

@@ -34,14 +34,14 @@ namespace Autofac.Core.Registration
             _registeredServicesTracker.RegistrationSourceAdded += OnRegistrationSourceAdded;
         }
 
-        private void OnRegistered(object sender, IComponentRegistration e)
+        private void OnRegistered(object? sender, IComponentRegistration e)
         {
             var handler = GetRegistered();
 
             handler?.Invoke(this, new ComponentRegisteredEventArgs(this, e));
         }
 
-        private void OnRegistrationSourceAdded(object sender, IRegistrationSource e)
+        private void OnRegistrationSourceAdded(object? sender, IRegistrationSource e)
         {
             var handler = GetRegistrationSourceAdded();
 

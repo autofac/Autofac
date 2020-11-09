@@ -172,7 +172,8 @@ namespace Autofac.Core
         /// </returns>
         public object GetService(Type serviceType)
         {
-            return ((IServiceProvider)_rootLifetimeScope).GetService(serviceType);
+            // GetService implementation on LifetimeScope either returns an object, or throws.
+            return ((IServiceProvider)_rootLifetimeScope).GetService(serviceType)!;
         }
     }
 }

@@ -301,7 +301,8 @@ namespace Autofac.Core.Registration
         {
             EnforceDuringInitialization();
 
-            _sourcesToQuery = new Queue<IRegistrationSource>(_sourcesToQuery.Where(rs => rs != source));
+            // _sourcesToQuery always non-null during Initialization.
+            _sourcesToQuery = new Queue<IRegistrationSource>(_sourcesToQuery!.Where(rs => rs != source));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

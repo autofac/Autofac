@@ -25,7 +25,7 @@ namespace Autofac
         /// <param name="implementer">The open generic implementation type.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
-            RegisterGeneric(this ContainerBuilder builder, Type implementer)
+            RegisterGeneric(this ContainerBuilder builder, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type implementer)
         {
             return OpenGenericRegistrationExtensions.RegisterGeneric(builder, implementer);
         }

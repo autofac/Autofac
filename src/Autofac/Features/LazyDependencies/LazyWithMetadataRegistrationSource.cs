@@ -83,7 +83,7 @@ namespace Autofac.Features.LazyDependencies
                     var request = new ResolveRequest(valueService, registrationResolveInfo, p);
                     var valueFactory = new Func<T>(() => (T)context.ResolveComponent(request));
                     var metadata = metadataProvider(registrationResolveInfo.Registration.Target.Metadata);
-                    return Activator.CreateInstance(lazyType, valueFactory, metadata);
+                    return Activator.CreateInstance(lazyType, valueFactory, metadata)!;
                 })
                 .As(providedService)
                 .Targeting(registrationResolveInfo.Registration);

@@ -34,7 +34,7 @@ namespace Autofac
         public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
             RegisterGenericDecorator(
                 this ContainerBuilder builder,
-                Type decoratorType,
+                [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type decoratorType,
                 Type decoratedServiceType,
                 object fromKey,
                 object? toKey = null)
@@ -163,7 +163,7 @@ namespace Autofac
         /// <param name="builder">Container builder.</param>
         /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/>
         /// instance determines if the decorator should be applied.</param>
-        public static void RegisterDecorator<TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool>? condition = null)
+        public static void RegisterDecorator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool>? condition = null)
             where TDecorator : notnull, TService
         {
             if (builder == null)
@@ -196,7 +196,7 @@ namespace Autofac
         /// instance determines if the decorator should be applied.</param>
         public static void RegisterDecorator(
             this ContainerBuilder builder,
-            Type decoratorType,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type decoratorType,
             Type serviceType,
             Func<IDecoratorContext, bool>? condition = null)
         {
@@ -293,7 +293,7 @@ namespace Autofac
         /// instance determines if the decorator should be applied.</param>
         public static void RegisterGenericDecorator(
             this ContainerBuilder builder,
-            Type decoratorType,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type decoratorType,
             Type serviceType,
             Func<IDecoratorContext, bool>? condition = null)
         {

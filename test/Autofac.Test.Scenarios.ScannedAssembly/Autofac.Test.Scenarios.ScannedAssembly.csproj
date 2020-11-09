@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>netstandard2.1</TargetFrameworks>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Autofac.Test.Scenarios.ScannedAssembly</AssemblyName>
@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.205">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
   </ItemGroup>

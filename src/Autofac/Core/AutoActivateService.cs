@@ -32,7 +32,7 @@ namespace Autofac.Core
         /// All services of this type are considered "equal".
         /// </para>
         /// </remarks>
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             var that = obj as AutoActivateService;
             return that != null;

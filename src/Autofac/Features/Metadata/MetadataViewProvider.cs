@@ -89,14 +89,14 @@ namespace Autofac.Features.Metadata
                 string.Format(CultureInfo.CurrentCulture, MetadataViewProviderResources.InvalidViewImplementation, typeof(TMetadata).Name));
         }
 
-        private static TValue GetMetadataValue<TValue>(IDictionary<string, object> metadata, string name, DefaultValueAttribute defaultValue)
+        private static TValue? GetMetadataValue<TValue>(IDictionary<string, object> metadata, string name, DefaultValueAttribute defaultValue)
         {
-            if (metadata.TryGetValue(name, out object result))
+            if (metadata.TryGetValue(name, out object? result))
             {
                 return (TValue)result;
             }
 
-            if (defaultValue != null)
+            if (defaultValue is object)
             {
                 return (TValue)defaultValue.Value;
             }

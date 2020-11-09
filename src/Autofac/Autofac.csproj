@@ -4,7 +4,7 @@
     <Description>Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.</Description>
     <!-- VersionPrefix patched by AppVeyor -->
     <VersionPrefix>0.0.1</VersionPrefix>
-    <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.1;netstandard2.0;net5.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);CS1591;IDE0008</NoWarn>
@@ -47,16 +47,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.0-beta1.final">
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.1">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.0-beta2.final">
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Condition="Exists('$(MSBuildThisFileDirectory)../../.git')">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.113">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.205">
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="4.7.1" />

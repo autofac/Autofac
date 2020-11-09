@@ -72,7 +72,8 @@ namespace Autofac.Core.Activators.Reflection
                     continue;
                 }
 
-                var setParameter = property.SetMethod.GetParameters()[0];
+                // SetMethod will be non-null if GetInjectableProperties included it.
+                var setParameter = property.SetMethod!.GetParameters()[0];
                 var valueProvider = (Func<object?>?)null;
                 var parameter = resolveParameters.FirstOrDefault(p => p.CanSupplyValue(setParameter, context, out valueProvider));
                 if (parameter != null)
@@ -103,7 +104,7 @@ namespace Autofac.Core.Activators.Reflection
 
                 // SetMethod will be non-null if CanWrite is true.
                 // Don't want to inject onto static properties.
-                if (property.SetMethod.IsStatic)
+                if (property.SetMethod!.IsStatic)
                 {
                     continue;
                 }
@@ -115,7 +116,8 @@ namespace Autofac.Core.Activators.Reflection
                     continue;
                 }
 
-                if (propertyType.IsArray && propertyType.GetElementType().IsValueType)
+                // GetElementType will be non-null if IsArray is true.
+                if (propertyType.IsArray && propertyType.GetElementType()!.IsValueType)
                 {
                     continue;
                 }
@@ -136,8 +138,11 @@ namespace Autofac.Core.Activators.Reflection
 
         private static Action<object, object?> MakeFastPropertySetter(PropertyInfo propertyInfo)
         {
-            var setMethod = propertyInfo.SetMethod;
-            var typeInput = setMethod.DeclaringType;
+            // SetMethod will be non-null if we're trying to make a setter for it.
+            var setMethod = propertyInfo.SetMethod!;
+
+            // DeclaringType will always be set for properties.
+            var typeInput = setMethod.DeclaringType!;
             var parameters = setMethod.GetParameters();
             var parameterType = parameters[0].ParameterType;
 

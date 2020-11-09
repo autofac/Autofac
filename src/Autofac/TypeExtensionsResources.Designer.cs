@@ -10,7 +10,6 @@
 
 namespace Autofac {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -20,7 +19,7 @@ namespace Autofac {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class TypeExtensionsResources {
@@ -40,7 +39,7 @@ namespace Autofac {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.TypeExtensionsResources", typeof(TypeExtensionsResources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Autofac.TypeExtensionsResources", typeof(TypeExtensionsResources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -58,6 +57,15 @@ namespace Autofac {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requested type member cannot be found..
+        /// </summary>
+        internal static string MemberNotFound {
+            get {
+                return ResourceManager.GetString("MemberNotFound", resourceCulture);
             }
         }
         

@@ -112,11 +112,11 @@ namespace Autofac.Core.Activators.Reflection
             }
             catch (TargetInvocationException ex)
             {
-                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex.InnerException);
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType!.Name), ex.InnerException);
             }
             catch (Exception ex)
             {
-                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType.Name), ex);
+                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType!.Name), ex);
             }
         }
 

@@ -128,7 +128,7 @@ namespace Autofac.Features.AttributeFilters
         /// <exception cref="System.ArgumentNullException">
         /// Thrown if <paramref name="parameter" /> or <paramref name="context" /> is <see langword="null" />.
         /// </exception>
-        public override object ResolveParameter(ParameterInfo parameter, IComponentContext context)
+        public override object? ResolveParameter(ParameterInfo parameter, IComponentContext context)
         {
             if (parameter == null)
             {
@@ -176,7 +176,8 @@ namespace Autofac.Features.AttributeFilters
             // this is the place to do it.
             var elementType = GetElementType(parameter.ParameterType);
 
-            return (bool)CanResolveMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value });
+            // CanResolveMethod always returns a value.
+            return (bool)CanResolveMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value })!;
         }
 
         private static Type GetElementType(Type type)
@@ -184,7 +185,7 @@ namespace Autofac.Features.AttributeFilters
             return type.IsGenericEnumerableInterfaceType() ? type.GenericTypeArguments[0] : type;
         }
 
-        private static T FilterOne<T>(IComponentContext context, string metadataKey, object metadataValue)
+        private static T? FilterOne<T>(IComponentContext context, string metadataKey, object metadataValue)
         {
             // Using Lazy<T> to ensure components that aren't actually used won't get activated.
             return context.Resolve<IEnumerable<Meta<Lazy<T>>>>()
