@@ -24,7 +24,9 @@ namespace Autofac.Test.Core.Activators.Reflection
 
         public class ServiceWithInParameter
         {
-            public ServiceWithInParameter(in int input) { }
+            public ServiceWithInParameter(in int input)
+            {
+            }
         }
 
         public class CtorWithDoubleParam
