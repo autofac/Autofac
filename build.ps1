@@ -24,12 +24,10 @@ try {
     }
 
     # Install dotnet CLI
-    Write-Message "Installing .NET Core SDK version $sdkVersion"
     Install-DotNetCli -Version $sdkVersion
-    
+
     foreach ($additional in $globalJson.additionalSdks)
     {
-        Write-Message "Installing Additional .NET Core SDK version $additional"
         Install-DotNetCli -Version $additional;
     }
 

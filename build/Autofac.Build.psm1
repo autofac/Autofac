@@ -37,20 +37,23 @@ function Install-DotNetCli {
 
     if ($null -ne (Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
         $installedVersions = dotnet --list-sdks
-
         foreach ($sdkListLine in $installedVersions)
         {
             $splitParts = $sdkListLine.Split(" ");
 
             $versionPart = $splitParts[0];
+            $globalInstallLocation = $splitParts[1].Replace("[", "").Replace("]", "")
 
             if ($versionPart -eq $Version)
             {
-                Write-Message ".NET Core SDK version $Version is already installed."
+                Write-Message ".NET Core SDK version $Version is already installed in $globalInstallLocation"
+                Add-Path "$globalInstallLocation"
                 return;
             }
         }
     }
+
+    Write-Message "Installing .NET SDK version $Version"
 
     $callerPath = Split-Path $MyInvocation.PSCommandPath
     $installDir = Join-Path -Path $callerPath -ChildPath ".dotnet/cli"
@@ -65,15 +68,35 @@ function Install-DotNetCli {
         }
 
         & ./.dotnet/dotnet-install.ps1 -InstallDir "$installDir" -Version $Version
-        $env:PATH = "$installDir;$env:PATH"
     } else {
         if (!(Test-Path ./.dotnet/dotnet-install.sh)) {
             Invoke-WebRequest "https://dot.net/v1/dotnet-install.sh" -OutFile "./.dotnet/dotnet-install.sh"
         }
 
         & bash ./.dotnet/dotnet-install.sh --install-dir "$installDir" --version $Version
-        $env:PATH = "$installDir`:$env:PATH"
     }
+
+    Add-Path "$installDir"
+}
+
+<#
+.SYNOPSIS
+    Appends a given value to the path but only if the value does not yet exist within the path.
+.PARAMETER Path
+    The path to append.
+#>
+function Add-Path {
+    [CmdletBinding()]
+    Param(
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Path
+    )
+    $pathValues = $env:PATH.Split(";");
+    if ($pathValues -Contains $Path) {
+      return;
+    }
+  $env:PATH = "$Path;$env:PATH"
 }
 
 <#
