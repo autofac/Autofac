@@ -96,7 +96,7 @@ function Add-Path {
     if ($pathValues -Contains $Path) {
       return;
     }
-  $env:PATH = "$Path;$env:PATH"
+    $env:PATH = "$Path;$env:PATH"
 }
 
 <#
