@@ -514,6 +514,7 @@ namespace Autofac.Specification.Test.Lifetime
                 Value = 5
             };
 
+            var resumeFlag = new AutoResetEvent(initialState: false);
             var builder = new ContainerBuilder();
             object instance = null;
             builder.RegisterType<DisposeTracker>()
@@ -524,12 +525,14 @@ namespace Autofac.Specification.Test.Lifetime
                     // Assert that the async local is preserved.
                     Assert.Equal(5, asyncLocal.Value);
                     instance = i;
+                    resumeFlag.Set();
                 });
 
             var container = builder.Build();
             var dt = container.Resolve<DisposeTracker>();
 
             await container.DisposeAsync();
+            resumeFlag.WaitOne();
 
             Assert.Same(dt, instance);
         }

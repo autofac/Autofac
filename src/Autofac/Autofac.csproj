@@ -31,6 +31,7 @@
     <Authors>Autofac Contributors</Authors>
     <Company>Autofac</Company>
     <Product>Autofac</Product>
+    <Version>6.0.0</Version>
   </PropertyGroup>
 
   <!-- Disable nullability warnings in netstandard2.0 -->

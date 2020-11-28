@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Util;
@@ -15,10 +16,13 @@ namespace Autofac.Core
     /// </summary>
     internal class Disposer : Disposable, IDisposer
     {
+        private const int _purgeInterval = 5;
+        private int _purgeCount;
+
         /// <summary>
         /// Contents all implement IDisposable or IAsyncDisposable.
         /// </summary>
-        private Stack<object> _items = new Stack<object>();
+        private List<WeakReference> _items = new List<WeakReference>();
 
         // Need to use a semaphore instead of a simple object to lock on, because
         // we need to synchronise an awaitable block.
@@ -35,10 +39,9 @@ namespace Autofac.Core
                 _synchRoot.Wait();
                 try
                 {
-                    while (_items.Count > 0)
+                    var items = _items.Where(x => x.IsAlive).Select(x => x.Target).Reverse();
+                    foreach (var item in items)
                     {
-                        var item = _items.Pop();
-
                         // If we are in synchronous dispose, and an object implements IDisposable,
                         // then use it.
                         if (item is IDisposable disposable)
@@ -81,10 +84,9 @@ namespace Autofac.Core
                 await _synchRoot.WaitAsync().ConfigureAwait(false);
                 try
                 {
-                    while (_items.Count > 0)
+                    var items = _items.Where(x => x.IsAlive).Select(x => x.Target).Reverse();
+                    foreach (var item in items)
                     {
-                        var item = _items.Pop();
-
                         // If the item implements IAsyncDisposable we will call its DisposeAsync Method.
                         if (item is IAsyncDisposable asyncDisposable)
                         {
@@ -156,7 +158,13 @@ namespace Autofac.Core
             _synchRoot.Wait();
             try
             {
-                _items.Push(instance);
+                _items.Add(new WeakReference(instance));
+
+                if (_purgeCount >= _purgeInterval)
+                {
+                    _items.RemoveAll(x => !x.IsAlive);
+                    _purgeCount = 0;
+                }
             }
             finally
             {
