@@ -22,7 +22,7 @@ namespace Autofac.Core
         /// <summary>
         /// Contents all implement IDisposable or IAsyncDisposable.
         /// </summary>
-        private List<WeakReference> _items = new List<WeakReference>();
+        private List<object> _items = new List<object>();
 
         // Need to use a semaphore instead of a simple object to lock on, because
         // we need to synchronise an awaitable block.
@@ -39,12 +39,14 @@ namespace Autofac.Core
                 _synchRoot.Wait();
                 try
                 {
-                    var items = _items.Where(x => x.IsAlive).Select(x => x.Target).Reverse();
-                    foreach (var item in items)
+                    _items.Reverse();
+                    foreach (var item in _items)
                     {
+                        var disposeItem = item is WeakReference wr ? wr.Target : item;
+
                         // If we are in synchronous dispose, and an object implements IDisposable,
                         // then use it.
-                        if (item is IDisposable disposable)
+                        if (disposeItem is IDisposable disposable)
                         {
                             disposable.Dispose();
                         }
@@ -84,11 +86,13 @@ namespace Autofac.Core
                 await _synchRoot.WaitAsync().ConfigureAwait(false);
                 try
                 {
-                    var items = _items.Where(x => x.IsAlive).Select(x => x.Target).Reverse();
-                    foreach (var item in items)
+                    _items.Reverse();
+                    foreach (var item in _items)
                     {
+                        var disposeItem = item is WeakReference wr ? wr.Target : item;
+
                         // If the item implements IAsyncDisposable we will call its DisposeAsync Method.
-                        if (item is IAsyncDisposable asyncDisposable)
+                        if (disposeItem is IAsyncDisposable asyncDisposable)
                         {
                             var vt = asyncDisposable.DisposeAsync();
 
@@ -98,7 +102,7 @@ namespace Autofac.Core
                                 await vt.ConfigureAwait(false);
                             }
                         }
-                        else if (item is IDisposable disposable)
+                        else if (disposeItem is IDisposable disposable)
                         {
                             // Call the standard Dispose.
                             disposable.Dispose();
@@ -125,12 +129,13 @@ namespace Autofac.Core
         /// This is not typically recommended, and you should implement IDisposable as well.
         /// </summary>
         /// <param name="instance">The instance.</param>
+        /// <param name="useWeakReference">if tue, the instance is wrapped in a WeakReference.</param>
         /// <remarks>
         /// If this Disposer is disposed of using a synchronous Dispose call, that call will throw an exception.
         /// </remarks>
-        public void AddInstanceForAsyncDisposal(IAsyncDisposable instance)
+        public void AddInstanceForAsyncDisposal(IAsyncDisposable instance, bool useWeakReference = true)
         {
-            AddInternal(instance);
+            AddInternal(instance, useWeakReference);
         }
 
         /// <summary>
@@ -138,12 +143,13 @@ namespace Autofac.Core
         /// disposed, so will the object be.
         /// </summary>
         /// <param name="instance">The instance.</param>
-        public void AddInstanceForDisposal(IDisposable instance)
+        /// <param name="useWeakReference">if tue, the instance is wrapped in a WeakReference.</param>
+        public void AddInstanceForDisposal(IDisposable instance, bool useWeakReference = true)
         {
-            AddInternal(instance);
+            AddInternal(instance, useWeakReference);
         }
 
-        private void AddInternal(object instance)
+        private void AddInternal(object instance, bool useWeakReference = true)
         {
             if (instance == null)
             {
@@ -155,21 +161,38 @@ namespace Autofac.Core
                 throw new ObjectDisposedException(nameof(Disposer), DisposerResources.CannotAddToDisposedDisposer);
             }
 
+            if (useWeakReference)
+            {
+                instance = new WeakReference(instance);
+            }
+
             _synchRoot.Wait();
             try
             {
-                _items.Add(new WeakReference(instance));
+                _items.Add(instance);
 
-                if (_purgeCount >= _purgeInterval)
+                if (_purgeCount++ >= _purgeInterval)
                 {
-                    _items.RemoveAll(x => !x.IsAlive);
-                    _purgeCount = 0;
+                    PurgeGarbadgeCollectedItems();
                 }
             }
             finally
             {
                 _synchRoot.Release();
             }
+        }
+
+        private void PurgeGarbadgeCollectedItems()
+        {
+            foreach (var item in _items)
+            {
+                if (item is WeakReference { IsAlive: false })
+                {
+                    _items.Remove(item);
+                }
+            }
+
+            _purgeCount = 0;
         }
     }
 }

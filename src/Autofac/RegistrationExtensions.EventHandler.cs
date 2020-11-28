@@ -161,7 +161,9 @@ namespace Autofac
 
                 // Use an async release action that invokes the release callback in a proper async/await flow if someone
                 // is using actual async disposal.
-                ctxt.ActivationScope.Disposer.AddInstanceForAsyncDisposal(new AsyncReleaseAction<TLimit>(releaseAction, () => (TLimit)ctxt.Instance!));
+                ctxt.ActivationScope.Disposer.AddInstanceForAsyncDisposal(
+                    new AsyncReleaseAction<TLimit>(releaseAction, () => (TLimit)ctxt.Instance!),
+                    useWeakReference: false);
             });
 
             registration.ResolvePipeline.Use(middleware, MiddlewareInsertionMode.StartOfPhase);
