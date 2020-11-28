@@ -172,5 +172,24 @@ namespace Autofac.Test.Core
                 o3 => Assert.Same(syncInstance3, o3),
                 o4 => Assert.Same(asyncInstance1, o4));
         }
+
+        [Fact]
+        public void Disposer___does_not_prevent_objects_from_being_garbage_collected()
+        {
+            static WeakReference DoWork(Disposer disposer)
+            {
+                var obj = new DisposeTracker();
+                disposer.AddInstanceForDisposal(obj);
+                return new WeakReference(obj);
+            }
+
+            var disposer = new Disposer();
+            var weakRef = DoWork(disposer);
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            Assert.False(weakRef.IsAlive);
+        }
     }
 }

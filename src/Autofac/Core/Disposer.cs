@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Util;
@@ -16,8 +15,8 @@ namespace Autofac.Core
     /// </summary>
     internal class Disposer : Disposable, IDisposer
     {
-        private const int _purgeInterval = 5;
-        private int _purgeCount;
+        private const int _purgeThreshold = 1000;
+        private bool _purgeFlag;
 
         /// <summary>
         /// Contents all implement IDisposable or IAsyncDisposable.
@@ -27,6 +26,14 @@ namespace Autofac.Core
         // Need to use a semaphore instead of a simple object to lock on, because
         // we need to synchronise an awaitable block.
         private readonly SemaphoreSlim _synchRoot = new SemaphoreSlim(1, 1);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Disposer"/> class.
+        /// </summary>
+        public Disposer()
+        {
+            FinalizerAction.Register(() => _purgeFlag = true);
+        }
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.
@@ -171,7 +178,7 @@ namespace Autofac.Core
             {
                 _items.Add(instance);
 
-                if (_purgeCount++ >= _purgeInterval)
+                if (_purgeFlag && _items.Count >= _purgeThreshold)
                 {
                     PurgeGarbadgeCollectedItems();
                 }
@@ -184,15 +191,10 @@ namespace Autofac.Core
 
         private void PurgeGarbadgeCollectedItems()
         {
-            foreach (var item in _items)
-            {
-                if (item is WeakReference { IsAlive: false })
-                {
-                    _items.Remove(item);
-                }
-            }
+            _items.RemoveAll(x => x is WeakReference { IsAlive: false });
 
-            _purgeCount = 0;
+            _purgeFlag = false;
+            FinalizerAction.Register(() => _purgeFlag = true);
         }
     }
 }
