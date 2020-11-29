@@ -183,6 +183,45 @@ namespace Autofac.Util
         }
 
         /// <summary>
+        /// Checks whether this type is an open generic type of a given type.
+        /// </summary>
+        /// <param name="this">The type we are checking.</param>
+        /// <param name="type">The open generic type to validate against.</param>
+        /// <returns>True if <paramref name="this"/> is a closed type of <paramref name="type"/>. False otherwise.</returns>
+        public static bool IsOpenGenericTypeOf(this Type @this, Type type)
+        {
+            if (@this == null || type == null)
+            {
+                return false;
+            }
+
+            if (@this == type)
+            {
+                return true;
+            }
+
+            return @this == type
+              || @this.CheckBaseTypeIsOpenGenericTypeOf(type)
+              || @this
+                  .GetInterfaces()
+                  .Any(it => it.IsGenericType
+                    ? it.GetGenericTypeDefinition().IsOpenGenericTypeOf(type)
+                    : it.IsOpenGenericTypeOf(type));
+        }
+
+        private static bool CheckBaseTypeIsOpenGenericTypeOf(this Type @this, Type type)
+        {
+            if (@this.BaseType == null)
+            {
+                return false;
+            }
+
+            return @this.BaseType.IsGenericType
+                ? @this.BaseType.GetGenericTypeDefinition().IsOpenGenericTypeOf(type)
+                : @this.BaseType.IsOpenGenericTypeOf(type);
+        }
+
+        /// <summary>
         /// Looks for an interface on the candidate type that closes the provided open generic interface type.
         /// </summary>
         /// <param name="candidateType">The type that is being checked for the interface.</param>
