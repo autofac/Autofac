@@ -530,6 +530,7 @@ namespace Autofac.Specification.Test.Lifetime
             var dt = container.Resolve<DisposeTracker>();
 
             await container.DisposeAsync();
+
             Assert.Same(dt, instance);
         }
 
