@@ -22,7 +22,7 @@ namespace Autofac.Core
         /// <summary>
         /// Adds an object to the disposer, where that object implements IAsyncDisposable. When the disposer is
         /// disposed, so will the object be.
-        /// You should most likely implement IDisposable as well, and call <see cref="AddInstanceForDisposal(IDisposable)"/> instead of this method.
+        /// You should most likely implement IDisposable as well, and call <see cref="AddInstanceForDisposal(IDisposable, bool)"/> instead of this method.
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <param name="useWeakReference">if tue, the instance is wrapped in a WeakReference.</param>
