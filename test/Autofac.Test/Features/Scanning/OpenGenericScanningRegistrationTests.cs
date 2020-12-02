@@ -50,7 +50,6 @@ namespace Autofac.Test.Features.Scanning
         {
             var cb = new ContainerBuilder();
             cb.RegisterAssemblyOpenGenericTypes(typeof(AComponent).GetTypeInfo().Assembly)
-                .Where(t => t.Name.StartsWith("Re"))
                 .Where(t => t.Name.StartsWith("Redo"));
             var c = cb.Build();
 
