@@ -69,7 +69,13 @@ namespace Autofac.Core
         /// Provides an event that will be invoked just before a pipeline is built, and can be used to add additional middleware
         /// at that point.
         /// </summary>
-        public event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
+        event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
+
+        /// <summary>
+        /// Provides access to the registration's pipeline builder, allowing custom middleware to be added.
+        /// </summary>
+        /// <param name="configurationAction">An action that can configure the registration's pipeline.</param>
+        void ConfigurePipeline(Action<IResolvePipelineBuilder> configurationAction);
 
         /// <summary>
         /// Builds the resolve pipeline.

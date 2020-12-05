@@ -54,13 +54,13 @@ namespace Autofac.Test
             var builder = new ContainerBuilder();
             builder.RegisterCallback(x => x.Registered += (o, registration) =>
             {
-                registration.ComponentRegistration.PipelineBuilding += (o, builder) =>
+                registration.ComponentRegistration.ConfigurePipeline(builder =>
                     builder.Use(PipelinePhase.Activation, (ctxt, next) =>
                     {
                         next(ctxt);
 
                         activatedInstances.Add(ctxt.Instance);
-                    });
+                    }));
             });
 
             builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));

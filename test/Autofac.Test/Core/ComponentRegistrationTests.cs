@@ -47,5 +47,20 @@ namespace Autofac.Test.Core
             Assert.Same(registration2, orderedRegistrations[1]);
             Assert.Same(registration3, orderedRegistrations[2]);
         }
+
+        [Fact]
+        public void ConfigurePipelineShouldFailIfAlreadyBuilt()
+        {
+            var services = new Service[] { new TypedService(typeof(object)) };
+
+            var registration = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
+
+            var builder = Factory.CreateEmptyComponentRegistryBuilder();
+            builder.Register(registration);
+
+            builder.Build();
+
+            Assert.Throws<InvalidOperationException>(() => registration.ConfigurePipeline(pipeline => { }));
+        }
     }
 }

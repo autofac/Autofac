@@ -120,6 +120,9 @@
   <data name="ComponentPipelineHasNotBeenBuilt" xml:space="preserve">
     <value>Component pipeline has not yet been built.</value>
   </data>
+  <data name="PipelineAlreadyBuilt" xml:space="preserve">
+    <value>Component pipeline has already been built, and cannot be modified.</value>
+  </data>
   <data name="PipelineNotBuilt" xml:space="preserve">
     <value>Not Built</value>
   </data>

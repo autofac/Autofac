@@ -203,6 +203,25 @@ namespace Autofac.Core.Registration
         public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding;
 
         /// <inheritdoc />
+        public void ConfigurePipeline(Action<IResolvePipelineBuilder> configurationAction)
+        {
+            if (configurationAction is null)
+            {
+                throw new ArgumentNullException(nameof(configurationAction));
+            }
+
+            if (_builtComponentPipeline is object)
+            {
+                throw new InvalidOperationException(ComponentRegistrationResources.PipelineAlreadyBuilt);
+            }
+
+            PipelineBuilding += (sender, pipeline) =>
+            {
+                configurationAction(pipeline);
+            };
+        }
+
+        /// <inheritdoc />
         public IResolvePipeline ResolvePipeline
         {
             get => _builtComponentPipeline ?? throw new InvalidOperationException(ComponentRegistrationResources.ComponentPipelineHasNotBeenBuilt);

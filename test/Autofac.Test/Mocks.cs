@@ -94,6 +94,11 @@ namespace Autofac.Test
 
             public event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
 
+            public void ConfigurePipeline(Action<IResolvePipelineBuilder> configurationAction)
+            {
+                PipelineBuilding += (sender, pipeline) => configurationAction(pipeline);
+            }
+
             public IResolvePipeline ResolvePipeline { get; } = new ResolvePipelineBuilder(PipelineType.Registration).Build();
 
             public bool IsServiceOverride { get; set; }
