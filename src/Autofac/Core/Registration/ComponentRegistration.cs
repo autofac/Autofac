@@ -240,6 +240,10 @@ namespace Autofac.Core.Registration
             if (PipelineBuilding is object)
             {
                 PipelineBuilding.Invoke(this, _lateBuildPipeline);
+
+                // Reset the PipelineBuilding event so we don't accidentally retain
+                // references we don't need to.
+                PipelineBuilding = null;
             }
 
             ResolvePipeline = BuildResolvePipeline(registryServices, _lateBuildPipeline);
