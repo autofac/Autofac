@@ -14,9 +14,9 @@ using Autofac.Util;
 namespace Autofac.Features.Scanning
 {
     /// <summary>
-    /// Helper methods to assist in scanning open generic registration.
+    /// Helper methods to assist in scanning registration.
     /// </summary>
-    internal static class OpenGenericScanningRegistrationExtensions
+    internal static partial class ScanningRegistrationExtensions
     {
         /// <summary>
         /// Register open generic types from the specified assemblies.
@@ -45,63 +45,6 @@ namespace Autofac.Features.Scanning
             rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => ScanAssemblies(assemblies, cr, rb));
 
             return rb;
-        }
-
-        private static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> rb)
-        {
-            ScanTypes(assemblies.SelectMany(a => a.GetLoadableTypes()), cr, rb);
-        }
-
-        private static void ScanTypes(IEnumerable<Type> types, IComponentRegistryBuilder cr, IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> rb)
-        {
-            rb.ActivatorData.Filters.Add(t =>
-                rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
-                    t.IsOpenGenericTypeOf(swt.ServiceType)));
-
-            // Issue #897: For back compat reasons we can't filter out
-            // non-public types here. Folks use assembly scanning on their
-            // own stuff, so encapsulation is a tricky thing to manage.
-            // If people want only public types, a LINQ Where clause can be used.
-            foreach (var t in types
-                .Where(t =>
-                    t.IsClass &&
-                    !t.IsAbstract &&
-                    t.IsGenericTypeDefinition &&
-                    !t.IsDelegate() &&
-                    rb.ActivatorData.Filters.All(p => p(t)) &&
-                    !t.IsCompilerGenerated()))
-            {
-                var scanned = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
-                    new TypedService(t),
-                    new ReflectionActivatorData(t),
-                    new DynamicRegistrationStyle());
-
-                scanned
-                    .FindConstructorsWith(rb.ActivatorData.ConstructorFinder)
-                    .UsingConstructor(rb.ActivatorData.ConstructorSelector)
-                    .WithParameters(rb.ActivatorData.ConfiguredParameters)
-                    .WithProperties(rb.ActivatorData.ConfiguredProperties);
-
-                // Copy middleware from the scanning registration.
-                scanned.ResolvePipeline.UseRange(rb.ResolvePipeline.Middleware);
-
-                scanned.RegistrationData.CopyFrom(rb.RegistrationData, false);
-
-                foreach (var action in rb.ActivatorData.ConfigurationActions)
-                {
-                    action(t, scanned);
-                }
-
-                if (scanned.RegistrationData.Services.Any())
-                {
-                    cr.AddRegistrationSource(new OpenGenericRegistrationSource(scanned.RegistrationData, scanned.ResolvePipeline, scanned.ActivatorData));
-                }
-            }
-
-            foreach (var postScanningCallback in rb.ActivatorData.PostScanningCallbacks)
-            {
-                postScanningCallback(cr);
-            }
         }
 
         /// <summary>
@@ -146,47 +89,85 @@ namespace Autofac.Features.Scanning
             return registration;
         }
 
-        /// <summary>
-        /// Filters the scanned open generic types to exclude the provided type.
-        /// </summary>
-        /// <param name="registration">Registration to filter types from.</param>
-        /// <param name="openGenericType">The open generic type to exclude.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
-            Except(this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration, Type openGenericType)
+        private static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> rb)
         {
-            return registration.Where(t => t != openGenericType);
-        }
+            rb.ActivatorData.Filters.Add(t =>
+                rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
+                    t.IsOpenGenericTypeOf(swt.ServiceType)));
 
-        /// <summary>
-        /// Filters the scanned open generic types to exclude the provided type, providing specific configuration for
-        /// the excluded type.
-        /// </summary>
-        /// <param name="registration">Registration to filter types from.</param>
-        /// <param name="openGenericType">The concrete type to exclude.</param>
-        /// <param name="customizedRegistration">Registration for the excepted type.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
-            Except(
-                this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration,
-                Type openGenericType,
-                Action<IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>> customizedRegistration)
-        {
-            var result = registration.Except(openGenericType);
+            var types = assemblies.SelectMany(a => a.GetLoadableTypes())
+                .Where(t => t.IsGenericTypeDefinition)
+                .CanBeRegistered(rb.ActivatorData);
 
-            result.ActivatorData.PostScanningCallbacks.Add(cr =>
-            {
-                var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
-                    new TypedService(openGenericType),
-                    new ReflectionActivatorData(openGenericType),
+            Func<Type, IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>> scannedConstructor =
+                (type) => new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
+                    new TypedService(type),
+                    new ReflectionActivatorData(type),
                     new DynamicRegistrationStyle());
 
-                customizedRegistration(rb);
+            Action<IComponentRegistryBuilder, IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>> register =
+                (cr, scanned) => cr.AddRegistrationSource(new OpenGenericRegistrationSource(scanned.RegistrationData, scanned.ResolvePipeline, scanned.ActivatorData));
 
-                cr.AddRegistrationSource(new OpenGenericRegistrationSource(rb.RegistrationData, rb.ResolvePipeline, rb.ActivatorData));
-            });
+            ScanTypesTemplate(types, cr, rb, scannedConstructor, register);
+        }
 
-            return result;
+        private static void ScanTypesTemplate<TActivatorData, TScanStyle, TRegistrationBuilderStyle>(
+            IEnumerable<Type> types,
+            IComponentRegistryBuilder cr,
+            IRegistrationBuilder<object, BaseScanningActivatorData<TActivatorData, TScanStyle>, TRegistrationBuilderStyle> rb,
+            Func<Type, IRegistrationBuilder<object, TActivatorData, TScanStyle>> scannedConstructorFunc,
+            Action<IComponentRegistryBuilder, IRegistrationBuilder<object, TActivatorData, TScanStyle>> register)
+            where TActivatorData : ReflectionActivatorData
+        {
+            foreach (var t in types)
+            {
+                var scanned = scannedConstructorFunc(t);
+
+                scanned.ConfigureFrom(rb, t);
+
+                if (scanned.RegistrationData.Services.Any())
+                {
+                    register(cr, scanned);
+                }
+            }
+
+            foreach (var postScanningCallback in rb.ActivatorData.PostScanningCallbacks)
+            {
+                postScanningCallback(cr);
+            }
+        }
+
+        private static IEnumerable<Type> CanBeRegistered<TActivatorData, TStyle>(this IEnumerable<Type> types, BaseScanningActivatorData<TActivatorData, TStyle> activatorData)
+            where TActivatorData : ReflectionActivatorData
+        {
+            // Issue #897: For back compat reasons we can't filter out
+            // non-public types here. Folks use assembly scanning on their
+            // own stuff, so encapsulation is a tricky thing to manage.
+            // If people want only public types, a LINQ Where clause can be used.
+            return types.Where(t => t.IsClass && !t.IsAbstract && !t.IsDelegate() && !t.IsCompilerGenerated() && activatorData.Filters.All(p => p(t)));
+        }
+
+        private static void ConfigureFrom<TActivatorData, TScanStyle, TRegistrationBuilderStyle>(
+            this IRegistrationBuilder<object, TActivatorData, TScanStyle> scanned,
+            IRegistrationBuilder<object, BaseScanningActivatorData<TActivatorData, TScanStyle>, TRegistrationBuilderStyle> rb,
+            Type type)
+            where TActivatorData : ReflectionActivatorData
+        {
+            scanned
+                .FindConstructorsWith(rb.ActivatorData.ConstructorFinder)
+                .UsingConstructor(rb.ActivatorData.ConstructorSelector)
+                .WithParameters(rb.ActivatorData.ConfiguredParameters)
+                .WithProperties(rb.ActivatorData.ConfiguredProperties);
+
+            // Copy middleware from the scanning registration.
+            scanned.ResolvePipeline.UseRange(rb.ResolvePipeline.Middleware);
+
+            scanned.RegistrationData.CopyFrom(rb.RegistrationData, false);
+
+            foreach (var action in rb.ActivatorData.ConfigurationActions)
+            {
+                action(type, scanned);
+            }
         }
     }
 }

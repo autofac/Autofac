@@ -8,8 +8,8 @@ using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Features.OpenGenerics;
 using Autofac.Features.Scanning;
-using Autofac.Util;
 
 namespace Autofac
 {
@@ -29,7 +29,7 @@ namespace Autofac
         public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
             RegisterAssemblyOpenGenericTypes(this ContainerBuilder builder, params Assembly[] assemblies)
         {
-            return OpenGenericScanningRegistrationExtensions.RegisterOpenGenericAssemblyTypes(builder, assemblies);
+            return ScanningRegistrationExtensions.RegisterOpenGenericAssemblyTypes(builder, assemblies);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(serviceMapping));
             }
 
-            return OpenGenericScanningRegistrationExtensions.As(registration, serviceMapping);
+            return ScanningRegistrationExtensions.As(registration, serviceMapping);
         }
 
         /// <summary>
@@ -136,6 +136,49 @@ namespace Autofac
             }
 
             return registration.As(t => t);
+        }
+
+        /// <summary>
+        /// Filters the scanned open generic types to exclude the provided type.
+        /// </summary>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <param name="openGenericType">The open generic type to exclude.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
+            Except(this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration, Type openGenericType)
+        {
+            return registration.Where(t => t != openGenericType);
+        }
+
+        /// <summary>
+        /// Filters the scanned open generic types to exclude the provided type, providing specific configuration for
+        /// the excluded type.
+        /// </summary>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <param name="openGenericType">The concrete type to exclude.</param>
+        /// <param name="customizedRegistration">Registration for the excepted type.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
+            Except(
+                this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration,
+                Type openGenericType,
+                Action<IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>> customizedRegistration)
+        {
+            var result = registration.Except(openGenericType);
+
+            result.ActivatorData.PostScanningCallbacks.Add(cr =>
+            {
+                var rb = new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
+                    new TypedService(openGenericType),
+                    new ReflectionActivatorData(openGenericType),
+                    new DynamicRegistrationStyle());
+
+                customizedRegistration(rb);
+
+                cr.AddRegistrationSource(new OpenGenericRegistrationSource(rb.RegistrationData, rb.ResolvePipeline, rb.ActivatorData));
+            });
+
+            return result;
         }
 
         /// <summary>
