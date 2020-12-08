@@ -15,7 +15,7 @@ namespace Autofac.Features.Scanning
     /// <summary>
     /// Helper methods to assist in scanning registration.
     /// </summary>
-    internal static class ScanningRegistrationExtensions
+    internal static partial class ScanningRegistrationExtensions
     {
         /// <summary>
         /// Register types from the specified assemblies.
@@ -82,49 +82,20 @@ namespace Autofac.Features.Scanning
 
         private static void ScanTypes(IEnumerable<Type> types, IComponentRegistryBuilder cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
         {
+            var closedTypes = types.Where(t => !t.IsGenericTypeDefinition)
+                .CanBeRegistered(rb.ActivatorData);
+
             rb.ActivatorData.Filters.Add(t =>
                 rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
                     swt.ServiceType.IsAssignableFrom(t)));
 
-            // Issue #897: For back compat reasons we can't filter out
-            // non-public types here. Folks use assembly scanning on their
-            // own stuff, so encapsulation is a tricky thing to manage.
-            // If people want only public types, a LINQ Where clause can be used.
-            foreach (var t in types
-                .Where(t =>
-                    t.IsClass &&
-                    !t.IsAbstract &&
-                    !t.IsGenericTypeDefinition &&
-                    !t.IsDelegate() &&
-                    rb.ActivatorData.Filters.All(p => p(t)) &&
-                    !t.IsCompilerGenerated()))
-            {
-                var scanned = RegistrationBuilder.ForType(t)
-                    .FindConstructorsWith(rb.ActivatorData.ConstructorFinder)
-                    .UsingConstructor(rb.ActivatorData.ConstructorSelector)
-                    .WithParameters(rb.ActivatorData.ConfiguredParameters)
-                    .WithProperties(rb.ActivatorData.ConfiguredProperties);
+            Func<Type, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>> scannedConstructor =
+                (type) => RegistrationBuilder.ForType(type);
 
-                // Copy middleware from the scanning registration.
-                scanned.ResolvePipeline.UseRange(rb.ResolvePipeline.Middleware);
+            Action<IComponentRegistryBuilder, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>> register =
+                (cr, scanned) => RegistrationBuilder.RegisterSingleComponent(cr, scanned);
 
-                scanned.RegistrationData.CopyFrom(rb.RegistrationData, false);
-
-                foreach (var action in rb.ActivatorData.ConfigurationActions)
-                {
-                    action(t, scanned);
-                }
-
-                if (scanned.RegistrationData.Services.Any())
-                {
-                    RegistrationBuilder.RegisterSingleComponent(cr, scanned);
-                }
-            }
-
-            foreach (var postScanningCallback in rb.ActivatorData.PostScanningCallbacks)
-            {
-                postScanningCallback(cr);
-            }
+            ScanTypesTemplate(closedTypes, cr, rb, scannedConstructor, register);
         }
 
         /// <summary>
