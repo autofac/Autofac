@@ -16,8 +16,9 @@ namespace Autofac
     /// </summary>
     public static class TypeExtensions
     {
-        private const BindingFlags DeclaredOnlyPublicFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
-        private const BindingFlags DeclaredOnlyFlags = DeclaredOnlyPublicFlags | BindingFlags.NonPublic;
+        private const BindingFlags DeclaredConstructorPublicFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+        private const BindingFlags DeclaredConstructorFlags = DeclaredConstructorPublicFlags | BindingFlags.NonPublic;
+        private const BindingFlags DeclaredMemberFlags = BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.NonPublic;
 
         /// <summary>
         /// Returns true if this type is in the <paramref name="namespace"/> namespace
@@ -123,7 +124,7 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(methodName));
             }
 
-            var foundMethod = @this.GetMethod(methodName, DeclaredOnlyFlags);
+            var foundMethod = @this.GetMethod(methodName, DeclaredMemberFlags);
 
             if (foundMethod is null)
             {
@@ -152,7 +153,7 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(propertyName));
             }
 
-            var foundProperty = @this.GetProperty(propertyName, DeclaredOnlyFlags);
+            var foundProperty = @this.GetProperty(propertyName, DeclaredMemberFlags);
 
             if (foundProperty is null)
             {
@@ -163,11 +164,11 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Returns a collection of constructor infomration that represents the declared constructors
+        /// Returns a collection of instance constructor information that represents the declared constructors
         /// for the type (public and private).
         /// </summary>
         /// <param name="this">The type.</param>
-        /// <returns>A collection of constructors.</returns>
+        /// <returns>A collection of instance constructors.</returns>
         public static ConstructorInfo[] GetDeclaredConstructors(this Type @this)
         {
             if (@this is null)
@@ -175,15 +176,15 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(@this));
             }
 
-            return @this.GetConstructors(DeclaredOnlyFlags);
+            return @this.GetConstructors(DeclaredConstructorFlags);
         }
 
         /// <summary>
-        /// Returns a collection of constructor infomration that represents the declared constructors
+        /// Returns a collection of instance constructor information that represents the declared constructors
         /// for the type (public only).
         /// </summary>
         /// <param name="this">The type.</param>
-        /// <returns>A collection of constructors.</returns>
+        /// <returns>A collection of instance constructors.</returns>
         public static ConstructorInfo[] GetDeclaredPublicConstructors(this Type @this)
         {
             if (@this is null)
@@ -191,11 +192,11 @@ namespace Autofac
                 throw new ArgumentNullException(nameof(@this));
             }
 
-            return @this.GetConstructors(DeclaredOnlyPublicFlags);
+            return @this.GetConstructors(DeclaredConstructorPublicFlags);
         }
 
         /// <summary>
-        /// Finds a constructor with the matching type parameters.
+        /// Finds an instance constructor with the matching type parameters.
         /// </summary>
         /// <param name="type">The type being tested.</param>
         /// <param name="constructorParameterTypes">The types of the contractor to find.</param>

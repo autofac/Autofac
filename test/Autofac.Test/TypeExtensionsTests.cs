@@ -62,7 +62,7 @@ namespace Autofac.Test
         [Fact]
         public void IsInNamespaceOf_DifferentNamespace()
         {
-            Assert.False(typeof(TypeExtensionsTests).IsInNamespaceOf<ContainerBuilder>());
+            Assert.False(typeof(ContainerBuilder).IsInNamespaceOf<TypeExtensionsTests>());
         }
 
         [Theory]
@@ -99,6 +99,73 @@ namespace Autofac.Test
         public void GetDeclaredProperty_MissingProperty()
         {
             Assert.Throws<ArgumentException>(() => typeof(DeclaredPropertyType).GetDeclaredProperty("NoSuchProperty"));
+        }
+
+        [Fact]
+        public void GetDeclaredConstructors_OnlyFindsInstanceConstructors()
+        {
+            // Issue #1238 - Don't consider static constructors during DI.
+            Assert.Equal(4, typeof(DeclaredConstructorType).GetDeclaredConstructors().Length);
+        }
+
+        [Fact]
+        public void GetDeclaredConstructors_FindsDefaultInstanceConstructors()
+        {
+            Assert.Single(typeof(DefaultConstructorType).GetDeclaredConstructors());
+        }
+
+        [Fact]
+        public void GetDeclaredPublicConstructors_OnlyFindsInstanceConstructors()
+        {
+            // Issue #1238 - Don't consider static constructors during DI.
+            Assert.Equal(2, typeof(DeclaredConstructorType).GetDeclaredPublicConstructors().Length);
+        }
+
+        [Fact]
+        public void GetDeclaredPublicConstructors_FindsDefaultInstanceConstructors()
+        {
+            Assert.Single(typeof(DefaultConstructorType).GetDeclaredPublicConstructors());
+        }
+
+        private class DefaultConstructorType
+        {
+            // No constructor declared - allows tests for default constructor detection.
+        }
+
+        [SuppressMessage("IDE0051", "IDE0051", Justification = "Constructors with unused parameters required for testing reflection against different visibilities.")]
+        [SuppressMessage("IDE0052", "IDE0052", Justification = "Constructors with unused parameters required for testing reflection against different visibilities.")]
+        [SuppressMessage("IDE0060", "IDE0060", Justification = "Constructors with unused parameters required for testing reflection against different visibilities.")]
+        private class DeclaredConstructorType
+        {
+            // Values here to ensure constructors get used and not
+            // optimized out by the compiler.
+            private static readonly Guid StaticValue;
+
+            private readonly Guid _instanceValue;
+
+            static DeclaredConstructorType()
+            {
+                StaticValue = Guid.NewGuid();
+            }
+
+            public DeclaredConstructorType()
+            {
+                _instanceValue = Guid.NewGuid();
+            }
+
+            public DeclaredConstructorType(string parameter)
+            {
+                _instanceValue = Guid.NewGuid();
+            }
+
+            protected DeclaredConstructorType(int parameter)
+            {
+                _instanceValue = Guid.NewGuid();
+            }
+
+            private DeclaredConstructorType(bool parameter)
+            {
+            }
         }
 
         private class DeclaredMethodType
