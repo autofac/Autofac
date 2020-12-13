@@ -47,6 +47,10 @@ namespace Autofac.Core
         /// </summary>
         /// <param name="componentRegistration">The component registration.</param>
         /// <param name="configurationAction">An action that can configure the registration's pipeline.</param>
+        /// <exception cref="InvalidOperationException">
+        /// Attaching to this event after a component registration
+        /// has already been built will throw an exception.
+        /// </exception>
         public static void ConfigurePipeline(this IComponentRegistration componentRegistration, Action<IResolvePipelineBuilder> configurationAction)
         {
             if (componentRegistration is null)
