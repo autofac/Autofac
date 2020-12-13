@@ -4,7 +4,7 @@
 namespace Autofac.Core.Registration
 {
     /// <summary>
-    /// Extension methods for component registrations.
+    /// Internal Extension methods for component registrations.
     /// </summary>
     internal static class ComponentRegistrationExtensions
     {

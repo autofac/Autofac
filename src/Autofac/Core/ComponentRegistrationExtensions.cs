@@ -4,12 +4,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac.Core;
 using Autofac.Core.Lifetime;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core
 {
     /// <summary>
-    /// Extension methods for <see cref="IComponentRegistration"/>.
+    /// Extension methods for component registrations.
     /// </summary>
     public static class ComponentRegistrationExtensions
     {
@@ -39,6 +41,29 @@ namespace Autofac.Core
             }
 
             return Enumerable.Empty<object>();
+        }
+
+        /// <summary>
+        /// Provides access to the registration's pipeline builder, allowing custom middleware to be added.
+        /// </summary>
+        /// <param name="componentRegistration">The component registration.</param>
+        /// <param name="configurationAction">An action that can configure the registration's pipeline.</param>
+        public static void ConfigurePipeline(this IComponentRegistration componentRegistration, Action<IResolvePipelineBuilder> configurationAction)
+        {
+            if (componentRegistration is null)
+            {
+                throw new ArgumentNullException(nameof(componentRegistration));
+            }
+
+            if (configurationAction is null)
+            {
+                throw new ArgumentNullException(nameof(configurationAction));
+            }
+
+            componentRegistration.PipelineBuilding += (sender, pipeline) =>
+            {
+                configurationAction(pipeline);
+            };
         }
     }
 }

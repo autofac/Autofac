@@ -55,9 +55,6 @@ namespace Autofac.Core.Registration
         /// <inheritdoc/>
         public IResolvePipeline ResolvePipeline => _inner.ResolvePipeline;
 
-        /// <inheritdoc />
-        public void ConfigurePipeline(Action<IResolvePipelineBuilder> configurationAction) => _inner.ConfigurePipeline(configurationAction);
-
         /// <inheritdoc/>
         public RegistrationOptions Options => _inner.Options;
 

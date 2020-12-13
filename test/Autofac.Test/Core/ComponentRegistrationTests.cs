@@ -49,7 +49,7 @@ namespace Autofac.Test.Core
         }
 
         [Fact]
-        public void ConfigurePipelineShouldFailIfAlreadyBuilt()
+        public void AttachingToPipelineBuildingShouldFailIfAlreadyBuilt()
         {
             var services = new Service[] { new TypedService(typeof(object)) };
 
@@ -60,7 +60,7 @@ namespace Autofac.Test.Core
 
             builder.Build();
 
-            Assert.Throws<InvalidOperationException>(() => registration.ConfigurePipeline(pipeline => { }));
+            Assert.Throws<InvalidOperationException>(() => registration.PipelineBuilding += (s, p) => { });
         }
     }
 }

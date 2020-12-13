@@ -20,6 +20,8 @@ namespace Autofac.Core.Registration
     {
         private readonly IComponentRegistration? _target;
         private readonly IResolvePipelineBuilder _lateBuildPipeline;
+        private EventHandler<IResolvePipelineBuilder>? _pipelineBuildEvent;
+
         private IResolvePipeline? _builtComponentPipeline;
 
         /// <summary>
@@ -200,25 +202,22 @@ namespace Autofac.Core.Registration
         public RegistrationOptions Options { get; }
 
         /// <inheritdoc />
-        public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding;
-
-        /// <inheritdoc />
-        public void ConfigurePipeline(Action<IResolvePipelineBuilder> configurationAction)
+        public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding
         {
-            if (configurationAction is null)
+            add
             {
-                throw new ArgumentNullException(nameof(configurationAction));
+                if (_builtComponentPipeline is object)
+                {
+                    throw new InvalidOperationException(ComponentRegistrationResources.PipelineAlreadyBuilt);
+                }
+
+                _pipelineBuildEvent += value;
             }
 
-            if (_builtComponentPipeline is object)
+            remove
             {
-                throw new InvalidOperationException(ComponentRegistrationResources.PipelineAlreadyBuilt);
+                _pipelineBuildEvent -= value;
             }
-
-            PipelineBuilding += (sender, pipeline) =>
-            {
-                configurationAction(pipeline);
-            };
         }
 
         /// <inheritdoc />
@@ -237,13 +236,13 @@ namespace Autofac.Core.Registration
                 return;
             }
 
-            if (PipelineBuilding is object)
+            if (_pipelineBuildEvent is object)
             {
-                PipelineBuilding.Invoke(this, _lateBuildPipeline);
+                _pipelineBuildEvent.Invoke(this, _lateBuildPipeline);
 
                 // Reset the PipelineBuilding event so we don't accidentally retain
                 // references we don't need to.
-                PipelineBuilding = null;
+                _pipelineBuildEvent = null;
             }
 
             ResolvePipeline = BuildResolvePipeline(registryServices, _lateBuildPipeline);

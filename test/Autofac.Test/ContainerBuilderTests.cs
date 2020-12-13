@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Autofac.Core;
 using Autofac.Core.Resolving.Pipeline;
 using Xunit;
 
