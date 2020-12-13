@@ -4,14 +4,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core
 {
     /// <summary>
-    /// Extension methods for component registrations.
+    /// Extension methods for <see cref="IComponentRegistration"/>.
     /// </summary>
     public static class ComponentRegistrationExtensions
     {

@@ -20,8 +20,8 @@ namespace Autofac.Core.Registration
     {
         private readonly IComponentRegistration? _target;
         private readonly IResolvePipelineBuilder _lateBuildPipeline;
-        private EventHandler<IResolvePipelineBuilder>? _pipelineBuildEvent;
 
+        private EventHandler<IResolvePipelineBuilder>? _pipelineBuildEvent;
         private IResolvePipeline? _builtComponentPipeline;
 
         /// <summary>
