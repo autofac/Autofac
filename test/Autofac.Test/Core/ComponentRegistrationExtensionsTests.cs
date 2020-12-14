@@ -59,5 +59,30 @@ namespace Autofac.Test.Core
             var c = b.Build();
             Assert.Empty(c.RegistrationFor<DivideByZeroException>().MatchingLifetimeScopeTags());
         }
+
+        [Fact]
+        public void ConfigurePipelineValidatesNullHandler()
+        {
+            var services = new Service[] { new TypedService(typeof(object)) };
+
+            var registration = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
+
+            Assert.Throws<ArgumentNullException>(() => registration.ConfigurePipeline(null));
+        }
+
+        [Fact]
+        public void ConfigurePipelineShouldFailIfAlreadyBuilt()
+        {
+            var services = new Service[] { new TypedService(typeof(object)) };
+
+            var registration = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
+
+            var builder = Factory.CreateEmptyComponentRegistryBuilder();
+            builder.Register(registration);
+
+            builder.Build();
+
+            Assert.Throws<InvalidOperationException>(() => registration.ConfigurePipeline(pipeline => { }));
+        }
     }
 }

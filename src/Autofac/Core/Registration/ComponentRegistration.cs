@@ -20,6 +20,8 @@ namespace Autofac.Core.Registration
     {
         private readonly IComponentRegistration? _target;
         private readonly IResolvePipelineBuilder _lateBuildPipeline;
+
+        private EventHandler<IResolvePipelineBuilder>? _pipelineBuildEvent;
         private IResolvePipeline? _builtComponentPipeline;
 
         /// <summary>
@@ -200,7 +202,23 @@ namespace Autofac.Core.Registration
         public RegistrationOptions Options { get; }
 
         /// <inheritdoc />
-        public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding;
+        public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding
+        {
+            add
+            {
+                if (_builtComponentPipeline is object)
+                {
+                    throw new InvalidOperationException(ComponentRegistrationResources.PipelineAlreadyBuilt);
+                }
+
+                _pipelineBuildEvent += value;
+            }
+
+            remove
+            {
+                _pipelineBuildEvent -= value;
+            }
+        }
 
         /// <inheritdoc />
         public IResolvePipeline ResolvePipeline
@@ -218,9 +236,13 @@ namespace Autofac.Core.Registration
                 return;
             }
 
-            if (PipelineBuilding is object)
+            if (_pipelineBuildEvent is object)
             {
-                PipelineBuilding.Invoke(this, _lateBuildPipeline);
+                _pipelineBuildEvent.Invoke(this, _lateBuildPipeline);
+
+                // Reset the PipelineBuilding event so we don't accidentally retain
+                // references we don't need to.
+                _pipelineBuildEvent = null;
             }
 
             ResolvePipeline = BuildResolvePipeline(registryServices, _lateBuildPipeline);

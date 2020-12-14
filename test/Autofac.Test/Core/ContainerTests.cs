@@ -208,10 +208,10 @@ namespace Autofac.Test.Core
         {
             protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
             {
-                registration.PipelineBuilding += (o, builder) => builder.Use(PipelinePhase.Activation, (ctxt, next) =>
+                registration.ConfigurePipeline(builder => builder.Use(PipelinePhase.Activation, (ctxt, next) =>
                 {
                     ctxt.Instance = new ReplaceableComponent { IsReplaced = true };
-                });
+                }));
             }
         }
 

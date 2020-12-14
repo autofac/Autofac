@@ -70,6 +70,15 @@ namespace Autofac.Core.Registration {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Component pipeline has already been built, and cannot be modified..
+        /// </summary>
+        internal static string PipelineAlreadyBuilt {
+            get {
+                return ResourceManager.GetString("PipelineAlreadyBuilt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not Built.
         /// </summary>
         internal static string PipelineNotBuilt {

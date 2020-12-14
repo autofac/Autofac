@@ -69,7 +69,11 @@ namespace Autofac.Core
         /// Provides an event that will be invoked just before a pipeline is built, and can be used to add additional middleware
         /// at that point.
         /// </summary>
-        public event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
+        /// <exception cref="InvalidOperationException">
+        /// Attaching to this event after a component registration
+        /// has already been built will throw an exception.
+        /// </exception>
+        event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
 
         /// <summary>
         /// Builds the resolve pipeline.
