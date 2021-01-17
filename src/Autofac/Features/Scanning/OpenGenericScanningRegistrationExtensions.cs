@@ -169,5 +169,81 @@ namespace Autofac.Features.Scanning
                 action(type, scanned);
             }
         }
+
+        /// <summary>
+        /// Configures the scanning registration builder to register all open types of the specified open generic.
+        /// </summary>
+        /// <typeparam name="TLimit">The limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">The registration style.</typeparam>
+        /// <param name="registration">The registration builder.</param>
+        /// <param name="openGenericServiceType">The open generic to register open types of.</param>
+        /// <returns>The registration builder.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
+            AsOpenTypesOf<TLimit, TRegistrationStyle>(
+                IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
+                Type openGenericServiceType)
+        {
+            if (openGenericServiceType == null)
+            {
+                throw new ArgumentNullException(nameof(openGenericServiceType));
+            }
+
+            return registration
+                .Where(candidateType => candidateType.IsOpenGenericTypeOf(openGenericServiceType))
+                .As(candidateType => (Service)new TypedService(candidateType));
+        }
+
+        /// <summary>
+        /// Configures the scanning registration builder to register all open types of the specified open generic as a keyed service.
+        /// </summary>
+        /// <typeparam name="TLimit">The limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">The registration style.</typeparam>
+        /// <param name="registration">The registration builder.</param>
+        /// <param name="openGenericServiceType">The open generic to register open types of.</param>
+        /// <param name="serviceKey">The service key.</param>
+        /// <returns>The registration builder.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
+            AsOpenTypesOf<TLimit, TRegistrationStyle>(
+                IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
+                Type openGenericServiceType,
+                object serviceKey)
+        {
+            if (openGenericServiceType == null)
+            {
+                throw new ArgumentNullException(nameof(openGenericServiceType));
+            }
+
+            if (serviceKey == null)
+            {
+                throw new ArgumentNullException(nameof(serviceKey));
+            }
+
+            return AsOpenTypesOf(registration, openGenericServiceType, t => serviceKey);
+        }
+
+        /// <summary>
+        /// Configures the scanning registration builder to register all open types of the specified open generic as a keyed service.
+        /// </summary>
+        /// <typeparam name="TLimit">The limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">The registration style.</typeparam>
+        /// <param name="registration">The registration builder.</param>
+        /// <param name="openGenericServiceType">The open generic to register open types of.</param>
+        /// <param name="serviceKeyMapping">A function to determine the service key for a given type.</param>
+        /// <returns>The registration builder.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
+            AsOpenTypesOf<TLimit, TRegistrationStyle>(
+                IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
+                Type openGenericServiceType,
+                Func<Type, object> serviceKeyMapping)
+        {
+            if (openGenericServiceType == null)
+            {
+                throw new ArgumentNullException(nameof(openGenericServiceType));
+            }
+
+            return registration
+                .Where(candidateType => candidateType.IsOpenGenericTypeOf(openGenericServiceType))
+                .As(candidateType => (Service)new KeyedService(serviceKeyMapping(candidateType), candidateType));
+        }
     }
 }

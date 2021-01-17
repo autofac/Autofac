@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -96,6 +97,59 @@ namespace Autofac.Test.Features.Scanning
             var a1 = c.Resolve<RedoOpenGenericCommand<int>>();
             var a2 = c.Resolve<RedoOpenGenericCommand<int>>();
             Assert.Same(a1, a2);
+        }
+
+        [Fact]
+        public void AsOpenTypesOfNullTypeProvidedThrowsException()
+        {
+            var cb = new ContainerBuilder();
+            Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly).
+                AsOpenTypesOf(null));
+        }
+
+        [Fact]
+        public void AsOpenTypesOfOpenGenericInterfaceTypeProvidedOpenGenericTypesRegistered()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AsOpenTypesOf(typeof(ICommand<>));
+            var c = cb.Build();
+
+            Assert.NotNull(c.Resolve<RedoOpenGenericCommand<int>>());
+        }
+
+        [Fact]
+        public void AsOpenTypesOfOpenGenericAbstractClassTypeProvidedOpenGenericTypesRegistered()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AsOpenTypesOf(typeof(CommandBase<>));
+            var c = cb.Build();
+
+            Assert.NotNull(c.Resolve<RedoOpenGenericCommand<int>>());
+        }
+
+        [Fact]
+        public void AsOpenTypesOfWithServiceKeyShouldAssignKeyToAllRegistrations()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AsOpenTypesOf(typeof(ICommand<>), "command");
+            var c = cb.Build();
+
+            Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<DeleteOpenGenericCommand<int>>());
+            Assert.NotNull(c.ResolveKeyed<RedoOpenGenericCommand<int>>("command"));
+        }
+
+        [Fact]
+        public void AsOpenTypesOfWithServiceKeyMappingShouldAssignKeyResultToEachRegistration()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AsOpenTypesOf(typeof(ICommand<>), t => t);
+            var c = cb.Build();
+
+            Assert.NotNull(c.ResolveKeyed<RedoOpenGenericCommand<int>>(typeof(RedoOpenGenericCommand<>)));
         }
     }
 }
