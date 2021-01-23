@@ -252,5 +252,69 @@ namespace Autofac
         {
             return ScanningRegistrationExtensions.AsOpenTypesOf(registration, openGenericServiceType, serviceKeyMapping);
         }
+
+        /// <summary>
+        /// Filters the scanned open generic types to include only those in the namespace of the provided type
+        /// or one of its sub-namespaces.
+        /// </summary>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <typeparam name="T">A type in the target namespace.</typeparam>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
+            InNamespaceOf<T>(this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration)
+        {
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            // Namespace is always non-null for concrete type parameters.
+            return registration.InNamespace(typeof(T).Namespace!);
+        }
+
+        /// <summary>
+        /// Filters the scanned types to include only those in the provided namespace
+        /// or one of its sub-namespaces.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <param name="ns">The namespace from which types will be selected.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
+            InNamespace<TLimit, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
+                string ns)
+        {
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            if (ns == null)
+            {
+                throw new ArgumentNullException(nameof(ns));
+            }
+
+            return registration.Where(t => t.IsInNamespace(ns));
+        }
+
+        /// <summary>
+        /// Specifies that an open generic type from a scanned assembly is registered as providing all of its
+        /// implemented interfaces.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
+            AsImplementedInterfaces<TLimit>(this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration)
+        {
+            if (registration == null)
+            {
+                throw new ArgumentNullException(nameof(registration));
+            }
+
+            return registration.As(t => t.GetOpenGenericImplementedInterfaces());
+        }
     }
 }

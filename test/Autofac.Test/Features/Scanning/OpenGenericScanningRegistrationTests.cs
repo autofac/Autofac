@@ -8,8 +8,10 @@ using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
+using Autofac.Features.Metadata;
 using Autofac.Features.Scanning;
 using Autofac.Test.Scenarios.ScannedAssembly;
+using Autofac.Test.Scenarios.ScannedAssembly.MetadataAttributeScanningScenario;
 using Xunit;
 
 namespace Autofac.Test.Features.Scanning
@@ -150,6 +152,96 @@ namespace Autofac.Test.Features.Scanning
             var c = cb.Build();
 
             Assert.NotNull(c.ResolveKeyed<RedoOpenGenericCommand<int>>(typeof(RedoOpenGenericCommand<>)));
+        }
+
+        [Fact]
+        public void AsImplementedInterfacesRegistersImplementedInterfaces()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AsImplementedInterfaces();
+            var c = cb.Build();
+
+            Assert.NotNull(c.Resolve<IOpenGenericAService<int>>());
+        }
+
+        [Fact]
+        public void WhenFilterAppliedDefaultSelfRegistrationOmitted()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AsImplementedInterfaces();
+            var c = cb.Build();
+
+            Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<OpenGenericAComponent<int>>());
+        }
+
+        [Fact]
+        public void AsSelfExposesConcreteTypeAsService()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AsImplementedInterfaces()
+                .AsSelf();
+            var c = cb.Build();
+
+            Assert.NotNull(c.Resolve<OpenGenericAComponent<int>>());
+        }
+
+        [Fact]
+        public void WhenMetadataMappingAppliedValuesCalculatedFromType()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .WithMetadata(t => t.GetMethods().ToDictionary(m => m.Name, m => (object)m.ReturnType));
+
+            var c = cb.Build();
+            var s = c.Resolve<Meta<RedoOpenGenericCommand<int>>>();
+
+            Assert.True(s.Metadata.ContainsKey("Execute"));
+        }
+
+        [Fact]
+        public void MetadataCanBeScannedFromAMatchingAttributeInterface()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .Where(t => t == typeof(OpenGenericScannedComponentWithName<>))
+                .WithMetadataFrom<IHaveName>();
+
+            var c = cb.Build();
+
+            c.ComponentRegistry.TryGetRegistration(new TypedService(typeof(OpenGenericScannedComponentWithName<string>)), out IComponentRegistration r);
+
+            r.Metadata.TryGetValue("Name", out object name);
+
+            Assert.Equal("My Name", name);
+        }
+
+        [Fact]
+        public void InNamespaceLimitsServicesToBeRegistered()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .InNamespace("Autofac.Test.Scenarios.ScannedAssembly.MetadataAttributeScanningScenario");
+
+            var c = cb.Build();
+
+            Assert.NotNull(c.Resolve<OpenGenericScannedComponentWithName<int>>());
+            Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<OpenGenericAComponent<int>>());
+        }
+
+        [Fact]
+        public void InNamespaceOfLimitsServicesToBeRegistered()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .InNamespaceOf<IHaveName>();
+
+            var c = cb.Build();
+
+            Assert.NotNull(c.Resolve<OpenGenericScannedComponentWithName<int>>());
+            Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<OpenGenericAComponent<int>>());
         }
     }
 }

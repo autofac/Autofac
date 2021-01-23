@@ -245,6 +245,14 @@ namespace Autofac
             return type.IsInterface ? interfaces.AppendItem(type).ToArray() : interfaces.ToArray();
         }
 
+        private static Type[] GetOpenGenericImplementedInterfaces(this Type @this)
+        {
+            return @this.GetInterfaces()
+                .Where(it => it.IsGenericType)
+                .Select(it => it.GetGenericTypeDefinition())
+                .ToArray();
+        }
+
         /// <summary>
         /// Specifies that the components being registered should only be made the default for services
         /// that have not already been registered.
