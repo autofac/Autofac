@@ -233,6 +233,26 @@ namespace Autofac.Test.Features.AttributeFilters
             Assert.Equal(2, resolved.Loggers.Count());
         }
 
+        [Fact(Skip = "Issue #1250")]
+        public void KeyFilterIsAppliedOnMultipleIndividualConcreteDependencies()
+        {
+            // Issue #1250 - key filtering doesn't work on components keyed as themselves.
+            var builder = new ContainerBuilder();
+            builder.RegisterType<ConsoleLogger>().As<ILogger>();
+            builder.Register(ctx => new IdentifiableObject { Id = "a" }).Keyed<IdentifiableObject>("First");
+            builder.Register(ctx => new IdentifiableObject { Id = "b" }).Keyed<IdentifiableObject>("Second");
+            builder.Register(ctx => new IdentifiableObject { Id = "c" }).Keyed<IdentifiableObject>("Third");
+            builder.RegisterType<ManagerWithManyIndividualConcrete>();
+
+            var container = builder.Build();
+            var resolved = container.Resolve<ManagerWithManyIndividualConcrete>();
+
+            Assert.IsType<ConsoleLogger>(resolved.Logger);
+            Assert.Equal("a", resolved.First.Id);
+            Assert.Equal("b", resolved.Second.Id);
+            Assert.Equal("c", resolved.Third.Id);
+        }
+
         [Fact]
         public void MetadataFilterIsAppliedOnConstructorDependencySingle()
         {
@@ -380,6 +400,34 @@ namespace Autofac.Test.Features.AttributeFilters
 
         public class ToolWindowAdapter : IAdapter
         {
+        }
+
+        public class IdentifiableObject
+        {
+            public string Id { get; set; }
+        }
+
+        public class ManagerWithManyIndividualConcrete
+        {
+            public ManagerWithManyIndividualConcrete(
+                ILogger logger,
+                [KeyFilter("First")] IdentifiableObject first,
+                [KeyFilter("Second")] IdentifiableObject second,
+                [KeyFilter("Third")] IdentifiableObject third)
+            {
+                Logger = logger;
+                First = first;
+                Second = second;
+                Third = third;
+            }
+
+            public ILogger Logger { get; set; }
+
+            public IdentifiableObject First { get; set; }
+
+            public IdentifiableObject Second { get; set; }
+
+            public IdentifiableObject Third { get; set; }
         }
 
         public class ManagerWithLazySingle
