@@ -233,16 +233,15 @@ namespace Autofac.Test.Features.AttributeFilters
             Assert.Equal(2, resolved.Loggers.Count());
         }
 
-        [Fact(Skip = "Issue #1250")]
+        [Fact]
         public void KeyFilterIsAppliedOnMultipleIndividualConcreteDependencies()
         {
-            // Issue #1250 - key filtering doesn't work on components keyed as themselves.
             var builder = new ContainerBuilder();
             builder.RegisterType<ConsoleLogger>().As<ILogger>();
             builder.Register(ctx => new IdentifiableObject { Id = "a" }).Keyed<IdentifiableObject>("First");
             builder.Register(ctx => new IdentifiableObject { Id = "b" }).Keyed<IdentifiableObject>("Second");
             builder.Register(ctx => new IdentifiableObject { Id = "c" }).Keyed<IdentifiableObject>("Third");
-            builder.RegisterType<ManagerWithManyIndividualConcrete>();
+            builder.RegisterType<ManagerWithManyIndividualConcrete>().WithAttributeFiltering();
 
             var container = builder.Build();
             var resolved = container.Resolve<ManagerWithManyIndividualConcrete>();
