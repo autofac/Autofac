@@ -204,50 +204,47 @@ namespace Autofac
         }
 
         /// <summary>
-        /// Specifies that an open generic type from a scanned assembly is registered if it implements an interface
-        /// that opens the provided open generic interface type.
+        /// Filters the scanned types to include only those assignable to the provided.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
         /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
-        /// <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
+        /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
-            AsOpenTypesOf<TLimit, TRegistrationStyle>(
+            AssignableTo<TLimit, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType)
         {
-            return ScanningRegistrationExtensions.AsOpenTypesOf(registration, openGenericServiceType);
+            return ScanningRegistrationExtensions.AssignableTo(registration, openGenericServiceType);
         }
 
         /// <summary>
-        /// Specifies that an open generic type from a scanned assembly is registered if it implements an interface
-        /// that opens the provided open generic interface type.
+        /// Filters the scanned types to include only those assignable to the provided.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
         /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
-        /// <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
+        /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
         /// <param name="serviceKey">Key of the service.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
-            AsOpenTypesOf<TLimit, TRegistrationStyle>(
+            AssignableTo<TLimit, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType, object serviceKey)
         {
             return ScanningRegistrationExtensions.AsOpenTypesOf(registration, openGenericServiceType, serviceKey);
         }
 
         /// <summary>
-        /// Specifies that an open generic type from a scanned assembly is registered if it implements an interface
-        /// that opens the provided open generic interface type.
+        /// Filters the scanned types to include only those assignable to the provided.
         /// </summary>
         /// <typeparam name="TLimit">Registration limit type.</typeparam>
         /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
         /// <param name="registration">Registration to set service mapping on.</param>
-        /// <param name="openGenericServiceType">The open generic interface or base class type for which implementations will be found.</param>
+        /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
         /// <param name="serviceKeyMapping">Function mapping types to service keys.</param>
         /// <returns>Registration builder allowing the registration to be configured.</returns>
         public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
-            AsOpenTypesOf<TLimit, TRegistrationStyle>(
+            AssignableTo<TLimit, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType, Func<Type, object> serviceKeyMapping)
         {
             return ScanningRegistrationExtensions.AsOpenTypesOf(registration, openGenericServiceType, serviceKeyMapping);

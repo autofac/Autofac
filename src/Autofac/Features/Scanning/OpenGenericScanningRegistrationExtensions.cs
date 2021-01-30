@@ -172,15 +172,15 @@ namespace Autofac.Features.Scanning
         }
 
         /// <summary>
-        /// Configures the scanning registration builder to register all open types of the specified open generic.
+        /// Filters the scanned types to include only those assignable to the provided.
         /// </summary>
         /// <typeparam name="TLimit">The limit type.</typeparam>
         /// <typeparam name="TRegistrationStyle">The registration style.</typeparam>
         /// <param name="registration">The registration builder.</param>
-        /// <param name="openGenericServiceType">The open generic to register open types of.</param>
+        /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
         /// <returns>The registration builder.</returns>
         public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
-            AsOpenTypesOf<TLimit, TRegistrationStyle>(
+            AssignableTo<TLimit, TRegistrationStyle>(
                 IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
                 Type openGenericServiceType)
         {
