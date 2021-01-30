@@ -231,7 +231,7 @@ namespace Autofac
             AssignableTo<TLimit, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType, object serviceKey)
         {
-            return ScanningRegistrationExtensions.AsOpenTypesOf(registration, openGenericServiceType, serviceKey);
+            return ScanningRegistrationExtensions.AssignableTo(registration, openGenericServiceType, serviceKey);
         }
 
         /// <summary>
@@ -247,7 +247,7 @@ namespace Autofac
             AssignableTo<TLimit, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType, Func<Type, object> serviceKeyMapping)
         {
-            return ScanningRegistrationExtensions.AsOpenTypesOf(registration, openGenericServiceType, serviceKeyMapping);
+            return ScanningRegistrationExtensions.AssignableTo(registration, openGenericServiceType, serviceKeyMapping);
         }
 
         /// <summary>
@@ -260,11 +260,6 @@ namespace Autofac
         public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
             InNamespaceOf<T>(this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration)
         {
-            if (registration == null)
-            {
-                throw new ArgumentNullException(nameof(registration));
-            }
-
             // Namespace is always non-null for concrete type parameters.
             return registration.InNamespace(typeof(T).Namespace!);
         }
@@ -283,12 +278,7 @@ namespace Autofac
                 this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
                 string ns)
         {
-            if (registration == null)
-            {
-                throw new ArgumentNullException(nameof(registration));
-            }
-
-            if (ns == null)
+            if (string.IsNullOrEmpty(ns))
             {
                 throw new ArgumentNullException(nameof(ns));
             }
@@ -306,11 +296,6 @@ namespace Autofac
         public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
             AsImplementedInterfaces<TLimit>(this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration)
         {
-            if (registration == null)
-            {
-                throw new ArgumentNullException(nameof(registration));
-            }
-
             return registration.As(t => t.GetOpenGenericImplementedInterfaces());
         }
     }

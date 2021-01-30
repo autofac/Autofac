@@ -195,16 +195,16 @@ namespace Autofac.Features.Scanning
         }
 
         /// <summary>
-        /// Configures the scanning registration builder to register all open types of the specified open generic as a keyed service.
+        /// Filters the scanned types to include only those assignable to the provided.
         /// </summary>
         /// <typeparam name="TLimit">The limit type.</typeparam>
         /// <typeparam name="TRegistrationStyle">The registration style.</typeparam>
         /// <param name="registration">The registration builder.</param>
-        /// <param name="openGenericServiceType">The open generic to register open types of.</param>
+        /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
         /// <param name="serviceKey">The service key.</param>
         /// <returns>The registration builder.</returns>
         public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
-            AsOpenTypesOf<TLimit, TRegistrationStyle>(
+            AssignableTo<TLimit, TRegistrationStyle>(
                 IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
                 Type openGenericServiceType,
                 object serviceKey)
@@ -219,20 +219,20 @@ namespace Autofac.Features.Scanning
                 throw new ArgumentNullException(nameof(serviceKey));
             }
 
-            return AsOpenTypesOf(registration, openGenericServiceType, t => serviceKey);
+            return AssignableTo(registration, openGenericServiceType, t => serviceKey);
         }
 
         /// <summary>
-        /// Configures the scanning registration builder to register all open types of the specified open generic as a keyed service.
+        /// Filters the scanned types to include only those assignable to the provided.
         /// </summary>
         /// <typeparam name="TLimit">The limit type.</typeparam>
         /// <typeparam name="TRegistrationStyle">The registration style.</typeparam>
         /// <param name="registration">The registration builder.</param>
-        /// <param name="openGenericServiceType">The open generic to register open types of.</param>
+        /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
         /// <param name="serviceKeyMapping">A function to determine the service key for a given type.</param>
         /// <returns>The registration builder.</returns>
         public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
-            AsOpenTypesOf<TLimit, TRegistrationStyle>(
+            AssignableTo<TLimit, TRegistrationStyle>(
                 IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
                 Type openGenericServiceType,
                 Func<Type, object> serviceKeyMapping)
@@ -260,11 +260,6 @@ namespace Autofac.Features.Scanning
                 this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
                 Func<Type, IEnumerable<KeyValuePair<string, object?>>> metadataMapping)
         {
-            if (registration == null)
-            {
-                throw new ArgumentNullException(nameof(registration));
-            }
-
             registration.ActivatorData.ConfigurationActions.Add((t, rb) => rb.WithMetadata(metadataMapping(t)));
             return registration;
         }

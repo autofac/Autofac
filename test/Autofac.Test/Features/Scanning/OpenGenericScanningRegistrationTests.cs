@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Autofac.Core;
@@ -107,6 +108,15 @@ namespace Autofac.Test.Features.Scanning
             var cb = new ContainerBuilder();
             Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
                 .AssignableTo(null));
+
+            Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AssignableTo(typeof(RedoOpenGenericCommand<>), (object)null));
+
+            Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AssignableTo(null, "serviceKey"));
+
+            Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AssignableTo(null, t => t));
         }
 
         [Fact]
@@ -202,6 +212,36 @@ namespace Autofac.Test.Features.Scanning
         }
 
         [Fact]
+        public void WhenMetadataNotFoundThrowException()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                    .Where(t => t == typeof(OpenGenericScannedComponentWithName<>))
+                    .WithMetadataFrom<ICloseCommand>();
+
+            var ex = Assert.Throws<ArgumentException>(() => cb.Build());
+
+            Assert.Equal(
+                string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MetadataAttributeNotFound, typeof(ICloseCommand), typeof(OpenGenericScannedComponentWithName<>)),
+                ex.Message);
+        }
+
+        [Fact]
+        public void WhenMultipleMetadataAttributesSameTypeThrowException()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                    .Where(t => t == typeof(OpenGenericScannedComponentWithMultipleNames<>))
+                    .WithMetadataFrom<IHaveName>();
+
+            var ex = Assert.Throws<ArgumentException>(() => cb.Build());
+
+            Assert.Equal(
+                string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MultipleMetadataAttributesSameType, typeof(IHaveName), typeof(OpenGenericScannedComponentWithMultipleNames<>)),
+                ex.Message);
+        }
+
+        [Fact]
         public void MetadataCanBeScannedFromAMatchingAttributeInterface()
         {
             var cb = new ContainerBuilder();
@@ -216,6 +256,16 @@ namespace Autofac.Test.Features.Scanning
             r.Metadata.TryGetValue("Name", out object name);
 
             Assert.Equal("My Name", name);
+        }
+
+        [Fact]
+        public void InNamespaceNullProvidedThrowException()
+        {
+            var cb = new ContainerBuilder();
+            var ex = Assert.Throws<ArgumentNullException>(() =>
+                cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly).InNamespace(ns: ""));
+
+            Assert.Equal("ns", ex.ParamName);
         }
 
         [Fact]
