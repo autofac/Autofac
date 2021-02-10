@@ -4,7 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Features.Indexed;
+using Autofac.Features.OpenGenerics;
 using Xunit;
 
 namespace Autofac.Test
@@ -90,6 +94,24 @@ namespace Autofac.Test
 
             Assert.True(foundFirst);
             Assert.True(foundLast);
+        }
+
+        public static bool RegisteredAnyOpenGenericTypeFromScanningAssembly(this IComponentContext context)
+        {
+            return context.ComponentRegistry.Sources.Any(source =>
+            {
+                if (source is OpenGenericRegistrationSource)
+                {
+                    var activatorData = typeof(OpenGenericRegistrationSource)
+                        .GetField("_activatorData", BindingFlags.NonPublic | BindingFlags.Instance)
+                        .GetValue(source) as ReflectionActivatorData;
+                    return activatorData.ImplementationType != typeof(KeyedServiceIndex<,>);
+                }
+                else
+                {
+                    return false;
+                }
+            });
         }
 
         private static IEnumerable<Type> LookForComponents(this IEnumerable<IComponentRegistration> registrations, IEnumerable<Type> types)

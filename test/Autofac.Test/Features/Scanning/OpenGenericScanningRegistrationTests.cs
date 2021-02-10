@@ -10,6 +10,7 @@ using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Autofac.Features.Metadata;
+using Autofac.Features.OpenGenerics;
 using Autofac.Features.Scanning;
 using Autofac.Test.Scenarios.ScannedAssembly;
 using Autofac.Test.Scenarios.ScannedAssembly.MetadataAttributeScanningScenario;
@@ -117,6 +118,30 @@ namespace Autofac.Test.Features.Scanning
 
             Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
                 .AssignableTo(null, t => t));
+        }
+
+        [Theory]
+        [InlineData(typeof(ICloseCommand))]
+        [InlineData(typeof(CloseCommand))]
+        public void AssignableToClosedTypeProvidedNoneOpenGenericSourceRegistered(Type closedType)
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AssignableTo(closedType);
+            var c = cb.Build();
+
+            Assert.False(c.RegisteredAnyOpenGenericTypeFromScanningAssembly());
+        }
+
+        [Fact]
+        public void ServiceIsNotAssignableToIsNotRegistered()
+        {
+            var cb = new ContainerBuilder();
+            cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
+                .AssignableTo(typeof(RedoOpenGenericCommand<>));
+            var c = cb.Build();
+
+            Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<DeleteOpenGenericCommand<int>>());
         }
 
         [Fact]
