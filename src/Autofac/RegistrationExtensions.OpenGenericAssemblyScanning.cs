@@ -202,5 +202,101 @@ namespace Autofac
             registration.ActivatorData.Filters.Add(predicate);
             return registration;
         }
+
+        /// <summary>
+        /// Filters the scanned types to include only those assignable to the provided.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
+            AssignableTo<TLimit, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType)
+        {
+            return ScanningRegistrationExtensions.AssignableTo(registration, openGenericServiceType);
+        }
+
+        /// <summary>
+        /// Filters the scanned types to include only those assignable to the provided.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
+        /// <param name="serviceKey">Key of the service.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
+            AssignableTo<TLimit, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType, object serviceKey)
+        {
+            return ScanningRegistrationExtensions.AssignableTo(registration, openGenericServiceType, serviceKey);
+        }
+
+        /// <summary>
+        /// Filters the scanned types to include only those assignable to the provided.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
+        /// <param name="serviceKeyMapping">Function mapping types to service keys.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
+            AssignableTo<TLimit, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType, Func<Type, object> serviceKeyMapping)
+        {
+            return ScanningRegistrationExtensions.AssignableTo(registration, openGenericServiceType, serviceKeyMapping);
+        }
+
+        /// <summary>
+        /// Filters the scanned open generic types to include only those in the namespace of the provided type
+        /// or one of its sub-namespaces.
+        /// </summary>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <typeparam name="T">A type in the target namespace.</typeparam>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
+            InNamespaceOf<T>(this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration)
+        {
+            // Namespace is always non-null for concrete type parameters.
+            return registration.InNamespace(typeof(T).Namespace!);
+        }
+
+        /// <summary>
+        /// Filters the scanned types to include only those in the provided namespace
+        /// or one of its sub-namespaces.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to filter types from.</param>
+        /// <param name="ns">The namespace from which types will be selected.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
+            InNamespace<TLimit, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
+                string ns)
+        {
+            if (string.IsNullOrEmpty(ns))
+            {
+                throw new ArgumentNullException(nameof(ns));
+            }
+
+            return registration.Where(t => t.IsInNamespace(ns));
+        }
+
+        /// <summary>
+        /// Specifies that an open generic type from a scanned assembly is registered as providing all of its
+        /// implemented interfaces.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <param name="registration">Registration to set service mapping on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
+            AsImplementedInterfaces<TLimit>(this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration)
+        {
+            return registration.As(t => t.GetOpenGenericImplementedInterfaces());
+        }
     }
 }

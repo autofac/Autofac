@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
@@ -168,6 +169,136 @@ namespace Autofac.Features.Scanning
             {
                 action(type, scanned);
             }
+        }
+
+        /// <summary>
+        /// Filters the scanned types to include only those assignable to the provided.
+        /// </summary>
+        /// <typeparam name="TLimit">The limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">The registration style.</typeparam>
+        /// <param name="registration">The registration builder.</param>
+        /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
+        /// <returns>The registration builder.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
+            AssignableTo<TLimit, TRegistrationStyle>(
+                IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
+                Type openGenericServiceType)
+        {
+            if (openGenericServiceType == null)
+            {
+                throw new ArgumentNullException(nameof(openGenericServiceType));
+            }
+
+            return registration
+                .Where(candidateType => candidateType.IsOpenGenericTypeOf(openGenericServiceType))
+                .As(candidateType => (Service)new TypedService(candidateType));
+        }
+
+        /// <summary>
+        /// Filters the scanned types to include only those assignable to the provided.
+        /// </summary>
+        /// <typeparam name="TLimit">The limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">The registration style.</typeparam>
+        /// <param name="registration">The registration builder.</param>
+        /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
+        /// <param name="serviceKey">The service key.</param>
+        /// <returns>The registration builder.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
+            AssignableTo<TLimit, TRegistrationStyle>(
+                IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
+                Type openGenericServiceType,
+                object serviceKey)
+        {
+            if (openGenericServiceType == null)
+            {
+                throw new ArgumentNullException(nameof(openGenericServiceType));
+            }
+
+            if (serviceKey == null)
+            {
+                throw new ArgumentNullException(nameof(serviceKey));
+            }
+
+            return AssignableTo(registration, openGenericServiceType, t => serviceKey);
+        }
+
+        /// <summary>
+        /// Filters the scanned types to include only those assignable to the provided.
+        /// </summary>
+        /// <typeparam name="TLimit">The limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">The registration style.</typeparam>
+        /// <param name="registration">The registration builder.</param>
+        /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
+        /// <param name="serviceKeyMapping">A function to determine the service key for a given type.</param>
+        /// <returns>The registration builder.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
+            AssignableTo<TLimit, TRegistrationStyle>(
+                IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
+                Type openGenericServiceType,
+                Func<Type, object> serviceKeyMapping)
+        {
+            if (openGenericServiceType == null)
+            {
+                throw new ArgumentNullException(nameof(openGenericServiceType));
+            }
+
+            return registration
+                .Where(candidateType => candidateType.IsOpenGenericTypeOf(openGenericServiceType))
+                .As(candidateType => (Service)new KeyedService(serviceKeyMapping(candidateType), candidateType));
+        }
+
+        /// <summary>
+        /// Specify how an open generic type from a scanned assembly provides metadata.
+        /// </summary>
+        /// <typeparam name="TLimit">Registration limit type.</typeparam>
+        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+        /// <param name="registration">Registration to set metadata on.</param>
+        /// <param name="metadataMapping">A function mapping the type to a list of metadata items.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
+            WithMetadata<TLimit, TRegistrationStyle>(
+                this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
+                Func<Type, IEnumerable<KeyValuePair<string, object?>>> metadataMapping)
+        {
+            registration.ActivatorData.ConfigurationActions.Add((t, rb) => rb.WithMetadata(metadataMapping(t)));
+            return registration;
+        }
+
+        /// <summary>
+        /// Use the properties of an attribute (or interface implemented by an attribute) on the scanned type
+        /// to provide metadata values.
+        /// </summary>
+        /// <remarks>Inherited attributes are supported; however, there must be at most one matching attribute
+        /// in the inheritance chain.</remarks>
+        /// <typeparam name="TAttribute">The attribute applied to the scanned type.</typeparam>
+        /// <param name="registration">Registration to set metadata on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
+            WithMetadataFrom<TAttribute>(
+                this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration)
+        {
+            var attrType = typeof(TAttribute);
+            var metadataProperties = attrType
+                .GetRuntimeProperties()
+                .Where(pi => pi.CanRead);
+
+            return registration.WithMetadata(t =>
+            {
+                var attrs = t.GetCustomAttributes(true).OfType<TAttribute>().ToList();
+
+                if (attrs.Count == 0)
+                {
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MetadataAttributeNotFound, typeof(TAttribute), t));
+                }
+
+                if (attrs.Count != 1)
+                {
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MultipleMetadataAttributesSameType, typeof(TAttribute), t));
+                }
+
+                var attr = attrs[0];
+                return metadataProperties.Select(p => new KeyValuePair<string, object?>(p.Name, p.GetValue(attr, null)));
+            });
         }
     }
 }

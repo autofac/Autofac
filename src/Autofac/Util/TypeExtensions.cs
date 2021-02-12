@@ -223,7 +223,6 @@ namespace Autofac.Util
 
         private static bool CheckInterfacesAreOpenGenericTypeOf(this Type @this, Type type)
         {
-            var interfaces = @this.GetInterfaces().ToList();
             return @this.GetInterfaces()
                 .Any(it => it.IsGenericType
                     ? it.GetGenericTypeDefinition().IsOpenGenericTypeOf(type)
