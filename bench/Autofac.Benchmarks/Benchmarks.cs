@@ -28,7 +28,8 @@ namespace Autofac.Benchmarks
             typeof(PropertyInjectionBenchmark),
             typeof(RootContainerResolveBenchmark),
             typeof(OpenGenericBenchmark),
-            typeof(MultiConstructorBenchmark)
+            typeof(MultiConstructorBenchmark),
+            typeof(OnActivatedBenchmark)
         };
     }
 }
