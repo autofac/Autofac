@@ -247,6 +247,18 @@ namespace Autofac.Core.Registration
                 registration.Dispose();
             }
 
+            // If we do not explicitly empty the ConcurrentBag that stores our registrations,
+            // this will cause a memory leak due to threads holding a reference to the bag.
+            // In netstandard2.0 the faster 'Clear' method is not available,
+            // so we have do this manually. We'll use the faster method if it's available though.
+#if NETSTANDARD2_0
+            while (_registrations.TryTake(out _))
+            {
+            }
+#else
+            _registrations.Clear();
+#endif
+
             base.Dispose(disposing);
         }
 
