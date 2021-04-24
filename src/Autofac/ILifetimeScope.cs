@@ -10,10 +10,15 @@ using Autofac.Core.Resolving;
 namespace Autofac
 {
     /// <summary>
+    /// <para>
     /// An <see cref="ILifetimeScope"/> tracks the instantiation of component instances.
     /// It defines a boundary in which instances are shared and configured.
-    /// Disposing an <see cref="ILifetimeScope"/> will dispose the components that were
-    /// resolved through it.
+    /// </para>
+    /// <para>
+    /// Disposing an <see cref="ILifetimeScope"/> will dispose any components that were
+    /// newly created when resolving from it, provided those components were not registered as
+    /// <see cref="IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}.ExternallyOwned"/>.
+    /// </para>
     /// </summary>
     /// <example>
     /// <code>
@@ -32,14 +37,21 @@ namespace Autofac
     /// </code>
     /// </example>
     /// <remarks>
+    /// <para>
     /// All long-running applications should resolve components via an
     /// <see cref="ILifetimeScope"/>. Choosing the duration of the lifetime is application-
-    /// specific. The standard Autofac WCF and ASP.NET/MVC integrations are already configured
-    /// to create and release <see cref="ILifetimeScope"/>s as appropriate. For example, the
-    /// ASP.NET integration will create and release an <see cref="ILifetimeScope"/> per HTTP
-    /// request.
+    /// specific.
+    /// </para>
+    /// <para>
+    /// The standard Autofac integrations are already configured
+    /// to create and dispose <see cref="ILifetimeScope"/>s as appropriate. For example, the
+    /// integration with ASP.NET Core (via the .NET DI library) will create and dispose
+    /// one <see cref="ILifetimeScope"/> per HTTP request.
+    /// </para>
+    /// <para>
     /// Most <see cref="ILifetimeScope"/> functionality is provided by extension methods
     /// on the inherited <see cref="IComponentContext"/> interface.
+    /// </para>
     /// </remarks>
     /// <seealso cref="IContainer"/>
     /// <seealso cref="IComponentContext"/>
@@ -70,9 +82,34 @@ namespace Autofac
         /// will be disposed along with it.
         /// </summary>
         /// <remarks>
-        /// The components registered in the sub-scope will be treated as though they were
-        /// registered in the root scope, i.e., SingleInstance() components will live as long
-        /// as the root scope.
+        /// <para>
+        /// Any components registered in the sub-scope will only be resolvable from this new scope,
+        /// or additional child scopes subsequently resolved from it.
+        /// </para>
+        ///
+        /// <para>
+        /// Components registered in the sub-scope that provide services already registered
+        /// in a parent <see cref="ILifetimeScope"/> (or root <see cref="IContainer"/>) will
+        /// override that same service registration when resolving instances.
+        /// </para>
+        ///
+        /// <para>
+        /// If you resolve an IEnumerable&lt;TService&gt; in the new scope, the returned set of components will
+        /// include both components registered in the new sub-scope, plus all registered components all the way back
+        /// up to the root <see cref="IContainer"/>.
+        /// </para>
+        ///
+        /// <para>
+        /// Resolving a service from this scope that was only defined in a parent <see cref="ILifetimeScope"/> (or root <see cref="IContainer"/>)
+        /// will result in a component 'owned' by the scope it was registered in (rather than this new scope).
+        /// E.g. if you registered a SingleInstance() component in the root container, but resolved it in the new sub-scope, the instance you get will
+        /// be attached to the root container, not your scope, so the same instance will be shared by all other <see cref="ILifetimeScope"/>s.
+        /// </para>
+        ///
+        /// <para>
+        /// SingleInstance() components registered in this scope will be held as long as this scope exists, but will be discarded
+        /// when the scope is disposed.
+        /// </para>
         /// </remarks>
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
         /// that adds component registrations visible only in the new scope.</param>
@@ -85,9 +122,34 @@ namespace Autofac
         /// will be disposed along with it.
         /// </summary>
         /// <remarks>
-        /// The components registered in the sub-scope will be treated as though they were
-        /// registered in the root scope, i.e., SingleInstance() components will live as long
-        /// as the root scope.
+        /// <para>
+        /// Any components registered in the sub-scope will only be resolvable from this new scope,
+        /// or additional child scopes subsequently resolved from it.
+        /// </para>
+        ///
+        /// <para>
+        /// Components registered in the sub-scope that provide services already registered
+        /// in a parent <see cref="ILifetimeScope"/> (or root <see cref="IContainer"/>) will
+        /// override that same service registration when resolving instances.
+        /// </para>
+        ///
+        /// <para>
+        /// If you resolve an IEnumerable&lt;TService&gt; in the new scope, the returned set of components will
+        /// include both components registered in the new sub-scope, plus all registered components all the way back
+        /// up to the root <see cref="IContainer"/>.
+        /// </para>
+        ///
+        /// <para>
+        /// Resolving a service from this scope that was only defined in a parent <see cref="ILifetimeScope"/> (or root <see cref="IContainer"/>)
+        /// will result in a component 'owned' by the scope it was registered in (rather than this new scope).
+        /// E.g. if you registered a SingleInstance() component in the root container, but resolved it in the new sub-scope, the instance you get will
+        /// be attached to the root container, not your scope, so the same instance will be shared by all other <see cref="ILifetimeScope"/>s.
+        /// </para>
+        ///
+        /// <para>
+        /// SingleInstance() components registered in this scope will be held as long as this scope exists, but will be discarded
+        /// when the scope is disposed.
+        /// </para>
         /// </remarks>
         /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
         /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>

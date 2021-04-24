@@ -15,7 +15,7 @@ namespace Autofac
     /// to a container (<see cref="Module.Load"/>) or attach cross-cutting functionality
     /// to other components (<see cref="Module.AttachToComponentRegistration"/>.
     /// Modules are given special support in the XML configuration feature - see
-    /// http://code.google.com/p/autofac/wiki/StructuringWithModules.
+    /// https://autofac.readthedocs.io/en/latest/configuration/modules.html.
     /// </summary>
     /// <remarks>Provides a user-friendly way to implement <see cref="Autofac.Core.IModule"/>
     /// via <see cref="ContainerBuilder"/>.</remarks>
@@ -30,7 +30,7 @@ namespace Autofac
     ///     {
     ///         moduleBuilder.RegisterGeneric(typeof(MyRepository&lt;&gt;))
     ///             .As(typeof(IRepository&lt;&gt;))
-    ///             .InstancePerMatchingLifetimeScope(WebLifetime.Request);
+    ///             .InstancePerLifetimeScope();
     ///
     ///         moduleBuilder.Register(c =&gt; new MyDbConnection(ConnectionString))
     ///             .As&lt;IDbConnection&gt;()
