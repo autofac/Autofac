@@ -129,6 +129,22 @@ namespace Autofac.Specification.Test.Registration
         }
 
         [Fact]
+        public void OnlyIf_RequiresPredicate()
+        {
+            var mod = new ObjectModule();
+            var builder = new ContainerBuilder();
+            Assert.Throws<ArgumentNullException>(() => builder.RegisterModule(mod).OnlyIf(null));
+        }
+
+        [Fact]
+        public void OnlyIf_RequiresRegistrar()
+        {
+            var mod = new ObjectModule();
+            var builder = new ContainerBuilder();
+            Assert.Throws<ArgumentNullException>(() => ModuleRegistrationExtensions.OnlyIf(null, reg => true));
+        }
+
+        [Fact]
         public void OnlyIf_PreventsModuleRegistration()
         {
             var mod = new ObjectModule();
@@ -194,6 +210,22 @@ namespace Autofac.Specification.Test.Registration
             var container = builder.Build();
             Assert.NotNull(container.Resolve<object>());
             Assert.Equal("foo", container.Resolve<string>());
+        }
+
+        [Fact]
+        public void IfNotRegistered_RequiresRegistrar()
+        {
+            var mod = new ObjectModule();
+            var builder = new ContainerBuilder();
+            Assert.Throws<ArgumentNullException>(() => ModuleRegistrationExtensions.IfNotRegistered(null, typeof(object)));
+        }
+
+        [Fact]
+        public void IfNotRegistered_RequiresType()
+        {
+            var mod = new ObjectModule();
+            var builder = new ContainerBuilder();
+            Assert.Throws<ArgumentNullException>(() => builder.RegisterModule(mod).IfNotRegistered(null));
         }
 
         [Fact]
