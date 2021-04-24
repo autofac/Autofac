@@ -173,6 +173,7 @@ namespace Autofac.Specification.Test.Registration
             var objModule1 = new ObjectModule();
             var objModule2 = new ObjectModule();
             builder.RegisterModule(objModule1)
+
                    // Shouldn't run because last OnlyIf fails
                    .OnlyIf(regBuilder => counter++ != 1)
                    .RegisterModule(objModule2)

@@ -20,7 +20,7 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
-        /// Gets or sets the callback invoked when the collection of modules attached to this registrar are registered.
+        /// Gets the callback invoked when the collection of modules attached to this registrar are registered.
         /// </summary>
         public DeferredCallback Callback { get; }
     }
