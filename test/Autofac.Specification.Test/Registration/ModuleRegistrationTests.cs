@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Autofac.Core.Registration;
 using Autofac.Test.Scenarios.ScannedAssembly;
 using Xunit;
 
@@ -128,6 +128,86 @@ namespace Autofac.Specification.Test.Registration
             Assert.IsType<Composite1>(container.Resolve<I1>());
         }
 
+        [Fact]
+        public void OnlyIf_PreventsModuleRegistration()
+        {
+            var mod = new ObjectModule();
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(mod).OnlyIf(reg => false);
+            var container = builder.Build();
+            Assert.False(mod.ConfigureCalled);
+        }
+
+        [Fact]
+        public void OnlyIf_AllowsModuleRegistration()
+        {
+            var mod = new ObjectModule();
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(mod).OnlyIf(reg => true);
+            var container = builder.Build();
+            Assert.True(mod.ConfigureCalled);
+        }
+
+        [Fact]
+        public void OnlyIf_Stacks_In_ReverseOrder_Allow()
+        {
+            var counter = 0;
+            var builder = new ContainerBuilder();
+            var objModule1 = new ObjectModule();
+            var objModule2 = new ObjectModule();
+            builder.RegisterModule(objModule1)
+                   .RegisterModule(objModule2)
+                   .OnlyIf(regBuilder => counter++ == 1)
+                   .OnlyIf(regBuilder => counter++ == 0);
+            var container = builder.Build();
+            Assert.True(objModule1.ConfigureCalled);
+            Assert.True(objModule2.ConfigureCalled);
+            Assert.Equal(2, counter);
+        }
+
+        [Fact]
+        public void OnlyIf_Stacks_In_ReverseOrder_Deny()
+        {
+            var counter = 0;
+            var builder = new ContainerBuilder();
+            var objModule1 = new ObjectModule();
+            var objModule2 = new ObjectModule();
+            builder.RegisterModule(objModule1)
+                   // Shouldn't run because last OnlyIf fails
+                   .OnlyIf(regBuilder => counter++ != 1)
+                   .RegisterModule(objModule2)
+                   .OnlyIf(regBuilder => counter++ != 0);
+            var container = builder.Build();
+            Assert.False(objModule1.ConfigureCalled);
+            Assert.False(objModule2.ConfigureCalled);
+            Assert.Equal(1, counter);
+        }
+
+        [Fact]
+        public void IfNotRegistered_IgnoresOtherRegistrationsInSameChain()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterModule(new ObjectModule())
+                   .RegisterModule(new StringModule())
+                   .IfNotRegistered(typeof(object));
+            var container = builder.Build();
+            Assert.NotNull(container.Resolve<object>());
+            Assert.Equal("foo", container.Resolve<string>());
+        }
+
+        [Fact]
+        public void IfNotRegistered_PreventsAllRegistrationsInSameChain()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterInstance("bar");
+            builder.RegisterModule(new ObjectModule())
+                   .RegisterModule(new StringModule())
+                   .IfNotRegistered(typeof(string));
+            var container = builder.Build();
+            Assert.Throws<ComponentNotRegisteredException>(() => container.Resolve<object>());
+            Assert.Equal("bar", container.Resolve<string>());
+        }
+
         // Disable "unused parameter" warnings for test types.
 #pragma warning disable IDE0060
 
@@ -198,6 +278,22 @@ namespace Autofac.Specification.Test.Registration
 
                 ConfigureCalled = true;
                 builder.RegisterType<object>().SingleInstance();
+            }
+        }
+
+        internal class StringModule : Module
+        {
+            public bool ConfigureCalled { get; private set; }
+
+            protected override void Load(ContainerBuilder builder)
+            {
+                if (builder == null)
+                {
+                    throw new ArgumentNullException(nameof(builder));
+                }
+
+                ConfigureCalled = true;
+                builder.RegisterInstance("foo");
             }
         }
 

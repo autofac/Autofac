@@ -12,10 +12,7 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class ModuleRegistrar : IModuleRegistrar
     {
-        /// <summary>
-        /// The <see cref="ContainerBuilder"/> into which registrations will be made.
-        /// </summary>
-        private readonly ContainerBuilder _builder;
+        private Action<IComponentRegistryBuilder>? _nextModuleCallback;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModuleRegistrar"/> class.
@@ -28,8 +25,18 @@ namespace Autofac.Core.Registration
         /// </exception>
         public ModuleRegistrar(ContainerBuilder builder)
         {
-            _builder = builder ?? throw new ArgumentNullException(nameof(builder));
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            var callback = builder.RegisterCallback(reg => _nextModuleCallback?.Invoke(reg));
+
+            RegistrarData = new ModuleRegistrarData(callback);
         }
+
+        /// <inheritdoc />
+        public ModuleRegistrarData RegistrarData { get; }
 
         /// <summary>
         /// Add a module to the container.
@@ -49,7 +56,21 @@ namespace Autofac.Core.Registration
                 throw new ArgumentNullException(nameof(module));
             }
 
-            _builder.RegisterCallback(module.Configure);
+            if (_nextModuleCallback is null)
+            {
+                _nextModuleCallback = module.Configure;
+            }
+            else
+            {
+                // Override the original callback to chain the module configuration.
+                var original = _nextModuleCallback;
+                _nextModuleCallback = reg =>
+                {
+                    original(reg);
+                    module.Configure(reg);
+                };
+            }
+
             return this;
         }
     }
