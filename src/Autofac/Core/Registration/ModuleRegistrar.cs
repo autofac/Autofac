@@ -12,10 +12,8 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class ModuleRegistrar : IModuleRegistrar
     {
-        /// <summary>
-        /// The <see cref="ContainerBuilder"/> into which registrations will be made.
-        /// </summary>
-        private readonly ContainerBuilder _builder;
+        // Holds the chain of modules to register.
+        private Action<IComponentRegistryBuilder>? _moduleConfigureChain;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModuleRegistrar"/> class.
@@ -28,8 +26,21 @@ namespace Autofac.Core.Registration
         /// </exception>
         public ModuleRegistrar(ContainerBuilder builder)
         {
-            _builder = builder ?? throw new ArgumentNullException(nameof(builder));
+            if (builder is null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            // We create a normal register callback that will in turn invoke our module config chain.
+            // This allows predicates to wrap the entire set of modules, rather than calling
+            // RegisterCallback per-module.
+            var callback = builder.RegisterCallback(reg => _moduleConfigureChain?.Invoke(reg));
+
+            RegistrarData = new ModuleRegistrarData(callback);
         }
+
+        /// <inheritdoc />
+        public ModuleRegistrarData RegistrarData { get; }
 
         /// <summary>
         /// Add a module to the container.
@@ -49,7 +60,24 @@ namespace Autofac.Core.Registration
                 throw new ArgumentNullException(nameof(module));
             }
 
-            _builder.RegisterCallback(module.Configure);
+            if (_moduleConfigureChain is null)
+            {
+                _moduleConfigureChain = module.Configure;
+            }
+            else
+            {
+                // Override the original callback to chain the module configuration.
+                var original = _moduleConfigureChain;
+                _moduleConfigureChain = reg =>
+                {
+                    // Call the original.
+                    original(reg);
+
+                    // Call the new module register.
+                    module.Configure(reg);
+                };
+            }
+
             return this;
         }
     }

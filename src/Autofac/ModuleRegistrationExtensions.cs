@@ -253,5 +253,76 @@ namespace Autofac
             var registrar = new ModuleRegistrar(builder);
             return registrar.RegisterModule(module);
         }
+
+        /// <summary>
+        /// Attaches a predicate to evaluate prior to executing the registration of the module.
+        /// The predicate will run at registration time, not runtime, to determine
+        /// whether the module registration should execute.
+        /// </summary>
+        /// <param name="registrar">The module registrar that will make the registrations into the container.</param>
+        /// <param name="predicate">The predicate to run to determine if the registration should be made.</param>
+        /// <returns>
+        /// The <see cref="IModuleRegistrar"/> to allow
+        /// additional chained module registrations.
+        /// </returns>
+        public static IModuleRegistrar OnlyIf(this IModuleRegistrar registrar, Predicate<IComponentRegistryBuilder> predicate)
+        {
+            if (registrar is null)
+            {
+                throw new ArgumentNullException(nameof(registrar));
+            }
+
+            if (predicate is null)
+            {
+                throw new ArgumentNullException(nameof(predicate));
+            }
+
+            var registrarCallback = registrar.RegistrarData.Callback;
+
+            var original = registrarCallback.Callback;
+            Action<IComponentRegistryBuilder> updated = registry =>
+            {
+                if (predicate(registry))
+                {
+                    original(registry);
+                }
+            };
+
+            registrarCallback.Callback = updated;
+
+            return registrar;
+        }
+
+        /// <summary>
+        /// Attaches a predicate such that a module registration will only be made if
+        /// a specific service type is not already registered.
+        /// The predicate will run at registration time, not runtime, to determine
+        /// whether the registration should execute.
+        /// </summary>
+        /// <param name="registrar">The module registrar that will make the registrations into the container.</param>
+        /// <param name="serviceType">
+        /// The service type to check for to determine if the registration should be made.
+        /// Note this is the *service type* - the <c>As&lt;T&gt;</c> part.
+        /// </param>
+        /// <returns>
+        /// The <see cref="IModuleRegistrar"/> to allow
+        /// additional chained module registrations.
+        /// </returns>
+        public static IModuleRegistrar
+            IfNotRegistered(
+                this IModuleRegistrar registrar, Type serviceType)
+        {
+            if (registrar == null)
+            {
+                throw new ArgumentNullException(nameof(registrar));
+            }
+
+            if (serviceType == null)
+            {
+                throw new ArgumentNullException(nameof(serviceType));
+            }
+
+            return registrar.OnlyIf(reg => !reg.IsRegistered(new TypedService(serviceType)));
+        }
     }
 }
