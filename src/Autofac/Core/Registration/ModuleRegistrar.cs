@@ -12,7 +12,8 @@ namespace Autofac.Core.Registration
     /// </summary>
     internal class ModuleRegistrar : IModuleRegistrar
     {
-        private Action<IComponentRegistryBuilder>? _nextModuleCallback;
+        // Holds the chain of modules to register.
+        private Action<IComponentRegistryBuilder>? _moduleConfigureChain;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModuleRegistrar"/> class.
@@ -30,7 +31,10 @@ namespace Autofac.Core.Registration
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            var callback = builder.RegisterCallback(reg => _nextModuleCallback?.Invoke(reg));
+            // We create a normal register callback that will in turn invoke our module config chain.
+            // This allows predicates to wrap the entire set of modules, rather than calling
+            // RegisterCallback per-module.
+            var callback = builder.RegisterCallback(reg => _moduleConfigureChain?.Invoke(reg));
 
             RegistrarData = new ModuleRegistrarData(callback);
         }
@@ -56,17 +60,20 @@ namespace Autofac.Core.Registration
                 throw new ArgumentNullException(nameof(module));
             }
 
-            if (_nextModuleCallback is null)
+            if (_moduleConfigureChain is null)
             {
-                _nextModuleCallback = module.Configure;
+                _moduleConfigureChain = module.Configure;
             }
             else
             {
                 // Override the original callback to chain the module configuration.
-                var original = _nextModuleCallback;
-                _nextModuleCallback = reg =>
+                var original = _moduleConfigureChain;
+                _moduleConfigureChain = reg =>
                 {
+                    // Call the original.
                     original(reg);
+
+                    // Call the new module register.
                     module.Configure(reg);
                 };
             }
