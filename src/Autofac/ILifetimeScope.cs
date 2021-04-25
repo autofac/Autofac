@@ -86,28 +86,24 @@ namespace Autofac
         /// Any components registered in the sub-scope will only be resolvable from this new scope,
         /// or additional child scopes subsequently resolved from it.
         /// </para>
-        ///
         /// <para>
         /// Components registered in the sub-scope that provide services already registered
         /// in a parent <see cref="ILifetimeScope"/> (or root <see cref="IContainer"/>) will
         /// override that same service registration when resolving instances.
         /// </para>
-        ///
         /// <para>
-        /// If you resolve an IEnumerable&lt;TService&gt; in the new scope, the returned set of components will
+        /// If you resolve an <see cref="IEnumerable{TService}"/> in the new scope, the returned set of components will
         /// include both components registered in the new sub-scope, plus all registered components all the way back
         /// up to the root <see cref="IContainer"/>.
         /// </para>
-        ///
         /// <para>
         /// Resolving a service from this scope that was only defined in a parent <see cref="ILifetimeScope"/> (or root <see cref="IContainer"/>)
         /// will result in a component 'owned' by the scope it was registered in (rather than this new scope).
-        /// E.g. if you registered a SingleInstance() component in the root container, but resolved it in the new sub-scope, the instance you get will
-        /// be attached to the root container, not your scope, so the same instance will be shared by all other <see cref="ILifetimeScope"/>s.
+        /// For example, if you registered a <c>SingleInstance()</c> component in the root container, but resolved it in the new sub-scope, the instance you get will
+        /// be attached to the root container, not your scope, so the same instance will be shared by all other <see cref="ILifetimeScope"/> instances.
         /// </para>
-        ///
         /// <para>
-        /// SingleInstance() components registered in this scope will be held as long as this scope exists, but will be discarded
+        /// <c>SingleInstance()</c> components registered in this scope will be held as long as this scope exists, but will be discarded
         /// when the scope is disposed.
         /// </para>
         /// </remarks>
@@ -126,28 +122,24 @@ namespace Autofac
         /// Any components registered in the sub-scope will only be resolvable from this new scope,
         /// or additional child scopes subsequently resolved from it.
         /// </para>
-        ///
         /// <para>
         /// Components registered in the sub-scope that provide services already registered
         /// in a parent <see cref="ILifetimeScope"/> (or root <see cref="IContainer"/>) will
         /// override that same service registration when resolving instances.
         /// </para>
-        ///
         /// <para>
-        /// If you resolve an IEnumerable&lt;TService&gt; in the new scope, the returned set of components will
+        /// If you resolve an <see cref="IEnumerable{TService}"/> in the new scope, the returned set of components will
         /// include both components registered in the new sub-scope, plus all registered components all the way back
         /// up to the root <see cref="IContainer"/>.
         /// </para>
-        ///
         /// <para>
         /// Resolving a service from this scope that was only defined in a parent <see cref="ILifetimeScope"/> (or root <see cref="IContainer"/>)
         /// will result in a component 'owned' by the scope it was registered in (rather than this new scope).
-        /// E.g. if you registered a SingleInstance() component in the root container, but resolved it in the new sub-scope, the instance you get will
-        /// be attached to the root container, not your scope, so the same instance will be shared by all other <see cref="ILifetimeScope"/>s.
+        /// For example, if you registered a <c>SingleInstance()</c> component in the root container, but resolved it in the new sub-scope, the instance you get will
+        /// be attached to the root container, not your scope, so the same instance will be shared by all other <see cref="ILifetimeScope"/> instances.
         /// </para>
-        ///
         /// <para>
-        /// SingleInstance() components registered in this scope will be held as long as this scope exists, but will be discarded
+        /// <c>SingleInstance()</c> components registered in this scope will be held as long as this scope exists, but will be discarded
         /// when the scope is disposed.
         /// </para>
         /// </remarks>

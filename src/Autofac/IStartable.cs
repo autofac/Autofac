@@ -19,7 +19,6 @@ namespace Autofac
     /// of circular dependencies, in which case the components in the cycle are disposed in
     /// reverse-construction order.)
     /// </para>
-    ///
     /// <para>
     /// Components that implement <see cref="IStartable"/> and configured with a InstancePerLifetimeScope()
     /// lifetime are still only started *once*, in the root <see cref="IContainer"/> or <see cref="ILifetimeScope"/>
