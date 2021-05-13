@@ -298,6 +298,18 @@ namespace Autofac.Specification.Test.Features
         }
 
         [Fact]
+        public void PropertiesAutowiredWithDelegateFactory()
+        {
+            // Issue #1275: A constructor parameter with the name 'value' messes
+            // up property injection when used in conjunction with delegate factories.
+            var cb = new ContainerBuilder();
+            cb.RegisterType<CtorWithValueParameter>().PropertiesAutowired();
+            var c = cb.Build();
+            var factory = c.Resolve<CtorWithValueParameter.Factory>();
+            Assert.NotNull(factory("test"));
+        }
+
+        [Fact]
         public void PropertiesNotSetIfNotSpecified()
         {
             var builder = new ContainerBuilder();
