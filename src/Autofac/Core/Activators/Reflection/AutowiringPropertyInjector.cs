@@ -75,7 +75,12 @@ namespace Autofac.Core.Activators.Reflection
                 // SetMethod will be non-null if GetInjectableProperties included it.
                 var setParameter = property.SetMethod!.GetParameters()[0];
                 var valueProvider = (Func<object?>?)null;
-                var parameter = resolveParameters.FirstOrDefault(p => p.CanSupplyValue(setParameter, context, out valueProvider));
+
+                // Issue #1275: If a delegate factory has a named parameter 'value' it will try to
+                // inject into any property being autowired.
+                var parameter = resolveParameters.FirstOrDefault(p =>
+                    p.CanSupplyValue(setParameter, context, out valueProvider) &&
+                    !(p is NamedParameter n && n.Name.Equals("value", StringComparison.Ordinal)));
                 if (parameter != null)
                 {
                     var setter = PropertySetters.GetOrAdd(property, MakeFastPropertySetter);
