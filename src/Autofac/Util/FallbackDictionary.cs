@@ -136,7 +136,7 @@ namespace Autofac.Util
         {
             get
             {
-                if (_localValues.TryGetValue(key, out TValue value))
+                if (_localValues.TryGetValue(key, out TValue? value))
                 {
                     return value;
                 }

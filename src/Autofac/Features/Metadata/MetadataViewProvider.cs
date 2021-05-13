@@ -98,7 +98,7 @@ namespace Autofac.Features.Metadata
 
             if (defaultValue is object)
             {
-                return (TValue)defaultValue.Value;
+                return (TValue?)defaultValue.Value;
             }
 
             throw new DependencyResolutionException(
