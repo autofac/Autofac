@@ -79,9 +79,7 @@ namespace Autofac.Core.Activators.Reflection {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to None of the constructors found with &apos;{0}&apos; on type &apos;{1}&apos; can be invoked with the available services and parameters:{2}
-        ///
-        ///See https://autofac.rtfd.io/help/no-constructors-bindable for more info..
+        ///   Looks up a localized string similar to None of the constructors found with &apos;{0}&apos; on type &apos;{1}&apos; can be invoked with the available services and parameters:{2}.
         /// </summary>
         internal static string NoConstructorsBindable {
             get {
@@ -92,7 +90,7 @@ namespace Autofac.Core.Activators.Reflection {
         /// <summary>
         ///   Looks up a localized string similar to None of the constructors found on type &apos;{0}&apos; can be invoked with the available services and parameters:{1}
         ///
-        ///See https://autofac.rtfd.io/help/no-constructors-bindable-default-binder for more info..
+        ///See https://autofac.rtfd.io/help/no-constructors-bindable for more info..
         /// </summary>
         internal static string NoConstructorsBindableDefaultBinder {
             get {
