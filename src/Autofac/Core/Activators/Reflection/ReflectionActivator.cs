@@ -201,12 +201,24 @@ namespace Autofac.Core.Activators.Reflection
                 reasons.Append(invalid.Description);
             }
 
-            return string.Format(
-                CultureInfo.CurrentCulture,
-                ReflectionActivatorResources.NoConstructorsBindable,
-                ConstructorFinder,
-                _implementationType,
-                reasons);
+            if (ConstructorFinder is DefaultConstructorFinder)
+            {
+                // Simplify the text for the common default finder case (to make the message easier to understand).
+                return string.Format(
+                    CultureInfo.CurrentCulture,
+                    ReflectionActivatorResources.NoConstructorsBindableDefaultBinder,
+                    _implementationType,
+                    reasons);
+            }
+            else
+            {
+                return string.Format(
+                    CultureInfo.CurrentCulture,
+                    ReflectionActivatorResources.NoConstructorsBindable,
+                    ConstructorFinder,
+                    _implementationType,
+                    reasons);
+            }
         }
 
         private void InjectProperties(object instance, IComponentContext context)
