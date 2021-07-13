@@ -86,5 +86,16 @@ namespace Autofac.Core.Activators.Reflection {
                 return ResourceManager.GetString("NoConstructorsBindable", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None of the constructors found on type &apos;{0}&apos; can be invoked with the available services and parameters:{1}
+        ///
+        ///See https://autofac.rtfd.io/help/no-constructors-bindable for more info..
+        /// </summary>
+        internal static string NoConstructorsBindableDefaultBinder {
+            get {
+                return ResourceManager.GetString("NoConstructorsBindableDefaultBinder", resourceCulture);
+            }
+        }
     }
 }

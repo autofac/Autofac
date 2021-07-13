@@ -126,4 +126,9 @@
   <data name="NoConstructorsBindable" xml:space="preserve">
     <value>None of the constructors found with '{0}' on type '{1}' can be invoked with the available services and parameters:{2}</value>
   </data>
+  <data name="NoConstructorsBindableDefaultBinder" xml:space="preserve">
+    <value>None of the constructors found on type '{0}' can be invoked with the available services and parameters:{1}
+
+See https://autofac.rtfd.io/help/no-constructors-bindable for more info.</value>
+  </data>
 </root>

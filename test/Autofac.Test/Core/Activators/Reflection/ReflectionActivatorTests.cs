@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Test.Scenarios.ConstructorSelection;
@@ -185,7 +186,7 @@ namespace Autofac.Test.Core.Activators.Reflection
             var dx = Assert.Throws<DependencyResolutionException>(() =>
                 invoker(Factory.CreateEmptyContainer(), Factory.NoParameters));
 
-            Assert.Contains(typeof(DefaultConstructorFinder).Name, dx.Message);
+            Assert.Contains(typeof(InternalDefaultConstructor).Name, dx.Message);
         }
 
         [Fact]
@@ -343,12 +344,31 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Throws<InvalidOperationException>(() => invoker(container, Factory.NoParameters));
         }
 
+        [Fact]
+        public void CustomBinderNameIncludedInErrorMessage()
+        {
+            var target = Factory.CreateReflectionActivator(typeof(InternalDefaultConstructor), new SimpleConstructorFinder());
+
+            // Constructor finding happens at pipeline construction; not when the pipeline is invoked.
+            var invoker = target.GetPipelineInvoker(Factory.CreateEmptyComponentRegistry());
+
+            var dx = Assert.Throws<DependencyResolutionException>(() =>
+                invoker(Factory.CreateEmptyContainer(), Factory.NoParameters));
+
+            Assert.Contains(typeof(SimpleConstructorFinder).Name, dx.Message);
+        }
+
         private class MisbehavingConstructorSelector : IConstructorSelector
         {
             public BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters)
             {
                 return constructorBindings.First(x => !x.CanInstantiate);
             }
+        }
+
+        private class SimpleConstructorFinder : IConstructorFinder
+        {
+            public ConstructorInfo[] FindConstructors(Type targetType) => targetType.GetDeclaredPublicConstructors();
         }
 
         public class AcceptsIntParameter
