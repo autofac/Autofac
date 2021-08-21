@@ -147,6 +147,21 @@ namespace Autofac.Specification.Test.Lifetime
         }
 
         [Fact]
+        public async Task UnresolvedProvidedInstances_ActualAsyncDisposable_CorrectlyDisposed()
+        {
+            var builder = new ContainerBuilder();
+            var disposable = new AsyncOnlyDisposeTracker(completeAsync: true);
+            var container = builder.Build();
+            var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable).ExternallyOwned());
+
+            await scope.DisposeAsync();
+            Assert.False(disposable.IsAsyncDisposed);
+
+            await container.DisposeAsync();
+            Assert.False(disposable.IsAsyncDisposed);
+        }
+
+        [Fact]
         public async Task UnresolvedProvidedInstances_DisposedWithNestedLifetimeScope_OnlyDisposedOnce()
         {
             var builder = new ContainerBuilder();

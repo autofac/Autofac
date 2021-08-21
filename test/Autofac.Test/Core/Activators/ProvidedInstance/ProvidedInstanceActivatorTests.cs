@@ -74,5 +74,18 @@ namespace Autofac.Test.Component.Activation
 
             Assert.True(asyncDisposable.IsAsyncDisposed);
         }
+
+        [Fact]
+        public async Task AsyncDisposeSyncDisposable_DisposesAsExpected()
+        {
+            var asyncDisposable = new DisposeTracker();
+
+            ProvidedInstanceActivator target = new ProvidedInstanceActivator(asyncDisposable);
+            target.DisposeInstance = true;
+
+            await target.DisposeAsync();
+
+            Assert.True(asyncDisposable.IsDisposed);
+        }
     }
 }
