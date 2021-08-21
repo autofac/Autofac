@@ -12,7 +12,7 @@ namespace Autofac.Core
     /// <summary>
     /// Describes a logical component within the container.
     /// </summary>
-    public interface IComponentRegistration : IDisposable
+    public interface IComponentRegistration : IDisposable, IAsyncDisposable
     {
         /// <summary>
         /// Gets a unique identifier for this component (shared in all sub-contexts.)

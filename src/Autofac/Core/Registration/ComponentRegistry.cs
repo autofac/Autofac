@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
 
@@ -101,15 +102,26 @@ namespace Autofac.Core.Registration
         public IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service)
             => _registeredServicesTracker.ServiceRegistrationsFor(service);
 
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             _registeredServicesTracker.Dispose();
 
             base.Dispose(disposing);
+        }
+
+        /// <inheritdoc />
+        protected override async ValueTask DisposeAsync(bool disposing)
+        {
+            var vt = _registeredServicesTracker.DisposeAsync();
+
+            // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
+            if (!vt.IsCompleted)
+            {
+                await vt.ConfigureAwait(false);
+            }
+
+            // Do not call the base, otherwise the standard Dispose will fire.
         }
     }
 }

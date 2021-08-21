@@ -10,7 +10,7 @@ namespace Autofac.Core.Registration
     /// <summary>
     /// Used to build a <see cref="IComponentRegistry" />.
     /// </summary>
-    public interface IComponentRegistryBuilder : IDisposable
+    public interface IComponentRegistryBuilder : IDisposable, IAsyncDisposable
     {
         /// <summary>
         /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.

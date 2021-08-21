@@ -153,9 +153,7 @@ namespace Autofac.Core
             {
                 await _rootLifetimeScope.DisposeAsync().ConfigureAwait(false);
 
-                // Registries are not likely to have async tasks to dispose of,
-                // so we will leave it as a straight dispose.
-                ComponentRegistry.Dispose();
+                await ComponentRegistry.DisposeAsync().ConfigureAwait(false);
             }
 
             // Do not call the base, otherwise the standard Dispose will fire.

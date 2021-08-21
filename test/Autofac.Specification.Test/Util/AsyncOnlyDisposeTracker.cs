@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace Autofac.Specification.Test.Util
 {
-    public class AsyncDisposeTracker : IAsyncDisposable
+    public class AsyncOnlyDisposeTracker : IAsyncDisposable
     {
         public event EventHandler<EventArgs> Disposing;
 
-        public bool IsDisposed { get; set; }
+        public bool IsAsyncDisposed { get; set; }
 
         public ValueTask DisposeAsync()
         {
-            IsDisposed = true;
+            IsAsyncDisposed = true;
             Disposing?.Invoke(this, EventArgs.Empty);
 
             return default;

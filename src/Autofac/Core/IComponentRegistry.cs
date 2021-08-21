@@ -12,7 +12,7 @@ namespace Autofac.Core
     /// <summary>
     /// Provides component registrations according to the services they provide.
     /// </summary>
-    public interface IComponentRegistry : IDisposable
+    public interface IComponentRegistry : IDisposable, IAsyncDisposable
     {
         /// <summary>
         /// Gets the set of properties used during component registration.

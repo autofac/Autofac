@@ -9,7 +9,7 @@ namespace Autofac.Core
     /// <summary>
     /// Activates component instances.
     /// </summary>
-    public interface IInstanceActivator : IDisposable
+    public interface IInstanceActivator : IDisposable, IAsyncDisposable
     {
         /// <summary>
         /// Allows an implementation to add middleware to a registration's resolve pipeline.

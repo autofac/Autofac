@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
 
@@ -74,7 +75,21 @@ namespace Autofac.Core.Registration
         /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
-            _inner.Dispose();
+            if (disposing)
+            {
+                _inner.Dispose();
+            }
+        }
+
+        /// <inheritdoc/>
+        protected override ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                return _inner.DisposeAsync();
+            }
+
+            return default;
         }
     }
 }

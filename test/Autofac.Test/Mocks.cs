@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
@@ -70,6 +71,13 @@ namespace Autofac.Test
             public void Dispose()
             {
                 IsDisposed = true;
+            }
+
+            public ValueTask DisposeAsync()
+            {
+                IsDisposed = true;
+
+                return default;
             }
 
             public bool IsDisposed { get; private set; }
