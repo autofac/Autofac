@@ -48,8 +48,6 @@ namespace Autofac.Core.Registration
             {
                 // Do not do anything here.
             }
-
-            public ValueTask DisposeAsync() => default;
         }
     }
 }

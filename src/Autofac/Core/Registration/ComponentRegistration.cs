@@ -327,12 +327,20 @@ namespace Autofac.Core.Registration
         {
             if (disposing)
             {
-                var vt = Activator.DisposeAsync();
-
-                // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
-                if (!vt.IsCompletedSuccessfully)
+                // Check the Activator type so we don't have to force Activators to implement IAsyncDisposable if they don't need it.
+                if (Activator is IAsyncDisposable asyncDispose)
                 {
-                    await vt.ConfigureAwait(false);
+                    var vt = asyncDispose.DisposeAsync();
+
+                    // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
+                    if (!vt.IsCompletedSuccessfully)
+                    {
+                        await vt.ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    Activator.Dispose();
                 }
             }
 
