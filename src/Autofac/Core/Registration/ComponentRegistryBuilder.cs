@@ -64,6 +64,7 @@ namespace Autofac.Core.Registration
             _registeredServicesTracker.Registered -= OnRegistered;
             _registeredServicesTracker.RegistrationSourceAdded -= OnRegistrationSourceAdded;
 
+            // Do not call the base, otherwise the standard Dispose will fire.
             return _registeredServicesTracker.DisposeAsync();
         }
 
