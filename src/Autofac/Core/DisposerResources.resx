@@ -121,6 +121,6 @@
     <value>The Disposer object has already been Disposed, so no items can be added to it.</value>
   </data>
   <data name="TypeOnlyImplementsIAsyncDisposable" xml:space="preserve">
-    <value>A synchronous Dispose has been attempted, but the tracked object of type '{0}' only implements IAsyncDisposable.</value>
+    <value>AUTOFAC: A synchronous Dispose has been attempted, but the tracked object of type '{0}' only implements IAsyncDisposable. This will result in an efficient blocking dispose. Consider either implementing IDisposable on '{0}' or disposing of the scope/container with DisposeAsync.</value>
   </data>
 </root>

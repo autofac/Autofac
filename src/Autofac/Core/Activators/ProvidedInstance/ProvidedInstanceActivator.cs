@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -79,14 +80,12 @@ namespace Autofac.Core.Activators.ProvidedInstance
                 {
                     disposable.Dispose();
                 }
-                else if (_instance is IAsyncDisposable)
+                else if (_instance is IAsyncDisposable asyncDisposable)
                 {
-                    // Type only implements IAsyncDisposable, which is not valid if there
-                    // is a synchronous dispose being done.
-                    throw new InvalidOperationException(string.Format(
-                        DisposerResources.Culture,
-                        DisposerResources.TypeOnlyImplementsIAsyncDisposable,
-                        _instance.GetType().FullName));
+                    Trace.TraceWarning(DisposerResources.TypeOnlyImplementsIAsyncDisposable, LimitType.FullName);
+
+                    // Type only implements IAsyncDisposable. We will need to do sync-over-async.
+                    asyncDisposable.DisposeAsync().AsTask().GetAwaiter().GetResult();
                 }
             }
 

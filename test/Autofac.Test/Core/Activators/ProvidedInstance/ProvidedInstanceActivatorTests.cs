@@ -52,14 +52,16 @@ namespace Autofac.Test.Component.Activation
         }
 
         [Fact]
-        public void SyncDisposeAsyncDisposable_RaisesException()
+        public void SyncDisposeAsyncDisposable_DisposesAsExpected()
         {
             var asyncDisposable = new AsyncOnlyDisposeTracker();
 
             ProvidedInstanceActivator target = new ProvidedInstanceActivator(asyncDisposable);
             target.DisposeInstance = true;
 
-            Assert.Throws<InvalidOperationException>(() => target.Dispose());
+            target.Dispose();
+
+            Assert.True(asyncDisposable.IsAsyncDisposed);
         }
 
         [Fact]

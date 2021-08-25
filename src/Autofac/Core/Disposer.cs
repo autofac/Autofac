@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Util;
@@ -45,14 +46,12 @@ namespace Autofac.Core
                         {
                             disposable.Dispose();
                         }
-                        else
+                        else if (item is IAsyncDisposable asyncDisposable)
                         {
-                            // Type only implements IAsyncDisposable, which is not valid if there
-                            // is a synchronous dispose being done.
-                            throw new InvalidOperationException(string.Format(
-                                DisposerResources.Culture,
-                                DisposerResources.TypeOnlyImplementsIAsyncDisposable,
-                                item.GetType().FullName));
+                            Trace.TraceWarning(DisposerResources.TypeOnlyImplementsIAsyncDisposable, item.GetType().FullName);
+
+                            // Type only implements IAsyncDisposable. We will need to do sync-over-async.
+                            asyncDisposable.DisposeAsync().AsTask().GetAwaiter().GetResult();
                         }
                     }
 
