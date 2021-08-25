@@ -51,7 +51,7 @@ namespace Autofac.Core
                             Trace.TraceWarning(DisposerResources.TypeOnlyImplementsIAsyncDisposable, item.GetType().FullName);
 
                             // Type only implements IAsyncDisposable. We will need to do sync-over-async.
-                            asyncDisposable.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                            asyncDisposable.DisposeAsync().AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
                         }
                     }
 
