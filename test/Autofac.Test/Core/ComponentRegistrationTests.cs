@@ -4,8 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Test.Util;
 using Xunit;
 
 namespace Autofac.Test.Core
@@ -30,6 +32,33 @@ namespace Autofac.Test.Core
             var registration = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
 
             Assert.Contains(MetadataKeys.RegistrationOrderMetadataKey, registration.Metadata.Keys);
+        }
+
+        [Fact]
+        public async Task AsyncDisposeComponentRegistrationAsyncDisposesActivator()
+        {
+            var services = new Service[] { new TypedService(typeof(object)) };
+
+            var disposable = new AsyncDisposeTracker();
+
+            var activator = Factory.CreateProvidedInstanceActivator(disposable);
+            activator.DisposeInstance = true;
+
+            var registration = Factory.CreateSingletonRegistration(services, activator);
+
+            await registration.DisposeAsync();
+
+            Assert.True(disposable.IsAsyncDisposed);
+        }
+
+        [Fact]
+        public async Task AsyncDisposeComponentRegistrationCanDisposeSyncActivator()
+        {
+            var services = new Service[] { new TypedService(typeof(object)) };
+
+            var registration = Factory.CreateSingletonRegistration(services, Factory.CreateReflectionActivator(typeof(object)));
+
+            await registration.DisposeAsync();
         }
 
         [Fact]

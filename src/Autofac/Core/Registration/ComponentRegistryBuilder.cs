@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-
+using System.Threading.Tasks;
 using Autofac.Builder;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
@@ -48,10 +48,7 @@ namespace Autofac.Core.Registration
             handler?.Invoke(this, new RegistrationSourceAddedEventArgs(this, e));
         }
 
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             _registeredServicesTracker.Registered -= OnRegistered;
@@ -59,6 +56,16 @@ namespace Autofac.Core.Registration
             _registeredServicesTracker.Dispose();
 
             base.Dispose(disposing);
+        }
+
+        /// <inheritdoc />
+        protected override ValueTask DisposeAsync(bool disposing)
+        {
+            _registeredServicesTracker.Registered -= OnRegistered;
+            _registeredServicesTracker.RegistrationSourceAdded -= OnRegistrationSourceAdded;
+
+            // Do not call the base, otherwise the standard Dispose will fire.
+            return _registeredServicesTracker.DisposeAsync();
         }
 
         /// <summary>

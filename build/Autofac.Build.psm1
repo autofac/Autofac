@@ -92,11 +92,19 @@ function Add-Path {
         [string]
         $Path
     )
-    $pathValues = $env:PATH.Split(";");
+    
+    $pathSeparator = ":";
+
+    if ($IsWindows) {
+        $pathSeparator = ";";
+    }
+
+    $pathValues = $env:PATH.Split($pathSeparator);
     if ($pathValues -Contains $Path) {
       return;
     }
-    $env:PATH = "$Path;$env:PATH"
+
+    $env:PATH = "${Path}${pathSeparator}$env:PATH"
 }
 
 <#

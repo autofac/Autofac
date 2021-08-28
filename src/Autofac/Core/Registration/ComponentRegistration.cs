@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
@@ -310,10 +311,7 @@ namespace Autofac.Core.Registration
                 _builtComponentPipeline is null ? ComponentRegistrationResources.PipelineNotBuilt : _builtComponentPipeline.ToString());
         }
 
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources.
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -322,6 +320,31 @@ namespace Autofac.Core.Registration
             }
 
             base.Dispose(disposing);
+        }
+
+        /// <inheritdoc />
+        protected override async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                // Check the Activator type so we don't have to force Activators to implement IAsyncDisposable if they don't need it.
+                if (Activator is IAsyncDisposable asyncDispose)
+                {
+                    var vt = asyncDispose.DisposeAsync();
+
+                    // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
+                    if (!vt.IsCompletedSuccessfully)
+                    {
+                        await vt.ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    Activator.Dispose();
+                }
+            }
+
+            // Do not call the base, otherwise the standard Dispose will fire.
         }
     }
 }

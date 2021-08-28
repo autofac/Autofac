@@ -129,17 +129,16 @@ namespace Autofac.Test.Core
         }
 
         [Fact]
-        public void SyncDisposalOnObjectWithNoIDisposableThrows()
+        public void SyncDisposalOnObjectWithNoIDisposableCanDispose()
         {
             var instance = new AsyncOnlyDisposeTracker();
 
             var disposer = new Disposer();
             disposer.AddInstanceForAsyncDisposal(instance);
 
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                disposer.Dispose();
-            });
+            disposer.Dispose();
+
+            Assert.True(instance.IsAsyncDisposed);
         }
 
         [Fact]

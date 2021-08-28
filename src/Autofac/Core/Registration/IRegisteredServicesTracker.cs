@@ -10,7 +10,7 @@ namespace Autofac.Core.Registration
     /// <summary>
     /// Keeps track of the status of registered services.
     /// </summary>
-    internal interface IRegisteredServicesTracker : IDisposable, IComponentRegistryServices
+    internal interface IRegisteredServicesTracker : IDisposable, IAsyncDisposable, IComponentRegistryServices
     {
         /// <summary>
         /// Adds a registration to the list of registered services.

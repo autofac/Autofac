@@ -2,7 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Threading.Tasks;
 using Autofac.Core.Activators.ProvidedInstance;
+using Autofac.Test.Util;
 using Xunit;
 
 namespace Autofac.Test.Component.Activation
@@ -47,6 +49,45 @@ namespace Autofac.Test.Component.Activation
 
             Assert.Throws<InvalidOperationException>(() =>
                 invoker(container, Factory.NoParameters));
+        }
+
+        [Fact]
+        public void SyncDisposeAsyncDisposable_DisposesAsExpected()
+        {
+            var asyncDisposable = new AsyncOnlyDisposeTracker();
+
+            ProvidedInstanceActivator target = new ProvidedInstanceActivator(asyncDisposable);
+            target.DisposeInstance = true;
+
+            target.Dispose();
+
+            Assert.True(asyncDisposable.IsAsyncDisposed);
+        }
+
+        [Fact]
+        public async Task AsyncDisposeAsyncDisposable_DisposesAsExpected()
+        {
+            var asyncDisposable = new AsyncOnlyDisposeTracker();
+
+            ProvidedInstanceActivator target = new ProvidedInstanceActivator(asyncDisposable);
+            target.DisposeInstance = true;
+
+            await target.DisposeAsync();
+
+            Assert.True(asyncDisposable.IsAsyncDisposed);
+        }
+
+        [Fact]
+        public async Task AsyncDisposeSyncDisposable_DisposesAsExpected()
+        {
+            var asyncDisposable = new DisposeTracker();
+
+            ProvidedInstanceActivator target = new ProvidedInstanceActivator(asyncDisposable);
+            target.DisposeInstance = true;
+
+            await target.DisposeAsync();
+
+            Assert.True(asyncDisposable.IsDisposed);
         }
     }
 }
