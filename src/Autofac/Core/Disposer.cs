@@ -51,7 +51,11 @@ namespace Autofac.Core
                             Trace.TraceWarning(DisposerResources.TypeOnlyImplementsIAsyncDisposable, item.GetType().FullName);
 
                             // Type only implements IAsyncDisposable. We will need to do sync-over-async.
-                            asyncDisposable.DisposeAsync().AsTask().ConfigureAwait(false).GetAwaiter().GetResult();
+                            // We want to ensure we lose all context here, because if we don't we can deadlock.
+                            // So we push this disposal onto the threadpool.
+                            Task.Run(async () => await asyncDisposable.DisposeAsync().ConfigureAwait(false))
+                                .ConfigureAwait(false)
+                                .GetAwaiter().GetResult();
                         }
                     }
 
