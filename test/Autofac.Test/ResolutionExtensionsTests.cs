@@ -124,5 +124,51 @@ namespace Autofac.Test
             Assert.Throws<ArgumentOutOfRangeException>(() =>
                 builder.RegisterType<WithProps>().WithProperty(x => x._field, a));
         }
+
+        [Fact]
+        public void WhenServiceIsRegistered_TryResolveNamedReturnsTrue()
+        {
+            const string name = "name";
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>().Named<object>(name);
+
+            var container = cb.Build();
+
+            Assert.True(container.TryResolveNamed<object>(name, out var o));
+            Assert.NotNull(o);
+        }
+
+        [Fact]
+        public void WhenServiceIsNotRegistered_TryResolveNamedReturnsFalse()
+        {
+            var container = Factory.CreateEmptyContainer();
+
+            Assert.False(container.TryResolveNamed<object>("name", out var o));
+            Assert.Null(o);
+        }
+
+        [Fact]
+        public void WhenServiceIsRegistered_TryResolveKeyedReturnsTrue()
+        {
+            var key = new object();
+
+            var cb = new ContainerBuilder();
+            cb.RegisterType<object>().Keyed<object>(key);
+
+            var container = cb.Build();
+
+            Assert.True(container.TryResolveKeyed<object>(key, out var o));
+            Assert.NotNull(o);
+        }
+
+        [Fact]
+        public void WhenServiceIsNotRegistered_TryResolveKeyedReturnsFalse()
+        {
+            var container = Factory.CreateEmptyContainer();
+
+            Assert.False(container.TryResolveKeyed<object>("name", out var o));
+            Assert.Null(o);
+        }
     }
 }
