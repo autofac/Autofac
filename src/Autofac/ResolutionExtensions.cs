@@ -954,6 +954,39 @@ namespace Autofac
         /// <summary>
         /// Try to retrieve a service from the context.
         /// </summary>
+        /// <typeparam name="T">The service type to resolve.</typeparam>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="serviceKey">The key of the service to resolve.</param>
+        /// <param name="instance">The resulting component instance providing the service, or null.</param>
+        /// <returns>
+        /// True if a component providing the service is available.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        public static bool TryResolveKeyed<T>(this IComponentContext context, object serviceKey, [NotNullWhen(returnValue: true)] out T? instance)
+            where T : class
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (context.TryResolveKeyed(serviceKey, typeof(T), out object? component))
+            {
+                instance = CastInstance<T>(component);
+
+                return true;
+            }
+            else
+            {
+                instance = default;
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Try to retrieve a service from the context.
+        /// </summary>
         /// <param name="context">The context from which to resolve the service.</param>
         /// <param name="serviceKey">The key of the service to resolve.</param>
         /// <param name="serviceType">The type of the service to resolve.</param>
@@ -971,6 +1004,39 @@ namespace Autofac
             }
 
             return context.TryResolveService(new KeyedService(serviceKey, serviceType), NoParameters, out instance);
+        }
+
+        /// <summary>
+        /// Try to retrieve a service from the context.
+        /// </summary>
+        /// <typeparam name="T">The service type to resolve.</typeparam>
+        /// <param name="context">The context from which to resolve the service.</param>
+        /// <param name="serviceName">The name of the service to resolve.</param>
+        /// <param name="instance">The resulting component instance providing the service, or null.</param>
+        /// <returns>
+        /// True if a component providing the service is available.
+        /// </returns>
+        /// <exception cref="DependencyResolutionException"/>
+        public static bool TryResolveNamed<T>(this IComponentContext context, string serviceName, [NotNullWhen(returnValue: true)] out T? instance)
+            where T : class
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (context.TryResolveNamed(serviceName, typeof(T), out object? component))
+            {
+                instance = CastInstance<T>(component);
+
+                return true;
+            }
+            else
+            {
+                instance = default;
+
+                return false;
+            }
         }
 
         /// <summary>
