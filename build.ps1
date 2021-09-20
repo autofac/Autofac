@@ -23,24 +23,18 @@ try {
         Remove-Item $artifactsPath -Force -Recurse
     }
 
-    # Install dotnet CLI
-
-    dotnet --list-sdks
-    gci env:
-
-    Install-DotNetCli -Version $sdkVersion
-
-    foreach ($additional in $globalJson.additionalSdks)
-    {
-
-        dotnet --list-sdks
-        gci env:
-        Install-DotNetCli -Version $additional;
+    # Install dotnet SDK versions during CI. In a local build we assume you have
+    # everything installed; on CI we'll force the install. If you install _any_
+    # SDKs, you have to install _all_ of them because you can't install SDKs in
+    # two different locations. dotnet CLI locates SDKs relative to the
+    # executable.
+    if ($Null -ne $env:APPVEYOR_BUILD_NUMBER) {
+        Install-DotNetCli -Version $sdkVersion
+        foreach ($additional in $globalJson.additionalSdks)
+        {
+            Install-DotNetCli -Version $additional;
+        }
     }
-
-
-    dotnet --list-sdks
-    gci env:
 
     # Write out dotnet information
     & dotnet --info
