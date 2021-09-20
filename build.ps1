@@ -24,12 +24,23 @@ try {
     }
 
     # Install dotnet CLI
+
+    dotnet --list-sdks
+    gci env:
+
     Install-DotNetCli -Version $sdkVersion
 
     foreach ($additional in $globalJson.additionalSdks)
     {
+
+        dotnet --list-sdks
+        gci env:
         Install-DotNetCli -Version $additional;
     }
+
+
+    dotnet --list-sdks
+    gci env:
 
     # Write out dotnet information
     & dotnet --info
