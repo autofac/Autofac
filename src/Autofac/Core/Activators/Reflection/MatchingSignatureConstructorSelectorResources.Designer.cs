@@ -11,8 +11,8 @@
 namespace Autofac.Core.Activators.Reflection {
     using System;
     using System.Reflection;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -24,15 +24,15 @@ namespace Autofac.Core.Activators.Reflection {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class MatchingSignatureConstructorSelectorResources {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal MatchingSignatureConstructorSelectorResources() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -46,7 +46,7 @@ namespace Autofac.Core.Activators.Reflection {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -60,7 +60,7 @@ namespace Autofac.Core.Activators.Reflection {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to At least one binding must be provided in order to select a constructor..
         /// </summary>
@@ -69,16 +69,16 @@ namespace Autofac.Core.Activators.Reflection {
                 return ResourceManager.GetString("AtLeastOneBindingRequired", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to The required constructor on type &apos;{0}&apos;  with signature &apos;{1}&apos; is unavailable..
+        ///   Looks up a localized string similar to The required constructor on type &apos;{0}&apos; with signature &apos;{1}&apos; is unavailable..
         /// </summary>
         internal static string RequiredConstructorNotAvailable {
             get {
                 return ResourceManager.GetString("RequiredConstructorNotAvailable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to More than one constructor matches the signature &apos;{0}&apos;..
         /// </summary>
