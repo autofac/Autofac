@@ -145,7 +145,11 @@ namespace Autofac.Features.Scanning
             // non-public types here. Folks use assembly scanning on their
             // own stuff, so encapsulation is a tricky thing to manage.
             // If people want only public types, a LINQ Where clause can be used.
-            return types.Where(t => t.IsClass && !t.IsAbstract && !t.IsDelegate() && !t.IsCompilerGenerated() && activatorData.Filters.All(p => p(t)));
+            return types.Where(t => t.IsClass &&
+                                    !t.IsAbstract &&
+                                    !t.IsDelegate() &&
+                                    activatorData.Filters.All(p => p(t)) &&
+                                    !t.IsCompilerGenerated()); // run iscompilergenerated check last due to perf. See AssemblyScanningPerformanceTests.MeasurePerformance.
         }
 
         private static void ConfigureFrom<TActivatorData, TScanStyle, TRegistrationBuilderStyle>(
