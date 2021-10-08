@@ -149,7 +149,7 @@ namespace Autofac.Features.Scanning
                                     !t.IsAbstract &&
                                     !t.IsDelegate() &&
                                     activatorData.Filters.All(p => p(t)) &&
-                                    !t.IsCompilerGenerated()); // run iscompilergenerated check last due to perf
+                                    !t.IsCompilerGenerated()); // run iscompilergenerated check last due to perf. See AssemblyScanningPerformanceTests.MeasurePerformance.
         }
 
         private static void ConfigureFrom<TActivatorData, TScanStyle, TRegistrationBuilderStyle>(
