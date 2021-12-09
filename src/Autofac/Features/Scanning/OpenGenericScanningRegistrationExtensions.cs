@@ -252,23 +252,6 @@ namespace Autofac.Features.Scanning
         }
 
         /// <summary>
-        /// Specify how an open generic type from a scanned assembly provides metadata.
-        /// </summary>
-        /// <typeparam name="TLimit">Registration limit type.</typeparam>
-        /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
-        /// <param name="registration">Registration to set metadata on.</param>
-        /// <param name="metadataMapping">A function mapping the type to a list of metadata items.</param>
-        /// <returns>Registration builder allowing the registration to be configured.</returns>
-        public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
-            WithMetadata<TLimit, TRegistrationStyle>(
-                this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
-                Func<Type, IEnumerable<KeyValuePair<string, object?>>> metadataMapping)
-        {
-            registration.ActivatorData.ConfigurationActions.Add((t, rb) => rb.WithMetadata(metadataMapping(t)));
-            return registration;
-        }
-
-        /// <summary>
         /// Use the properties of an attribute (or interface implemented by an attribute) on the scanned type
         /// to provide metadata values.
         /// </summary>
