@@ -244,7 +244,7 @@ namespace Autofac
             WithMetadata<TLimit, TScanningActivatorData, TRegistrationStyle>(
                 this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
                 Func<Type, IEnumerable<KeyValuePair<string, object?>>> metadataMapping)
-            where TScanningActivatorData : ScanningActivatorData
+            where TScanningActivatorData : BaseScanningActivatorData<TScanningActivatorData, TRegistrationStyle>
         {
             if (registration == null)
             {
