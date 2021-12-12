@@ -404,6 +404,19 @@ namespace Autofac.Test.Core.Pipeline
         }
 
         [Fact]
+        public void ExceptionForAddingServiceMiddlewareToRegistrationPipelineContainsCorrectPhases()
+        {
+            var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Registration);
+            var order = new List<string>();
+
+            var ex = Assert.Throws<InvalidOperationException>(() => pipelineBuilder.Use(
+                            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) => { })));
+
+            // Confirm phase content.
+            Assert.Contains("[RegistrationPipelineStart, ParameterSelection, Activation]", ex.Message);
+        }
+
+        [Fact]
         public void CannotAddBadPhaseToPipelineInUseRangeExistingMiddleware()
         {
             var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
