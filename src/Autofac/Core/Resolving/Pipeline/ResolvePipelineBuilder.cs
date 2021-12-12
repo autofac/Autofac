@@ -341,7 +341,7 @@ namespace Autofac.Core.Resolving.Pipeline
                             CultureInfo.CurrentCulture,
                             ResolvePipelineBuilderMessages.CannotAddServiceMiddlewareToRegistrationPipeline,
                             middlewarePhase,
-                            DescribeValidEnumRange(PipelinePhase.ResolveRequestStart, PipelinePhase.ServicePipelineEnd)));
+                            DescribeValidEnumRange(PipelinePhase.RegistrationPipelineStart, PipelinePhase.Activation)));
             }
         }
 
