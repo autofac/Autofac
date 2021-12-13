@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
@@ -319,6 +320,43 @@ namespace Autofac
 
             registration.ActivatorData.ConfigurationActions.Add((t, rb) => rb.WithMetadata(metadataMapping(t)));
             return registration;
+        }
+
+        /// <summary>
+        /// Use the properties of an attribute (or interface implemented by an attribute) on the scanned type
+        /// to provide metadata values.
+        /// </summary>
+        /// <remarks>Inherited attributes are supported; however, there must be at most one matching attribute
+        /// in the inheritance chain.</remarks>
+        /// <typeparam name="TAttribute">The attribute applied to the scanned type.</typeparam>
+        /// <param name="registration">Registration to set metadata on.</param>
+        /// <returns>Registration builder allowing the registration to be configured.</returns>
+        public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
+            WithMetadataFrom<TAttribute>(
+                this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration)
+        {
+            var attrType = typeof(TAttribute);
+            var metadataProperties = attrType
+                .GetRuntimeProperties()
+                .Where(pi => pi.CanRead);
+
+            return registration.WithMetadata(t =>
+            {
+                var attrs = t.GetCustomAttributes(true).OfType<TAttribute>().ToList();
+
+                if (attrs.Count == 0)
+                {
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MetadataAttributeNotFound, typeof(TAttribute), t));
+                }
+
+                if (attrs.Count != 1)
+                {
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.MultipleMetadataAttributesSameType, typeof(TAttribute), t));
+                }
+
+                var attr = attrs[0];
+                return metadataProperties.Select(p => new KeyValuePair<string, object?>(p.Name, p.GetValue(attr, null)));
+            });
         }
     }
 }
