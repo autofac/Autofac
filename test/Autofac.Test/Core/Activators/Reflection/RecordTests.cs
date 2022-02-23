@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 
-#if NET5_0
+#if NET5_0_OR_GREATER
 
 namespace Autofac.Test.Core.Activators.Reflection
 {

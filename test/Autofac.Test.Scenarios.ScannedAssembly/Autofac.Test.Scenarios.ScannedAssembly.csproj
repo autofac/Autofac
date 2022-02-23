@@ -13,8 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.205">
-      <PrivateAssets>All</PrivateAssets>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.406">
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
 
