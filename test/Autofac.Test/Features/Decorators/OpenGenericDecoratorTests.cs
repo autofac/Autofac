@@ -149,6 +149,7 @@ namespace Autofac.Test.Features.Decorators
             public void Dispose()
             {
                 DisposeCallCount++;
+                GC.SuppressFinalize(this);
             }
         }
 
@@ -164,6 +165,7 @@ namespace Autofac.Test.Features.Decorators
             public void Dispose()
             {
                 DisposeCallCount++;
+                GC.SuppressFinalize(this);
             }
         }
 

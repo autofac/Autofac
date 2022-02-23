@@ -28,6 +28,7 @@ namespace Autofac.Specification.Test.Util
 
             IsAsyncDisposed = true;
             Disposing?.Invoke(this, EventArgs.Empty);
+            GC.SuppressFinalize(this);
         }
     }
 }

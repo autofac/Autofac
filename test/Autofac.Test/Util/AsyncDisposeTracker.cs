@@ -19,6 +19,7 @@ namespace Autofac.Test.Util
             IsSyncDisposed = true;
 
             Disposing?.Invoke(this, EventArgs.Empty);
+            GC.SuppressFinalize(this);
         }
 
         public async ValueTask DisposeAsync()
@@ -28,6 +29,7 @@ namespace Autofac.Test.Util
             IsAsyncDisposed = true;
 
             Disposing?.Invoke(this, EventArgs.Empty);
+            GC.SuppressFinalize(this);
         }
     }
 }
