@@ -3,7 +3,6 @@
 
 using System.Diagnostics;
 using System.Globalization;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Autofac.Specification.Test.Registration;

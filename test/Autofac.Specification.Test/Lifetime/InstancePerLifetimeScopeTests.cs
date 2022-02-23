@@ -1,10 +1,8 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using Autofac.Diagnostics;
 using Autofac.Specification.Test.Util;
-using Xunit;
 using Xunit.Abstractions;
 
 namespace Autofac.Specification.Test.Lifetime;

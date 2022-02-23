@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using Autofac.Test.Scenarios.Graph1.GenericContraints;
-using Xunit;
 
 namespace Autofac.Specification.Test.Registration;
 

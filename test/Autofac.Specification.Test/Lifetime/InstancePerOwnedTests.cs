@@ -3,7 +3,6 @@
 
 using Autofac.Core;
 using Autofac.Features.OwnedInstances;
-using Xunit;
 
 namespace Autofac.Specification.Test.Lifetime;
 
