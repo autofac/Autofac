@@ -1,17 +1,13 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
-using Autofac.Diagnostics;
 using Autofac.Util;
 
 namespace Autofac.Core.Lifetime;
