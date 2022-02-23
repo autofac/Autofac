@@ -1,8 +1,8 @@
-﻿using BenchmarkDotNet.Running;
-using BenchmarkDotNet.Toolchains.InProcess.NoEmit;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
+using BenchmarkDotNet.Running;
+using BenchmarkDotNet.Toolchains.InProcess.NoEmit;
 
 namespace Autofac.BenchmarkProfiling;
 
@@ -104,8 +104,8 @@ class Program
         // Now start a new thread.
         var runThread = new Thread(new ThreadStart(() =>
         {
-                // Do a lot.
-                workloadAction(10000);
+            // Do a lot.
+            workloadAction(10000);
         }))
         {
             Name = "Workload Thread"

@@ -1,5 +1,5 @@
-﻿using BenchmarkDotNet.Attributes;
-using System;
+﻿using System;
+using BenchmarkDotNet.Attributes;
 
 namespace Autofac.Benchmarks;
 

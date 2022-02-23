@@ -1,7 +1,7 @@
-﻿using BenchmarkDotNet.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BenchmarkDotNet.Attributes;
 using Xunit;
 
 namespace Autofac.Benchmarks;
@@ -43,8 +43,8 @@ public class ConcurrencyNestedScopeBenchmark
                 {
                     for (var j = 0; j < RepeatCount; j++)
                     {
-                            // Start request
-                            using (var requestScope = _container.BeginLifetimeScope("request"))
+                        // Start request
+                        using (var requestScope = _container.BeginLifetimeScope("request"))
                         {
                             var service1 = requestScope.Resolve<MockRequestScopeService1>();
                             Assert.NotNull(service1);

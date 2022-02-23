@@ -1,7 +1,7 @@
-﻿using BenchmarkDotNet.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BenchmarkDotNet.Attributes;
 using Xunit;
 
 namespace Autofac.Benchmarks;

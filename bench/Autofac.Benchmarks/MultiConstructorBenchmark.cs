@@ -1,7 +1,7 @@
-﻿using BenchmarkDotNet.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using BenchmarkDotNet.Attributes;
 
 namespace Autofac.Benchmarks;
 
