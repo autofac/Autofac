@@ -28,82 +28,81 @@ using Autofac.Benchmarks.Decorators;
 using BenchmarkDotNet.Running;
 using Xunit;
 
-namespace Autofac.Benchmarks
+namespace Autofac.Benchmarks;
+
+public class Harness
 {
-    public class Harness
+    [Fact]
+    public void ChildScopeResolve() => RunBenchmark<ChildScopeResolveBenchmark>();
+
+    [Fact]
+    public void Concurrency() => RunBenchmark<ConcurrencyBenchmark>();
+
+    [Fact]
+    public void ConcurrencyNestedScopes() => RunBenchmark<ConcurrencyNestedScopeBenchmark>();
+
+    [Fact]
+    public void Decorator_Keyed_Generic() => RunBenchmark<KeyedGenericBenchmark>();
+
+    [Fact]
+    public void Decorator_Keyed_Nested() => RunBenchmark<KeyedNestedBenchmark>();
+
+    [Fact]
+    public void Decorator_Keyed_Simple() => RunBenchmark<KeyedSimpleBenchmark>();
+
+    [Fact]
+    public void Decorator_Keyless_Generic() => RunBenchmark<KeylessGenericBenchmark>();
+
+    [Fact]
+    public void Decorator_Keyless_Nested() => RunBenchmark<KeylessNestedBenchmark>();
+
+    [Fact]
+    public void Decorator_Keyless_Nested_Shared_Instance() => RunBenchmark<KeylessNestedSharedInstanceBenchmark>();
+
+    [Fact]
+    public void Decorator_Keyless_Nested_Lambda() => RunBenchmark<KeylessNestedLambdaBenchmark>();
+
+    [Fact]
+    public void Decorator_Keyless_Nested_Lambda_Shared_Instance() => RunBenchmark<KeylessNestedSharedInstanceLambdaBenchmark>();
+
+    [Fact]
+    public void Decorator_Keyless_Simple() => RunBenchmark<KeylessSimpleBenchmark>();
+
+    [Fact]
+    public void Decorator_Keyless_Simple_Shared_Instance() => RunBenchmark<KeylessSimpleSharedInstanceBenchmark>();
+
+    [Fact]
+    public void Decorator_Keyless_Simple_Lambda() => RunBenchmark<KeylessSimpleLambdaBenchmark>();
+
+    [Fact]
+    public void Decorator_Keyless_Simple_Lambda_Shared_Instance() => RunBenchmark<KeylessSimpleSharedInstanceLambdaBenchmark>();
+
+    [Fact]
+    public void DeepGraphResolve() => RunBenchmark<DeepGraphResolveBenchmark>();
+
+    [Fact]
+    public void EnumerableResolve() => RunBenchmark<EnumerableResolveBenchmark>();
+
+    [Fact]
+    public void PropertyInjection() => RunBenchmark<PropertyInjectionBenchmark>();
+
+    [Fact]
+    public void RootContainerResolve() => RunBenchmark<RootContainerResolveBenchmark>();
+
+    [Fact]
+    public void OpenGeneric() => RunBenchmark<OpenGenericBenchmark>();
+
+    [Fact]
+    public void MultiConstructor() => RunBenchmark<MultiConstructorBenchmark>();
+
+    /// <remarks>
+    /// This method is used to enforce that benchmark types are added to <see cref="Benchmarks.All"/>
+    /// so that they can be used directly from the command line in <see cref="Program.Main"/> as well.
+    /// </remarks>
+    private static void RunBenchmark<TBenchmark>()
     {
-        [Fact]
-        public void ChildScopeResolve() => RunBenchmark<ChildScopeResolveBenchmark>();
-
-        [Fact]
-        public void Concurrency() => RunBenchmark<ConcurrencyBenchmark>();
-
-        [Fact]
-        public void ConcurrencyNestedScopes() => RunBenchmark<ConcurrencyNestedScopeBenchmark>();
-
-        [Fact]
-        public void Decorator_Keyed_Generic() => RunBenchmark<KeyedGenericBenchmark>();
-
-        [Fact]
-        public void Decorator_Keyed_Nested() => RunBenchmark<KeyedNestedBenchmark>();
-
-        [Fact]
-        public void Decorator_Keyed_Simple() => RunBenchmark<KeyedSimpleBenchmark>();
-
-        [Fact]
-        public void Decorator_Keyless_Generic() => RunBenchmark<KeylessGenericBenchmark>();
-
-        [Fact]
-        public void Decorator_Keyless_Nested() => RunBenchmark<KeylessNestedBenchmark>();
-
-        [Fact]
-        public void Decorator_Keyless_Nested_Shared_Instance() => RunBenchmark<KeylessNestedSharedInstanceBenchmark>();
-
-        [Fact]
-        public void Decorator_Keyless_Nested_Lambda() => RunBenchmark<KeylessNestedLambdaBenchmark>();
-
-        [Fact]
-        public void Decorator_Keyless_Nested_Lambda_Shared_Instance() => RunBenchmark<KeylessNestedSharedInstanceLambdaBenchmark>();
-
-        [Fact]
-        public void Decorator_Keyless_Simple() => RunBenchmark<KeylessSimpleBenchmark>();
-
-        [Fact]
-        public void Decorator_Keyless_Simple_Shared_Instance() => RunBenchmark<KeylessSimpleSharedInstanceBenchmark>();
-
-        [Fact]
-        public void Decorator_Keyless_Simple_Lambda() => RunBenchmark<KeylessSimpleLambdaBenchmark>();
-
-        [Fact]
-        public void Decorator_Keyless_Simple_Lambda_Shared_Instance() => RunBenchmark<KeylessSimpleSharedInstanceLambdaBenchmark>();
-
-        [Fact]
-        public void DeepGraphResolve() => RunBenchmark<DeepGraphResolveBenchmark>();
-
-        [Fact]
-        public void EnumerableResolve() => RunBenchmark<EnumerableResolveBenchmark>();
-
-        [Fact]
-        public void PropertyInjection() => RunBenchmark<PropertyInjectionBenchmark>();
-
-        [Fact]
-        public void RootContainerResolve() => RunBenchmark<RootContainerResolveBenchmark>();
-
-        [Fact]
-        public void OpenGeneric() => RunBenchmark<OpenGenericBenchmark>();
-
-        [Fact]
-        public void MultiConstructor() => RunBenchmark<MultiConstructorBenchmark>();
-
-        /// <remarks>
-        /// This method is used to enforce that benchmark types are added to <see cref="Benchmarks.All"/>
-        /// so that they can be used directly from the command line in <see cref="Program.Main"/> as well.
-        /// </remarks>
-        private static void RunBenchmark<TBenchmark>()
-        {
-            var targetType = typeof(TBenchmark);
-            var benchmarkType = Benchmarks.All.Single(type => type == targetType);
-            BenchmarkRunner.Run(benchmarkType, new BenchmarkConfig());
-        }
+        var targetType = typeof(TBenchmark);
+        var benchmarkType = Benchmarks.All.Single(type => type == targetType);
+        BenchmarkRunner.Run(benchmarkType, new BenchmarkConfig());
     }
 }

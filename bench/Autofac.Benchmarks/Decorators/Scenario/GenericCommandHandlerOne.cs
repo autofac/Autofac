@@ -1,8 +1,7 @@
 ﻿using System;
 
-namespace Autofac.Benchmarks.Decorators.Scenario
+namespace Autofac.Benchmarks.Decorators.Scenario;
+
+public class GenericCommandHandlerOne<TCommand> : ICommandHandler<TCommand>
 {
-    public class GenericCommandHandlerOne<TCommand> : ICommandHandler<TCommand>
-    {
-    }
 }

@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Autofac.Benchmarks.Decorators.Scenario
+namespace Autofac.Benchmarks.Decorators.Scenario;
+
+public class CommandHandlerDecoratorOne : ICommandHandler
 {
-    public class CommandHandlerDecoratorOne : ICommandHandler
+    public CommandHandlerDecoratorOne(ICommandHandler decorated)
     {
-        public CommandHandlerDecoratorOne(ICommandHandler decorated)
-        {
-        }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Autofac.Benchmarks.Decorators.Scenario
+namespace Autofac.Benchmarks.Decorators.Scenario;
+
+public class GenericCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
 {
-    public class GenericCommandHandlerDecorator<TCommand> : ICommandHandler<TCommand>
+    public GenericCommandHandlerDecorator(ICommandHandler<TCommand> decorated)
     {
-        public GenericCommandHandlerDecorator(ICommandHandler<TCommand> decorated)
-        {
-        }
     }
 }

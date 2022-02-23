@@ -2,12 +2,12 @@
 using System.Linq;
 using Autofac.Benchmarks.Decorators;
 
-namespace Autofac.Benchmarks
+namespace Autofac.Benchmarks;
+
+public static class Benchmarks
 {
-    public static class Benchmarks
+    public static readonly Type[] All =
     {
-        public static readonly Type[] All =
-        {
             typeof(ChildScopeResolveBenchmark),
             typeof(ConcurrencyBenchmark),
             typeof(ConcurrencyNestedScopeBenchmark),
@@ -30,5 +30,4 @@ namespace Autofac.Benchmarks
             typeof(OpenGenericBenchmark),
             typeof(MultiConstructorBenchmark)
         };
-    }
 }
