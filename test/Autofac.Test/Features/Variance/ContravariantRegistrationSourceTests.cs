@@ -14,9 +14,6 @@ namespace Autofac.Test.Features.Variance
 {
     public class ContravariantRegistrationSourceTests
     {
-        // Disable "unused parameter" warnings for test types.
-#pragma warning disable IDE0060
-
         internal interface IHandler<in TCommand>
         {
             void Handle(TCommand command);
@@ -100,8 +97,6 @@ namespace Autofac.Test.Features.Variance
             First,
             Second,
         }
-
-#pragma warning restore IDE0060
 
         internal static class AssertExtensions
         {

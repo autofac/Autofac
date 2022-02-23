@@ -69,9 +69,6 @@ namespace Autofac.Test.Core.Activators.Reflection
                 .ToArray();
         }
 
-        // Disable "unused parameter" warnings for test types.
-#pragma warning disable IDE0060
-
         public class ThreeConstructors
         {
             public ThreeConstructors()
@@ -108,8 +105,5 @@ namespace Autofac.Test.Core.Activators.Reflection
             {
             }
         }
-
-#pragma warning restore IDE0060
-
     }
 }

@@ -23,7 +23,6 @@ namespace Autofac.Benchmarks
         }
 
         [Benchmark(Baseline = true)]
-        [SuppressMessage("CA1822", "CA1822", Justification = "Benchmark methods need to be instance.")]
         public void OperatorNew()
         {
             var instance = new NonSharedDelegate();

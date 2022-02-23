@@ -15,12 +15,10 @@ namespace Autofac.Test.Util
     {
         public class WithTwoInvokes
         {
-            [SuppressMessage("CA1822", "CA1822", Justification = "Method needs to be instance for testing.")]
             public void Invoke()
             {
             }
 
-            [SuppressMessage("CA1822", "CA1822", Justification = "Method needs to be instance for testing.")]
             public void Invoke(string s)
             {
             }

@@ -65,7 +65,6 @@ namespace Autofac.Test.Features.GeneratedFactories
 
         public class QuoteService
         {
-            [SuppressMessage("CA1822", "CA1822", Justification = "Method needs to be instance for testing.")]
             public decimal GetQuote(string symbol)
             {
                 return 2m;

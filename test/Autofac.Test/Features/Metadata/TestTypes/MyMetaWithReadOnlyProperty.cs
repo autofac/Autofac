@@ -11,7 +11,6 @@ namespace Autofac.Test.Features.Metadata.TestTypes
     {
         public int TheInt { get; set; }
 
-        [SuppressMessage("CA1822", "CA1822", Justification = "Property needs to be instance for testing.")]
         public string ReadOnly
         {
             get

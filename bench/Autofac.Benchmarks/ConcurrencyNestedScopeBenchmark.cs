@@ -70,9 +70,6 @@ namespace Autofac.Benchmarks
             await Task.WhenAll(tasks);
         }
 
-        // Disable "unused parameter" warnings for test types.
-#pragma warning disable IDE0060
-
         internal class MockGlobalSingleton
         {
         }
@@ -91,7 +88,5 @@ namespace Autofac.Benchmarks
         {
             public MockUnitOfWork(MockGlobalSingleton singleton) {}
         }
-
-#pragma warning restore IDE0060
     }
 }

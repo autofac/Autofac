@@ -32,14 +32,10 @@ namespace Autofac.Test.Core
             Assert.Equal(expected, finder.InjectProperty(property, instance));
         }
 
-        // Disable "unused parameter" warnings for test types.
-#pragma warning disable IDE0051
-
         private class HasProperties
         {
             public Test PublicPropertyNoDefault { get; set; }
 
-            [SuppressMessage("CA1822", "CA1822", Justification = "Property needs to be instance for testing.")]
             public Test PublicPropertyNoGet
             {
                 set { }
@@ -47,7 +43,6 @@ namespace Autofac.Test.Core
 
             public Test PublicPropertyNoSet { get; }
 
-            [SuppressMessage("CA1822", "CA1822", Justification = "Property needs to be instance for testing.")]
             public Test PublicPropertyThrowsOnGet
             {
                 get
@@ -71,8 +66,5 @@ namespace Autofac.Test.Core
         private class Test
         {
         }
-
-#pragma warning restore IDE0051
-
     }
 }
