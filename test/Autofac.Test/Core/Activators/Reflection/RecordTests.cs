@@ -13,7 +13,6 @@ namespace Autofac.Test.Core.Activators.Reflection
 {
     public class RecordTests
     {
-        [SuppressMessage("SA1313", "SA1313", Justification = "https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/3464")]
         private record Component(IOtherService Service, IOtherService2 Service2);
 
         [Fact]
