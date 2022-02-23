@@ -63,7 +63,7 @@ namespace Autofac.Test.Core
             Assert.Equal(A.Message, inner.InnerException.Message);
         }
 
-#if !NET5_0
+#if !NET5_0 && !NET6_0
 
         [Serializable]
         public class CustomDependencyResolutionException : DependencyResolutionException
