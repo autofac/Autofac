@@ -69,7 +69,7 @@ namespace Autofac.Features.Collections
                 throw new ArgumentNullException(nameof(registrationAccessor));
             }
 
-            if (!(service is IServiceWithType swt) || service is DecoratorService)
+            if (service is not IServiceWithType swt || service is DecoratorService)
             {
                 return Enumerable.Empty<IComponentRegistration>();
             }

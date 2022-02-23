@@ -91,7 +91,7 @@ namespace Autofac.Core.Resolving.Pipeline
 
             VerifyPhase(nextNewStage.Phase);
 
-            while (currentStage is object)
+            while (currentStage is not null)
             {
                 if (insertionMode == MiddlewareInsertionMode.StartOfPhase ?
                         currentStage.Middleware.Phase >= nextNewStage.Phase :
@@ -99,7 +99,7 @@ namespace Autofac.Core.Resolving.Pipeline
                 {
                     var newDecl = new MiddlewareDeclaration(enumerator.Current);
 
-                    if (currentStage.Previous is object)
+                    if (currentStage.Previous is not null)
                     {
                         // Insert the node.
                         currentStage.Previous.Next = newDecl;
@@ -183,11 +183,11 @@ namespace Autofac.Core.Resolving.Pipeline
                 return;
             }
 
-            while (currentStage is object)
+            while (currentStage is not null)
             {
                 if (insertionLocation == MiddlewareInsertionMode.StartOfPhase ? currentStage.Middleware.Phase >= stage.Phase : currentStage.Middleware.Phase > stage.Phase)
                 {
-                    if (currentStage.Previous is object)
+                    if (currentStage.Previous is not null)
                     {
                         // Insert the node.
                         currentStage.Previous.Next = newStageDecl;
@@ -281,7 +281,7 @@ namespace Autofac.Core.Resolving.Pipeline
                 };
             }
 
-            while (current is object)
+            while (current is not null)
             {
                 var stage = current.Middleware;
                 currentInvoke = Chain(currentInvoke, stage);
@@ -299,7 +299,7 @@ namespace Autofac.Core.Resolving.Pipeline
             var newPipeline = new ResolvePipelineBuilder(Type);
             var currentStage = _first;
 
-            while (currentStage is object)
+            while (currentStage is not null)
             {
                 newPipeline.AppendStage(currentStage.Middleware);
                 currentStage = currentStage.Next;

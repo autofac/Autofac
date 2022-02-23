@@ -24,9 +24,9 @@ namespace Autofac.Core
         }
 
         /// <inheritdoc/>
-        public bool InjectProperty(PropertyInfo property, object instance)
+        public bool InjectProperty(PropertyInfo propertyInfo, object instance)
         {
-            return _finder(property, instance);
+            return _finder(propertyInfo, instance);
         }
     }
 }

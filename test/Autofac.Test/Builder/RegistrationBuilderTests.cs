@@ -45,7 +45,7 @@ namespace Autofac.Test.Builder
         public void AsEmptyList_CreatesRegistrationWithNoServices()
         {
             var registration = RegistrationBuilder.ForType<object>()
-                .As(new Service[0])
+                .As(Array.Empty<Service>())
                 .CreateRegistration();
 
             Assert.Empty(registration.Services);

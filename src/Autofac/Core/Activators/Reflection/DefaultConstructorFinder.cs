@@ -15,7 +15,7 @@ namespace Autofac.Core.Activators.Reflection
     {
         private readonly Func<Type, ConstructorInfo[]> _finder;
 
-        private static readonly ConcurrentDictionary<Type, ConstructorInfo[]> DefaultPublicConstructorsCache = new ConcurrentDictionary<Type, ConstructorInfo[]>();
+        private static readonly ConcurrentDictionary<Type, ConstructorInfo[]> DefaultPublicConstructorsCache = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultConstructorFinder" /> class.

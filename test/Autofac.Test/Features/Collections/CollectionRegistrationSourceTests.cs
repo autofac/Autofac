@@ -63,11 +63,11 @@ namespace Autofac.Test.Features.Collections
                 scopeBuilder => scopeBuilder.RegisterType<Foo3>().As<IFoo>());
             var arrayB = scopeB.Resolve<IEnumerable<IFoo>>().ToArray();
 
-            Assert.Equal(2, arrayA.Count());
+            Assert.Equal(2, arrayA.Length);
             Assert.Contains(arrayA, x => x is Foo1);
             Assert.Contains(arrayA, x => x is Foo2);
 
-            Assert.Equal(2, arrayB.Count());
+            Assert.Equal(2, arrayB.Length);
             Assert.Contains(arrayB, x => x is Foo1);
             Assert.Contains(arrayB, x => x is Foo3);
         }

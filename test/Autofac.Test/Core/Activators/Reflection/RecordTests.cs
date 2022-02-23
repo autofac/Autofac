@@ -3,16 +3,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Xunit;
 
-#if NET5_0
+#if NET5_0_OR_GREATER
 
 namespace Autofac.Test.Core.Activators.Reflection
 {
     public class RecordTests
     {
-        private record Component(IOtherService service, IOtherService2 service2);
+        private record Component(IOtherService Service, IOtherService2 Service2);
 
         [Fact]
         public void CanResolveARecord()
@@ -28,7 +29,7 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var record = container.Resolve<Component>();
 
-            Assert.IsType<OtherComponent>(record.service);
+            Assert.IsType<OtherComponent>(record.Service);
         }
 
         private interface IOtherService

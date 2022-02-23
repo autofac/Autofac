@@ -26,9 +26,9 @@ namespace Autofac.Core.Lifetime
         /// <summary>
         /// Protects shared instances from concurrent access. Other members and the base class are threadsafe.
         /// </summary>
-        private readonly object _synchRoot = new object();
-        private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new ConcurrentDictionary<Guid, object>();
-        private readonly ConcurrentDictionary<(Guid, Guid), object> _sharedQualifiedInstances = new ConcurrentDictionary<(Guid, Guid), object>();
+        private readonly object _synchRoot = new();
+        private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new();
+        private readonly ConcurrentDictionary<(Guid, Guid), object> _sharedQualifiedInstances = new();
         private object? _anonymousTag;
         private LifetimeScope? _parentScope;
 

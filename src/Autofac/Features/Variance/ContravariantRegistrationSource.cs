@@ -70,7 +70,7 @@ namespace Autofac.Features.Variance
                 throw new ArgumentNullException(nameof(registrationAccessor));
             }
 
-            if (!(service is IServiceWithType swt)
+            if (service is not IServiceWithType swt
                 || service is DecoratorService
                 || !IsCompatibleInterfaceType(swt.ServiceType, out var contravariantParameterIndex))
             {

@@ -241,9 +241,6 @@ namespace Autofac.Specification.Test.Registration
             Assert.Equal("bar", container.Resolve<string>());
         }
 
-        // Disable "unused parameter" warnings for test types.
-#pragma warning disable IDE0060
-
         private class Module1 : Module
         {
             protected override void Load(ContainerBuilder builder)
@@ -329,8 +326,5 @@ namespace Autofac.Specification.Test.Registration
                 builder.RegisterInstance("foo");
             }
         }
-
-#pragma warning disable IDE0060
-
     }
 }

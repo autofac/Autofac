@@ -16,7 +16,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var finder = new DefaultConstructorFinder();
             var targetType = typeof(HasConstructors);
-            var publicConstructor = targetType.GetConstructor(new Type[0]);
+            var publicConstructor = targetType.GetConstructor(Array.Empty<Type>());
 
             var constructors = finder.FindConstructors(targetType).ToList();
 
@@ -37,9 +37,6 @@ namespace Autofac.Test.Core.Activators.Reflection
             Assert.Contains(privateConstructor, constructors);
         }
 
-        // Disable "unused parameter" warnings for test types.
-#pragma warning disable IDE0051,IDE0060
-
         internal class HasConstructors
         {
             public HasConstructors()
@@ -50,8 +47,5 @@ namespace Autofac.Test.Core.Activators.Reflection
             {
             }
         }
-
-#pragma warning restore IDE0051,IDE0060
-
     }
 }

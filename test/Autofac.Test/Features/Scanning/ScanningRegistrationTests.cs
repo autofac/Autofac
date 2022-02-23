@@ -377,7 +377,7 @@ namespace Autofac.Test.Features.Scanning
         [Fact]
         public void WhenDerivingKeysDynamically_TheCorrectOverloadIsChosen()
         {
-            const string key = "akey";
+            const string key = "a-key";
             var c = RegisterScenarioAssembly(a => a.Keyed<IAService>(t => key));
             Assert.True(c.IsRegisteredWithKey<IAService>(key));
         }
@@ -396,7 +396,7 @@ namespace Autofac.Test.Features.Scanning
             c.AssertComponentRegistrationOrder<IAService, AnExistingComponent, A2Component>();
         }
 
-        public IContainer RegisterScenarioAssembly(Action<IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>> configuration = null)
+        public static IContainer RegisterScenarioAssembly(Action<IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>> configuration = null)
         {
             var cb = new ContainerBuilder();
             var config = cb.RegisterAssemblyTypes(ScenarioAssembly);

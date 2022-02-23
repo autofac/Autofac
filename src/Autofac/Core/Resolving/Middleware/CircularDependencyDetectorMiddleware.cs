@@ -42,7 +42,7 @@ namespace Autofac.Core.Resolving.Middleware
         /// <inheritdoc/>
         public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
         {
-            if (!(context.Operation is IDependencyTrackingResolveOperation dependencyTrackingResolveOperation))
+            if (context.Operation is not IDependencyTrackingResolveOperation dependencyTrackingResolveOperation)
             {
                 // Skipping circular dependency detection, since IResolveOperation is not IDependencyTrackingResolveOperation
                 // Which contains the actual RequestStack using SegmentStack

@@ -19,8 +19,7 @@ namespace Autofac.Core.Resolving
         private const int SuccessListInitialCapacity = 32;
         private bool _ended;
 
-        private readonly List<DefaultResolveRequestContext> _successfulRequests =
-            new List<DefaultResolveRequestContext>(SuccessListInitialCapacity);
+        private readonly List<DefaultResolveRequestContext> _successfulRequests = new(SuccessListInitialCapacity);
 
         private int _nextCompleteSuccessfulRequestStartPos;
 

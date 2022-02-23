@@ -26,19 +26,19 @@ namespace Autofac.Core.Registration
         /// <summary>
         /// Keeps track of the status of registered services.
         /// </summary>
-        private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new ConcurrentDictionary<Service, ServiceRegistrationInfo>();
+        private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new();
 
         /// <summary>
         /// External registration sources.
         /// </summary>
-        private readonly List<IRegistrationSource> _dynamicRegistrationSources = new List<IRegistrationSource>();
+        private readonly List<IRegistrationSource> _dynamicRegistrationSources = new();
 
         /// <summary>
         /// All registrations.
         /// </summary>
-        private readonly ConcurrentBag<IComponentRegistration> _registrations = new ConcurrentBag<IComponentRegistration>();
+        private readonly ConcurrentBag<IComponentRegistration> _registrations = new();
 
-        private readonly List<IServiceMiddlewareSource> _servicePipelineSources = new List<IServiceMiddlewareSource>();
+        private readonly List<IServiceMiddlewareSource> _servicePipelineSources = new();
 
         private Dictionary<Service, ServiceRegistrationInfo>? _ephemeralServiceInfo;
         private bool _trackerPopulationComplete;
@@ -99,7 +99,7 @@ namespace Autofac.Core.Registration
                 var info = GetServiceInfo(service);
 
                 // We are in an ephemeral initialization; use the ephemeral set.
-                if (_ephemeralServiceInfo is object)
+                if (_ephemeralServiceInfo is not null)
                 {
                     info = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
                 }
@@ -289,7 +289,7 @@ namespace Autofac.Core.Registration
 
             if (!_trackerPopulationComplete)
             {
-                // We need an ephemeral set for this pre-complete intialization.
+                // We need an ephemeral set for this pre-complete initialization.
                 if (_ephemeralServiceInfo is null)
                 {
                     _ephemeralServiceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
@@ -332,7 +332,7 @@ namespace Autofac.Core.Registration
                                 continue;
                             }
 
-                            if (_ephemeralServiceInfo is object)
+                            if (_ephemeralServiceInfo is not null)
                             {
                                 // Use ephemeral info for additional services.
                                 additionalInfo = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);

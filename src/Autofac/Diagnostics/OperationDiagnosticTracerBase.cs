@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Diagnostics
 {
@@ -65,6 +66,7 @@ namespace Autofac.Diagnostics
         /// <summary>
         /// Event raised when a resolve operation completes and trace data is available.
         /// </summary>
+        [SuppressMessage("CA1003", "CA1003", Justification = "Breaking API change.")]
         public event EventHandler<OperationTraceCompletedArgs<TContent>>? OperationCompleted;
 
         /// <summary>

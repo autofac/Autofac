@@ -23,7 +23,7 @@ namespace Autofac.Features.Metadata
 
         private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration valueRegistration);
 
-        private readonly ConcurrentDictionary<(Type ValueType, Type MetaType), RegistrationCreator> _methodCache = new ConcurrentDictionary<(Type, Type), RegistrationCreator>();
+        private readonly ConcurrentDictionary<(Type ValueType, Type MetaType), RegistrationCreator> _methodCache = new();
 
         /// <inheritdoc/>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
@@ -33,7 +33,7 @@ namespace Autofac.Features.Metadata
                 throw new ArgumentNullException(nameof(registrationAccessor));
             }
 
-            if (!(service is IServiceWithType swt) || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<,>)))
+            if (service is not IServiceWithType swt || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<,>)))
             {
                 return Enumerable.Empty<IComponentRegistration>();
             }

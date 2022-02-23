@@ -29,7 +29,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <param name="valueRetrievers">The set of value-retrieval functions.</param>
         [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Validated in constructor.")]
         public static BoundConstructor ForBindSuccess(ConstructorBinder binder, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
-            => new BoundConstructor(binder, factory, valueRetrievers);
+            => new(binder, factory, valueRetrievers);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BoundConstructor"/> class, for an unsuccessful bind.
@@ -37,7 +37,7 @@ namespace Autofac.Core.Activators.Reflection
         /// <param name="binder">The binder that generated this binding.</param>
         /// <param name="firstNonBindableParameter">The first parameter that prevented binding.</param>
         public static BoundConstructor ForBindFailure(ConstructorBinder binder, ParameterInfo firstNonBindableParameter) =>
-            new BoundConstructor(binder, firstNonBindableParameter);
+            new(binder, firstNonBindableParameter);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BoundConstructor"/> class for a successful bind.

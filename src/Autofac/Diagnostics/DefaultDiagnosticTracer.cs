@@ -27,7 +27,7 @@ namespace Autofac.Diagnostics
     {
         private const string RequestExceptionTraced = "__RequestException";
 
-        private readonly ConcurrentDictionary<IResolveOperation, IndentingStringBuilder> _operationBuilders = new ConcurrentDictionary<IResolveOperation, IndentingStringBuilder>();
+        private readonly ConcurrentDictionary<IResolveOperation, IndentingStringBuilder> _operationBuilders = new();
 
         private static readonly string[] NewLineSplit = new[] { Environment.NewLine };
 
@@ -148,7 +148,7 @@ namespace Autofac.Diagnostics
                 builder.AppendLine(TracerMessages.ExitBrace);
                 var requestException = data.RequestException;
 
-                if (requestException is DependencyResolutionException && requestException.InnerException is object)
+                if (requestException is DependencyResolutionException && requestException.InnerException is not null)
                 {
                     requestException = requestException.InnerException;
                 }

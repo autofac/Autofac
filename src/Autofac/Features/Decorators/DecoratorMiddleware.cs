@@ -50,7 +50,7 @@ namespace Autofac.Features.Decorators
                 return;
             }
 
-            if (!(context.Operation is IDependencyTrackingResolveOperation dependencyTrackingResolveOperation))
+            if (context.Operation is not IDependencyTrackingResolveOperation dependencyTrackingResolveOperation)
             {
                 // Skipping decorator middleware, since IResolveOperation is not IDependencyTrackingResolveOperation
                 // Which contains required functionality EnterNewDependencyDetectionBlock

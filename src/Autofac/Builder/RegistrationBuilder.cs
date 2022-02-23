@@ -188,7 +188,7 @@ namespace Autofac.Builder
             {
                 foreach (var ts in services)
                 {
-                    if (!(ts is IServiceWithType asServiceWithType))
+                    if (ts is not IServiceWithType asServiceWithType)
                     {
                         continue;
                     }

@@ -80,7 +80,7 @@ namespace Autofac
 
             rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr =>
             {
-                if (!(rb.RegistrationData.Lifetime is RootScopeLifetime) ||
+                if (rb.RegistrationData.Lifetime is not RootScopeLifetime ||
                     rb.RegistrationData.Sharing != InstanceSharing.Shared)
                 {
                     throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.InstanceRegistrationsAreSingleInstanceOnly, instance));
@@ -90,7 +90,7 @@ namespace Autofac
 
                 // https://github.com/autofac/Autofac/issues/1102
                 // Single instance registrations with any custom activation phases (i.e. activation handlers) need to be auto-activated,
-                // so that other behaviour (such as OnRelease) that expects 'normal' object lifetime behaviour works as expected.
+                // so that other behavior (such as OnRelease) that expects 'normal' object lifetime behavior works as expected.
                 if (rb.ResolvePipeline.Middleware.Any(s => s.Phase == PipelinePhase.Activation))
                 {
                     var autoStartService = rb.RegistrationData.Services.First();

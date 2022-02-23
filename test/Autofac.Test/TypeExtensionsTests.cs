@@ -132,9 +132,6 @@ namespace Autofac.Test
             // No constructor declared - allows tests for default constructor detection.
         }
 
-        [SuppressMessage("IDE0051", "IDE0051", Justification = "Constructors with unused parameters required for testing reflection against different visibilities.")]
-        [SuppressMessage("IDE0052", "IDE0052", Justification = "Constructors with unused parameters required for testing reflection against different visibilities.")]
-        [SuppressMessage("IDE0060", "IDE0060", Justification = "Constructors with unused parameters required for testing reflection against different visibilities.")]
         private class DeclaredConstructorType
         {
             // Values here to ensure constructors get used and not
@@ -178,7 +175,6 @@ namespace Autofac.Test
             {
             }
 
-            [SuppressMessage("IDE0051", "IDE0051", Justification = "Method used by reflection in tests.")]
             private void PrivateInstanceMethod()
             {
             }
@@ -191,7 +187,6 @@ namespace Autofac.Test
             {
             }
 
-            [SuppressMessage("IDE0051", "IDE0051", Justification = "Method used by reflection in tests.")]
             private static void PrivateStaticMethod()
             {
             }
@@ -203,14 +198,12 @@ namespace Autofac.Test
 
             protected string ProtectedInstanceProperty { get; set; }
 
-            [SuppressMessage("IDE0051", "IDE0051", Justification = "Property used by reflection in tests.")]
             private string PrivateInstanceProperty { get; set; }
 
             public static string PublicStaticProperty { get; set; }
 
             protected static string ProtectedStaticProperty { get; set; }
 
-            [SuppressMessage("IDE0051", "IDE0051", Justification = "Property used by reflection in tests.")]
             private static string PrivateStaticProperty { get; set; }
         }
     }

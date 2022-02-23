@@ -20,9 +20,9 @@ namespace Autofac.Test.Component.Activation
         [Fact]
         public void WhenInitializedWithInstance_ThatInstanceIsReturnedFromActivateInstance()
         {
-            object instance = new object();
+            var instance = new object();
 
-            ProvidedInstanceActivator target = new ProvidedInstanceActivator(instance);
+            var target = new ProvidedInstanceActivator(instance);
 
             var container = Factory.CreateEmptyContainer();
 
@@ -36,10 +36,9 @@ namespace Autofac.Test.Component.Activation
         [Fact]
         public void ActivatingAProvidedInstanceTwice_RaisesException()
         {
-            object instance = new object();
+            var instance = new object();
 
-            ProvidedInstanceActivator target =
-                new ProvidedInstanceActivator(instance);
+            var target = new ProvidedInstanceActivator(instance);
 
             var container = Factory.CreateEmptyContainer();
 
@@ -56,8 +55,10 @@ namespace Autofac.Test.Component.Activation
         {
             var asyncDisposable = new AsyncOnlyDisposeTracker();
 
-            ProvidedInstanceActivator target = new ProvidedInstanceActivator(asyncDisposable);
-            target.DisposeInstance = true;
+            var target = new ProvidedInstanceActivator(asyncDisposable)
+            {
+                DisposeInstance = true
+            };
 
             target.Dispose();
 
@@ -69,8 +70,10 @@ namespace Autofac.Test.Component.Activation
         {
             var asyncDisposable = new AsyncOnlyDisposeTracker();
 
-            ProvidedInstanceActivator target = new ProvidedInstanceActivator(asyncDisposable);
-            target.DisposeInstance = true;
+            var target = new ProvidedInstanceActivator(asyncDisposable)
+            {
+                DisposeInstance = true
+            };
 
             await target.DisposeAsync();
 
@@ -82,8 +85,10 @@ namespace Autofac.Test.Component.Activation
         {
             var asyncDisposable = new DisposeTracker();
 
-            ProvidedInstanceActivator target = new ProvidedInstanceActivator(asyncDisposable);
-            target.DisposeInstance = true;
+            var target = new ProvidedInstanceActivator(asyncDisposable)
+            {
+                DisposeInstance = true
+            };
 
             await target.DisposeAsync();
 

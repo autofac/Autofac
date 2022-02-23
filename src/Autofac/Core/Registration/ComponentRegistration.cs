@@ -237,7 +237,7 @@ namespace Autofac.Core.Registration
                 return;
             }
 
-            if (_pipelineBuildEvent is object)
+            if (_pipelineBuildEvent is not null)
             {
                 _pipelineBuildEvent.Invoke(this, _lateBuildPipeline);
 

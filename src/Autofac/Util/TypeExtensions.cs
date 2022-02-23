@@ -16,11 +16,11 @@ namespace Autofac.Util
     /// </summary>
     internal static class TypeExtensions
     {
-        private static readonly ConcurrentDictionary<Type, bool> IsGenericEnumerableInterfaceCache = new ConcurrentDictionary<Type, bool>();
+        private static readonly ConcurrentDictionary<Type, bool> IsGenericEnumerableInterfaceCache = new();
 
-        private static readonly ConcurrentDictionary<Type, bool> IsGenericListOrCollectionInterfaceTypeCache = new ConcurrentDictionary<Type, bool>();
+        private static readonly ConcurrentDictionary<Type, bool> IsGenericListOrCollectionInterfaceTypeCache = new();
 
-        private static readonly ConcurrentDictionary<(Type, Type), bool> IsGenericTypeDefinedByCache = new ConcurrentDictionary<(Type, Type), bool>();
+        private static readonly ConcurrentDictionary<(Type, Type), bool> IsGenericTypeDefinedByCache = new();
 
         /// <summary>
         /// For a delegate type, outputs the return type of the delegate.

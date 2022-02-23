@@ -73,6 +73,7 @@ namespace Autofac.Core
         /// Attaching to this event after a component registration
         /// has already been built will throw an exception.
         /// </exception>
+        [SuppressMessage("CA1003", "CA1003", Justification = "Breaking API change.")]
         event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
 
         /// <summary>

@@ -16,7 +16,7 @@ namespace Autofac.Core.Activators.Reflection
     {
         private static readonly Func<ConstructorInfo, Func<object?[], object>> FactoryBuilder = GetConstructorInvoker;
 
-        private static readonly ConcurrentDictionary<ConstructorInfo, Func<object?[], object>> FactoryCache = new ConcurrentDictionary<ConstructorInfo, Func<object?[], object>>();
+        private static readonly ConcurrentDictionary<ConstructorInfo, Func<object?[], object>> FactoryCache = new();
 
         private readonly ParameterInfo[] _constructorArgs;
         private readonly Func<object?[], object>? _factory;
@@ -84,7 +84,7 @@ namespace Autofac.Core.Activators.Reflection
                 return BoundConstructor.ForBindSuccess(this, _factory!, Array.Empty<Func<object?>>());
             }
 
-            if (_illegalParameter is object)
+            if (_illegalParameter is not null)
             {
                 return BoundConstructor.ForBindFailure(this, _illegalParameter);
             }

@@ -66,7 +66,7 @@ namespace Autofac.Test.Features.LightweightAdapters
 
         public class OnTopOfAnotherAdapter
         {
-            private readonly Command _from = new Command();
+            private readonly Command _from = new();
             private const string NameKey = "Name";
             private const string Name = "N";
             private readonly ToolbarButton _to;

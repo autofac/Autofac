@@ -11,9 +11,7 @@ namespace Autofac.Test.Core
 {
     public class DelegatePropertySelectorTests
     {
-        // Disable "unused parameter" warnings for test types.
-#pragma warning disable IDE0051
-
+        [AttributeUsage(AttributeTargets.Property)]
         private class InjectPropertyAttribute : Attribute
         {
         }
@@ -27,8 +25,6 @@ namespace Autofac.Test.Core
 
             private int PrivateProperty { get; set; }
         }
-
-#pragma warning restore IDE0051
 
         [Fact]
         public void ThrowsExceptionOnNull()

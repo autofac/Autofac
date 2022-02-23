@@ -34,7 +34,7 @@ namespace Autofac.Features.GeneratedFactories
                 throw new ArgumentNullException(nameof(registrationAccessor));
             }
 
-            if (!(service is IServiceWithType ts) || !ts.ServiceType.IsDelegate())
+            if (service is not IServiceWithType ts || !ts.ServiceType.IsDelegate())
             {
                 return Enumerable.Empty<IComponentRegistration>();
             }

@@ -23,7 +23,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void DoesNotAcceptEmptyBindings()
         {
             var target = new MostParametersConstructorSelector();
-            Assert.Throws<ArgumentOutOfRangeException>(() => target.SelectConstructorBinding(new BoundConstructor[] { }, Enumerable.Empty<Parameter>()));
+            Assert.Throws<ArgumentOutOfRangeException>(() => target.SelectConstructorBinding(Array.Empty<BoundConstructor>(), Enumerable.Empty<Parameter>()));
         }
 
         [Fact]
@@ -69,9 +69,6 @@ namespace Autofac.Test.Core.Activators.Reflection
                 .ToArray();
         }
 
-        // Disable "unused parameter" warnings for test types.
-#pragma warning disable IDE0060
-
         public class ThreeConstructors
         {
             public ThreeConstructors()
@@ -108,8 +105,5 @@ namespace Autofac.Test.Core.Activators.Reflection
             {
             }
         }
-
-#pragma warning restore IDE0060
-
     }
 }

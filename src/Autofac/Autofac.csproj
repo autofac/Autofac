@@ -4,7 +4,7 @@
     <Description>Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.</Description>
     <!-- VersionPrefix patched by AppVeyor -->
     <VersionPrefix>0.0.1</VersionPrefix>
-    <TargetFrameworks>netstandard2.1;netstandard2.0;net5.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net5.0;netstandard2.1;netstandard2.0;</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);CS1591;IDE0008</NoWarn>
@@ -24,11 +24,11 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <Copyright>Copyright © 2015 Autofac Contributors</Copyright>
     <CodeAnalysisRuleSet>../../build/Analyzers.ruleset</CodeAnalysisRuleSet>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <ContinuousIntegrationBuild Condition="'$(CI)' != '' ">true</ContinuousIntegrationBuild>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedAllSources>true</EmbedAllSources>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <Features>IOperation</Features>
     <Authors>Autofac Contributors</Authors>
     <Company>Autofac</Company>
     <Product>Autofac</Product>
@@ -48,17 +48,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.1">
-      <PrivateAssets>All</PrivateAssets>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1">
-      <PrivateAssets>All</PrivateAssets>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" Condition="Exists('$(MSBuildThisFileDirectory)../../.git')">
-      <PrivateAssets>All</PrivateAssets>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" Condition="Exists('$(MSBuildThisFileDirectory)../../.git')">
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.205">
-      <PrivateAssets>All</PrivateAssets>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.406">
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="4.7.1" />
   </ItemGroup>

@@ -54,7 +54,7 @@ namespace Autofac.Test
         {
             public ConstructorInfo[] FindConstructors(Type targetType)
             {
-                return new ConstructorInfo[0];
+                return Array.Empty<ConstructorInfo>();
             }
         }
 
@@ -92,7 +92,7 @@ namespace Autofac.Test
 
             public InstanceOwnership Ownership { get; }
 
-            public IEnumerable<Service> Services { get; } = new Service[0];
+            public IEnumerable<Service> Services { get; } = Array.Empty<Service>();
 
             public IDictionary<string, object> Metadata { get; }
 
