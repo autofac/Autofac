@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Autofac.Diagnostics
 {
@@ -232,6 +233,7 @@ namespace Autofac.Diagnostics
         /// <param name="value">
         /// The current notification information.
         /// </param>
+        [SuppressMessage("CA1033", "CA1033", Justification = "Intentionally 'hiding' the IObserver to provide a better API.")]
         void IObserver<KeyValuePair<string, object?>>.OnNext(KeyValuePair<string, object?> value)
         {
             // This is what gets called when a new diagnostic event occurs.

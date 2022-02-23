@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Xunit;
 
@@ -12,7 +13,8 @@ namespace Autofac.Test.Core.Activators.Reflection
 {
     public class RecordTests
     {
-        private record Component(IOtherService service, IOtherService2 service2);
+        [SuppressMessage("SA1313", "SA1313", Justification = "https://github.com/DotNetAnalyzers/StyleCopAnalyzers/issues/3464")]
+        private record Component(IOtherService Service, IOtherService2 Service2);
 
         [Fact]
         public void CanResolveARecord()
@@ -28,7 +30,7 @@ namespace Autofac.Test.Core.Activators.Reflection
 
             var record = container.Resolve<Component>();
 
-            Assert.IsType<OtherComponent>(record.service);
+            Assert.IsType<OtherComponent>(record.Service);
         }
 
         private interface IOtherService

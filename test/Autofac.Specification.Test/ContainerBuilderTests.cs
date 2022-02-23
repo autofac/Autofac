@@ -109,7 +109,8 @@ namespace Autofac.Specification.Test
                     "scope1",
                     "scope2",
                     "scope2"
-                }, callOrder);
+                },
+                callOrder);
         }
 
         [Fact]

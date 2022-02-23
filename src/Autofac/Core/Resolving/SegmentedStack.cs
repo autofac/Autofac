@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace Autofac.Core.Resolving
@@ -13,6 +14,7 @@ namespace Autofac.Core.Resolving
     /// of the stack to be enumerated without including items pushed before the segment.
     /// </summary>
     /// <typeparam name="T">The item type.</typeparam>
+    [SuppressMessage("CA1711", "CA1711", Justification = "Breaking API change.")]
     public sealed class SegmentedStack<T> : IEnumerable<T>
         where T : class
     {

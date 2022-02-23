@@ -227,6 +227,7 @@ namespace Autofac.Util
         /// <returns>
         /// <see langword="true" /> if the dictionary or its parent contains an element with the key; otherwise, <see langword="false" />.
         /// </returns>
+        [SuppressMessage("CA1841", "CA1841", Justification = "False positive. This isn't a standard set of keys like other dictionaries.")]
         public bool ContainsKey(TKey key)
         {
             return Keys.Contains(key);
