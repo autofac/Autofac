@@ -1,22 +1,5 @@
-﻿
-/* Unmerged change from project 'Autofac.Test (netcoreapp3.1)'
-Before:
-// Copyright (c) Autofac Project. All rights reserved.
+﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using Xunit;
-
-#if NET5_0_OR_GREATER
-After:
-#if NET5_0_OR_GREATER
-*/
-// Copyright (c) Autofac Project. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-
 
 #if NET5_0_OR_GREATER
 
