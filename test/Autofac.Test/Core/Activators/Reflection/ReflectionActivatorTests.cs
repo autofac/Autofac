@@ -228,9 +228,9 @@ public class ReflectionActivatorTests
         const int p2 = 2;
         var properties = new[]
         {
-                new NamedPropertyParameter("P1", p1),
-                new NamedPropertyParameter("P2", p2),
-            };
+            new NamedPropertyParameter("P1", p1),
+            new NamedPropertyParameter("P2", p2),
+        };
         var target = Factory.CreateReflectionActivator(typeof(R), Enumerable.Empty<Parameter>(), properties);
         var container = Factory.CreateEmptyContainer();
         var invoker = target.GetPipelineInvoker(container.ComponentRegistry);

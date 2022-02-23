@@ -22,9 +22,9 @@ public class LightweightAdapterRegistrationSourceTests
 
         private readonly IEnumerable<IComponentRegistration> _adaptedFrom = new[]
         {
-                RegistrationBuilder.ForType<object>().CreateRegistration(),
-                RegistrationBuilder.ForType<object>().CreateRegistration(),
-            };
+            RegistrationBuilder.ForType<object>().CreateRegistration(),
+            RegistrationBuilder.ForType<object>().CreateRegistration(),
+        };
 
         private readonly LightweightAdapterRegistrationSource _subject;
 

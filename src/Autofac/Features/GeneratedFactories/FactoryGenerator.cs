@@ -46,10 +46,10 @@ public class FactoryGenerator
             {
                 // c, service, [new Parameter(name, (object)dps)]*
                 var resolveParams = new[]
-            {
-                        activatorContextParam,
-                        Expression.Constant(service, typeof(Service)),
-                        Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),
+                {
+                    activatorContextParam,
+                    Expression.Constant(service, typeof(Service)),
+                    Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),
                 };
 
                 // c.Resolve(...)

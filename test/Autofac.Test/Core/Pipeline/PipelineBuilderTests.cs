@@ -217,22 +217,22 @@ public class PipelineBuilderTests
 
         pipelineBuilder.UseRange(new[]
         {
-                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
-                {
-                    order.Add("1");
-                    next(ctxt);
-                }),
-                new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
-                {
-                    order.Add("2");
-                    next(ctxt);
-                }),
-                new DelegateMiddleware("3", PipelinePhase.Sharing, (ctxt, next) =>
-                {
-                    order.Add("3");
-                    next(ctxt);
-                })
-            });
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            {
+                order.Add("1");
+                next(ctxt);
+            }),
+            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
+            {
+                order.Add("2");
+                next(ctxt);
+            }),
+            new DelegateMiddleware("3", PipelinePhase.Sharing, (ctxt, next) =>
+            {
+                order.Add("3");
+                next(ctxt);
+            })
+        });
 
         var built = pipelineBuilder.Build();
 
@@ -253,41 +253,41 @@ public class PipelineBuilderTests
 
         pipelineBuilder.UseRange(new[]
         {
-                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
-                {
-                    order.Add("1");
-                    next(ctxt);
-                }),
-                new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
-                {
-                    order.Add("2");
-                    next(ctxt);
-                }),
-                new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
-                {
-                    order.Add("3");
-                    next(ctxt);
-                })
-            });
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            {
+                order.Add("1");
+                next(ctxt);
+            }),
+            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
+            {
+                order.Add("2");
+                next(ctxt);
+            }),
+            new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
+            {
+                order.Add("3");
+                next(ctxt);
+            })
+        });
 
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
         {
-                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
-                {
-                    order.Add("1");
-                    next(ctxt);
-                }),
-                new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
-                {
-                    order.Add("4");
-                    next(ctxt);
-                }),
-                new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
-                {
-                    order.Add("2");
-                    next(ctxt);
-                }),
-            }));
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            {
+                order.Add("1");
+                next(ctxt);
+            }),
+            new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
+            {
+                order.Add("4");
+                next(ctxt);
+            }),
+            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
+            {
+                order.Add("2");
+                next(ctxt);
+            }),
+        }));
     }
 
     [Fact]
@@ -298,22 +298,22 @@ public class PipelineBuilderTests
 
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
         {
-                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
-                {
-                    order.Add("1");
-                    next(ctxt);
-                }),
-                new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
-                {
-                    order.Add("4");
-                    next(ctxt);
-                }),
-                new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
-                {
-                    order.Add("2");
-                    next(ctxt);
-                }),
-            }));
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            {
+                order.Add("1");
+                next(ctxt);
+            }),
+            new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
+            {
+                order.Add("4");
+                next(ctxt);
+            }),
+            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
+            {
+                order.Add("2");
+                next(ctxt);
+            }),
+        }));
     }
 
     [Fact]
@@ -324,41 +324,41 @@ public class PipelineBuilderTests
 
         pipelineBuilder.UseRange(new[]
         {
-                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
-                {
-                    order.Add("1");
-                    next(ctxt);
-                }),
-                new DelegateMiddleware("3", PipelinePhase.ScopeSelection, (ctxt, next) =>
-                {
-                    order.Add("3");
-                    next(ctxt);
-                }),
-                new DelegateMiddleware("5", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
-                {
-                    order.Add("5");
-                    next(ctxt);
-                })
-            });
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            {
+                order.Add("1");
+                next(ctxt);
+            }),
+            new DelegateMiddleware("3", PipelinePhase.ScopeSelection, (ctxt, next) =>
+            {
+                order.Add("3");
+                next(ctxt);
+            }),
+            new DelegateMiddleware("5", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
+            {
+                order.Add("5");
+                next(ctxt);
+            })
+        });
 
         pipelineBuilder.UseRange(new[]
         {
-                new DelegateMiddleware("2", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
-                {
-                    order.Add("2");
-                    next(ctxt);
-                }),
-                new DelegateMiddleware("4", PipelinePhase.ScopeSelection, (ctxt, next) =>
-                {
-                    order.Add("4");
-                    next(ctxt);
-                }),
-                new DelegateMiddleware("6", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
-                {
-                    order.Add("6");
-                    next(ctxt);
-                })
-            });
+            new DelegateMiddleware("2", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            {
+                order.Add("2");
+                next(ctxt);
+            }),
+            new DelegateMiddleware("4", PipelinePhase.ScopeSelection, (ctxt, next) =>
+            {
+                order.Add("4");
+                next(ctxt);
+            }),
+            new DelegateMiddleware("6", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
+            {
+                order.Add("6");
+                next(ctxt);
+            })
+        });
 
         var built = pipelineBuilder.Build();
 
@@ -397,10 +397,10 @@ public class PipelineBuilderTests
         var order = new List<string>();
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
         {
-                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) => { }),
-                new DelegateMiddleware("4", PipelinePhase.Activation, (ctxt, next) => { }),
-                new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) => { }),
-            }));
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) => { }),
+            new DelegateMiddleware("4", PipelinePhase.Activation, (ctxt, next) => { }),
+            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) => { }),
+        }));
     }
 
     [Fact]
@@ -424,17 +424,17 @@ public class PipelineBuilderTests
 
         pipelineBuilder.UseRange(new[]
         {
-                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart,  (ctxt, next) => { }),
-                new DelegateMiddleware("3", PipelinePhase.ScopeSelection,  (ctxt, next) => { }),
-                new DelegateMiddleware("5", PipelinePhase.ServicePipelineEnd,  (ctxt, next) => { })
-            });
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart,  (ctxt, next) => { }),
+            new DelegateMiddleware("3", PipelinePhase.ScopeSelection,  (ctxt, next) => { }),
+            new DelegateMiddleware("5", PipelinePhase.ServicePipelineEnd,  (ctxt, next) => { })
+        });
 
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
         {
-                new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) => { }),
-                new DelegateMiddleware("4", PipelinePhase.Activation, (ctxt, next) => { }),
-                new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) => { }),
-            }));
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) => { }),
+            new DelegateMiddleware("4", PipelinePhase.Activation, (ctxt, next) => { }),
+            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) => { }),
+        }));
     }
 
     private class PipelineRequestContextStub : ResolveRequestContext
