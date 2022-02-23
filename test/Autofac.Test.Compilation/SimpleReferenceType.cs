@@ -4,9 +4,8 @@
 using Xunit;
 #nullable enable
 
-namespace Autofac.Test.Compilation
+namespace Autofac.Test.Compilation;
+
+public class SimpleReferenceType
 {
-    public class SimpleReferenceType
-    {
-    }
 }

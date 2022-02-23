@@ -4,94 +4,94 @@
 using Xunit;
 #nullable enable
 
-namespace Autofac.Test.Compilation
+namespace Autofac.Test.Compilation;
+
+public class NullableReferenceTests
 {
-    public class NullableReferenceTests
+    [Fact]
+    public void NullableTypeNotAllowedForRegistration()
     {
-        [Fact]
-        public void NullableTypeNotAllowedForRegistration()
-        {
-            new AutofacCompile()
-                .Body(
-                @"
+        new AutofacCompile()
+            .Body(
+            @"
                    var containerBuilder = new ContainerBuilder();
                 
                    containerBuilder.Register<SimpleReferenceType?>(c => new SimpleReferenceType());
                 ")
-                .AssertWarningContainsKeywords("Autofac.Test.Compilation.SimpleReferenceType?", "notnull");
-        }
+            .AssertWarningContainsKeywords("Autofac.Test.Compilation.SimpleReferenceType?", "notnull");
+    }
 
-        [Fact]
-        public void NullableTypeNotAllowedForAsMethod()
-        {
-            new AutofacCompile()
-                .Body(
-                @"
+    [Fact]
+    public void NullableTypeNotAllowedForAsMethod()
+    {
+        new AutofacCompile()
+            .Body(
+            @"
                    var containerBuilder = new ContainerBuilder();
                 
                    containerBuilder.Register(c => new DerivedClass()).As<BaseClass?>();
                 ")
-                .AssertWarningContainsKeywords("Autofac.Test.Compilation.BaseClass?", "notnull");
-        }
+            .AssertWarningContainsKeywords("Autofac.Test.Compilation.BaseClass?", "notnull");
+    }
 
-        [Fact]
-        public void NullableTypeNotAllowedForNamedService()
-        {
-            new AutofacCompile()
-                .Body(
-                @"
+    [Fact]
+    public void NullableTypeNotAllowedForNamedService()
+    {
+        new AutofacCompile()
+            .Body(
+            @"
                    var containerBuilder = new ContainerBuilder();
                 
                    containerBuilder.Register(c => new DerivedClass()).Named<BaseClass?>(""name"");
                 ")
-                .AssertWarningContainsKeywords("Autofac.Test.Compilation.BaseClass?", "notnull");
-        }
+            .AssertWarningContainsKeywords("Autofac.Test.Compilation.BaseClass?", "notnull");
+    }
 
-        [Fact]
-        public void NullableTypeNotAllowedForKeyedService()
-        {
-            new AutofacCompile()
-                .Body(
-                @"
+    [Fact]
+    public void NullableTypeNotAllowedForKeyedService()
+    {
+        new AutofacCompile()
+            .Body(
+            @"
                    var containerBuilder = new ContainerBuilder();
                 
                    containerBuilder.Register(c => new DerivedClass()).Keyed<BaseClass?>(""name"");
                 ")
-                .AssertWarningContainsKeywords("Autofac.Test.Compilation.BaseClass?", "notnull");
-        }
+            .AssertWarningContainsKeywords("Autofac.Test.Compilation.BaseClass?", "notnull");
+    }
 
-        [Fact]
-        public void NullableSystemTypeNotAllowedForRegistration()
-        {
-            new AutofacCompile()
-                .Body(
-                @"
+    [Fact]
+    public void NullableSystemTypeNotAllowedForRegistration()
+    {
+        new AutofacCompile()
+            .Body(
+            @"
                    var containerBuilder = new ContainerBuilder();
                 
                    containerBuilder.Register<int?>(c => 1);
                 ")
-                .AssertWarningContainsKeywords("int?", "notnull");
-        }
+            .AssertWarningContainsKeywords("int?", "notnull");
+    }
 
-        [Fact]
-        public void NonNullableTypeAllowedForRegistration()
-        {
-            new AutofacCompile()
-                .Body(
-                @"
+    [Fact]
+    public void NonNullableTypeAllowedForRegistration()
+    {
+        new AutofacCompile()
+            .Body(
+            @"
                    var containerBuilder = new ContainerBuilder();
                 
                    containerBuilder.Register(c => new SimpleReferenceType());
                 ")
-                .AssertNoWarnings();
-        }
+            .AssertNoWarnings();
+    }
 
-        [Fact]
-        public void TryResolveGeneratesNullWarning()
-        {
-            new AutofacCompile()
-                .Body(
-                @"
+    [Fact]
+    public void TryResolveGeneratesNullWarning()
+    {
+        new AutofacCompile()
+            .Body(
+            @"
                     var containerBuilder = new ContainerBuilder();
 
                     var container = containerBuilder.Build();
@@ -100,7 +100,6 @@ namespace Autofac.Test.Compilation
 
                     simpleType.ToString();
                 ")
-                .AssertWarningContainsKeywords("null");
-        }
+            .AssertWarningContainsKeywords("null");
     }
 }
