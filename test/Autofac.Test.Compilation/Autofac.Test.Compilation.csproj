@@ -10,7 +10,12 @@
     <CodeAnalysisRuleSet>../../build/Test.ruleset</CodeAnalysisRuleSet>
     <IsPackable>false</IsPackable>
     <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Autofac\Autofac.csproj" />

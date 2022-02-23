@@ -13,7 +13,13 @@
     <PackageId>Autofac.Benchmarks</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <CodeAnalysisRuleSet>../../build/Test.ruleset</CodeAnalysisRuleSet>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="BenchmarkDotNet.Attributes" />
+    <Using Include="Xunit" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="TestResults\**" />
