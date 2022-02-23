@@ -16,7 +16,6 @@ namespace Autofac.Test.Util
             IsDisposed = true;
 
             Disposing?.Invoke(this, EventArgs.Empty);
-            GC.SuppressFinalize(this);
         }
     }
 }

@@ -6,6 +6,8 @@
     <Rule Id="CA1032" Action="None" />
     <!-- Change names to avoid reserved word overlaps (e.g., Delegate, GetType, etc.) - too many of these in the public API, we'd break if we fixed it. -->
     <Rule Id="CA1716" Action="None" />
+    <!-- Change Dispose() to call GC.SuppressFinalize - in tests we don't really care and it can impact readability. -->
+    <Rule Id="CA1816" Action="None" />
     <!-- Mark members static - test methods may not access member data but also can't be static. -->
     <Rule Id="CA1822" Action="None" />
     <!-- Implement serialization constructors - false positive when building .NET Core -->
