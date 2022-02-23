@@ -5,19 +5,18 @@ using System;
 using System.Collections.Generic;
 using Autofac.Builder;
 
-namespace Autofac.Features.Scanning
+namespace Autofac.Features.Scanning;
+
+/// <summary>
+/// Activation data for open generic types located by scanning assemblies.
+/// </summary>
+public class OpenGenericScanningActivatorData : BaseScanningActivatorData<ReflectionActivatorData, DynamicRegistrationStyle>
 {
     /// <summary>
-    /// Activation data for open generic types located by scanning assemblies.
+    /// Initializes a new instance of the <see cref="OpenGenericScanningActivatorData"/> class.
     /// </summary>
-    public class OpenGenericScanningActivatorData : BaseScanningActivatorData<ReflectionActivatorData, DynamicRegistrationStyle>
+    public OpenGenericScanningActivatorData()
+        : base(new List<Action<Type, IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>>>())
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OpenGenericScanningActivatorData"/> class.
-        /// </summary>
-        public OpenGenericScanningActivatorData()
-            : base(new List<Action<Type, IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>>>())
-        {
-        }
     }
 }

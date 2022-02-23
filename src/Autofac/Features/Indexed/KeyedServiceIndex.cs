@@ -4,46 +4,45 @@
 using System;
 using Autofac.Core;
 
-namespace Autofac.Features.Indexed
+namespace Autofac.Features.Indexed;
+
+/// <summary>
+/// Provides components by lookup operations via an index (key) type.
+/// </summary>
+/// <typeparam name="TKey">The index key type.</typeparam>
+/// <typeparam name="TValue">The index value type.</typeparam>
+internal class KeyedServiceIndex<TKey, TValue> : IIndex<TKey, TValue>
+    where TKey : notnull
 {
+    private readonly IComponentContext _context;
+
     /// <summary>
-    /// Provides components by lookup operations via an index (key) type.
+    /// Initializes a new instance of the <see cref="KeyedServiceIndex{TKey, TValue}"/> class.
     /// </summary>
-    /// <typeparam name="TKey">The index key type.</typeparam>
-    /// <typeparam name="TValue">The index value type.</typeparam>
-    internal class KeyedServiceIndex<TKey, TValue> : IIndex<TKey, TValue>
-        where TKey : notnull
+    /// <param name="context">The current component context.</param>
+    public KeyedServiceIndex(IComponentContext context)
     {
-        private readonly IComponentContext _context;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="KeyedServiceIndex{TKey, TValue}"/> class.
-        /// </summary>
-        /// <param name="context">The current component context.</param>
-        public KeyedServiceIndex(IComponentContext context)
+    /// <inheritdoc/>
+    public TValue this[TKey key] => (TValue)_context.ResolveService(GetService(key));
+
+    /// <inheritdoc/>
+    public bool TryGetValue(TKey key, out TValue value)
+    {
+        if (_context.TryResolveService(GetService(key), out var result))
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            value = (TValue)result;
+            return true;
         }
 
-        /// <inheritdoc/>
-        public TValue this[TKey key] => (TValue)_context.ResolveService(GetService(key));
+        value = default!;
+        return false;
+    }
 
-        /// <inheritdoc/>
-        public bool TryGetValue(TKey key, out TValue value)
-        {
-            if (_context.TryResolveService(GetService(key), out var result))
-            {
-                value = (TValue)result;
-                return true;
-            }
-
-            value = default!;
-            return false;
-        }
-
-        private static KeyedService GetService(TKey key)
-        {
-            return new KeyedService(key, typeof(TValue));
-        }
+    private static KeyedService GetService(TKey key)
+    {
+        return new KeyedService(key, typeof(TValue));
     }
 }

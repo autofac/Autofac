@@ -3,18 +3,17 @@
 
 using Autofac.Core.Registration;
 
-namespace Autofac.Core
+namespace Autofac.Core;
+
+/// <summary>
+/// Represents a set of components and related functionality
+/// packaged together.
+/// </summary>
+public interface IModule
 {
     /// <summary>
-    /// Represents a set of components and related functionality
-    /// packaged together.
+    /// Apply the module to the component registry.
     /// </summary>
-    public interface IModule
-    {
-        /// <summary>
-        /// Apply the module to the component registry.
-        /// </summary>
-        /// <param name="componentRegistry">Component registry to apply configuration to.</param>
-        void Configure(IComponentRegistryBuilder componentRegistry);
-    }
+    /// <param name="componentRegistry">Component registry to apply configuration to.</param>
+    void Configure(IComponentRegistryBuilder componentRegistry);
 }

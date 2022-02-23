@@ -3,32 +3,31 @@
 
 using System;
 
-namespace Autofac.Core.Resolving
+namespace Autofac.Core.Resolving;
+
+/// <summary>
+/// Describes the commencement of a new resolve operation.
+/// </summary>
+public sealed class ResolveOperationEndingEventArgs : EventArgs
 {
     /// <summary>
-    /// Describes the commencement of a new resolve operation.
+    /// Initializes a new instance of the <see cref="ResolveOperationEndingEventArgs"/> class.
     /// </summary>
-    public sealed class ResolveOperationEndingEventArgs : EventArgs
+    /// <param name="resolveOperation">The resolve operation that is ending.</param>
+    /// <param name="exception">If included, the exception causing the operation to end; otherwise, null.</param>
+    public ResolveOperationEndingEventArgs(IResolveOperation resolveOperation, Exception? exception = null)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResolveOperationEndingEventArgs"/> class.
-        /// </summary>
-        /// <param name="resolveOperation">The resolve operation that is ending.</param>
-        /// <param name="exception">If included, the exception causing the operation to end; otherwise, null.</param>
-        public ResolveOperationEndingEventArgs(IResolveOperation resolveOperation, Exception? exception = null)
-        {
-            ResolveOperation = resolveOperation;
-            Exception = exception;
-        }
-
-        /// <summary>
-        /// Gets the exception causing the operation to end, or null.
-        /// </summary>
-        public Exception? Exception { get; }
-
-        /// <summary>
-        /// Gets the resolve operation that is ending.
-        /// </summary>
-        public IResolveOperation ResolveOperation { get; }
+        ResolveOperation = resolveOperation;
+        Exception = exception;
     }
+
+    /// <summary>
+    /// Gets the exception causing the operation to end, or null.
+    /// </summary>
+    public Exception? Exception { get; }
+
+    /// <summary>
+    /// Gets the resolve operation that is ending.
+    /// </summary>
+    public IResolveOperation ResolveOperation { get; }
 }

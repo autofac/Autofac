@@ -10,128 +10,127 @@ using System.Threading.Tasks;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 
-namespace Autofac.Core.Activators.ProvidedInstance
+namespace Autofac.Core.Activators.ProvidedInstance;
+
+/// <summary>
+/// Provides a pre-constructed instance.
+/// </summary>
+public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
 {
+    private readonly object _instance;
+    private bool _activated;
+
     /// <summary>
-    /// Provides a pre-constructed instance.
+    /// Initializes a new instance of the <see cref="ProvidedInstanceActivator"/> class.
     /// </summary>
-    public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
+    /// <param name="instance">The instance to provide.</param>
+    public ProvidedInstanceActivator(object instance)
+        : base(GetType(instance))
     {
-        private readonly object _instance;
-        private bool _activated;
+        _instance = instance;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ProvidedInstanceActivator"/> class.
-        /// </summary>
-        /// <param name="instance">The instance to provide.</param>
-        public ProvidedInstanceActivator(object instance)
-            : base(GetType(instance))
+    /// <inheritdoc/>
+    public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)
+    {
+        if (pipelineBuilder is null)
         {
-            _instance = instance;
+            throw new ArgumentNullException(nameof(pipelineBuilder));
         }
 
-        /// <inheritdoc/>
-        public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)
+        pipelineBuilder.Use(this.DisplayName(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
         {
-            if (pipelineBuilder is null)
+            ctxt.Instance = GetInstance();
+
+            next(ctxt);
+        });
+    }
+
+    private object GetInstance()
+    {
+        CheckNotDisposed();
+
+        if (_activated)
+        {
+            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, _instance.GetType()));
+        }
+
+        _activated = true;
+
+        return _instance;
+    }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the activator disposes the instance that it holds.
+    /// Necessary because otherwise instances that are never resolved will never be
+    /// disposed.
+    /// </summary>
+    public bool DisposeInstance { get; set; }
+
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        // Only dispose of the instance here if it wasn't activated. If it was activated,
+        // then either the owning lifetime scope will dispose of it automatically
+        // (see InstanceLookup.Activate) or an OnRelease handler will take care of it.
+        if (disposing && DisposeInstance && !_activated)
+        {
+            // If we are in synchronous dispose, and an object implements IDisposable,
+            // then use it.
+            if (_instance is IDisposable disposable)
             {
-                throw new ArgumentNullException(nameof(pipelineBuilder));
+                disposable.Dispose();
             }
-
-            pipelineBuilder.Use(this.DisplayName(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
+            else if (_instance is IAsyncDisposable asyncDisposable)
             {
-                ctxt.Instance = GetInstance();
+                Trace.TraceWarning(DisposerResources.TypeOnlyImplementsIAsyncDisposable, LimitType.FullName);
 
-                next(ctxt);
-            });
-        }
-
-        private object GetInstance()
-        {
-            CheckNotDisposed();
-
-            if (_activated)
-            {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, _instance.GetType()));
+                // Type only implements IAsyncDisposable. We will need to do sync-over-async.
+                // We want to ensure we lose all context here, because if we don't we can deadlock.
+                // So we push this disposal onto the threadpool.
+                Task.Run(async () => await asyncDisposable.DisposeAsync().ConfigureAwait(false))
+                    .ConfigureAwait(false)
+                    .GetAwaiter().GetResult();
             }
-
-            _activated = true;
-
-            return _instance;
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether the activator disposes the instance that it holds.
-        /// Necessary because otherwise instances that are never resolved will never be
-        /// disposed.
-        /// </summary>
-        public bool DisposeInstance { get; set; }
+        base.Dispose(disposing);
+    }
 
-        /// <inheritdoc />
-        protected override void Dispose(bool disposing)
+    /// <inheritdoc />
+    protected override async ValueTask DisposeAsync(bool disposing)
+    {
+        if (disposing && DisposeInstance && !_activated)
         {
-            // Only dispose of the instance here if it wasn't activated. If it was activated,
-            // then either the owning lifetime scope will dispose of it automatically
-            // (see InstanceLookup.Activate) or an OnRelease handler will take care of it.
-            if (disposing && DisposeInstance && !_activated)
+            // If the item implements IAsyncDisposable we will call its DisposeAsync Method.
+            if (_instance is IAsyncDisposable asyncDisposable)
             {
-                // If we are in synchronous dispose, and an object implements IDisposable,
-                // then use it.
-                if (_instance is IDisposable disposable)
-                {
-                    disposable.Dispose();
-                }
-                else if (_instance is IAsyncDisposable asyncDisposable)
-                {
-                    Trace.TraceWarning(DisposerResources.TypeOnlyImplementsIAsyncDisposable, LimitType.FullName);
+                var vt = asyncDisposable.DisposeAsync();
 
-                    // Type only implements IAsyncDisposable. We will need to do sync-over-async.
-                    // We want to ensure we lose all context here, because if we don't we can deadlock.
-                    // So we push this disposal onto the threadpool.
-                    Task.Run(async () => await asyncDisposable.DisposeAsync().ConfigureAwait(false))
-                        .ConfigureAwait(false)
-                        .GetAwaiter().GetResult();
-                }
-            }
-
-            base.Dispose(disposing);
-        }
-
-        /// <inheritdoc />
-        protected override async ValueTask DisposeAsync(bool disposing)
-        {
-            if (disposing && DisposeInstance && !_activated)
-            {
-                // If the item implements IAsyncDisposable we will call its DisposeAsync Method.
-                if (_instance is IAsyncDisposable asyncDisposable)
+                // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
+                if (!vt.IsCompletedSuccessfully)
                 {
-                    var vt = asyncDisposable.DisposeAsync();
-
-                    // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
-                    if (!vt.IsCompletedSuccessfully)
-                    {
-                        await vt.ConfigureAwait(false);
-                    }
-                }
-                else if (_instance is IDisposable disposable)
-                {
-                    // Call the standard Dispose.
-                    disposable.Dispose();
+                    await vt.ConfigureAwait(false);
                 }
             }
-
-            // Do not call the base, otherwise the standard Dispose will fire.
-        }
-
-        [SuppressMessage("CA2222", "CA2222", Justification = "False positive. GetType doesn't hide an inherited member.")]
-        private static Type GetType(object instance)
-        {
-            if (instance == null)
+            else if (_instance is IDisposable disposable)
             {
-                throw new ArgumentNullException(nameof(instance));
+                // Call the standard Dispose.
+                disposable.Dispose();
             }
-
-            return instance.GetType();
         }
+
+        // Do not call the base, otherwise the standard Dispose will fire.
+    }
+
+    [SuppressMessage("CA2222", "CA2222", Justification = "False positive. GetType doesn't hide an inherited member.")]
+    private static Type GetType(object instance)
+    {
+        if (instance == null)
+        {
+            throw new ArgumentNullException(nameof(instance));
+        }
+
+        return instance.GetType();
     }
 }

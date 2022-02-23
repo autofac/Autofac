@@ -3,19 +3,18 @@
 
 using System.Collections.Generic;
 
-namespace Autofac.Core.Activators.Reflection
+namespace Autofac.Core.Activators.Reflection;
+
+/// <summary>
+/// Selects the best constructor from a set of available constructors.
+/// </summary>
+public interface IConstructorSelector
 {
     /// <summary>
-    /// Selects the best constructor from a set of available constructors.
+    /// Selects the best constructor from the available constructors.
     /// </summary>
-    public interface IConstructorSelector
-    {
-        /// <summary>
-        /// Selects the best constructor from the available constructors.
-        /// </summary>
-        /// <param name="constructorBindings">Available constructors.</param>
-        /// <param name="parameters">Parameters to the instance being resolved.</param>
-        /// <returns>The best constructor.</returns>
-        BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters);
-    }
+    /// <param name="constructorBindings">Available constructors.</param>
+    /// <param name="parameters">Parameters to the instance being resolved.</param>
+    /// <returns>The best constructor.</returns>
+    BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters);
 }

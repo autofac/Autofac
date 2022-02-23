@@ -4,30 +4,29 @@
 using System;
 using Autofac.Core.Resolving.Pipeline;
 
-namespace Autofac.Core.Resolving
+namespace Autofac.Core.Resolving;
+
+/// <summary>
+/// Fired when a resolve request is starting.
+/// </summary>
+public class ResolveRequestCompletingEventArgs : EventArgs
 {
     /// <summary>
-    /// Fired when a resolve request is starting.
+    /// Initializes a new instance of the <see cref="ResolveRequestCompletingEventArgs"/> class.
     /// </summary>
-    public class ResolveRequestCompletingEventArgs : EventArgs
+    /// <param name="requestContext">The resolve request context that is completing.</param>
+    public ResolveRequestCompletingEventArgs(ResolveRequestContext requestContext)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResolveRequestCompletingEventArgs"/> class.
-        /// </summary>
-        /// <param name="requestContext">The resolve request context that is completing.</param>
-        public ResolveRequestCompletingEventArgs(ResolveRequestContext requestContext)
+        if (requestContext is null)
         {
-            if (requestContext is null)
-            {
-                throw new ArgumentNullException(nameof(requestContext));
-            }
-
-            RequestContext = requestContext;
+            throw new ArgumentNullException(nameof(requestContext));
         }
 
-        /// <summary>
-        /// Gets the instance lookup operation that is beginning.
-        /// </summary>
-        public ResolveRequestContext RequestContext { get; }
+        RequestContext = requestContext;
     }
+
+    /// <summary>
+    /// Gets the instance lookup operation that is beginning.
+    /// </summary>
+    public ResolveRequestContext RequestContext { get; }
 }

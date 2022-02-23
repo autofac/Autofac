@@ -5,30 +5,29 @@ using System;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 
-namespace Autofac.Builder
+namespace Autofac.Builder;
+
+/// <summary>
+/// Reflection activator data for concrete types.
+/// </summary>
+public class ConcreteReflectionActivatorData : ReflectionActivatorData, IConcreteActivatorData
 {
     /// <summary>
-    /// Reflection activator data for concrete types.
+    /// Initializes a new instance of the <see cref="ConcreteReflectionActivatorData"/> class.
     /// </summary>
-    public class ConcreteReflectionActivatorData : ReflectionActivatorData, IConcreteActivatorData
+    /// <param name="implementer">Type that will be activated.</param>
+    public ConcreteReflectionActivatorData(Type implementer)
+        : base(implementer)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConcreteReflectionActivatorData"/> class.
-        /// </summary>
-        /// <param name="implementer">Type that will be activated.</param>
-        public ConcreteReflectionActivatorData(Type implementer)
-            : base(implementer)
-        {
-        }
-
-        /// <summary>
-        /// Gets the instance activator based on the provided data.
-        /// </summary>
-        public IInstanceActivator Activator => new ReflectionActivator(
-            ImplementationType,
-            ConstructorFinder,
-            ConstructorSelector,
-            ConfiguredParameters,
-            ConfiguredProperties);
     }
+
+    /// <summary>
+    /// Gets the instance activator based on the provided data.
+    /// </summary>
+    public IInstanceActivator Activator => new ReflectionActivator(
+        ImplementationType,
+        ConstructorFinder,
+        ConstructorSelector,
+        ConfiguredParameters,
+        ConfiguredProperties);
 }

@@ -4,18 +4,17 @@
 using System;
 using System.Reflection;
 
-namespace Autofac.Core.Activators.Reflection
+namespace Autofac.Core.Activators.Reflection;
+
+/// <summary>
+/// Find suitable constructors from which to select.
+/// </summary>
+public interface IConstructorFinder
 {
     /// <summary>
-    /// Find suitable constructors from which to select.
+    /// Finds suitable constructors on the target type.
     /// </summary>
-    public interface IConstructorFinder
-    {
-        /// <summary>
-        /// Finds suitable constructors on the target type.
-        /// </summary>
-        /// <param name="targetType">Type to search for constructors.</param>
-        /// <returns>Suitable constructors.</returns>
-        ConstructorInfo[] FindConstructors(Type targetType);
-    }
+    /// <param name="targetType">Type to search for constructors.</param>
+    /// <returns>Suitable constructors.</returns>
+    ConstructorInfo[] FindConstructors(Type targetType);
 }

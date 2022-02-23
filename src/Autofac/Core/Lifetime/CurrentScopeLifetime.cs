@@ -3,32 +3,31 @@
 
 using System;
 
-namespace Autofac.Core.Lifetime
+namespace Autofac.Core.Lifetime;
+
+/// <summary>
+/// Attaches the instance's lifetime to the current lifetime scope.
+/// </summary>
+public class CurrentScopeLifetime : IComponentLifetime
 {
     /// <summary>
-    /// Attaches the instance's lifetime to the current lifetime scope.
+    /// Gets the singleton instance of the <see cref="CurrentScopeLifetime"/> behaviour.
     /// </summary>
-    public class CurrentScopeLifetime : IComponentLifetime
+    public static IComponentLifetime Instance { get; } = new CurrentScopeLifetime();
+
+    /// <summary>
+    /// Given the most nested scope visible within the resolve operation, find
+    /// the scope for the component.
+    /// </summary>
+    /// <param name="mostNestedVisibleScope">The most nested visible scope.</param>
+    /// <returns>The scope for the component.</returns>
+    public ISharingLifetimeScope FindScope(ISharingLifetimeScope mostNestedVisibleScope)
     {
-        /// <summary>
-        /// Gets the singleton instance of the <see cref="CurrentScopeLifetime"/> behaviour.
-        /// </summary>
-        public static IComponentLifetime Instance { get; } = new CurrentScopeLifetime();
-
-        /// <summary>
-        /// Given the most nested scope visible within the resolve operation, find
-        /// the scope for the component.
-        /// </summary>
-        /// <param name="mostNestedVisibleScope">The most nested visible scope.</param>
-        /// <returns>The scope for the component.</returns>
-        public ISharingLifetimeScope FindScope(ISharingLifetimeScope mostNestedVisibleScope)
+        if (mostNestedVisibleScope == null)
         {
-            if (mostNestedVisibleScope == null)
-            {
-                throw new ArgumentNullException(nameof(mostNestedVisibleScope));
-            }
-
-            return mostNestedVisibleScope;
+            throw new ArgumentNullException(nameof(mostNestedVisibleScope));
         }
+
+        return mostNestedVisibleScope;
     }
 }

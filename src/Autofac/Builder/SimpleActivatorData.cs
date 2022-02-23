@@ -4,25 +4,24 @@
 using System;
 using Autofac.Core;
 
-namespace Autofac.Builder
+namespace Autofac.Builder;
+
+/// <summary>
+/// An activator builder with no parameters.
+/// </summary>
+public class SimpleActivatorData : IConcreteActivatorData
 {
     /// <summary>
-    /// An activator builder with no parameters.
+    /// Initializes a new instance of the <see cref="SimpleActivatorData"/> class.
     /// </summary>
-    public class SimpleActivatorData : IConcreteActivatorData
+    /// <param name="activator">The activator to return.</param>
+    public SimpleActivatorData(IInstanceActivator activator)
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SimpleActivatorData"/> class.
-        /// </summary>
-        /// <param name="activator">The activator to return.</param>
-        public SimpleActivatorData(IInstanceActivator activator)
-        {
-            Activator = activator ?? throw new ArgumentNullException(nameof(activator));
-        }
-
-        /// <summary>
-        /// Gets the activator.
-        /// </summary>
-        public IInstanceActivator Activator { get; }
+        Activator = activator ?? throw new ArgumentNullException(nameof(activator));
     }
+
+    /// <summary>
+    /// Gets the activator.
+    /// </summary>
+    public IInstanceActivator Activator { get; }
 }

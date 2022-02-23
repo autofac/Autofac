@@ -5,71 +5,70 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Autofac.Core.Resolving.Pipeline
+namespace Autofac.Core.Resolving.Pipeline;
+
+/// <summary>
+/// Enumerator for a pipeline builder.
+/// </summary>
+internal sealed class PipelineBuilderEnumerator : IEnumerator, IEnumerator<IResolveMiddleware>
 {
+    private readonly MiddlewareDeclaration? _first;
+    private MiddlewareDeclaration? _current;
+    private bool _ended;
+
     /// <summary>
-    /// Enumerator for a pipeline builder.
+    /// Initializes a new instance of the <see cref="PipelineBuilderEnumerator"/> class.
     /// </summary>
-    internal sealed class PipelineBuilderEnumerator : IEnumerator, IEnumerator<IResolveMiddleware>
+    /// <param name="first">The first middleware declaration.</param>
+    public PipelineBuilderEnumerator(MiddlewareDeclaration? first)
     {
-        private readonly MiddlewareDeclaration? _first;
-        private MiddlewareDeclaration? _current;
-        private bool _ended;
+        _first = first;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PipelineBuilderEnumerator"/> class.
-        /// </summary>
-        /// <param name="first">The first middleware declaration.</param>
-        public PipelineBuilderEnumerator(MiddlewareDeclaration? first)
+    /// <inheritdoc />
+    object IEnumerator.Current => _current?.Middleware ?? throw new InvalidOperationException();
+
+    /// <inheritdoc />
+    public IResolveMiddleware Current => _current?.Middleware ?? throw new InvalidOperationException();
+
+    /// <inheritdoc />
+    public bool MoveNext()
+    {
+        if (_ended)
         {
-            _first = first;
-        }
-
-        /// <inheritdoc />
-        object IEnumerator.Current => _current?.Middleware ?? throw new InvalidOperationException();
-
-        /// <inheritdoc />
-        public IResolveMiddleware Current => _current?.Middleware ?? throw new InvalidOperationException();
-
-        /// <inheritdoc />
-        public bool MoveNext()
-        {
-            if (_ended)
-            {
-                return false;
-            }
-
-            if (_current is not null)
-            {
-                _current = _current.Next;
-
-                _ended = _current is null;
-
-                return !_ended;
-            }
-
-            if (_first is not null)
-            {
-                _current = _first;
-
-                return true;
-            }
-
-            _ended = true;
             return false;
         }
 
-        /// <inheritdoc />
-        public void Reset()
+        if (_current is not null)
         {
-            _current = null;
-            _ended = false;
+            _current = _current.Next;
+
+            _ended = _current is null;
+
+            return !_ended;
         }
 
-        /// <inheritdoc />
-        public void Dispose()
+        if (_first is not null)
         {
-            // Nothing to dispose here.
+            _current = _first;
+
+            return true;
         }
+
+        _ended = true;
+        return false;
+    }
+
+    /// <inheritdoc />
+    public void Reset()
+    {
+        _current = null;
+        _ended = false;
+    }
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        // Nothing to dispose here.
     }
 }

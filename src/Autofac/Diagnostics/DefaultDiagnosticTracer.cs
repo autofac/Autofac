@@ -8,305 +8,304 @@ using System.Text;
 using Autofac.Core;
 using Autofac.Core.Resolving;
 
-namespace Autofac.Diagnostics
+namespace Autofac.Diagnostics;
+
+/// <summary>
+/// Provides a default resolve pipeline tracer that builds a multi-line
+/// string describing the end-to-end operation flow. Attach to the
+/// <see cref="OperationDiagnosticTracerBase{TContent}.OperationCompleted"/>
+/// event to receive notifications when new trace content is available.
+/// </summary>
+/// <remarks>
+/// <para>
+/// The tracer subscribes to all Autofac diagnostic events and can't be
+/// unsubscribed. This is required to ensure beginning and end of each
+/// logical activity can be captured.
+/// </para>
+/// </remarks>
+public class DefaultDiagnosticTracer : OperationDiagnosticTracerBase<string>
 {
+    private const string RequestExceptionTraced = "__RequestException";
+
+    private readonly ConcurrentDictionary<IResolveOperation, IndentingStringBuilder> _operationBuilders = new();
+
+    private static readonly string[] NewLineSplit = new[] { Environment.NewLine };
+
     /// <summary>
-    /// Provides a default resolve pipeline tracer that builds a multi-line
-    /// string describing the end-to-end operation flow. Attach to the
-    /// <see cref="OperationDiagnosticTracerBase{TContent}.OperationCompleted"/>
-    /// event to receive notifications when new trace content is available.
+    /// Initializes a new instance of the <see cref="DefaultDiagnosticTracer"/> class.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// The tracer subscribes to all Autofac diagnostic events and can't be
-    /// unsubscribed. This is required to ensure beginning and end of each
-    /// logical activity can be captured.
-    /// </para>
-    /// </remarks>
-    public class DefaultDiagnosticTracer : OperationDiagnosticTracerBase<string>
+    public DefaultDiagnosticTracer()
+        : base()
     {
-        private const string RequestExceptionTraced = "__RequestException";
+    }
 
-        private readonly ConcurrentDictionary<IResolveOperation, IndentingStringBuilder> _operationBuilders = new();
+    /// <summary>
+    /// Gets the number of operations in progress being traced.
+    /// </summary>
+    /// <value>
+    /// An <see cref="int"/> with the number of trace IDs associated
+    /// with in-progress operations being traced by this tracer.
+    /// </value>
+    public override int OperationsInProgress => _operationBuilders.Count;
 
-        private static readonly string[] NewLineSplit = new[] { Environment.NewLine };
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultDiagnosticTracer"/> class.
-        /// </summary>
-        public DefaultDiagnosticTracer()
-            : base()
+    /// <inheritdoc/>
+    protected override void OnOperationStart(OperationStartDiagnosticData data)
+    {
+        if (data is null)
         {
+            return;
         }
 
-        /// <summary>
-        /// Gets the number of operations in progress being traced.
-        /// </summary>
-        /// <value>
-        /// An <see cref="int"/> with the number of trace IDs associated
-        /// with in-progress operations being traced by this tracer.
-        /// </value>
-        public override int OperationsInProgress => _operationBuilders.Count;
+        var builder = _operationBuilders.GetOrAdd(data.Operation, k => new IndentingStringBuilder());
 
-        /// <inheritdoc/>
-        protected override void OnOperationStart(OperationStartDiagnosticData data)
+        builder.AppendFormattedLine(TracerMessages.ResolveOperationStarting);
+        builder.AppendLine(TracerMessages.EntryBrace);
+        builder.Indent();
+    }
+
+    /// <inheritdoc/>
+    protected override void OnRequestStart(RequestDiagnosticData data)
+    {
+        if (data is null)
         {
-            if (data is null)
-            {
-                return;
-            }
+            return;
+        }
 
-            var builder = _operationBuilders.GetOrAdd(data.Operation, k => new IndentingStringBuilder());
-
-            builder.AppendFormattedLine(TracerMessages.ResolveOperationStarting);
+        if (_operationBuilders.TryGetValue(data.Operation, out var builder))
+        {
+            builder.AppendFormattedLine(TracerMessages.ResolveRequestStarting);
             builder.AppendLine(TracerMessages.EntryBrace);
             builder.Indent();
+            builder.AppendFormattedLine(TracerMessages.ServiceDisplay, data.RequestContext.Service);
+            builder.AppendFormattedLine(TracerMessages.ComponentDisplay, data.RequestContext.Registration.Activator.DisplayName());
+
+            if (data.RequestContext.DecoratorTarget is object)
+            {
+                builder.AppendFormattedLine(TracerMessages.TargetDisplay, data.RequestContext.DecoratorTarget.Activator.DisplayName());
+            }
+
+            builder.AppendLine();
+            builder.AppendLine(TracerMessages.Pipeline);
+        }
+    }
+
+    /// <inheritdoc/>
+    protected override void OnMiddlewareStart(MiddlewareDiagnosticData data)
+    {
+        if (data is null)
+        {
+            return;
         }
 
-        /// <inheritdoc/>
-        protected override void OnRequestStart(RequestDiagnosticData data)
+        if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
         {
-            if (data is null)
-            {
-                return;
-            }
+            builder.AppendFormattedLine(TracerMessages.EnterMiddleware, data.Middleware.ToString());
+            builder.Indent();
+        }
+    }
 
-            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
-            {
-                builder.AppendFormattedLine(TracerMessages.ResolveRequestStarting);
-                builder.AppendLine(TracerMessages.EntryBrace);
-                builder.Indent();
-                builder.AppendFormattedLine(TracerMessages.ServiceDisplay, data.RequestContext.Service);
-                builder.AppendFormattedLine(TracerMessages.ComponentDisplay, data.RequestContext.Registration.Activator.DisplayName());
-
-                if (data.RequestContext.DecoratorTarget is object)
-                {
-                    builder.AppendFormattedLine(TracerMessages.TargetDisplay, data.RequestContext.DecoratorTarget.Activator.DisplayName());
-                }
-
-                builder.AppendLine();
-                builder.AppendLine(TracerMessages.Pipeline);
-            }
+    /// <inheritdoc/>
+    protected override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
+    {
+        if (data is null)
+        {
+            return;
         }
 
-        /// <inheritdoc/>
-        protected override void OnMiddlewareStart(MiddlewareDiagnosticData data)
+        if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
         {
-            if (data is null)
-            {
-                return;
-            }
+            builder.Outdent();
+            builder.AppendFormattedLine(TracerMessages.ExitMiddlewareFailure, data.Middleware.ToString());
+        }
+    }
 
-            if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
-            {
-                builder.AppendFormattedLine(TracerMessages.EnterMiddleware, data.Middleware.ToString());
-                builder.Indent();
-            }
+    /// <inheritdoc/>
+    protected override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
+    {
+        if (data is null)
+        {
+            return;
         }
 
-        /// <inheritdoc/>
-        protected override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
+        if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
         {
-            if (data is null)
-            {
-                return;
-            }
+            builder.Outdent();
+            builder.AppendFormattedLine(TracerMessages.ExitMiddlewareSuccess, data.Middleware.ToString());
+        }
+    }
 
-            if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
-            {
-                builder.Outdent();
-                builder.AppendFormattedLine(TracerMessages.ExitMiddlewareFailure, data.Middleware.ToString());
-            }
+    /// <inheritdoc/>
+    protected override void OnRequestFailure(RequestFailureDiagnosticData data)
+    {
+        if (data is null)
+        {
+            return;
         }
 
-        /// <inheritdoc/>
-        protected override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
+        if (_operationBuilders.TryGetValue(data.Operation, out var builder))
         {
-            if (data is null)
+            builder.Outdent();
+            builder.AppendLine(TracerMessages.ExitBrace);
+            var requestException = data.RequestException;
+
+            if (requestException is DependencyResolutionException && requestException.InnerException is not null)
             {
-                return;
+                requestException = requestException.InnerException;
             }
 
-            if (_operationBuilders.TryGetValue(data.RequestContext.Operation, out var builder))
+            if (requestException.Data.Contains(RequestExceptionTraced))
             {
-                builder.Outdent();
-                builder.AppendFormattedLine(TracerMessages.ExitMiddlewareSuccess, data.Middleware.ToString());
+                builder.AppendLine(TracerMessages.ResolveRequestFailedNested);
             }
+            else
+            {
+                builder.AppendException(TracerMessages.ResolveRequestFailed, requestException);
+            }
+
+            requestException.Data[RequestExceptionTraced] = true;
+        }
+    }
+
+    /// <inheritdoc/>
+    protected override void OnRequestSuccess(RequestDiagnosticData data)
+    {
+        if (data is null)
+        {
+            return;
         }
 
-        /// <inheritdoc/>
-        protected override void OnRequestFailure(RequestFailureDiagnosticData data)
+        if (_operationBuilders.TryGetValue(data.Operation, out var builder))
         {
-            if (data is null)
-            {
-                return;
-            }
+            builder.Outdent();
+            builder.AppendLine(TracerMessages.ExitBrace);
+            builder.AppendFormattedLine(TracerMessages.ResolveRequestSucceeded, data.RequestContext.Instance);
+        }
+    }
 
-            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
+    /// <inheritdoc/>
+    protected override void OnOperationFailure(OperationFailureDiagnosticData data)
+    {
+        if (data is null)
+        {
+            return;
+        }
+
+        if (_operationBuilders.TryGetValue(data.Operation, out var builder))
+        {
+            try
             {
                 builder.Outdent();
                 builder.AppendLine(TracerMessages.ExitBrace);
-                var requestException = data.RequestException;
+                builder.AppendException(TracerMessages.OperationFailed, data.OperationException);
 
-                if (requestException is DependencyResolutionException && requestException.InnerException is not null)
-                {
-                    requestException = requestException.InnerException;
-                }
-
-                if (requestException.Data.Contains(RequestExceptionTraced))
-                {
-                    builder.AppendLine(TracerMessages.ResolveRequestFailedNested);
-                }
-                else
-                {
-                    builder.AppendException(TracerMessages.ResolveRequestFailed, requestException);
-                }
-
-                requestException.Data[RequestExceptionTraced] = true;
+                OnOperationCompleted(new OperationTraceCompletedArgs<string>(data.Operation, false, builder.ToString()));
+            }
+            finally
+            {
+                _operationBuilders.TryRemove(data.Operation, out var _);
             }
         }
+    }
 
-        /// <inheritdoc/>
-        protected override void OnRequestSuccess(RequestDiagnosticData data)
+    /// <inheritdoc/>
+    protected override void OnOperationSuccess(OperationSuccessDiagnosticData data)
+    {
+        if (data is null)
         {
-            if (data is null)
-            {
-                return;
-            }
+            return;
+        }
 
-            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
+        if (_operationBuilders.TryGetValue(data.Operation, out var builder))
+        {
+            try
             {
                 builder.Outdent();
                 builder.AppendLine(TracerMessages.ExitBrace);
-                builder.AppendFormattedLine(TracerMessages.ResolveRequestSucceeded, data.RequestContext.Instance);
+                builder.AppendFormattedLine(TracerMessages.OperationSucceeded, data.ResolvedInstance);
+
+                OnOperationCompleted(new OperationTraceCompletedArgs<string>(data.Operation, true, builder.ToString()));
+            }
+            finally
+            {
+                _operationBuilders.TryRemove(data.Operation, out var _);
             }
         }
+    }
 
-        /// <inheritdoc/>
-        protected override void OnOperationFailure(OperationFailureDiagnosticData data)
+    /// <summary>
+    /// Provides a string builder that auto-indents lines.
+    /// </summary>
+    private class IndentingStringBuilder
+    {
+        private const int IndentSize = 2;
+
+        private readonly StringBuilder _builder;
+        private int _indentCount;
+
+        public IndentingStringBuilder()
         {
-            if (data is null)
-            {
-                return;
-            }
-
-            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
-            {
-                try
-                {
-                    builder.Outdent();
-                    builder.AppendLine(TracerMessages.ExitBrace);
-                    builder.AppendException(TracerMessages.OperationFailed, data.OperationException);
-
-                    OnOperationCompleted(new OperationTraceCompletedArgs<string>(data.Operation, false, builder.ToString()));
-                }
-                finally
-                {
-                    _operationBuilders.TryRemove(data.Operation, out var _);
-                }
-            }
+            _builder = new StringBuilder();
         }
 
-        /// <inheritdoc/>
-        protected override void OnOperationSuccess(OperationSuccessDiagnosticData data)
+        public void Indent()
         {
-            if (data is null)
-            {
-                return;
-            }
-
-            if (_operationBuilders.TryGetValue(data.Operation, out var builder))
-            {
-                try
-                {
-                    builder.Outdent();
-                    builder.AppendLine(TracerMessages.ExitBrace);
-                    builder.AppendFormattedLine(TracerMessages.OperationSucceeded, data.ResolvedInstance);
-
-                    OnOperationCompleted(new OperationTraceCompletedArgs<string>(data.Operation, true, builder.ToString()));
-                }
-                finally
-                {
-                    _operationBuilders.TryRemove(data.Operation, out var _);
-                }
-            }
+            _indentCount++;
         }
 
-        /// <summary>
-        /// Provides a string builder that auto-indents lines.
-        /// </summary>
-        private class IndentingStringBuilder
+        public void Outdent()
         {
-            private const int IndentSize = 2;
-
-            private readonly StringBuilder _builder;
-            private int _indentCount;
-
-            public IndentingStringBuilder()
+            if (_indentCount == 0)
             {
-                _builder = new StringBuilder();
+                throw new InvalidOperationException(TracerMessages.OutdentFailure);
             }
 
-            public void Indent()
+            _indentCount--;
+        }
+
+        public void AppendFormattedLine(string format, params object?[] args)
+        {
+            AppendIndent();
+            _builder.AppendFormat(CultureInfo.CurrentCulture, format, args);
+            _builder.AppendLine();
+        }
+
+        public void AppendException(string message, Exception ex)
+        {
+            AppendIndent();
+            _builder.AppendLine(message);
+
+            var exceptionBody = ex.ToString().Split(NewLineSplit, StringSplitOptions.None);
+
+            Indent();
+
+            foreach (var exceptionLine in exceptionBody)
             {
-                _indentCount++;
+                AppendLine(exceptionLine);
             }
 
-            public void Outdent()
-            {
-                if (_indentCount == 0)
-                {
-                    throw new InvalidOperationException(TracerMessages.OutdentFailure);
-                }
+            Outdent();
+        }
 
-                _indentCount--;
-            }
+        public void AppendLine()
+        {
+            // No indent on a blank line.
+            _builder.AppendLine();
+        }
 
-            public void AppendFormattedLine(string format, params object?[] args)
-            {
-                AppendIndent();
-                _builder.AppendFormat(CultureInfo.CurrentCulture, format, args);
-                _builder.AppendLine();
-            }
+        public void AppendLine(string value)
+        {
+            AppendIndent();
+            _builder.AppendLine(value);
+        }
 
-            public void AppendException(string message, Exception ex)
-            {
-                AppendIndent();
-                _builder.AppendLine(message);
+        private void AppendIndent()
+        {
+            _builder.Append(' ', IndentSize * _indentCount);
+        }
 
-                var exceptionBody = ex.ToString().Split(NewLineSplit, StringSplitOptions.None);
-
-                Indent();
-
-                foreach (var exceptionLine in exceptionBody)
-                {
-                    AppendLine(exceptionLine);
-                }
-
-                Outdent();
-            }
-
-            public void AppendLine()
-            {
-                // No indent on a blank line.
-                _builder.AppendLine();
-            }
-
-            public void AppendLine(string value)
-            {
-                AppendIndent();
-                _builder.AppendLine(value);
-            }
-
-            private void AppendIndent()
-            {
-                _builder.Append(' ', IndentSize * _indentCount);
-            }
-
-            public override string ToString()
-            {
-                return _builder.ToString();
-            }
+        public override string ToString()
+        {
+            return _builder.ToString();
         }
     }
 }

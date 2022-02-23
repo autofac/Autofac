@@ -3,27 +3,26 @@
 
 using System.ComponentModel;
 
-namespace Autofac.Core.Registration
+namespace Autofac.Core.Registration;
+
+/// <summary>
+/// Interface providing fluent syntax for chaining module registrations.
+/// </summary>
+public interface IModuleRegistrar
 {
     /// <summary>
-    /// Interface providing fluent syntax for chaining module registrations.
+    /// Gets the registrar data.
     /// </summary>
-    public interface IModuleRegistrar
-    {
-        /// <summary>
-        /// Gets the registrar data.
-        /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ModuleRegistrarData RegistrarData { get; }
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public ModuleRegistrarData RegistrarData { get; }
 
-        /// <summary>
-        /// Add a module to the container.
-        /// </summary>
-        /// <param name="module">The module to add.</param>
-        /// <returns>
-        /// The <see cref="IModuleRegistrar"/> to allow
-        /// additional chained module registrations.
-        /// </returns>
-        IModuleRegistrar RegisterModule(IModule module);
-    }
+    /// <summary>
+    /// Add a module to the container.
+    /// </summary>
+    /// <param name="module">The module to add.</param>
+    /// <returns>
+    /// The <see cref="IModuleRegistrar"/> to allow
+    /// additional chained module registrations.
+    /// </returns>
+    IModuleRegistrar RegisterModule(IModule module);
 }
