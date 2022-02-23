@@ -9,58 +9,57 @@ using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Xunit;
 
-namespace Autofac.Test.Core.Registration
+namespace Autofac.Test.Core.Registration;
+
+public sealed class ScopeRestrictedRegisteredServicesTrackerTests
 {
-    public sealed class ScopeRestrictedRegisteredServicesTrackerTests
+    private static readonly IComponentRegistration ObjectRegistration =
+        RegistrationBuilder.ForType<object>().SingleInstance().CreateRegistration();
+
+    private class ObjectRegistrationSource : IRegistrationSource
     {
-        private static readonly IComponentRegistration ObjectRegistration =
-            RegistrationBuilder.ForType<object>().SingleInstance().CreateRegistration();
-
-        private class ObjectRegistrationSource : IRegistrationSource
+        public IEnumerable<IComponentRegistration> RegistrationsFor(
+            Service service,
+            Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
-            public IEnumerable<IComponentRegistration> RegistrationsFor(
-                Service service,
-                Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
-            {
-                yield return ObjectRegistration;
-            }
-
-            public bool IsAdapterForIndividualComponents => false;
+            yield return ObjectRegistration;
         }
 
-        [Fact]
-        public void SingletonsFromRegistrationSourceAreWrappedWithLifetimeDecorator()
-        {
-            var restrictedRootScopeLifetime = new MatchingScopeLifetime(new object());
-            var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
+        public bool IsAdapterForIndividualComponents => false;
+    }
 
-            var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
+    [Fact]
+    public void SingletonsFromRegistrationSourceAreWrappedWithLifetimeDecorator()
+    {
+        var restrictedRootScopeLifetime = new MatchingScopeLifetime(new object());
+        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
 
-            builder.AddRegistrationSource(new ObjectRegistrationSource());
+        var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
 
-            var typedService = new TypedService(typeof(object));
-            var registry = builder.Build();
-            registry.TryGetRegistration(typedService, out IComponentRegistration registration);
+        builder.AddRegistrationSource(new ObjectRegistrationSource());
 
-            Assert.IsType<ComponentRegistrationLifetimeDecorator>(registration);
-        }
+        var typedService = new TypedService(typeof(object));
+        var registry = builder.Build();
+        registry.TryGetRegistration(typedService, out IComponentRegistration registration);
 
-        [Fact]
-        public void SingletonsRegisteredDirectlyAreWrappedWithLifetimeDecorator()
-        {
-            var restrictedRootScopeLifetime = new MatchingScopeLifetime(new object());
-            var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
+        Assert.IsType<ComponentRegistrationLifetimeDecorator>(registration);
+    }
 
-            var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
+    [Fact]
+    public void SingletonsRegisteredDirectlyAreWrappedWithLifetimeDecorator()
+    {
+        var restrictedRootScopeLifetime = new MatchingScopeLifetime(new object());
+        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
 
-            builder.Register(ObjectRegistration);
+        var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
 
-            var registry = builder.Build();
+        builder.Register(ObjectRegistration);
 
-            var typedService = new TypedService(typeof(object));
-            registry.TryGetRegistration(typedService, out IComponentRegistration registration);
+        var registry = builder.Build();
 
-            Assert.IsType<ComponentRegistrationLifetimeDecorator>(registration);
-        }
+        var typedService = new TypedService(typeof(object));
+        registry.TryGetRegistration(typedService, out IComponentRegistration registration);
+
+        Assert.IsType<ComponentRegistrationLifetimeDecorator>(registration);
     }
 }

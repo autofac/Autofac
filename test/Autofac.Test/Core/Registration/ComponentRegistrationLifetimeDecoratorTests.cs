@@ -5,19 +5,18 @@ using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Xunit;
 
-namespace Autofac.Test.Core.Registration
+namespace Autofac.Test.Core.Registration;
+
+public class ComponentRegistrationLifetimeDecoratorTests
 {
-    public class ComponentRegistrationLifetimeDecoratorTests
+    [Fact]
+    public void DecoratorCallsDisposeOnInnerInstance()
     {
-        [Fact]
-        public void DecoratorCallsDisposeOnInnerInstance()
-        {
-            var inner = Mocks.GetComponentRegistration();
-            var decorator = new ComponentRegistrationLifetimeDecorator(inner, CurrentScopeLifetime.Instance);
+        var inner = Mocks.GetComponentRegistration();
+        var decorator = new ComponentRegistrationLifetimeDecorator(inner, CurrentScopeLifetime.Instance);
 
-            decorator.Dispose();
+        decorator.Dispose();
 
-            Assert.True(inner.IsDisposed);
-        }
+        Assert.True(inner.IsDisposed);
     }
 }

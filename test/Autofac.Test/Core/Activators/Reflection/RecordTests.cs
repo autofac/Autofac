@@ -9,44 +9,43 @@ using Xunit;
 
 #if NET5_0_OR_GREATER
 
-namespace Autofac.Test.Core.Activators.Reflection
+namespace Autofac.Test.Core.Activators.Reflection;
+
+public class RecordTests
 {
-    public class RecordTests
+    private record Component(IOtherService Service, IOtherService2 Service2);
+
+    [Fact]
+    public void CanResolveARecord()
     {
-        private record Component(IOtherService Service, IOtherService2 Service2);
+        var builder = new ContainerBuilder();
 
-        [Fact]
-        public void CanResolveARecord()
-        {
-            var builder = new ContainerBuilder();
+        builder.RegisterType<OtherComponent>().As<IOtherService>();
+        builder.RegisterType<OtherComponent2>().As<IOtherService2>();
 
-            builder.RegisterType<OtherComponent>().As<IOtherService>();
-            builder.RegisterType<OtherComponent2>().As<IOtherService2>();
+        builder.RegisterType<Component>();
 
-            builder.RegisterType<Component>();
+        var container = builder.Build();
 
-            var container = builder.Build();
+        var record = container.Resolve<Component>();
 
-            var record = container.Resolve<Component>();
+        Assert.IsType<OtherComponent>(record.Service);
+    }
 
-            Assert.IsType<OtherComponent>(record.Service);
-        }
+    private interface IOtherService
+    {
+    }
 
-        private interface IOtherService
-        {
-        }
+    private class OtherComponent : IOtherService
+    {
+    }
 
-        private class OtherComponent : IOtherService
-        {
-        }
+    private interface IOtherService2
+    {
+    }
 
-        private interface IOtherService2
-        {
-        }
-
-        private class OtherComponent2 : IOtherService2
-        {
-        }
+    private class OtherComponent2 : IOtherService2
+    {
     }
 }
 

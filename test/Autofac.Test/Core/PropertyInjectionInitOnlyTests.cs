@@ -5,27 +5,26 @@ using Xunit;
 
 #if NET5_0_OR_GREATER
 
-namespace Autofac.Test.Core
+namespace Autofac.Test.Core;
+
+public class PropertyInjectionInitOnlyTests
 {
-    public class PropertyInjectionInitOnlyTests
+    public class HasInitOnlyProperties
     {
-        public class HasInitOnlyProperties
-        {
-            public string InjectedString { get; init; }
-        }
+        public string InjectedString { get; init; }
+    }
 
-        [Fact]
-        public void CanInjectInitOnlyProperties()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<HasInitOnlyProperties>().PropertiesAutowired();
-            builder.Register(ctxt => "hello world");
-            var container = builder.Build();
+    [Fact]
+    public void CanInjectInitOnlyProperties()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<HasInitOnlyProperties>().PropertiesAutowired();
+        builder.Register(ctxt => "hello world");
+        var container = builder.Build();
 
-            var instance = container.Resolve<HasInitOnlyProperties>();
+        var instance = container.Resolve<HasInitOnlyProperties>();
 
-            Assert.Equal("hello world", instance.InjectedString);
-        }
+        Assert.Equal("hello world", instance.InjectedString);
     }
 }
 

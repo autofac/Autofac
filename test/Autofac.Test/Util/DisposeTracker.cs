@@ -3,19 +3,18 @@
 
 using System;
 
-namespace Autofac.Test.Util
+namespace Autofac.Test.Util;
+
+public class DisposeTracker : IDisposable
 {
-    public class DisposeTracker : IDisposable
+    public event EventHandler<EventArgs> Disposing;
+
+    public bool IsDisposed { get; set; }
+
+    public void Dispose()
     {
-        public event EventHandler<EventArgs> Disposing;
+        IsDisposed = true;
 
-        public bool IsDisposed { get; set; }
-
-        public void Dispose()
-        {
-            IsDisposed = true;
-
-            Disposing?.Invoke(this, EventArgs.Empty);
-        }
+        Disposing?.Invoke(this, EventArgs.Empty);
     }
 }

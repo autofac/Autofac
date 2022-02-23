@@ -9,166 +9,165 @@ using Autofac.Test.Scenarios.Parameterisation;
 using Autofac.Test.Scenarios.WithProperty;
 using Xunit;
 
-namespace Autofac.Test
+namespace Autofac.Test;
+
+public class ResolutionExtensionsTests
 {
-    public class ResolutionExtensionsTests
+    [Fact]
+    public void ResolvingUnregisteredService_ProvidesDescriptionInException()
     {
-        [Fact]
-        public void ResolvingUnregisteredService_ProvidesDescriptionInException()
-        {
-            var target = Factory.CreateEmptyContainer();
-            var ex = Assert.Throws<ComponentNotRegisteredException>(() => target.Resolve<object>());
-            Assert.Contains("System.Object", ex.Message);
-        }
+        var target = Factory.CreateEmptyContainer();
+        var ex = Assert.Throws<ComponentNotRegisteredException>(() => target.Resolve<object>());
+        Assert.Contains("System.Object", ex.Message);
+    }
 
-        [Fact]
-        public void WhenComponentIsRegistered_IsRegisteredReturnsTrueForAllServices()
-        {
-            var registration = Factory.CreateSingletonRegistration(
-                new[] { new TypedService(typeof(object)), new TypedService(typeof(string)) },
-                Factory.CreateProvidedInstanceActivator("Hello"));
+    [Fact]
+    public void WhenComponentIsRegistered_IsRegisteredReturnsTrueForAllServices()
+    {
+        var registration = Factory.CreateSingletonRegistration(
+            new[] { new TypedService(typeof(object)), new TypedService(typeof(string)) },
+            Factory.CreateProvidedInstanceActivator("Hello"));
 
-            var builder = Factory.CreateEmptyComponentRegistryBuilder();
-            builder.Register(registration);
-            var target = new ContainerBuilder(builder).Build();
+        var builder = Factory.CreateEmptyComponentRegistryBuilder();
+        builder.Register(registration);
+        var target = new ContainerBuilder(builder).Build();
 
-            Assert.True(target.IsRegistered<object>());
-            Assert.True(target.IsRegistered<string>());
-        }
+        Assert.True(target.IsRegistered<object>());
+        Assert.True(target.IsRegistered<string>());
+    }
 
-        [Fact]
-        public void WhenServiceIsRegistered_ResolveOptionalReturnsAnInstance()
-        {
-            var builder = Factory.CreateEmptyComponentRegistryBuilder();
-            builder.Register(Factory.CreateSingletonRegistration(
-                new[] { new TypedService(typeof(string)) },
-                new ProvidedInstanceActivator("Hello")));
+    [Fact]
+    public void WhenServiceIsRegistered_ResolveOptionalReturnsAnInstance()
+    {
+        var builder = Factory.CreateEmptyComponentRegistryBuilder();
+        builder.Register(Factory.CreateSingletonRegistration(
+            new[] { new TypedService(typeof(string)) },
+            new ProvidedInstanceActivator("Hello")));
 
-            var target = new ContainerBuilder(builder).Build();
+        var target = new ContainerBuilder(builder).Build();
 
-            var inst = target.ResolveOptional<string>();
+        var inst = target.ResolveOptional<string>();
 
-            Assert.Equal("Hello", inst);
-        }
+        Assert.Equal("Hello", inst);
+    }
 
-        [Fact]
-        public void WhenServiceNotRegistered_ResolveOptionalReturnsNull()
-        {
-            var target = Factory.CreateEmptyContainer();
-            var inst = target.ResolveOptional<string>();
-            Assert.Null(inst);
-        }
+    [Fact]
+    public void WhenServiceNotRegistered_ResolveOptionalReturnsNull()
+    {
+        var target = Factory.CreateEmptyContainer();
+        var inst = target.ResolveOptional<string>();
+        Assert.Null(inst);
+    }
 
-        [Fact]
-        public void WhenParametersProvided_ResolveOptionalSuppliesThemToComponent()
-        {
-            var cb = new ContainerBuilder();
-            cb.RegisterType<Parameterised>();
-            var container = cb.Build();
-            const string param1 = "Hello";
-            const int param2 = 42;
-            var result = container.ResolveOptional<Parameterised>(
-                new NamedParameter("a", param1),
-                new NamedParameter("b", param2));
-            Assert.NotNull(result);
-            Assert.Equal(param1, result.A);
-            Assert.Equal(param2, result.B);
-        }
+    [Fact]
+    public void WhenParametersProvided_ResolveOptionalSuppliesThemToComponent()
+    {
+        var cb = new ContainerBuilder();
+        cb.RegisterType<Parameterised>();
+        var container = cb.Build();
+        const string param1 = "Hello";
+        const int param2 = 42;
+        var result = container.ResolveOptional<Parameterised>(
+            new NamedParameter("a", param1),
+            new NamedParameter("b", param2));
+        Assert.NotNull(result);
+        Assert.Equal(param1, result.A);
+        Assert.Equal(param2, result.B);
+    }
 
-        [Fact]
-        public void WhenPredicateAndValueParameterSupplied_PassedToComponent()
-        {
-            const string a = "Hello";
-            const int b = 42;
-            var builder = new ContainerBuilder();
+    [Fact]
+    public void WhenPredicateAndValueParameterSupplied_PassedToComponent()
+    {
+        const string a = "Hello";
+        const int b = 42;
+        var builder = new ContainerBuilder();
 
-            builder.RegisterType<Parameterised>()
-                .WithParameter(
-                    (pi, c) => pi.Name == "a",
-                    (pi, c) => a)
-                .WithParameter(
-                    (pi, c) => pi.Name == "b",
-                    (pi, c) => b);
+        builder.RegisterType<Parameterised>()
+            .WithParameter(
+                (pi, c) => pi.Name == "a",
+                (pi, c) => a)
+            .WithParameter(
+                (pi, c) => pi.Name == "b",
+                (pi, c) => b);
 
-            var container = builder.Build();
-            var result = container.Resolve<Parameterised>();
+        var container = builder.Build();
+        var result = container.Resolve<Parameterised>();
 
-            Assert.Equal(a, result.A);
-            Assert.Equal(b, result.B);
-        }
+        Assert.Equal(a, result.A);
+        Assert.Equal(b, result.B);
+    }
 
-        [Fact]
-        public void RegisterPropertyWithExpression()
-        {
-            const string a = "Hello";
-            const bool b = true;
-            var builder = new ContainerBuilder();
+    [Fact]
+    public void RegisterPropertyWithExpression()
+    {
+        const string a = "Hello";
+        const bool b = true;
+        var builder = new ContainerBuilder();
 
-            builder.RegisterType<WithProps>()
-                .WithProperty(x => x.A, a)
-                .WithProperty(x => x.B, b);
+        builder.RegisterType<WithProps>()
+            .WithProperty(x => x.A, a)
+            .WithProperty(x => x.B, b);
 
-            var container = builder.Build();
-            var result = container.Resolve<WithProps>();
+        var container = builder.Build();
+        var result = container.Resolve<WithProps>();
 
-            Assert.Equal(a, result.A);
-            Assert.Equal(b, result.B);
-        }
+        Assert.Equal(a, result.A);
+        Assert.Equal(b, result.B);
+    }
 
-        [Fact]
-        public void RegisterPropertyWithExpressionFieldExceptions()
-        {
-            const string a = "Hello";
-            var builder = new ContainerBuilder();
+    [Fact]
+    public void RegisterPropertyWithExpressionFieldExceptions()
+    {
+        const string a = "Hello";
+        var builder = new ContainerBuilder();
 
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-                builder.RegisterType<WithProps>().WithProperty(x => x._field, a));
-        }
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            builder.RegisterType<WithProps>().WithProperty(x => x._field, a));
+    }
 
-        [Fact]
-        public void WhenServiceIsRegistered_TryResolveNamedReturnsTrue()
-        {
-            const string name = "name";
+    [Fact]
+    public void WhenServiceIsRegistered_TryResolveNamedReturnsTrue()
+    {
+        const string name = "name";
 
-            var cb = new ContainerBuilder();
-            cb.RegisterType<object>().Named<object>(name);
+        var cb = new ContainerBuilder();
+        cb.RegisterType<object>().Named<object>(name);
 
-            var container = cb.Build();
+        var container = cb.Build();
 
-            Assert.True(container.TryResolveNamed<object>(name, out var o));
-            Assert.NotNull(o);
-        }
+        Assert.True(container.TryResolveNamed<object>(name, out var o));
+        Assert.NotNull(o);
+    }
 
-        [Fact]
-        public void WhenServiceIsNotRegistered_TryResolveNamedReturnsFalse()
-        {
-            var container = Factory.CreateEmptyContainer();
+    [Fact]
+    public void WhenServiceIsNotRegistered_TryResolveNamedReturnsFalse()
+    {
+        var container = Factory.CreateEmptyContainer();
 
-            Assert.False(container.TryResolveNamed<object>("name", out var o));
-            Assert.Null(o);
-        }
+        Assert.False(container.TryResolveNamed<object>("name", out var o));
+        Assert.Null(o);
+    }
 
-        [Fact]
-        public void WhenServiceIsRegistered_TryResolveKeyedReturnsTrue()
-        {
-            var key = new object();
+    [Fact]
+    public void WhenServiceIsRegistered_TryResolveKeyedReturnsTrue()
+    {
+        var key = new object();
 
-            var cb = new ContainerBuilder();
-            cb.RegisterType<object>().Keyed<object>(key);
+        var cb = new ContainerBuilder();
+        cb.RegisterType<object>().Keyed<object>(key);
 
-            var container = cb.Build();
+        var container = cb.Build();
 
-            Assert.True(container.TryResolveKeyed<object>(key, out var o));
-            Assert.NotNull(o);
-        }
+        Assert.True(container.TryResolveKeyed<object>(key, out var o));
+        Assert.NotNull(o);
+    }
 
-        [Fact]
-        public void WhenServiceIsNotRegistered_TryResolveKeyedReturnsFalse()
-        {
-            var container = Factory.CreateEmptyContainer();
+    [Fact]
+    public void WhenServiceIsNotRegistered_TryResolveKeyedReturnsFalse()
+    {
+        var container = Factory.CreateEmptyContainer();
 
-            Assert.False(container.TryResolveKeyed<object>("name", out var o));
-            Assert.Null(o);
-        }
+        Assert.False(container.TryResolveKeyed<object>("name", out var o));
+        Assert.Null(o);
     }
 }

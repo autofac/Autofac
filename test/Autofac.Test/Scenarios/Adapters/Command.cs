@@ -6,9 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Autofac.Test.Scenarios.Adapters
+namespace Autofac.Test.Scenarios.Adapters;
+
+public class Command
 {
-    public class Command
-    {
-    }
 }

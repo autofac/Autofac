@@ -10,256 +10,255 @@ using Autofac.Core;
 using Autofac.Features.Variance;
 using Xunit;
 
-namespace Autofac.Test.Features.Variance
+namespace Autofac.Test.Features.Variance;
+
+public class ContravariantRegistrationSourceTests
 {
-    public class ContravariantRegistrationSourceTests
+    internal interface IHandler<in TCommand>
     {
-        internal interface IHandler<in TCommand>
-        {
-            void Handle(TCommand command);
-        }
+        void Handle(TCommand command);
+    }
 
-        internal interface IBaseCommand
-        {
-        }
+    internal interface IBaseCommand
+    {
+    }
 
-        internal interface ICommand : IBaseCommand
-        {
-        }
+    internal interface ICommand : IBaseCommand
+    {
+    }
 
-        internal interface IDerivedCommand : ICommand
-        {
-        }
+    internal interface IDerivedCommand : ICommand
+    {
+    }
 
-        internal class InterfaceHandler : IHandler<ICommand>
-        {
-            public void Handle(ICommand command)
-            {
-            }
-        }
-
-        internal class CommandA
+    internal class InterfaceHandler : IHandler<ICommand>
+    {
+        public void Handle(ICommand command)
         {
         }
+    }
 
-        internal class CommandB : CommandA, ICommand
+    internal class CommandA
+    {
+    }
+
+    internal class CommandB : CommandA, ICommand
+    {
+    }
+
+    internal class CommandC : CommandB
+    {
+    }
+
+    internal class CommandD : CommandC
+    {
+    }
+
+    internal class BHandler : IHandler<CommandB>
+    {
+        public void Handle(CommandB command)
         {
         }
+    }
 
-        internal class CommandC : CommandB
+    internal class ObjectHandler : IHandler<object>
+    {
+        public void Handle(object command)
         {
         }
+    }
 
-        internal class CommandD : CommandC
+    internal class UnrelatedCommand
+    {
+    }
+
+    internal interface IConstrainedHandler<in TCommand>
+        where TCommand : new()
+    {
+    }
+
+    internal class BaseWithArg
+    {
+        public BaseWithArg(int arg)
         {
         }
+    }
 
-        internal class BHandler : IHandler<CommandB>
-        {
-            public void Handle(CommandB command)
-        {
-        }
-        }
-
-        internal class ObjectHandler : IHandler<object>
-        {
-            public void Handle(object command)
-            {
-            }
-        }
-
-        internal class UnrelatedCommand
+    internal class DerivedWithoutArg : BaseWithArg
+    {
+        public DerivedWithoutArg()
+            : base(0)
         {
         }
+    }
 
-        internal interface IConstrainedHandler<in TCommand>
-            where TCommand : new()
+    internal enum AEnum
+    {
+        First,
+        Second,
+    }
+
+    internal static class AssertExtensions
+    {
+        public static void AssertSingleHandlerCanHandle<TCommand>(IContainer container)
         {
+            var handlers = container.ComponentRegistry.RegistrationsFor(new TypedService(typeof(IHandler<TCommand>)));
+            Assert.Single(handlers);
+            container.Resolve<IHandler<TCommand>>();
+        }
+    }
+
+    public class WhenAHandlerForAConcreteTypeIsRegistered
+    {
+        private readonly IContainer _container;
+
+        public WhenAHandlerForAConcreteTypeIsRegistered()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterSource(new ContravariantRegistrationSource());
+            builder.RegisterType<BHandler>().As<IHandler<CommandB>>();
+            _container = builder.Build();
         }
 
-        internal class BaseWithArg
+        [Fact]
+        public void TheCommandTypeCanBeHandled()
         {
-            public BaseWithArg(int arg)
-            {
-            }
+            AssertExtensions.AssertSingleHandlerCanHandle<CommandB>(_container);
         }
 
-        internal class DerivedWithoutArg : BaseWithArg
+        [Fact]
+        public void DirectSubclassesOfTheCommandTypeCanBeHandled()
         {
-            public DerivedWithoutArg()
-                : base(0)
-            {
-            }
+            AssertExtensions.AssertSingleHandlerCanHandle<CommandC>(_container);
         }
 
-        internal enum AEnum
+        [Fact]
+        public void IndirectSubclassesOfTheCommandTypeCanBeHandled()
         {
-            First,
-            Second,
+            AssertExtensions.AssertSingleHandlerCanHandle<CommandD>(_container);
         }
 
-        internal static class AssertExtensions
+        [Fact]
+        public void BaseClassesOfTheCommandCannotBeHandled()
         {
-            public static void AssertSingleHandlerCanHandle<TCommand>(IContainer container)
-            {
-                var handlers = container.ComponentRegistry.RegistrationsFor(new TypedService(typeof(IHandler<TCommand>)));
-                Assert.Single(handlers);
-                container.Resolve<IHandler<TCommand>>();
-            }
+            Assert.False(_container.IsRegistered<IHandler<CommandA>>());
         }
 
-        public class WhenAHandlerForAConcreteTypeIsRegistered
+        [Fact]
+        public void UnrelatedCommandsCannotBeHandled()
         {
-            private readonly IContainer _container;
+            Assert.False(_container.IsRegistered<IHandler<UnrelatedCommand>>());
+        }
+    }
 
-            public WhenAHandlerForAConcreteTypeIsRegistered()
-            {
-                var builder = new ContainerBuilder();
-                builder.RegisterSource(new ContravariantRegistrationSource());
-                builder.RegisterType<BHandler>().As<IHandler<CommandB>>();
-                _container = builder.Build();
-            }
+    public class WhenAHandlerForAnInterfaceTypeIsRegistered
+    {
+        private readonly IContainer _container;
 
-            [Fact]
-            public void TheCommandTypeCanBeHandled()
-            {
-                AssertExtensions.AssertSingleHandlerCanHandle<CommandB>(_container);
-            }
-
-            [Fact]
-            public void DirectSubclassesOfTheCommandTypeCanBeHandled()
-            {
-                AssertExtensions.AssertSingleHandlerCanHandle<CommandC>(_container);
-            }
-
-            [Fact]
-            public void IndirectSubclassesOfTheCommandTypeCanBeHandled()
-            {
-                AssertExtensions.AssertSingleHandlerCanHandle<CommandD>(_container);
-            }
-
-            [Fact]
-            public void BaseClassesOfTheCommandCannotBeHandled()
-            {
-                Assert.False(_container.IsRegistered<IHandler<CommandA>>());
-            }
-
-            [Fact]
-            public void UnrelatedCommandsCannotBeHandled()
-            {
-                Assert.False(_container.IsRegistered<IHandler<UnrelatedCommand>>());
-            }
+        public WhenAHandlerForAnInterfaceTypeIsRegistered()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterSource(new ContravariantRegistrationSource());
+            builder.RegisterType<InterfaceHandler>().As<IHandler<ICommand>>();
+            _container = builder.Build();
         }
 
-        public class WhenAHandlerForAnInterfaceTypeIsRegistered
+        [Fact]
+        public void TheInterfaceTypeCanBeHandled()
         {
-            private readonly IContainer _container;
-
-            public WhenAHandlerForAnInterfaceTypeIsRegistered()
-            {
-                var builder = new ContainerBuilder();
-                builder.RegisterSource(new ContravariantRegistrationSource());
-                builder.RegisterType<InterfaceHandler>().As<IHandler<ICommand>>();
-                _container = builder.Build();
-            }
-
-            [Fact]
-            public void TheInterfaceTypeCanBeHandled()
-            {
-                AssertExtensions.AssertSingleHandlerCanHandle<ICommand>(_container);
-            }
-
-            [Fact]
-            public void ImplementersOfTheInterfaceTypeCanBeHandled()
-            {
-                AssertExtensions.AssertSingleHandlerCanHandle<CommandB>(_container);
-            }
-
-            [Fact]
-            public void IndirectImplementersOfTheInterfaceTypeCanBeHandled()
-            {
-                AssertExtensions.AssertSingleHandlerCanHandle<CommandC>(_container);
-            }
-
-            [Fact]
-            public void SecondOrderIndirectImplementersOfTheInterfaceTypeCanBeHandled()
-            {
-                AssertExtensions.AssertSingleHandlerCanHandle<CommandD>(_container);
-            }
-
-            [Fact]
-            public void DerivationsOfTheInterfaceTypeCanBeHandled()
-            {
-                AssertExtensions.AssertSingleHandlerCanHandle<IDerivedCommand>(_container);
-            }
-
-            [Fact]
-            public void UnrelatedCommandsCannotBeHandled()
-            {
-                Assert.False(_container.IsRegistered<IHandler<UnrelatedCommand>>());
-            }
-
-            [Fact]
-            public void BaseInterfacesOfTheCommandCannotBeHandled()
-            {
-                Assert.False(_container.IsRegistered<IHandler<IBaseCommand>>());
-            }
+            AssertExtensions.AssertSingleHandlerCanHandle<ICommand>(_container);
         }
 
-        public class WhenAHandlerForObjectIsRegistered
+        [Fact]
+        public void ImplementersOfTheInterfaceTypeCanBeHandled()
         {
-            private readonly IContainer _container;
-
-            public WhenAHandlerForObjectIsRegistered()
-            {
-                var builder = new ContainerBuilder();
-                builder.RegisterSource(new ContravariantRegistrationSource());
-                builder.RegisterType<ObjectHandler>().As<IHandler<object>>();
-                _container = builder.Build();
-            }
-
-            [Fact]
-            public void ObjectCanBeHandled()
-            {
-                AssertExtensions.AssertSingleHandlerCanHandle<object>(_container);
-            }
-
-            [Fact]
-            public void AnyConcreteTypeCanBeHandled()
-            {
-                AssertExtensions.AssertSingleHandlerCanHandle<CommandA>(_container);
-            }
-
-            [Fact]
-            public void AnyInterfaceTypeCanBeHandled()
-            {
-                AssertExtensions.AssertSingleHandlerCanHandle<ICommand>(_container);
-            }
+            AssertExtensions.AssertSingleHandlerCanHandle<CommandB>(_container);
         }
 
-        public class WhenBaseTypesDoNotSatisfyConstraints
+        [Fact]
+        public void IndirectImplementersOfTheInterfaceTypeCanBeHandled()
         {
-            [Fact]
-            public void TheSourceDoesNotAttemptGenericTypeConstruction()
-            {
-                var builder = new ContainerBuilder();
-                builder.RegisterSource(new ContravariantRegistrationSource());
-                var container = builder.Build();
-                Assert.False(container.IsRegistered<IConstrainedHandler<DerivedWithoutArg>>());
-            }
+            AssertExtensions.AssertSingleHandlerCanHandle<CommandC>(_container);
         }
 
-        public class WhenAValueTypeIsRequested
+        [Fact]
+        public void SecondOrderIndirectImplementersOfTheInterfaceTypeCanBeHandled()
         {
-            [Fact]
-            public void TheSourceDoesNotApply()
-            {
-                var builder = new ContainerBuilder();
-                builder.RegisterSource(new ContravariantRegistrationSource());
-                builder.RegisterType<ObjectHandler>().As<IHandler<object>>();
-                var container = builder.Build();
-                Assert.False(container.IsRegistered<IHandler<AEnum>>());
-            }
+            AssertExtensions.AssertSingleHandlerCanHandle<CommandD>(_container);
+        }
+
+        [Fact]
+        public void DerivationsOfTheInterfaceTypeCanBeHandled()
+        {
+            AssertExtensions.AssertSingleHandlerCanHandle<IDerivedCommand>(_container);
+        }
+
+        [Fact]
+        public void UnrelatedCommandsCannotBeHandled()
+        {
+            Assert.False(_container.IsRegistered<IHandler<UnrelatedCommand>>());
+        }
+
+        [Fact]
+        public void BaseInterfacesOfTheCommandCannotBeHandled()
+        {
+            Assert.False(_container.IsRegistered<IHandler<IBaseCommand>>());
+        }
+    }
+
+    public class WhenAHandlerForObjectIsRegistered
+    {
+        private readonly IContainer _container;
+
+        public WhenAHandlerForObjectIsRegistered()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterSource(new ContravariantRegistrationSource());
+            builder.RegisterType<ObjectHandler>().As<IHandler<object>>();
+            _container = builder.Build();
+        }
+
+        [Fact]
+        public void ObjectCanBeHandled()
+        {
+            AssertExtensions.AssertSingleHandlerCanHandle<object>(_container);
+        }
+
+        [Fact]
+        public void AnyConcreteTypeCanBeHandled()
+        {
+            AssertExtensions.AssertSingleHandlerCanHandle<CommandA>(_container);
+        }
+
+        [Fact]
+        public void AnyInterfaceTypeCanBeHandled()
+        {
+            AssertExtensions.AssertSingleHandlerCanHandle<ICommand>(_container);
+        }
+    }
+
+    public class WhenBaseTypesDoNotSatisfyConstraints
+    {
+        [Fact]
+        public void TheSourceDoesNotAttemptGenericTypeConstruction()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterSource(new ContravariantRegistrationSource());
+            var container = builder.Build();
+            Assert.False(container.IsRegistered<IConstrainedHandler<DerivedWithoutArg>>());
+        }
+    }
+
+    public class WhenAValueTypeIsRequested
+    {
+        [Fact]
+        public void TheSourceDoesNotApply()
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterSource(new ContravariantRegistrationSource());
+            builder.RegisterType<ObjectHandler>().As<IHandler<object>>();
+            var container = builder.Build();
+            Assert.False(container.IsRegistered<IHandler<AEnum>>());
         }
     }
 }

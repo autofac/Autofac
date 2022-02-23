@@ -8,15 +8,14 @@ using System.Text;
 using Autofac.Util;
 using Xunit;
 
-namespace Autofac.Test.Util
+namespace Autofac.Test.Util;
+
+public class EnforceTests
 {
-    public class EnforceTests
+    [Fact]
+    public void FindsEmptyElementInList()
     {
-        [Fact]
-        public void FindsEmptyElementInList()
-        {
-            Assert.Throws<ArgumentException>(() =>
-                Enforce.ArgumentElementNotNull(new object[] { null }, "arg"));
-        }
+        Assert.Throws<ArgumentException>(() =>
+            Enforce.ArgumentElementNotNull(new object[] { null }, "arg"));
     }
 }

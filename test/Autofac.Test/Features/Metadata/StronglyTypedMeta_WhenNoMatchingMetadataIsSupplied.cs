@@ -1,4 +1,4 @@
-// Copyright (c) Autofac Project. All rights reserved.
+﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core;
@@ -7,36 +7,35 @@ using Autofac.Test.Features.Metadata.TestTypes;
 using Autofac.Util;
 using Xunit;
 
-namespace Autofac.Test.Features.Metadata
+namespace Autofac.Test.Features.Metadata;
+
+public class StronglyTypedMeta_WhenNoMatchingMetadataIsSupplied
 {
-    public class StronglyTypedMeta_WhenNoMatchingMetadataIsSupplied
+    private readonly IContainer _container;
+
+    public StronglyTypedMeta_WhenNoMatchingMetadataIsSupplied()
     {
-        private readonly IContainer _container;
+        var builder = new ContainerBuilder();
+        builder.RegisterType<object>();
+        _container = builder.Build();
+    }
 
-        public StronglyTypedMeta_WhenNoMatchingMetadataIsSupplied()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<object>();
-            _container = builder.Build();
-        }
+    [Fact]
+    public void ResolvingStronglyTypedMetadataWithoutDefaultValueThrowsException()
+    {
+        var exception = Assert.Throws<DependencyResolutionException>(
+            () => _container.Resolve<Meta<object, MyMeta>>());
 
-        [Fact]
-        public void ResolvingStronglyTypedMetadataWithoutDefaultValueThrowsException()
-        {
-            var exception = Assert.Throws<DependencyResolutionException>(
-                () => _container.Resolve<Meta<object, MyMeta>>());
+        var propertyName = ReflectionExtensions.GetProperty<MyMeta, int>(x => x.TheInt).Name;
+        var message = string.Format(MetadataViewProviderResources.MissingMetadata, propertyName);
 
-            var propertyName = ReflectionExtensions.GetProperty<MyMeta, int>(x => x.TheInt).Name;
-            var message = string.Format(MetadataViewProviderResources.MissingMetadata, propertyName);
+        Assert.Equal(message, exception.InnerException.Message);
+    }
 
-            Assert.Equal(message, exception.InnerException.Message);
-        }
-
-        [Fact]
-        public void ResolvingStronglyTypedMetadataWithDefaultValueProvidesDefault()
-        {
-            var m = _container.Resolve<Meta<object, MyMetaWithDefault>>();
-            Assert.Equal(42, m.Metadata.TheInt);
-        }
+    [Fact]
+    public void ResolvingStronglyTypedMetadataWithDefaultValueProvidesDefault()
+    {
+        var m = _container.Resolve<Meta<object, MyMetaWithDefault>>();
+        Assert.Equal(42, m.Metadata.TheInt);
     }
 }

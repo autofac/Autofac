@@ -7,34 +7,33 @@ using System.Linq;
 using System.Text;
 using Autofac.Core;
 
-namespace Autofac.Test.Scenarios.RegistrationSources
+namespace Autofac.Test.Scenarios.RegistrationSources;
+
+public class ObjectRegistrationSource : IRegistrationSource
 {
-    public class ObjectRegistrationSource : IRegistrationSource
+    private readonly object _instance;
+
+    public ObjectRegistrationSource()
+        : this(new object())
     {
-        private readonly object _instance;
+    }
 
-        public ObjectRegistrationSource()
-            : this(new object())
-        {
-        }
+    public ObjectRegistrationSource(object instance)
+    {
+        _instance = instance;
+    }
 
-        public ObjectRegistrationSource(object instance)
+    public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
+    {
+        var objectService = new TypedService(typeof(object));
+        if (service == objectService)
         {
-            _instance = instance;
+            yield return Factory.CreateSingletonObjectRegistration(_instance);
         }
+    }
 
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
-        {
-            var objectService = new TypedService(typeof(object));
-            if (service == objectService)
-            {
-                yield return Factory.CreateSingletonObjectRegistration(_instance);
-            }
-        }
-
-        public bool IsAdapterForIndividualComponents
-        {
-            get { return false; }
-        }
+    public bool IsAdapterForIndividualComponents
+    {
+        get { return false; }
     }
 }
