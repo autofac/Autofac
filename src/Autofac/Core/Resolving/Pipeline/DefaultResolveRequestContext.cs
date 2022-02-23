@@ -64,7 +64,7 @@ namespace Autofac.Core.Resolving.Pipeline
         }
 
         /// <inheritdoc />
-        public override bool NewInstanceActivated => Instance is object && PhaseReached == PipelinePhase.Activation;
+        public override bool NewInstanceActivated => Instance is not null && PhaseReached == PipelinePhase.Activation;
 
         /// <inheritdoc />
         public override DiagnosticListener DiagnosticSource { get; }

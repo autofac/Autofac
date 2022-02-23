@@ -20,11 +20,9 @@ namespace Autofac.Core.Activators.Reflection
         /// </summary>
         internal const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
 
-        private static readonly ConcurrentDictionary<PropertyInfo, Action<object, object?>> PropertySetters =
-            new ConcurrentDictionary<PropertyInfo, Action<object, object?>>();
+        private static readonly ConcurrentDictionary<PropertyInfo, Action<object, object?>> PropertySetters = new();
 
-        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> InjectableProperties =
-            new ConcurrentDictionary<Type, PropertyInfo[]>();
+        private static readonly ConcurrentDictionary<Type, PropertyInfo[]> InjectableProperties = new();
 
         private static readonly MethodInfo CallPropertySetterOpenGenericMethod =
             typeof(AutowiringPropertyInjector).GetDeclaredMethod(nameof(CallPropertySetter));

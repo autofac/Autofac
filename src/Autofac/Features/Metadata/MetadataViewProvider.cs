@@ -96,7 +96,7 @@ namespace Autofac.Features.Metadata
                 return (TValue)result;
             }
 
-            if (defaultValue is object)
+            if (defaultValue is not null)
             {
                 return (TValue?)defaultValue.Value;
             }

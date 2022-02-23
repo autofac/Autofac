@@ -11,8 +11,8 @@ namespace Autofac.Test.Core.Registration
 {
     public sealed class SourceRegistrarTests
     {
-        private static readonly object O1 = new object();
-        private static readonly object O2 = new object();
+        private static readonly object O1 = new();
+        private static readonly object O2 = new();
 
         [Fact]
         public void Ctor_RequiresContainerBuilder()

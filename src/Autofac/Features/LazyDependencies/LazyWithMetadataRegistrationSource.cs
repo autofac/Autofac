@@ -26,7 +26,7 @@ namespace Autofac.Features.LazyDependencies
 
         private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo);
 
-        private readonly ConcurrentDictionary<(Type ValueType, Type MetaType), RegistrationCreator> _methodCache = new ConcurrentDictionary<(Type, Type), RegistrationCreator>();
+        private readonly ConcurrentDictionary<(Type ValueType, Type MetaType), RegistrationCreator> _methodCache = new();
 
         /// <inheritdoc/>
         public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
@@ -37,7 +37,7 @@ namespace Autofac.Features.LazyDependencies
             }
 
             var lazyType = typeof(Lazy<,>);
-            if (!(service is IServiceWithType swt) || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
+            if (service is not IServiceWithType swt || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
             {
                 return Enumerable.Empty<IComponentRegistration>();
             }

@@ -39,16 +39,16 @@ namespace Autofac.Core.Resolving.Pipeline
                 return false;
             }
 
-            if (_current is object)
+            if (_current is not null)
             {
                 _current = _current.Next;
 
-                _ended = !(_current is object);
+                _ended = !(_current is not null);
 
                 return !_ended;
             }
 
-            if (_first is object)
+            if (_first is not null)
             {
                 _current = _first;
 

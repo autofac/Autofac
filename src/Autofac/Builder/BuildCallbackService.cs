@@ -12,7 +12,7 @@ namespace Autofac.Builder
     /// </summary>
     internal class BuildCallbackService
     {
-        private List<Action<ILifetimeScope>> _callbacks = new List<Action<ILifetimeScope>>();
+        private List<Action<ILifetimeScope>> _callbacks = new();
 
         /// <summary>
         /// Add a callback to the set that will get executed.

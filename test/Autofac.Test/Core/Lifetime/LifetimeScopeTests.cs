@@ -175,7 +175,7 @@ namespace Autofac.Test.Core.Lifetime
             public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
             {
                 // Important that DecoratorService is not included here.
-                if (!(service is IServiceWithType serviceWithType) || service is DecoratorService)
+                if (service is not IServiceWithType serviceWithType || service is DecoratorService)
                 {
                     yield break;
                 }
@@ -189,7 +189,7 @@ namespace Autofac.Test.Core.Lifetime
             private static bool IsTestType(Type serviceType) => typeof(ITest).IsAssignableFrom(serviceType);
 
             private static ComponentRegistration CreateRegistration(Service service, Type serviceType, Func<IComponentContext, IEnumerable<Parameter>, object> factory) =>
-                new ComponentRegistration(
+                new(
                     Guid.NewGuid(),
                     new DelegateActivator(serviceType, factory),
                     CurrentScopeLifetime.Instance,

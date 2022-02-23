@@ -19,11 +19,11 @@ namespace Autofac.Core
         /// <summary>
         /// Contents all implement IDisposable or IAsyncDisposable.
         /// </summary>
-        private Stack<object> _items = new Stack<object>();
+        private Stack<object> _items = new();
 
         // Need to use a semaphore instead of a simple object to lock on, because
         // we need to synchronise an awaitable block.
-        private readonly SemaphoreSlim _synchRoot = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _synchRoot = new(1, 1);
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources.

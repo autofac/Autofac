@@ -16,7 +16,7 @@ namespace Autofac.Core.Resolving.Middleware
         /// <summary>
         /// Gets the singleton instance of the <see cref="ScopeSelectionMiddleware"/>.
         /// </summary>
-        public static ScopeSelectionMiddleware Instance => new ScopeSelectionMiddleware();
+        public static ScopeSelectionMiddleware Instance => new();
 
         private ScopeSelectionMiddleware()
         {

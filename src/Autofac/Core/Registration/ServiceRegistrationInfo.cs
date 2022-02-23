@@ -28,7 +28,7 @@ namespace Autofac.Core.Registration
         ///  List of implicit default service implementations. Overriding default implementations are appended to the end,
         ///  so the enumeration should begin from the end too, and the most default implementation comes last.
         /// </summary>
-        private readonly List<IComponentRegistration> _defaultImplementations = new List<IComponentRegistration>();
+        private readonly List<IComponentRegistration> _defaultImplementations = new();
 
         /// <summary>
         ///  List of service implementations coming from sources. Sources have priority over preserve-default implementations.
@@ -42,7 +42,7 @@ namespace Autofac.Core.Registration
         /// </summary>
         private List<IComponentRegistration>? _preserveDefaultImplementations;
 
-        [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the compponent registration is responsible for disposal.")]
+        [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The creator of the component registration is responsible for disposal.")]
         private IComponentRegistration? _defaultImplementation;
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace Autofac.Core.Registration
                     yield return defaultImpls[defaultReverseIdx];
                 }
 
-                if (_sourceImplementations is object)
+                if (_sourceImplementations is not null)
                 {
                     foreach (var item in _sourceImplementations)
                     {
@@ -105,7 +105,7 @@ namespace Autofac.Core.Registration
                     }
                 }
 
-                if (_preserveDefaultImplementations is object)
+                if (_preserveDefaultImplementations is not null)
                 {
                     foreach (var item in _preserveDefaultImplementations)
                     {
@@ -139,9 +139,9 @@ namespace Autofac.Core.Registration
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void RequiresInitialization()
         {
-            // Implementations can be read by consumers while we are inside an initialisation window,
-            // even when the initialisation hasn't finished yet.
-            // The InitialisationDepth property is always 0 outside of the lock-protected initialisation block.
+            // Implementations can be read by consumers while we are inside an initialization window,
+            // even when the initialization hasn't finished yet.
+            // The InitializationDepth property is always 0 outside of the lock-protected initialization block.
             if (InitializationDepth == 0 && !IsInitialized)
             {
                 throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
@@ -218,7 +218,7 @@ namespace Autofac.Core.Registration
         /// Use the specified piece of middleware in the service pipeline.
         /// </summary>
         /// <param name="middleware">The middleware.</param>
-        /// <param name="insertionMode">The inserton mode for the pipeline.</param>
+        /// <param name="insertionMode">The insertion mode for the pipeline.</param>
         public void UseServiceMiddleware(IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
         {
             if (_customPipelineBuilder is null)
@@ -267,7 +267,7 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
-        /// Gets a value indicating whether this service info is initialising.
+        /// Gets a value indicating whether this service info is initializing.
         /// </summary>
         public bool IsInitializing => !IsInitialized && _sourcesToQuery != null;
 
@@ -277,7 +277,7 @@ namespace Autofac.Core.Registration
         public bool HasSourcesToQuery => IsInitializing && _sourcesToQuery!.Count != 0;
 
         /// <summary>
-        /// Begin the initialisation process for this service info, given the set of dynamic sources.
+        /// Begin the initialization process for this service info, given the set of dynamic sources.
         /// </summary>
         /// <param name="sources">The set of sources.</param>
         public void BeginInitialization(IEnumerable<IRegistrationSource> sources)
@@ -285,7 +285,7 @@ namespace Autofac.Core.Registration
             IsInitialized = false;
             _sourcesToQuery = new Queue<IRegistrationSource>(sources);
 
-            // Build the pipeline during service info initialisation, so that sources can access it
+            // Build the pipeline during service info initialization, so that sources can access it
             // while getting a registration recursively.
             if (_resolvePipeline is null)
             {
@@ -327,7 +327,7 @@ namespace Autofac.Core.Registration
         }
 
         /// <summary>
-        /// Complete initialisation of the service info.
+        /// Complete initialization of the service info.
         /// </summary>
         public void CompleteInitialization()
         {
@@ -379,12 +379,12 @@ namespace Autofac.Core.Registration
                 _defaultImplementation = _defaultImplementation,
             };
 
-            if (_sourceImplementations is object)
+            if (_sourceImplementations is not null)
             {
                 copy._sourceImplementations = new List<IComponentRegistration>(_sourceImplementations);
             }
 
-            if (_preserveDefaultImplementations is object)
+            if (_preserveDefaultImplementations is not null)
             {
                 copy._preserveDefaultImplementations = new List<IComponentRegistration>(_preserveDefaultImplementations);
             }

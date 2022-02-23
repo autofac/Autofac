@@ -62,7 +62,7 @@ namespace Autofac.Util
             }
 
             var mex = propertyAccessor.Body as MemberExpression;
-            if (!(mex?.Member is PropertyInfo))
+            if (mex?.Member is not PropertyInfo)
             {
                 throw new ArgumentException(string.Format(
                     CultureInfo.CurrentCulture,
@@ -88,7 +88,7 @@ namespace Autofac.Util
                 throw new ArgumentNullException(nameof(methodCallExpression));
             }
 
-            if (!(methodCallExpression.Body is MethodCallExpression callExpression))
+            if (methodCallExpression.Body is not MethodCallExpression callExpression)
             {
                 throw new ArgumentException(string.Format(
                     CultureInfo.CurrentCulture,
@@ -113,7 +113,7 @@ namespace Autofac.Util
                 throw new ArgumentNullException(nameof(constructorCallExpression));
             }
 
-            if (!(constructorCallExpression.Body is NewExpression callExpression))
+            if (constructorCallExpression.Body is not NewExpression callExpression)
             {
                 throw new ArgumentException(string.Format(
                     CultureInfo.CurrentCulture,

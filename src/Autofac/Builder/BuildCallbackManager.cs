@@ -11,7 +11,7 @@ namespace Autofac.Builder
     /// </summary>
     internal static class BuildCallbackManager
     {
-        private static readonly TypedService CallbackServiceType = new TypedService(typeof(BuildCallbackService));
+        private static readonly TypedService CallbackServiceType = new(typeof(BuildCallbackService));
 
         private const string BuildCallbacksExecutedKey = nameof(BuildCallbacksExecutedKey);
 

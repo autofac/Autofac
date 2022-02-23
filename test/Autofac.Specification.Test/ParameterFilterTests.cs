@@ -28,7 +28,7 @@ namespace Autofac.Specification.Test
         [Fact]
         public void NamedRequiresName()
         {
-            var parameters = new Parameter[0];
+            var parameters = Array.Empty<Parameter>();
             Assert.Throws<ArgumentNullException>(() => parameters.Named<string>(null));
         }
 
@@ -79,7 +79,7 @@ namespace Autofac.Specification.Test
         [InlineData(-100)]
         public void PositionalRequiresPosition(int position)
         {
-            var parameters = new Parameter[0];
+            var parameters = Array.Empty<Parameter>();
             Assert.Throws<ArgumentOutOfRangeException>(() => parameters.Positional<string>(position));
         }
 

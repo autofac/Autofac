@@ -16,7 +16,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         {
             var finder = new DefaultConstructorFinder();
             var targetType = typeof(HasConstructors);
-            var publicConstructor = targetType.GetConstructor(new Type[0]);
+            var publicConstructor = targetType.GetConstructor(Array.Empty<Type>());
 
             var constructors = finder.FindConstructors(targetType).ToList();
 

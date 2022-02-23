@@ -21,7 +21,7 @@ namespace Autofac.Test.Builder
             var ctx = new ContainerBuilder().Build();
             var instance = new object();
             var propertySelector = new DefaultPropertySelector(true);
-            var parameters = new Parameter[0];
+            var parameters = Array.Empty<Parameter>();
 
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, propertySelector, parameters));
             Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, propertySelector, parameters));

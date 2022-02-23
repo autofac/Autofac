@@ -23,7 +23,7 @@ namespace Autofac.Test.Core.Activators.Reflection
         public void DoesNotAcceptEmptyBindings()
         {
             var target = new MostParametersConstructorSelector();
-            Assert.Throws<ArgumentOutOfRangeException>(() => target.SelectConstructorBinding(new BoundConstructor[] { }, Enumerable.Empty<Parameter>()));
+            Assert.Throws<ArgumentOutOfRangeException>(() => target.SelectConstructorBinding(Array.Empty<BoundConstructor>(), Enumerable.Empty<Parameter>()));
         }
 
         [Fact]

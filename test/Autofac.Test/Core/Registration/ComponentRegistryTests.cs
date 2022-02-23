@@ -148,7 +148,7 @@ namespace Autofac.Test.Core.Registration
         [Fact]
         public void WhenRegistrationSourcePreservesOrder_DefaultsForWrappersMatchDefaultsForWrapped()
         {
-            object a = new object(), b = new object();
+            object a = new(), b = new();
 
             var builder = new ContainerBuilder();
             builder.RegisterInstance(a);

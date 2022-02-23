@@ -52,7 +52,7 @@ namespace Autofac.Core
                 throw new ArgumentNullException(nameof(registrationAccessor));
             }
 
-            if (!(service is IServiceWithType swt) || !swt.ServiceType.IsGenericTypeDefinedBy(_type))
+            if (service is not IServiceWithType swt || !swt.ServiceType.IsGenericTypeDefinedBy(_type))
             {
                 return Enumerable.Empty<IComponentRegistration>();
             }

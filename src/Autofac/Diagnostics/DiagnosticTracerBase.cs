@@ -58,7 +58,7 @@ namespace Autofac.Diagnostics
         /// <summary>
         /// The list of event names to which this observer is subscribed.
         /// </summary>
-        private readonly List<string> _subscriptions = new List<string>();
+        private readonly List<string> _subscriptions = new();
 
         /// <summary>
         /// Subscribes the observer to a particular named diagnostic event.

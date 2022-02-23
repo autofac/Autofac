@@ -33,7 +33,7 @@ namespace Autofac.Core.Registration
 
             var toRegister = registration;
 
-            if (registration.Lifetime is RootScopeLifetime && !(registration is ExternalComponentRegistration))
+            if (registration.Lifetime is RootScopeLifetime && registration is not ExternalComponentRegistration)
             {
 #pragma warning disable CA2000 // Dispose objects before losing scope
                 toRegister = new ComponentRegistrationLifetimeDecorator(registration, _restrictedRootScopeLifetime);
