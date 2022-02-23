@@ -1,15 +1,11 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Autofac.Core;
 using Autofac.Features.Metadata;
 using Autofac.Features.OwnedInstances;
 using Autofac.Features.ResolveAnything;
 using Autofac.Test.Scenarios.RegistrationSources;
-using Xunit;
 
 namespace Autofac.Test.Features.ResolveAnything;
 

@@ -1,13 +1,11 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Registration;
 using Autofac.Test.Scenarios.Parameterisation;
 using Autofac.Test.Scenarios.WithProperty;
-using Xunit;
 
 namespace Autofac.Test;
 

@@ -3,8 +3,6 @@
 
 using Autofac.Core.Resolving.Middleware;
 using Autofac.Core.Resolving.Pipeline;
-using Moq;
-using Xunit;
 
 namespace Autofac.Test.Core.Resolving;
 

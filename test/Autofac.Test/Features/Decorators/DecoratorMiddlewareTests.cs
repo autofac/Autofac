@@ -5,8 +5,6 @@ using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.Decorators;
-using Moq;
-using Xunit;
 
 namespace Autofac.Test.Features.Decorators;
 

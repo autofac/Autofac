@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
@@ -12,7 +9,6 @@ using Autofac.Features.Metadata;
 using Autofac.Features.Scanning;
 using Autofac.Test.Scenarios.ScannedAssembly;
 using Autofac.Test.Scenarios.ScannedAssembly.MetadataAttributeScanningScenario;
-using Xunit;
 
 namespace Autofac.Test.Features.Scanning;
 

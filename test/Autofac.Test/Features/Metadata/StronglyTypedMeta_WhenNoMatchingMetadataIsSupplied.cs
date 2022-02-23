@@ -5,7 +5,6 @@ using Autofac.Core;
 using Autofac.Features.Metadata;
 using Autofac.Test.Features.Metadata.TestTypes;
 using Autofac.Util;
-using Xunit;
 
 namespace Autofac.Test.Features.Metadata;
 

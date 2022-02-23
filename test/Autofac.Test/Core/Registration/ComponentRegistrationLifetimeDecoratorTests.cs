@@ -3,7 +3,6 @@
 
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
-using Xunit;
 
 namespace Autofac.Test.Core.Registration;
 

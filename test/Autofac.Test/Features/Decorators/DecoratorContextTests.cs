@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Features.Decorators;
-using Xunit;
 
 namespace Autofac.Test.Features.Decorators;
 

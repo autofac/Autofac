@@ -1,14 +1,9 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
-using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using Autofac.Core.Activators.Reflection;
-using Autofac.Test.Util;
-using Xunit;
 
 namespace Autofac.Test.Core.Activators.Reflection;
 
