@@ -3,10 +3,9 @@
 
 using System;
 
-namespace Autofac.Specification.Test.Features.PropertyInjection
+namespace Autofac.Specification.Test.Features.PropertyInjection;
+
+public class HasStaticSetter
 {
-    public class HasStaticSetter
-    {
-        public static string Val { get; set; }
-    }
+    public static string Val { get; set; }
 }

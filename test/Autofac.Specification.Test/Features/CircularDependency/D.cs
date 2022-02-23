@@ -1,15 +1,14 @@
-// Copyright (c) Autofac Project. All rights reserved.
+﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
 using System.Linq;
 
-namespace Autofac.Specification.Test.Features.CircularDependency
+namespace Autofac.Specification.Test.Features.CircularDependency;
+
+public class D : ID
 {
-    public class D : ID
+    public D(IA a, IC c)
     {
-        public D(IA a, IC c)
-        {
-        }
     }
 }

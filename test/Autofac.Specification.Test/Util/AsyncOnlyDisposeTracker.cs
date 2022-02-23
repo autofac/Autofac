@@ -4,30 +4,29 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Autofac.Specification.Test.Util
+namespace Autofac.Specification.Test.Util;
+
+public class AsyncOnlyDisposeTracker : IAsyncDisposable
 {
-    public class AsyncOnlyDisposeTracker : IAsyncDisposable
+    private readonly bool _completeAsync;
+
+    public AsyncOnlyDisposeTracker(bool completeAsync = false)
     {
-        private readonly bool _completeAsync;
+        _completeAsync = completeAsync;
+    }
 
-        public AsyncOnlyDisposeTracker(bool completeAsync = false)
+    public event EventHandler<EventArgs> Disposing;
+
+    public bool IsAsyncDisposed { get; set; }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_completeAsync)
         {
-            _completeAsync = completeAsync;
+            await Task.Delay(1);
         }
 
-        public event EventHandler<EventArgs> Disposing;
-
-        public bool IsAsyncDisposed { get; set; }
-
-        public async ValueTask DisposeAsync()
-        {
-            if (_completeAsync)
-            {
-                await Task.Delay(1);
-            }
-
-            IsAsyncDisposed = true;
-            Disposing?.Invoke(this, EventArgs.Empty);
-        }
+        IsAsyncDisposed = true;
+        Disposing?.Invoke(this, EventArgs.Empty);
     }
 }

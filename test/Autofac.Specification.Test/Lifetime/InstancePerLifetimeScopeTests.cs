@@ -7,76 +7,75 @@ using Autofac.Specification.Test.Util;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Autofac.Specification.Test.Lifetime
+namespace Autofac.Specification.Test.Lifetime;
+
+public class InstancePerLifetimeScopeTests
 {
-    public class InstancePerLifetimeScopeTests
+    private readonly ITestOutputHelper _output;
+
+    public InstancePerLifetimeScopeTests(ITestOutputHelper output)
     {
-        private readonly ITestOutputHelper _output;
+        _output = output;
+    }
 
-        public InstancePerLifetimeScopeTests(ITestOutputHelper output)
+    [Fact]
+    public void TypeAsInstancePerScope()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<A>().InstancePerLifetimeScope();
+
+        var container = builder.Build();
+
+        var lifetime = container.BeginLifetimeScope();
+
+        var tracer = new DefaultDiagnosticTracer();
+        tracer.OperationCompleted += (sender, args) =>
         {
-            _output = output;
-        }
+            _output.WriteLine(args.TraceContent);
+        };
 
-        [Fact]
-        public void TypeAsInstancePerScope()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<A>().InstancePerLifetimeScope();
+        container.SubscribeToDiagnostics(tracer);
 
-            var container = builder.Build();
+        var ctxA = lifetime.Resolve<A>();
+        var ctxA2 = lifetime.Resolve<A>();
 
-            var lifetime = container.BeginLifetimeScope();
+        Assert.Same(ctxA, ctxA2);
 
-            var tracer = new DefaultDiagnosticTracer();
-            tracer.OperationCompleted += (sender, args) =>
-            {
-                _output.WriteLine(args.TraceContent);
-            };
+        var targetA = container.Resolve<A>();
+        var targetA2 = container.Resolve<A>();
 
-            container.SubscribeToDiagnostics(tracer);
+        Assert.Same(targetA, targetA2);
+        Assert.NotSame(ctxA, targetA);
+    }
 
-            var ctxA = lifetime.Resolve<A>();
-            var ctxA2 = lifetime.Resolve<A>();
+    [Fact]
+    public void TypeAsInstancePerScopeDisposedWithScope()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<A>().InstancePerLifetimeScope();
 
-            Assert.Same(ctxA, ctxA2);
+        var container = builder.Build();
 
-            var targetA = container.Resolve<A>();
-            var targetA2 = container.Resolve<A>();
+        var lifetime = container.BeginLifetimeScope();
 
-            Assert.Same(targetA, targetA2);
-            Assert.NotSame(ctxA, targetA);
-        }
+        var ctxA = lifetime.Resolve<A>();
+        var targetA = container.Resolve<A>();
 
-        [Fact]
-        public void TypeAsInstancePerScopeDisposedWithScope()
-        {
-            var builder = new ContainerBuilder();
-            builder.RegisterType<A>().InstancePerLifetimeScope();
+        Assert.False(targetA.IsDisposed);
+        Assert.False(ctxA.IsDisposed);
 
-            var container = builder.Build();
+        lifetime.Dispose();
 
-            var lifetime = container.BeginLifetimeScope();
+        Assert.False(targetA.IsDisposed);
+        Assert.True(ctxA.IsDisposed);
 
-            var ctxA = lifetime.Resolve<A>();
-            var targetA = container.Resolve<A>();
+        container.Dispose();
 
-            Assert.False(targetA.IsDisposed);
-            Assert.False(ctxA.IsDisposed);
+        Assert.True(targetA.IsDisposed);
+        Assert.True(ctxA.IsDisposed);
+    }
 
-            lifetime.Dispose();
-
-            Assert.False(targetA.IsDisposed);
-            Assert.True(ctxA.IsDisposed);
-
-            container.Dispose();
-
-            Assert.True(targetA.IsDisposed);
-            Assert.True(ctxA.IsDisposed);
-        }
-
-        private class A : DisposeTracker
-        {
-        }
+    private class A : DisposeTracker
+    {
     }
 }

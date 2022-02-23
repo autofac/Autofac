@@ -7,34 +7,33 @@ using System.Linq;
 using Autofac.Features.Indexed;
 using Xunit;
 
-namespace Autofac.Specification.Test.Features
+namespace Autofac.Specification.Test.Features;
+
+public class IndexTests
 {
-    public class IndexTests
+    [Fact]
+    public void IndexCanRetrieveKeyedRegistration()
     {
-        [Fact]
-        public void IndexCanRetrieveKeyedRegistration()
-        {
-            var key = 42;
-            var cpt = "Hello";
-            var builder = new ContainerBuilder();
-            builder.RegisterInstance(cpt).Keyed<string>(key);
-            var container = builder.Build();
+        var key = 42;
+        var cpt = "Hello";
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance(cpt).Keyed<string>(key);
+        var container = builder.Build();
 
-            var idx = container.Resolve<IIndex<int, string>>();
-            Assert.Same(cpt, idx[key]);
-        }
+        var idx = container.Resolve<IIndex<int, string>>();
+        Assert.Same(cpt, idx[key]);
+    }
 
-        [Fact]
-        public void IndexComposesWithIEnumerable()
-        {
-            var key = 42;
-            var cpt = "Hello";
-            var builder = new ContainerBuilder();
-            builder.RegisterInstance(cpt).Keyed<string>(key);
-            var container = builder.Build();
+    [Fact]
+    public void IndexComposesWithIEnumerable()
+    {
+        var key = 42;
+        var cpt = "Hello";
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance(cpt).Keyed<string>(key);
+        var container = builder.Build();
 
-            var idx = container.Resolve<IIndex<int, IEnumerable<string>>>();
-            Assert.Same(cpt, idx[key].Single());
-        }
+        var idx = container.Resolve<IIndex<int, IEnumerable<string>>>();
+        Assert.Same(cpt, idx[key].Single());
     }
 }

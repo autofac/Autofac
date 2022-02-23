@@ -3,10 +3,9 @@
 
 using System;
 
-namespace Autofac.Specification.Test.Features.PropertyInjection
+namespace Autofac.Specification.Test.Features.PropertyInjection;
+
+public class HasPublicSetterWithDefaultValue
 {
-    public class HasPublicSetterWithDefaultValue
-    {
-        public string Val { get; set; } = "Default";
-    }
+    public string Val { get; set; } = "Default";
 }

@@ -3,10 +3,9 @@
 
 using System;
 
-namespace Autofac.Specification.Test.Features.PropertyInjection
+namespace Autofac.Specification.Test.Features.PropertyInjection;
+
+public class HasProtectedSetterWithDefaultValue
 {
-    public class HasProtectedSetterWithDefaultValue
-    {
-        public string Val { get; protected set; } = "Default";
-    }
+    public string Val { get; protected set; } = "Default";
 }

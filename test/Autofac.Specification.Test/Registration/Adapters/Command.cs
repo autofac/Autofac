@@ -3,9 +3,8 @@
 
 using System;
 
-namespace Autofac.Specification.Test.Registration.Adapters
+namespace Autofac.Specification.Test.Registration.Adapters;
+
+public class Command
 {
-    public class Command
-    {
-    }
 }
