@@ -25,8 +25,6 @@ namespace Autofac.Test
             {
                 Assert.True(source.RegistrationsForCalled);
             }
-
-            _ = new ObjectRegistrationSource();
         }
 
         [Fact]
