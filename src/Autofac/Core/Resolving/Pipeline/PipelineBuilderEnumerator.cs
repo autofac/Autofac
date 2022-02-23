@@ -43,7 +43,7 @@ namespace Autofac.Core.Resolving.Pipeline
             {
                 _current = _current.Next;
 
-                _ended = !(_current is not null);
+                _ended = _current is null;
 
                 return !_ended;
             }
