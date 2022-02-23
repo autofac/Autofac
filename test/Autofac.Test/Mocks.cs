@@ -1,10 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Threading.Tasks;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
@@ -12,175 +9,174 @@ using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Diagnostics;
 
-namespace Autofac.Test
+namespace Autofac.Test;
+
+internal static class Mocks
 {
-    internal static class Mocks
+    public static IConstructorFinder GetConstructorFinder()
     {
-        public static IConstructorFinder GetConstructorFinder()
+        return new MockConstructorFinder();
+    }
+
+    public static IConstructorSelector GetConstructorSelector()
+    {
+        return new MockConstructorSelector();
+    }
+
+    public static MockComponentRegistration GetComponentRegistration()
+    {
+        return new MockComponentRegistration();
+    }
+
+    public static ServiceRegistration GetResolvableImplementation()
+    {
+        return new ServiceRegistration(
+            ServicePipelines.DefaultServicePipeline,
+            GetComponentRegistration());
+    }
+
+    public static ServiceRegistration GetResolvableImplementation(IComponentRegistration registration)
+    {
+        return new ServiceRegistration(
+            ServicePipelines.DefaultServicePipeline,
+            registration);
+    }
+
+    public static MockTracer GetTracer()
+    {
+        return new MockTracer();
+    }
+
+    internal class MockConstructorFinder : IConstructorFinder
+    {
+        public ConstructorInfo[] FindConstructors(Type targetType)
         {
-            return new MockConstructorFinder();
+            return Array.Empty<ConstructorInfo>();
+        }
+    }
+
+    internal class MockConstructorSelector : IConstructorSelector
+    {
+        public BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters)
+        {
+            return default;
+        }
+    }
+
+    internal class MockComponentRegistration : IComponentRegistration
+    {
+        public void Dispose()
+        {
+            IsDisposed = true;
         }
 
-        public static IConstructorSelector GetConstructorSelector()
+        public ValueTask DisposeAsync()
         {
-            return new MockConstructorSelector();
+            IsDisposed = true;
+
+            return default;
         }
 
-        public static MockComponentRegistration GetComponentRegistration()
+        public bool IsDisposed { get; private set; }
+
+        public Guid Id { get; }
+
+        public IInstanceActivator Activator { get; }
+
+        public IComponentLifetime Lifetime { get; }
+
+        public InstanceSharing Sharing { get; }
+
+        public InstanceOwnership Ownership { get; }
+
+        public IEnumerable<Service> Services { get; } = Array.Empty<Service>();
+
+        public IDictionary<string, object> Metadata { get; }
+
+        public IComponentRegistration Target { get; }
+
+        public bool IsAdapterForIndividualComponent { get; }
+
+        public event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
+
+        public IResolvePipeline ResolvePipeline { get; } = new ResolvePipelineBuilder(PipelineType.Registration).Build();
+
+        public bool IsServiceOverride { get; set; }
+
+        public RegistrationOptions Options { get; set; }
+
+        public void BuildResolvePipeline(IComponentRegistryServices registryServices)
         {
-            return new MockComponentRegistration();
+            PipelineBuilding?.Invoke(this, new ResolvePipelineBuilder(PipelineType.Registration));
+        }
+    }
+
+    internal class MockTracer : DiagnosticTracerBase
+    {
+        public MockTracer()
+        {
+            EnableAll();
         }
 
-        public static ServiceRegistration GetResolvableImplementation()
+        public event Action<IResolveOperation, ResolveRequest> OperationStarting;
+
+        public event Action<IResolveOperation, ResolveRequestContext> RequestStarting;
+
+        public event Action<ResolveRequestContext, IResolveMiddleware> EnteringMiddleware;
+
+        public event Action<ResolveRequestContext, IResolveMiddleware, bool> ExitingMiddleware;
+
+        public event Action<IResolveOperation, ResolveRequestContext, Exception> RequestFailing;
+
+        public event Action<IResolveOperation, ResolveRequestContext> RequestSucceeding;
+
+        public event Action<IResolveOperation, Exception> OperationFailing;
+
+        public event Action<IResolveOperation, object> OperationSucceeding;
+
+        protected override void OnOperationStart(OperationStartDiagnosticData data)
         {
-            return new ServiceRegistration(
-                ServicePipelines.DefaultServicePipeline,
-                GetComponentRegistration());
+            OperationStarting?.Invoke(data.Operation, data.InitiatingRequest);
         }
 
-        public static ServiceRegistration GetResolvableImplementation(IComponentRegistration registration)
+        protected override void OnRequestStart(RequestDiagnosticData data)
         {
-            return new ServiceRegistration(
-                ServicePipelines.DefaultServicePipeline,
-                registration);
+            RequestStarting?.Invoke(data.Operation, data.RequestContext);
         }
 
-        public static MockTracer GetTracer()
+        protected override void OnMiddlewareStart(MiddlewareDiagnosticData data)
         {
-            return new MockTracer();
+            EnteringMiddleware?.Invoke(data.RequestContext, data.Middleware);
         }
 
-        internal class MockConstructorFinder : IConstructorFinder
+        protected override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
         {
-            public ConstructorInfo[] FindConstructors(Type targetType)
-            {
-                return Array.Empty<ConstructorInfo>();
-            }
+            ExitingMiddleware?.Invoke(data.RequestContext, data.Middleware, false);
         }
 
-        internal class MockConstructorSelector : IConstructorSelector
+        protected override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
         {
-            public BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters)
-            {
-                return default;
-            }
+            ExitingMiddleware?.Invoke(data.RequestContext, data.Middleware, true);
         }
 
-        internal class MockComponentRegistration : IComponentRegistration
+        protected override void OnRequestFailure(RequestFailureDiagnosticData data)
         {
-            public void Dispose()
-            {
-                IsDisposed = true;
-            }
-
-            public ValueTask DisposeAsync()
-            {
-                IsDisposed = true;
-
-                return default;
-            }
-
-            public bool IsDisposed { get; private set; }
-
-            public Guid Id { get; }
-
-            public IInstanceActivator Activator { get; }
-
-            public IComponentLifetime Lifetime { get; }
-
-            public InstanceSharing Sharing { get; }
-
-            public InstanceOwnership Ownership { get; }
-
-            public IEnumerable<Service> Services { get; } = Array.Empty<Service>();
-
-            public IDictionary<string, object> Metadata { get; }
-
-            public IComponentRegistration Target { get; }
-
-            public bool IsAdapterForIndividualComponent { get; }
-
-            public event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
-
-            public IResolvePipeline ResolvePipeline { get; } = new ResolvePipelineBuilder(PipelineType.Registration).Build();
-
-            public bool IsServiceOverride { get; set; }
-
-            public RegistrationOptions Options { get; set; }
-
-            public void BuildResolvePipeline(IComponentRegistryServices registryServices)
-            {
-                PipelineBuilding?.Invoke(this, new ResolvePipelineBuilder(PipelineType.Registration));
-            }
+            RequestFailing?.Invoke(data.Operation, data.RequestContext, data.RequestException);
         }
 
-        internal class MockTracer : DiagnosticTracerBase
+        protected override void OnRequestSuccess(RequestDiagnosticData data)
         {
-            public MockTracer()
-            {
-                EnableAll();
-            }
+            RequestSucceeding?.Invoke(data.Operation, data.RequestContext);
+        }
 
-            public event Action<IResolveOperation, ResolveRequest> OperationStarting;
+        protected override void OnOperationFailure(OperationFailureDiagnosticData data)
+        {
+            OperationFailing?.Invoke(data.Operation, data.OperationException);
+        }
 
-            public event Action<IResolveOperation, ResolveRequestContext> RequestStarting;
-
-            public event Action<ResolveRequestContext, IResolveMiddleware> EnteringMiddleware;
-
-            public event Action<ResolveRequestContext, IResolveMiddleware, bool> ExitingMiddleware;
-
-            public event Action<IResolveOperation, ResolveRequestContext, Exception> RequestFailing;
-
-            public event Action<IResolveOperation, ResolveRequestContext> RequestSucceeding;
-
-            public event Action<IResolveOperation, Exception> OperationFailing;
-
-            public event Action<IResolveOperation, object> OperationSucceeding;
-
-            protected override void OnOperationStart(OperationStartDiagnosticData data)
-            {
-                OperationStarting?.Invoke(data.Operation, data.InitiatingRequest);
-            }
-
-            protected override void OnRequestStart(RequestDiagnosticData data)
-            {
-                RequestStarting?.Invoke(data.Operation, data.RequestContext);
-            }
-
-            protected override void OnMiddlewareStart(MiddlewareDiagnosticData data)
-            {
-                EnteringMiddleware?.Invoke(data.RequestContext, data.Middleware);
-            }
-
-            protected override void OnMiddlewareFailure(MiddlewareDiagnosticData data)
-            {
-                ExitingMiddleware?.Invoke(data.RequestContext, data.Middleware, false);
-            }
-
-            protected override void OnMiddlewareSuccess(MiddlewareDiagnosticData data)
-            {
-                ExitingMiddleware?.Invoke(data.RequestContext, data.Middleware, true);
-            }
-
-            protected override void OnRequestFailure(RequestFailureDiagnosticData data)
-            {
-                RequestFailing?.Invoke(data.Operation, data.RequestContext, data.RequestException);
-            }
-
-            protected override void OnRequestSuccess(RequestDiagnosticData data)
-            {
-                RequestSucceeding?.Invoke(data.Operation, data.RequestContext);
-            }
-
-            protected override void OnOperationFailure(OperationFailureDiagnosticData data)
-            {
-                OperationFailing?.Invoke(data.Operation, data.OperationException);
-            }
-
-            protected override void OnOperationSuccess(OperationSuccessDiagnosticData data)
-            {
-                OperationSucceeding?.Invoke(data.Operation, data.ResolvedInstance);
-            }
+        protected override void OnOperationSuccess(OperationSuccessDiagnosticData data)
+        {
+            OperationSucceeding?.Invoke(data.Operation, data.ResolvedInstance);
         }
     }
 }

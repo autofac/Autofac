@@ -4,32 +4,31 @@
 using System.Reflection;
 using Autofac.Util;
 
-namespace Autofac.Core
+namespace Autofac.Core;
+
+/// <summary>
+/// A property identified by name. When applied to a reflection-based
+/// component, the name will be matched against property names.
+/// </summary>
+public class NamedPropertyParameter : ConstantParameter
 {
     /// <summary>
-    /// A property identified by name. When applied to a reflection-based
-    /// component, the name will be matched against property names.
+    /// Gets the name of the property.
     /// </summary>
-    public class NamedPropertyParameter : ConstantParameter
-    {
-        /// <summary>
-        /// Gets the name of the property.
-        /// </summary>
-        public string Name { get; private set; }
+    public string Name { get; private set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="NamedPropertyParameter"/> class.
-        /// </summary>
-        /// <param name="name">The name of the property.</param>
-        /// <param name="value">The property value.</param>
-        public NamedPropertyParameter(string name, object value)
-            : base(value, pi =>
-            {
-                return pi.TryGetDeclaringProperty(out PropertyInfo? prop) &&
-                    prop.Name == name;
-            })
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NamedPropertyParameter"/> class.
+    /// </summary>
+    /// <param name="name">The name of the property.</param>
+    /// <param name="value">The property value.</param>
+    public NamedPropertyParameter(string name, object value)
+        : base(value, pi =>
         {
-            Name = Enforce.ArgumentNotNullOrEmpty(name, "name");
-        }
+            return pi.TryGetDeclaringProperty(out PropertyInfo? prop) &&
+                prop.Name == name;
+        })
+    {
+        Name = Enforce.ArgumentNotNullOrEmpty(name, "name");
     }
 }

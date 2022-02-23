@@ -1,76 +1,72 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
-using System.Linq;
 using System.Reflection;
-using Xunit;
 
-namespace Autofac.Test
+namespace Autofac.Test;
+
+public class TypedParameterTests
 {
-    public class TypedParameterTests
+    public class A
     {
-        public class A
+    }
+
+    public class B : A
+    {
+    }
+
+    public class C
+    {
+        public C(A a)
         {
         }
+    }
 
-        public class B : A
-        {
-        }
+    [Fact]
+    public void MatchesIdenticallyTypedParameter()
+    {
+        var param = AParamOfCConstructor();
 
-        public class C
-        {
-            public C(A a)
-            {
-            }
-        }
+        var typedParam = new TypedParameter(typeof(A), new A());
 
-        [Fact]
-        public void MatchesIdenticallyTypedParameter()
-        {
-            var param = AParamOfCConstructor();
+        Assert.True(typedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
+    }
 
-            var typedParam = new TypedParameter(typeof(A), new A());
+    private static System.Reflection.ParameterInfo AParamOfCConstructor()
+    {
+        var param = typeof(C)
+            .GetTypeInfo()
+            .DeclaredConstructors
+            .Single()
+            .GetParameters()
+            .First();
+        return param;
+    }
 
-            Assert.True(typedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
-        }
+    [Fact]
+    public void DoesNotMatchPolymorphicallyTypedParameter()
+    {
+        var param = AParamOfCConstructor();
 
-        private static System.Reflection.ParameterInfo AParamOfCConstructor()
-        {
-            var param = typeof(C)
-                .GetTypeInfo()
-                .DeclaredConstructors
-                .Single()
-                .GetParameters()
-                .First();
-            return param;
-        }
+        var typedParam = new TypedParameter(typeof(B), new B());
 
-        [Fact]
-        public void DoesNotMatchPolymorphicallyTypedParameter()
-        {
-            var param = AParamOfCConstructor();
+        Assert.False(typedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
+    }
 
-            var typedParam = new TypedParameter(typeof(B), new B());
+    [Fact]
+    public void DoesNotMatchUnrelatedParameter()
+    {
+        var param = AParamOfCConstructor();
 
-            Assert.False(typedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
-        }
+        var typedParam = new TypedParameter(typeof(string), "Yo!");
 
-        [Fact]
-        public void DoesNotMatchUnrelatedParameter()
-        {
-            var param = AParamOfCConstructor();
+        Assert.False(typedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
+    }
 
-            var typedParam = new TypedParameter(typeof(string), "Yo!");
-
-            Assert.False(typedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
-        }
-
-        [Fact]
-        public void FromWorksJustLikeTheConstructor()
-        {
-            var param = TypedParameter.From(new B());
-            Assert.Same(typeof(B), param.Type);
-        }
+    [Fact]
+    public void FromWorksJustLikeTheConstructor()
+    {
+        var param = TypedParameter.From(new B());
+        Assert.Same(typeof(B), param.Type);
     }
 }

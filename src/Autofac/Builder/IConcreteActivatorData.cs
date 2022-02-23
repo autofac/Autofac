@@ -3,16 +3,15 @@
 
 using Autofac.Core;
 
-namespace Autofac.Builder
+namespace Autofac.Builder;
+
+/// <summary>
+/// Activator data that can provide an IInstanceActivator instance.
+/// </summary>
+public interface IConcreteActivatorData
 {
     /// <summary>
-    /// Activator data that can provide an IInstanceActivator instance.
+    /// Gets the instance activator based on the provided data.
     /// </summary>
-    public interface IConcreteActivatorData
-    {
-        /// <summary>
-        /// Gets the instance activator based on the provided data.
-        /// </summary>
-        IInstanceActivator Activator { get; }
-    }
+    IInstanceActivator Activator { get; }
 }

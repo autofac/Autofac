@@ -4,43 +4,42 @@
 using Autofac.Builder;
 using Autofac.Core;
 
-namespace Autofac.Features.OwnedInstances
+namespace Autofac.Features.OwnedInstances;
+
+/// <summary>
+/// Generates registrations for services of type <see cref="Owned{T}"/> whenever the service
+/// T is available.
+/// </summary>
+internal class OwnedInstanceRegistrationSource : ImplicitRegistrationSource
 {
     /// <summary>
-    /// Generates registrations for services of type <see cref="Owned{T}"/> whenever the service
-    /// T is available.
+    /// Initializes a new instance of the <see cref="OwnedInstanceRegistrationSource"/> class.
     /// </summary>
-    internal class OwnedInstanceRegistrationSource : ImplicitRegistrationSource
+    public OwnedInstanceRegistrationSource()
+        : base(typeof(Owned<>))
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="OwnedInstanceRegistrationSource"/> class.
-        /// </summary>
-        public OwnedInstanceRegistrationSource()
-            : base(typeof(Owned<>))
-        {
-        }
-
-        /// <inheritdoc/>
-        protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
-        {
-            var lifetime = ctx.Resolve<ILifetimeScope>().BeginLifetimeScope(request.Service);
-            try
-            {
-                var value = (T)lifetime.ResolveComponent(request);
-                return new Owned<T>(value, lifetime);
-            }
-            catch
-            {
-                lifetime.Dispose();
-                throw;
-            }
-        }
-
-        /// <inheritdoc/>
-        protected override IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> BuildRegistration(IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> registration)
-            => registration.ExternallyOwned();
-
-        /// <inheritdoc/>
-        public override string Description => OwnedInstanceRegistrationSourceResources.OwnedInstanceRegistrationSourceDescription;
     }
+
+    /// <inheritdoc/>
+    protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
+    {
+        var lifetime = ctx.Resolve<ILifetimeScope>().BeginLifetimeScope(request.Service);
+        try
+        {
+            var value = (T)lifetime.ResolveComponent(request);
+            return new Owned<T>(value, lifetime);
+        }
+        catch
+        {
+            lifetime.Dispose();
+            throw;
+        }
+    }
+
+    /// <inheritdoc/>
+    protected override IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> BuildRegistration(IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> registration)
+        => registration.ExternallyOwned();
+
+    /// <inheritdoc/>
+    public override string Description => OwnedInstanceRegistrationSourceResources.OwnedInstanceRegistrationSourceDescription;
 }

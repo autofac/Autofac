@@ -1,23 +1,20 @@
-﻿using System;
-using System.IO;
-using BenchmarkDotNet.Configs;
+﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 
-namespace Autofac.Benchmarks
+namespace Autofac.Benchmarks;
+
+internal class BenchmarkConfig : ManualConfig
 {
-    internal class BenchmarkConfig : ManualConfig
+    private const string BenchmarkArtifactsFolder = "BenchmarkDotNet.Artifacts";
+
+    internal BenchmarkConfig()
     {
-        private const string BenchmarkArtifactsFolder = "BenchmarkDotNet.Artifacts";
+        Add(DefaultConfig.Instance);
 
-        internal BenchmarkConfig()
-        {
-            Add(DefaultConfig.Instance);
+        var rootFolder = AppContext.BaseDirectory;
+        var runFolder = DateTime.UtcNow.ToString("dd-MM-yyyy_hh-MM-ss");
+        ArtifactsPath = Path.Combine(rootFolder, BenchmarkArtifactsFolder, runFolder);
 
-            var rootFolder = AppContext.BaseDirectory;
-            var runFolder = DateTime.UtcNow.ToString("dd-MM-yyyy_hh-MM-ss");
-            ArtifactsPath = Path.Combine(rootFolder, BenchmarkArtifactsFolder, runFolder);
-
-            AddDiagnoser(MemoryDiagnoser.Default);
-        }
+        AddDiagnoser(MemoryDiagnoser.Default);
     }
 }

@@ -32,7 +32,12 @@
     <Authors>Autofac Contributors</Authors>
     <Company>Autofac</Company>
     <Product>Autofac</Product>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
+  </ItemGroup>
 
   <!-- Disable nullability warnings in netstandard2.0 -->
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">

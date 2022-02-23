@@ -1,116 +1,109 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using Autofac.Core;
-using Xunit;
 
-namespace Autofac.Test.Core
+namespace Autofac.Test.Core;
+
+public class NamedPropertyParameterTests
 {
-    public class NamedPropertyParameterTests
+    public class HasInjectionPoints
     {
-        public class HasInjectionPoints
+        public const string PropertyName = "PropertyInjectionPoint";
+
+        public const string WrongPropertyName = "WrongPropertyInjectionPoint";
+
+        public const string MethodName = "MethodInjectionPoint";
+
+        public HasInjectionPoints(string propertyInjectionPoint)
         {
-            public const string PropertyName = "PropertyInjectionPoint";
+        }
 
-            public const string WrongPropertyName = "WrongPropertyInjectionPoint";
+        public void MethodInjectionPoint(string propertyInjectionPoint)
+        {
+        }
 
-            public const string MethodName = "MethodInjectionPoint";
-
-            public HasInjectionPoints(string propertyInjectionPoint)
+        public string PropertyInjectionPoint
+        {
+            set
             {
             }
+        }
 
-            public void MethodInjectionPoint(string propertyInjectionPoint)
+        public string WrongPropertyInjectionPoint
+        {
+            set
             {
             }
-
-            public string PropertyInjectionPoint
-            {
-                set
-                {
-                }
-            }
-
-            public string WrongPropertyInjectionPoint
-            {
-                set
-                {
-                }
-            }
         }
+    }
 
-        private ParameterInfo GetSetAccessorParameter(PropertyInfo pi)
-        {
-            return pi
-                .GetAccessors()
-                .First()
-                .GetParameters()
-                .First();
-        }
+    private ParameterInfo GetSetAccessorParameter(PropertyInfo pi)
+    {
+        return pi
+            .GetAccessors()
+            .First()
+            .GetParameters()
+            .First();
+    }
 
-        private ParameterInfo PropertySetValueParameter()
-        {
-            return GetSetAccessorParameter(
-                    typeof(HasInjectionPoints)
-                    .GetProperty(HasInjectionPoints.PropertyName));
-        }
+    private ParameterInfo PropertySetValueParameter()
+    {
+        return GetSetAccessorParameter(
+                typeof(HasInjectionPoints)
+                .GetProperty(HasInjectionPoints.PropertyName));
+    }
 
-        private ParameterInfo WrongPropertySetValueParameter()
-        {
-            return GetSetAccessorParameter(
-                    typeof(HasInjectionPoints)
-                    .GetProperty(HasInjectionPoints.WrongPropertyName));
-        }
+    private ParameterInfo WrongPropertySetValueParameter()
+    {
+        return GetSetAccessorParameter(
+                typeof(HasInjectionPoints)
+                .GetProperty(HasInjectionPoints.WrongPropertyName));
+    }
 
-        private ParameterInfo ConstructorParameter()
-        {
-            return typeof(HasInjectionPoints)
-                .GetConstructors()
-                .First()
-                .GetParameters()
-                .First();
-        }
+    private ParameterInfo ConstructorParameter()
+    {
+        return typeof(HasInjectionPoints)
+            .GetConstructors()
+            .First()
+            .GetParameters()
+            .First();
+    }
 
-        private ParameterInfo MethodParameter()
-        {
-            return typeof(HasInjectionPoints)
-                .GetMethod(HasInjectionPoints.MethodName)
-                .GetParameters()
-                .First();
-        }
+    private ParameterInfo MethodParameter()
+    {
+        return typeof(HasInjectionPoints)
+            .GetMethod(HasInjectionPoints.MethodName)
+            .GetParameters()
+            .First();
+    }
 
-        [Fact]
-        public void MatchesPropertySetterByName()
-        {
-            var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
-            Assert.True(cp.CanSupplyValue(PropertySetValueParameter(), new ContainerBuilder().Build(), out Func<object> vp));
-        }
+    [Fact]
+    public void MatchesPropertySetterByName()
+    {
+        var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
+        Assert.True(cp.CanSupplyValue(PropertySetValueParameter(), new ContainerBuilder().Build(), out Func<object> vp));
+    }
 
-        [Fact]
-        public void DoesNotMatchePropertySetterWithDifferentName()
-        {
-            var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
-            Assert.False(cp.CanSupplyValue(WrongPropertySetValueParameter(), new ContainerBuilder().Build(), out Func<object> vp));
-        }
+    [Fact]
+    public void DoesNotMatchePropertySetterWithDifferentName()
+    {
+        var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
+        Assert.False(cp.CanSupplyValue(WrongPropertySetValueParameter(), new ContainerBuilder().Build(), out Func<object> vp));
+    }
 
-        [Fact]
-        public void DoesNotMatchConstructorParameters()
-        {
-            var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
-            Assert.False(cp.CanSupplyValue(ConstructorParameter(), new ContainerBuilder().Build(), out Func<object> vp));
-        }
+    [Fact]
+    public void DoesNotMatchConstructorParameters()
+    {
+        var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
+        Assert.False(cp.CanSupplyValue(ConstructorParameter(), new ContainerBuilder().Build(), out Func<object> vp));
+    }
 
-        [Fact]
-        public void DoesNotMatchRegularMethodParameters()
-        {
-            var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
-            Assert.False(cp.CanSupplyValue(MethodParameter(), new ContainerBuilder().Build(), out Func<object> vp));
-        }
+    [Fact]
+    public void DoesNotMatchRegularMethodParameters()
+    {
+        var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
+        Assert.False(cp.CanSupplyValue(MethodParameter(), new ContainerBuilder().Build(), out Func<object> vp));
     }
 }

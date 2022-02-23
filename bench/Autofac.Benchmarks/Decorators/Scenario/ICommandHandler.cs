@@ -1,8 +1,5 @@
-﻿using System;
+﻿namespace Autofac.Benchmarks.Decorators.Scenario;
 
-namespace Autofac.Benchmarks.Decorators.Scenario
+public interface ICommandHandler
 {
-    public interface ICommandHandler
-    {
-    }
 }

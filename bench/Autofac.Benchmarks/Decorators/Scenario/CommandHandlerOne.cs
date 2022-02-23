@@ -1,8 +1,5 @@
-﻿using System;
+﻿namespace Autofac.Benchmarks.Decorators.Scenario;
 
-namespace Autofac.Benchmarks.Decorators.Scenario
+public class CommandHandlerOne : ICommandHandler
 {
-    public class CommandHandlerOne : ICommandHandler
-    {
-    }
 }

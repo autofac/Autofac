@@ -1,429 +1,422 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
 
-namespace Autofac.Core.Registration
+namespace Autofac.Core.Registration;
+
+/// <summary>
+/// Keeps track of the status of registered services.
+/// </summary>
+internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredServicesTracker
 {
+    private static readonly Func<Service, ServiceRegistrationInfo> RegInfoFactory = srv => new ServiceRegistrationInfo(srv);
+
+    private readonly Func<Service, IEnumerable<ServiceRegistration>> _registrationAccessor;
+
     /// <summary>
     /// Keeps track of the status of registered services.
     /// </summary>
-    internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredServicesTracker
+    private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new();
+
+    /// <summary>
+    /// External registration sources.
+    /// </summary>
+    private readonly List<IRegistrationSource> _dynamicRegistrationSources = new();
+
+    /// <summary>
+    /// All registrations.
+    /// </summary>
+    private readonly ConcurrentBag<IComponentRegistration> _registrations = new();
+
+    private readonly List<IServiceMiddlewareSource> _servicePipelineSources = new();
+
+    private Dictionary<Service, ServiceRegistrationInfo>? _ephemeralServiceInfo;
+    private bool _trackerPopulationComplete;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker"/> class.
+    /// </summary>
+    public DefaultRegisteredServicesTracker()
     {
-        private static readonly Func<Service, ServiceRegistrationInfo> RegInfoFactory = srv => new ServiceRegistrationInfo(srv);
+        _registrationAccessor = ServiceRegistrationsFor;
+    }
 
-        private readonly Func<Service, IEnumerable<ServiceRegistration>> _registrationAccessor;
+    /// <summary>
+    /// Fired whenever a component is registered - either explicitly or via a
+    /// <see cref="IRegistrationSource"/>.
+    /// </summary>
+    public event EventHandler<IComponentRegistration>? Registered;
 
-        /// <summary>
-        /// Keeps track of the status of registered services.
-        /// </summary>
-        private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new();
+    /// <summary>
+    /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
+    /// </summary>
+    public event EventHandler<IRegistrationSource>? RegistrationSourceAdded;
 
-        /// <summary>
-        /// External registration sources.
-        /// </summary>
-        private readonly List<IRegistrationSource> _dynamicRegistrationSources = new();
-
-        /// <summary>
-        /// All registrations.
-        /// </summary>
-        private readonly ConcurrentBag<IComponentRegistration> _registrations = new();
-
-        private readonly List<IServiceMiddlewareSource> _servicePipelineSources = new();
-
-        private Dictionary<Service, ServiceRegistrationInfo>? _ephemeralServiceInfo;
-        private bool _trackerPopulationComplete;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker"/> class.
-        /// </summary>
-        public DefaultRegisteredServicesTracker()
+    /// <inheritdoc />
+    public IEnumerable<IComponentRegistration> Registrations
+    {
+        get
         {
-            _registrationAccessor = ServiceRegistrationsFor;
+            return _registrations.ToList();
         }
+    }
 
-        /// <summary>
-        /// Fired whenever a component is registered - either explicitly or via a
-        /// <see cref="IRegistrationSource"/>.
-        /// </summary>
-        public event EventHandler<IComponentRegistration>? Registered;
-
-        /// <summary>
-        /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
-        /// </summary>
-        public event EventHandler<IRegistrationSource>? RegistrationSourceAdded;
-
-        /// <inheritdoc />
-        public IEnumerable<IComponentRegistration> Registrations
+    /// <inheritdoc />
+    public IEnumerable<IRegistrationSource> Sources
+    {
+        get
         {
-            get
-            {
-                return _registrations.ToList();
-            }
+            return _dynamicRegistrationSources.ToList();
         }
+    }
 
-        /// <inheritdoc />
-        public IEnumerable<IRegistrationSource> Sources
-        {
-            get
-            {
-                return _dynamicRegistrationSources.ToList();
-            }
-        }
+    /// <inheritdoc/>
+    public IEnumerable<IServiceMiddlewareSource> ServiceMiddlewareSources => _servicePipelineSources;
 
-        /// <inheritdoc/>
-        public IEnumerable<IServiceMiddlewareSource> ServiceMiddlewareSources => _servicePipelineSources;
+    /// <inheritdoc/>
+    public void AddServiceMiddleware(Service service, IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+    {
+        var info = GetServiceInfo(service);
 
-        /// <inheritdoc/>
-        public void AddServiceMiddleware(Service service, IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+        info.UseServiceMiddleware(middleware, insertionMode);
+    }
+
+    /// <inheritdoc />
+    public virtual void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromDynamicSource = false)
+    {
+        foreach (var service in registration.Services)
         {
             var info = GetServiceInfo(service);
 
-            info.UseServiceMiddleware(middleware, insertionMode);
+            // We are in an ephemeral initialization; use the ephemeral set.
+            if (_ephemeralServiceInfo is not null)
+            {
+                info = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+            }
+
+            info.AddImplementation(registration, preserveDefaults, originatedFromDynamicSource);
         }
 
-        /// <inheritdoc />
-        public virtual void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromDynamicSource = false)
+        if (_ephemeralServiceInfo is null)
         {
-            foreach (var service in registration.Services)
+            // Only when we are keeping the populated service information will we store registrations and
+            // build pipelines for them.
+            // The Registrations collection is only available to consumers once the tracker is contained with a ContainerRegistry
+            // and the Complete method has been called.
+            _registrations.Add(registration);
+            var handler = Registered;
+            handler?.Invoke(this, registration);
+
+            if (originatedFromDynamicSource)
             {
-                var info = GetServiceInfo(service);
-
-                // We are in an ephemeral initialization; use the ephemeral set.
-                if (_ephemeralServiceInfo is not null)
-                {
-                    info = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
-                }
-
-                info.AddImplementation(registration, preserveDefaults, originatedFromDynamicSource);
-            }
-
-            if (_ephemeralServiceInfo is null)
-            {
-                // Only when we are keeping the populated service information will we store registrations and
-                // build pipelines for them.
-                // The Registrations collection is only available to consumers once the tracker is contained with a ContainerRegistry
-                // and the Complete method has been called.
-                _registrations.Add(registration);
-                var handler = Registered;
-                handler?.Invoke(this, registration);
-
-                if (originatedFromDynamicSource)
-                {
-                    registration.BuildResolvePipeline(this);
-                }
+                registration.BuildResolvePipeline(this);
             }
         }
+    }
 
-        /// <inheritdoc />
-        public void AddRegistrationSource(IRegistrationSource source)
+    /// <inheritdoc />
+    public void AddRegistrationSource(IRegistrationSource source)
+    {
+        if (source == null)
         {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            _dynamicRegistrationSources.Insert(0, source);
-
-            var handler = RegistrationSourceAdded;
-            handler?.Invoke(this, source);
+            throw new ArgumentNullException(nameof(source));
         }
 
-        /// <inheritdoc/>
-        public void AddServiceMiddlewareSource(IServiceMiddlewareSource serviceMiddlewareSource)
-        {
-            if (serviceMiddlewareSource is null)
-            {
-                throw new ArgumentNullException(nameof(serviceMiddlewareSource));
-            }
+        _dynamicRegistrationSources.Insert(0, source);
 
-            _servicePipelineSources.Add(serviceMiddlewareSource);
+        var handler = RegistrationSourceAdded;
+        handler?.Invoke(this, source);
+    }
+
+    /// <inheritdoc/>
+    public void AddServiceMiddlewareSource(IServiceMiddlewareSource serviceMiddlewareSource)
+    {
+        if (serviceMiddlewareSource is null)
+        {
+            throw new ArgumentNullException(nameof(serviceMiddlewareSource));
         }
 
-        /// <inheritdoc/>
-        public IEnumerable<IResolveMiddleware> ServiceMiddlewareFor(Service service)
+        _servicePipelineSources.Add(serviceMiddlewareSource);
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<IResolveMiddleware> ServiceMiddlewareFor(Service service)
+    {
+        var info = GetInitializedServiceInfo(service);
+        return info.ServiceMiddleware;
+    }
+
+    /// <inheritdoc />
+    public bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration)
+    {
+        if (service == null)
         {
-            var info = GetInitializedServiceInfo(service);
-            return info.ServiceMiddleware;
+            throw new ArgumentNullException(nameof(service));
         }
 
-        /// <inheritdoc />
-        public bool TryGetRegistration(Service service, [NotNullWhen(returnValue: true)] out IComponentRegistration? registration)
-        {
-            if (service == null)
-            {
-                throw new ArgumentNullException(nameof(service));
-            }
+        var info = GetInitializedServiceInfo(service);
+        return info.TryGetRegistration(out registration);
+    }
 
-            var info = GetInitializedServiceInfo(service);
-            return info.TryGetRegistration(out registration);
+    /// <inheritdoc/>
+    public bool TryGetServiceRegistration(Service service, out ServiceRegistration serviceData)
+    {
+        if (service == null)
+        {
+            throw new ArgumentNullException(nameof(service));
         }
 
-        /// <inheritdoc/>
-        public bool TryGetServiceRegistration(Service service, out ServiceRegistration serviceData)
+        var info = GetInitializedServiceInfo(service);
+
+        if (info.TryGetRegistration(out var registration))
         {
-            if (service == null)
-            {
-                throw new ArgumentNullException(nameof(service));
-            }
-
-            var info = GetInitializedServiceInfo(service);
-
-            if (info.TryGetRegistration(out var registration))
-            {
-                serviceData = new ServiceRegistration(info.ServicePipeline, registration);
-                return true;
-            }
-
-            serviceData = default;
-            return false;
+            serviceData = new ServiceRegistration(info.ServicePipeline, registration);
+            return true;
         }
 
-        /// <inheritdoc />
-        public bool IsRegistered(Service service)
-        {
-            if (service == null)
-            {
-                throw new ArgumentNullException(nameof(service));
-            }
+        serviceData = default;
+        return false;
+    }
 
-            return GetInitializedServiceInfo(service).IsRegistered;
+    /// <inheritdoc />
+    public bool IsRegistered(Service service)
+    {
+        if (service == null)
+        {
+            throw new ArgumentNullException(nameof(service));
         }
 
-        /// <inheritdoc />
-        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
-        {
-            if (service == null)
-            {
-                throw new ArgumentNullException(nameof(service));
-            }
+        return GetInitializedServiceInfo(service).IsRegistered;
+    }
 
-            var info = GetInitializedServiceInfo(service);
-            return info.Implementations.ToList();
+    /// <inheritdoc />
+    public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
+    {
+        if (service == null)
+        {
+            throw new ArgumentNullException(nameof(service));
         }
 
-        /// <inheritdoc/>
-        public IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service)
+        var info = GetInitializedServiceInfo(service);
+        return info.Implementations.ToList();
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service)
+    {
+        if (service == null)
         {
-            if (service == null)
-            {
-                throw new ArgumentNullException(nameof(service));
-            }
-
-            var info = GetInitializedServiceInfo(service);
-
-            var list = new List<ServiceRegistration>();
-
-            foreach (var implementation in info.Implementations)
-            {
-                list.Add(new ServiceRegistration(info.ServicePipeline, implementation));
-            }
-
-            return list;
+            throw new ArgumentNullException(nameof(service));
         }
 
-        /// <inheritdoc/>
-        public void Complete()
+        var info = GetInitializedServiceInfo(service);
+
+        var list = new List<ServiceRegistration>();
+
+        foreach (var implementation in info.Implementations)
         {
-            _trackerPopulationComplete = true;
+            list.Add(new ServiceRegistration(info.ServicePipeline, implementation));
         }
 
-        /// <inheritdoc />
-        protected override void Dispose(bool disposing)
-        {
-            foreach (var registration in _registrations)
-            {
-                registration.Dispose();
-            }
+        return list;
+    }
 
-            // If we do not explicitly empty the ConcurrentBag that stores our registrations,
-            // this will cause a memory leak due to threads holding a reference to the bag.
-            // In netstandard2.0 the faster 'Clear' method is not available,
-            // so we have do this manually. We'll use the faster method if it's available though.
+    /// <inheritdoc/>
+    public void Complete()
+    {
+        _trackerPopulationComplete = true;
+    }
+
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        foreach (var registration in _registrations)
+        {
+            registration.Dispose();
+        }
+
+        // If we do not explicitly empty the ConcurrentBag that stores our registrations,
+        // this will cause a memory leak due to threads holding a reference to the bag.
+        // In netstandard2.0 the faster 'Clear' method is not available,
+        // so we have do this manually. We'll use the faster method if it's available though.
 #if NETSTANDARD2_0
-            while (_registrations.TryTake(out _))
-            {
-            }
+        while (_registrations.TryTake(out _))
+        {
+        }
 #else
-            _registrations.Clear();
+        _registrations.Clear();
 #endif
 
-            base.Dispose(disposing);
+        base.Dispose(disposing);
+    }
+
+    /// <inheritdoc />
+    protected override async ValueTask DisposeAsync(bool disposing)
+    {
+        foreach (var registration in _registrations)
+        {
+            var vt = registration.DisposeAsync();
+
+            // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
+            if (!vt.IsCompletedSuccessfully)
+            {
+                await vt.ConfigureAwait(false);
+            }
         }
 
-        /// <inheritdoc />
-        protected override async ValueTask DisposeAsync(bool disposing)
-        {
-            foreach (var registration in _registrations)
-            {
-                var vt = registration.DisposeAsync();
+        // Do not call the base, otherwise the standard Dispose will fire.
+    }
 
-                // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
-                if (!vt.IsCompletedSuccessfully)
-                {
-                    await vt.ConfigureAwait(false);
-                }
+    private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
+    {
+        var createdEphemeralSet = false;
+
+        var info = GetServiceInfo(service);
+        if (info.IsInitialized)
+        {
+            return info;
+        }
+
+        if (!_trackerPopulationComplete)
+        {
+            // We need an ephemeral set for this pre-complete initialization.
+            if (_ephemeralServiceInfo is null)
+            {
+                _ephemeralServiceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
+                createdEphemeralSet = true;
             }
 
-            // Do not call the base, otherwise the standard Dispose will fire.
+            info = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
         }
 
-        private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
+        var succeeded = false;
+        var lockTaken = false;
+        try
         {
-            var createdEphemeralSet = false;
+            Monitor.Enter(info, ref lockTaken);
 
-            var info = GetServiceInfo(service);
             if (info.IsInitialized)
             {
                 return info;
             }
 
-            if (!_trackerPopulationComplete)
+            if (!info.IsInitializing)
             {
-                // We need an ephemeral set for this pre-complete initialization.
-                if (_ephemeralServiceInfo is null)
-                {
-                    _ephemeralServiceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
-                    createdEphemeralSet = true;
-                }
-
-                info = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+                BeginServiceInfoInitialization(service, info, _dynamicRegistrationSources);
             }
 
-            var succeeded = false;
-            var lockTaken = false;
-            try
+            info.InitializationDepth++;
+
+            while (info.HasSourcesToQuery)
             {
-                Monitor.Enter(info, ref lockTaken);
-
-                if (info.IsInitialized)
+                var next = info.DequeueNextSource();
+                foreach (var provided in next.RegistrationsFor(service, _registrationAccessor))
                 {
-                    return info;
-                }
-
-                if (!info.IsInitializing)
-                {
-                    BeginServiceInfoInitialization(service, info, _dynamicRegistrationSources);
-                }
-
-                info.InitializationDepth++;
-
-                while (info.HasSourcesToQuery)
-                {
-                    var next = info.DequeueNextSource();
-                    foreach (var provided in next.RegistrationsFor(service, _registrationAccessor))
+                    // This ensures that multiple services provided by the same
+                    // component share a single component (we don't re-query for them)
+                    foreach (var additionalService in provided.Services)
                     {
-                        // This ensures that multiple services provided by the same
-                        // component share a single component (we don't re-query for them)
-                        foreach (var additionalService in provided.Services)
+                        var additionalInfo = GetServiceInfo(additionalService);
+                        if (additionalInfo.IsInitialized || additionalInfo == info)
                         {
-                            var additionalInfo = GetServiceInfo(additionalService);
-                            if (additionalInfo.IsInitialized || additionalInfo == info)
-                            {
-                                continue;
-                            }
-
-                            if (_ephemeralServiceInfo is not null)
-                            {
-                                // Use ephemeral info for additional services.
-                                additionalInfo = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
-                            }
-
-                            if (!additionalInfo.IsInitializing)
-                            {
-                                BeginServiceInfoInitialization(additionalService, additionalInfo, ExcludeSource(_dynamicRegistrationSources, next));
-                            }
-                            else
-                            {
-                                additionalInfo.SkipSource(next);
-                            }
+                            continue;
                         }
 
-                        AddRegistration(
-                            provided,
-                            preserveDefaults: true,
-                            originatedFromDynamicSource: true);
+                        if (_ephemeralServiceInfo is not null)
+                        {
+                            // Use ephemeral info for additional services.
+                            additionalInfo = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+                        }
+
+                        if (!additionalInfo.IsInitializing)
+                        {
+                            BeginServiceInfoInitialization(additionalService, additionalInfo, ExcludeSource(_dynamicRegistrationSources, next));
+                        }
+                        else
+                        {
+                            additionalInfo.SkipSource(next);
+                        }
                     }
-                }
 
-                succeeded = true;
-            }
-            finally
-            {
-                info.InitializationDepth--;
-
-                if (info.InitializationDepth == 0 && succeeded)
-                {
-                    info.CompleteInitialization();
-                }
-
-                if (lockTaken)
-                {
-                    Monitor.Exit(info);
-                }
-
-                // This method was the entry point to an ephemeral service info initialization.
-                // We need to discard it, so the next set of ephemeral service info is done from scratch.
-                if (createdEphemeralSet)
-                {
-                    _ephemeralServiceInfo?.Clear();
-                    _ephemeralServiceInfo = null;
+                    AddRegistration(
+                        provided,
+                        preserveDefaults: true,
+                        originatedFromDynamicSource: true);
                 }
             }
 
-            return info;
+            succeeded = true;
         }
-
-        private void BeginServiceInfoInitialization(Service service, ServiceRegistrationInfo info, IEnumerable<IRegistrationSource> registrationSources)
+        finally
         {
-            // Add any additional service pipeline configuration from external sources.
-            foreach (var servicePipelineSource in _servicePipelineSources)
+            info.InitializationDepth--;
+
+            if (info.InitializationDepth == 0 && succeeded)
             {
-                servicePipelineSource.ProvideMiddleware(service, this, info);
+                info.CompleteInitialization();
             }
 
-            info.BeginInitialization(registrationSources);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static IEnumerable<IRegistrationSource> ExcludeSource(IEnumerable<IRegistrationSource> sources, IRegistrationSource exclude)
-        {
-            foreach (var item in sources)
+            if (lockTaken)
             {
-                if (item != exclude)
-                {
-                    yield return item;
-                }
+                Monitor.Exit(info);
+            }
+
+            // This method was the entry point to an ephemeral service info initialization.
+            // We need to discard it, so the next set of ephemeral service info is done from scratch.
+            if (createdEphemeralSet)
+            {
+                _ephemeralServiceInfo?.Clear();
+                _ephemeralServiceInfo = null;
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ServiceRegistrationInfo GetServiceInfo(Service service)
+        return info;
+    }
+
+    private void BeginServiceInfoInitialization(Service service, ServiceRegistrationInfo info, IEnumerable<IRegistrationSource> registrationSources)
+    {
+        // Add any additional service pipeline configuration from external sources.
+        foreach (var servicePipelineSource in _servicePipelineSources)
         {
-            return _serviceInfo.GetOrAdd(service, RegInfoFactory);
+            servicePipelineSource.ProvideMiddleware(service, this, info);
         }
 
-        private static ServiceRegistrationInfo GetEphemeralServiceInfo(Dictionary<Service, ServiceRegistrationInfo> ephemeralSet, Service service, ServiceRegistrationInfo info)
+        info.BeginInitialization(registrationSources);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static IEnumerable<IRegistrationSource> ExcludeSource(IEnumerable<IRegistrationSource> sources, IRegistrationSource exclude)
+    {
+        foreach (var item in sources)
         {
-            if (ephemeralSet.TryGetValue(service, out var ephemeral))
+            if (item != exclude)
             {
-                return ephemeral;
+                yield return item;
             }
-
-            var newCopy = info.CloneUninitialized();
-
-            ephemeralSet.Add(service, newCopy);
-
-            return newCopy;
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private ServiceRegistrationInfo GetServiceInfo(Service service)
+    {
+        return _serviceInfo.GetOrAdd(service, RegInfoFactory);
+    }
+
+    private static ServiceRegistrationInfo GetEphemeralServiceInfo(Dictionary<Service, ServiceRegistrationInfo> ephemeralSet, Service service, ServiceRegistrationInfo info)
+    {
+        if (ephemeralSet.TryGetValue(service, out var ephemeral))
+        {
+            return ephemeral;
+        }
+
+        var newCopy = info.CloneUninitialized();
+
+        ephemeralSet.Add(service, newCopy);
+
+        return newCopy;
     }
 }
