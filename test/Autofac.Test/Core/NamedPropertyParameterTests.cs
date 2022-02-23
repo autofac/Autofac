@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -11,6 +12,8 @@ using Xunit;
 
 namespace Autofac.Test.Core
 {
+    // Disable "mark member static" warnings for test types.
+#pragma warning disable CA1822
     public class NamedPropertyParameterTests
     {
         public class HasInjectionPoints
@@ -112,4 +115,5 @@ namespace Autofac.Test.Core
             Assert.False(cp.CanSupplyValue(MethodParameter(), new ContainerBuilder().Build(), out Func<object> vp));
         }
     }
+#pragma warning restore CA1822
 }

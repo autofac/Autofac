@@ -14,6 +14,7 @@ namespace Autofac.Test.Core
         // Disable "unused parameter" warnings for test types.
 #pragma warning disable IDE0051
 
+        [AttributeUsage(AttributeTargets.Property)]
         private class InjectPropertyAttribute : Attribute
         {
         }

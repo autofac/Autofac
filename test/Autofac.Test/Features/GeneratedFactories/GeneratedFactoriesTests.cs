@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Autofac.Builder;
 using Autofac.Core;
@@ -64,6 +65,7 @@ namespace Autofac.Test.Features.GeneratedFactories
 
         public class QuoteService
         {
+            [SuppressMessage("CA1822", "CA1822", Justification = "Method needs to be instance for testing.")]
             public decimal GetQuote(string symbol)
             {
                 return 2m;
@@ -221,7 +223,7 @@ namespace Autofac.Test.Features.GeneratedFactories
         }
 
         [Fact]
-        public void CanAutoGenerateFactoriesFromFuncs()
+        public void CanAutoGenerateFactoryFromFunc()
         {
             var builder = new ContainerBuilder();
 

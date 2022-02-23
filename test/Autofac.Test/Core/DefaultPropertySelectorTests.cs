@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Autofac.Core;
 using Xunit;
@@ -38,6 +39,7 @@ namespace Autofac.Test.Core
         {
             public Test PublicPropertyNoDefault { get; set; }
 
+            [SuppressMessage("CA1822", "CA1822", Justification = "Property needs to be instance for testing.")]
             public Test PublicPropertyNoGet
             {
                 set { }
@@ -45,6 +47,7 @@ namespace Autofac.Test.Core
 
             public Test PublicPropertyNoSet { get; }
 
+            [SuppressMessage("CA1822", "CA1822", Justification = "Property needs to be instance for testing.")]
             public Test PublicPropertyThrowsOnGet
             {
                 get
@@ -69,7 +72,7 @@ namespace Autofac.Test.Core
         {
         }
 
-#pragma warning disable IDE0051
+#pragma warning restore IDE0051
 
     }
 }

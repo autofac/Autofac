@@ -65,14 +65,14 @@ namespace Autofac.Test.Concurrency
             builder.Register(c => default(int)).SingleInstance();
             builder.Register(c =>
             {
-                using (var mres = new ManualResetEventSlim())
+                using (var resetEvent = new ManualResetEventSlim())
                 {
                     ThreadPool.QueueUserWorkItem(state =>
                     {
                         containerProvider().Resolve<int>();
-                        mres.Set();
+                        resetEvent.Set();
                     });
-                    mres.Wait(1250);
+                    resetEvent.Wait(1250);
                 }
 
                 return new object();
@@ -94,7 +94,7 @@ namespace Autofac.Test.Concurrency
         }
 
         [Fact]
-        public void WhenTwoThreadsInitialiseASharedInstanceSimultaneouslyViaChildLifetime_OnlyOneInstanceIsActivated()
+        public void WhenTwoThreadsInitializeASharedInstanceSimultaneouslyViaChildLifetime_OnlyOneInstanceIsActivated()
         {
             var activationCount = 0;
             var results = new ConcurrentBag<object>();
@@ -160,7 +160,7 @@ namespace Autofac.Test.Concurrency
             }
         }
 
-        private async Task ResolveWhileTheScopeIsDisposing_ObjectDisposedExceptionThrownOnly()
+        private static async Task ResolveWhileTheScopeIsDisposing_ObjectDisposedExceptionThrownOnly()
         {
             var cb = new ContainerBuilder();
             var container = cb.Build();

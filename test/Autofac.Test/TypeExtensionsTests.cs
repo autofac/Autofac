@@ -170,15 +170,18 @@ namespace Autofac.Test
 
         private class DeclaredMethodType
         {
+            [SuppressMessage("CA1822", "CA1822", Justification = "Method needs to be instance for testing.")]
             public void PublicInstanceMethod()
             {
             }
 
+            [SuppressMessage("CA1822", "CA1822", Justification = "Method needs to be instance for testing.")]
             protected void ProtectedInstanceMethod()
             {
             }
 
             [SuppressMessage("IDE0051", "IDE0051", Justification = "Method used by reflection in tests.")]
+            [SuppressMessage("CA1822", "CA1822", Justification = "Method needs to be instance for testing.")]
             private void PrivateInstanceMethod()
             {
             }
