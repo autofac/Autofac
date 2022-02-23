@@ -1,6 +1,7 @@
 {
   "cSpell.words": [
     "cref",
+    "diagnoser",
     "xunit"
   ],
   "dotnet-test-explorer.testProjectPath": "test/**/*Test.csproj",

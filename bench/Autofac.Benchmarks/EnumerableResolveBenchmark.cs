@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using BenchmarkDotNet.Attributes;
-
-namespace Autofac.Benchmarks;
+﻿namespace Autofac.Benchmarks;
 
 public class EnumerableResolveBenchmark
 {

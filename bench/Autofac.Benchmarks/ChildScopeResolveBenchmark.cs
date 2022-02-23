@@ -1,7 +1,4 @@
-﻿using System;
-using BenchmarkDotNet.Attributes;
-
-namespace Autofac.Benchmarks;
+﻿namespace Autofac.Benchmarks;
 
 public class ChildScopeResolveBenchmark
 {

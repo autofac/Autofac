@@ -1,9 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Running;
-
-namespace Autofac.Benchmarks;
+﻿namespace Autofac.Benchmarks;
 
 /// <summary>
 /// Tests the performance of retrieving various simple components from a root container.

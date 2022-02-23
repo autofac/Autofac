@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Autofac.Benchmarks.Decorators.Scenario;
-using BenchmarkDotNet.Attributes;
+﻿using Autofac.Benchmarks.Decorators.Scenario;
 
 namespace Autofac.Benchmarks.Decorators;
 

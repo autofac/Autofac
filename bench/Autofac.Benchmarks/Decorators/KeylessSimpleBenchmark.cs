@@ -1,5 +1,4 @@
 ﻿using Autofac.Benchmarks.Decorators.Scenario;
-using BenchmarkDotNet.Attributes;
 
 namespace Autofac.Benchmarks.Decorators;
 

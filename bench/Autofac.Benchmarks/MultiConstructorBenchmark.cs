@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BenchmarkDotNet.Attributes;
-
-namespace Autofac.Benchmarks;
+﻿namespace Autofac.Benchmarks;
 
 public class MultiConstructorBenchmark
 {

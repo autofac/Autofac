@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Autofac.Benchmarks.Decorators;
+﻿using Autofac.Benchmarks.Decorators;
 
 namespace Autofac.Benchmarks;
 

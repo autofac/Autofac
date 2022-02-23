@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using BenchmarkDotNet.Configs;
+﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 
 namespace Autofac.Benchmarks;

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
-using Xunit;
-
-namespace Autofac.Benchmarks;
+﻿namespace Autofac.Benchmarks;
 
 /// <summary>
 /// Tests the performance of concurrent resolution of a (reasonably) deeply-nested object graph.

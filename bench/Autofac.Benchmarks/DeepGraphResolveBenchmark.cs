@@ -1,7 +1,4 @@
-﻿using System;
-using BenchmarkDotNet.Attributes;
-
-namespace Autofac.Benchmarks;
+﻿namespace Autofac.Benchmarks;
 
 /// <summary>
 /// Tests the performance of retrieving a (reasonably) deeply-nested object graph.

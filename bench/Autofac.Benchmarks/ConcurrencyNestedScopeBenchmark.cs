@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using BenchmarkDotNet.Attributes;
-using Xunit;
-
-namespace Autofac.Benchmarks;
+﻿namespace Autofac.Benchmarks;
 
 /// <summary>
 /// Test the performance of resolving a relatively simple object graph, but within 2 levels of nested lifetime scopes,

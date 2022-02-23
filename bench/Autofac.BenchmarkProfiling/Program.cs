@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using BenchmarkDotNet.Running;
+﻿using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains.InProcess.NoEmit;
 
 namespace Autofac.BenchmarkProfiling;

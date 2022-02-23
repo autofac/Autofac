@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using BenchmarkDotNet.Attributes;
-
-namespace Autofac.Benchmarks.Decorators;
+﻿namespace Autofac.Benchmarks.Decorators;
 
 public abstract class DecoratorBenchmarkBase<TCommandHandler>
 {
