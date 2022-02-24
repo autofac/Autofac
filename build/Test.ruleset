@@ -40,7 +40,11 @@
     <Rule Id="SA1404" Action="None" />
     <!-- Use trailing comma in initializers - lots of false positives for enums in StyleCop 1.1.0-beta004 -->
     <Rule Id="SA1413" Action="None" />
-    <!-- Parameter documentation mus be in the right order -->
+    <!-- Elements should be documented -->
+    <Rule Id="SA1600" Action="None" />
+    <!-- Enuemration items should be documented -->
+    <Rule Id="SA1602" Action="None" />
+    <!-- Parameter documentation must be in the right order -->
     <Rule Id="SA1612" Action="None" />
     <!-- Return value must be documented -->
     <Rule Id="SA1615" Action="None" />

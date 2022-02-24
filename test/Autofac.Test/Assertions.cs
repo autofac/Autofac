@@ -54,9 +54,9 @@ internal static class Assertions
         return RegistrationFor(context, typeof(TComponent));
     }
 
-    public static IComponentRegistration RegistrationFor(this IComponentContext context, Type componenType)
+    public static IComponentRegistration RegistrationFor(this IComponentContext context, Type componentType)
     {
-        Assert.True(context.ComponentRegistry.TryGetRegistration(new TypedService(componenType), out var r));
+        Assert.True(context.ComponentRegistry.TryGetRegistration(new TypedService(componentType), out var r));
         return r;
     }
 
@@ -74,6 +74,7 @@ internal static class Assertions
     /// <summary>
     /// Looks at all registrations for <typeparamref name="TService"/> and validates that <typeparamref name="TFirstComponent"/> is not overridden by <typeparamref name="TLastComponent"/>.
     /// </summary>
+    /// <param name="context">The context with registrations to inspect.</param>
     public static void AssertComponentRegistrationOrder<TService, TFirstComponent, TLastComponent>(this IComponentContext context)
     {
         var forService = new TypedService(typeof(TService));
