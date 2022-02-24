@@ -1,5 +1,5 @@
-![autofac character](https://raw.githubusercontent.com/autofac/autofac.github.com/8737b1213a85ad8157ab7958aeb560c7af5eb494/img/autofac_web-banner_character_fixed_width.svg)
-![autofac logo](https://raw.githubusercontent.com/autofac/autofac.github.com/8737b1213a85ad8157ab7958aeb560c7af5eb494/img/autofac_logo-type_fixed_height.svg)
+![Autofac character](https://raw.githubusercontent.com/autofac/autofac.github.com/8737b1213a85ad8157ab7958aeb560c7af5eb494/img/autofac_web-banner_character_fixed_width.svg)
+![Autofac logo](https://raw.githubusercontent.com/autofac/autofac.github.com/8737b1213a85ad8157ab7958aeb560c7af5eb494/img/autofac_logo-type_fixed_height.svg)
 
 Autofac is an [IoC container](http://martinfowler.com/articles/injection.html) for Microsoft .NET. It manages the dependencies between classes so that **applications stay easy to change as they grow** in size and complexity. This is achieved by treating regular .NET classes as *[components](https://autofac.readthedocs.io/en/latest/glossary.html)*.
 
@@ -85,3 +85,5 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 
 Refer to the [Contributor Guide](https://github.com/autofac/.github/blob/master/CONTRIBUTING.md)
 for setting up and building Autofac source.
+
+You can also open this repository right now [in VS Code](https://open.vscode.dev/autofac/Autofac).
