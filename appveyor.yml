@@ -1,9 +1,9 @@
 image: Ubuntu
 
-version: '6.3.0.{build}'
+version: "6.3.0.{build}"
 
 dotnet_csproj:
-  version_prefix: '6.3.0'
+  version_prefix: "6.3.0"
   patch: true
   file: 'src\**\*.csproj'
 
@@ -20,20 +20,19 @@ nuget:
 
 clone_depth: 1
 
-test: off
+test: false
 
 build_script:
   - pwsh: .\build.ps1
 
 artifacts:
-- path: artifacts\packages\**\*.nupkg
-  name: MyGet
+  - path: artifacts\packages\**\*.*nupkg
+    name: MyGet
+    type: NuGetPackage
 
 deploy:
-- provider: NuGet
-  server: https://www.myget.org/F/autofac/api/v2/package
-  api_key:
-    secure: xUXExgVAagrdEicCjSxsQVrwiLo2TtnfqMbYB9Cauq2cpbm/EVz957PBK0v/GEYq
-  skip_symbols: true
-  symbol_server: https://www.myget.org/F/autofac/symbols/api/v2/package
-  artifact: MyGet
+  - provider: NuGet
+    server: https://www.myget.org/F/autofac/api/v3
+    api_key:
+      secure: xUXExgVAagrdEicCjSxsQVrwiLo2TtnfqMbYB9Cauq2cpbm/EVz957PBK0v/GEYq
+    artifact: MyGet
