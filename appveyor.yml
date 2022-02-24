@@ -32,7 +32,7 @@ artifacts:
 
 deploy:
   - provider: NuGet
-    server: https://www.myget.org/F/autofac/api/v3
+    server: https://www.myget.org/F/autofac/api/v2/package
     api_key:
       secure: xUXExgVAagrdEicCjSxsQVrwiLo2TtnfqMbYB9Cauq2cpbm/EVz957PBK0v/GEYq
     artifact: MyGet
