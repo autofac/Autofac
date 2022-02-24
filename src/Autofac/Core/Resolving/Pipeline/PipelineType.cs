@@ -16,5 +16,5 @@ public enum PipelineType
     /// <summary>
     /// A registration pipeline, used for activating a registration.
     /// </summary>
-    Registration
+    Registration,
 }

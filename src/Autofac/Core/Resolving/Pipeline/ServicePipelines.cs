@@ -18,7 +18,7 @@ public static class ServicePipelines
             CircularDependencyDetectorMiddleware.Default,
             ScopeSelectionMiddleware.Instance,
             SharingMiddleware.Instance,
-            RegistrationPipelineInvokeMiddleware.Instance
+            RegistrationPipelineInvokeMiddleware.Instance,
     };
 
     /// <summary>

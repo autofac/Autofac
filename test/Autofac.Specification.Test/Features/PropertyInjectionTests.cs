@@ -104,7 +104,7 @@ public class PropertyInjectionTests
 
         var obj = new HasPublicSetter()
         {
-            Val = "set"
+            Val = "set",
         };
 
         c.InjectUnsetProperties(obj);

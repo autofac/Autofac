@@ -104,7 +104,7 @@ public class ContainerBuilderTests
                     "scope1",
                     "scope1",
                     "scope2",
-                    "scope2"
+                    "scope2",
             },
             callOrder);
     }

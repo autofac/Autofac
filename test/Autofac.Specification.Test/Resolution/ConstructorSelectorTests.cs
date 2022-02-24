@@ -40,16 +40,18 @@ public class ConstructorSelectorTests
 
     public static IEnumerable<object[]> CanSpecifyConstructorByExpression_Data()
     {
+        // Analyzers might see the cast here to Expression<Func<T>> as redundant
+        // but it needs to be there or it'll just be a Func<T>.
         yield return new object[]
         {
-                (Expression<Func<MultipleConstructors>>)(() => new MultipleConstructors(default, default)),
-                2
+            (Expression<Func<MultipleConstructors>>)(() => new MultipleConstructors(default, default)),
+            2,
         };
 
         yield return new object[]
         {
-                (Expression<Func<MultipleConstructors>>)(() => new MultipleConstructors(default)),
-                1
+            (Expression<Func<MultipleConstructors>>)(() => new MultipleConstructors(default)),
+            1,
         };
     }
 

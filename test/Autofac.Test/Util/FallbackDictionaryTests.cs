@@ -12,7 +12,7 @@ public class FallbackDictionaryTests
     {
         var dict = new FallbackDictionary<string, object>
             {
-                { "key", true }
+                { "key", true },
             };
         Assert.Throws<ArgumentException>(() => dict.Add("key", false));
     }
@@ -22,7 +22,7 @@ public class FallbackDictionaryTests
     {
         var parent = new Dictionary<string, object>
         {
-            ["key"] = true
+            ["key"] = true,
         };
 
         var dict = new FallbackDictionary<string, object>(parent);
@@ -35,12 +35,12 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
             {
                 { "first", 1 },
-                { "second", 2 }
+                { "second", 2 },
             };
 
         var dict = new FallbackDictionary<string, object>(parent)
             {
-                { "third", 3 }
+                { "third", 3 },
             };
 
         Assert.Contains(new KeyValuePair<string, object>("first", 1), dict);
@@ -54,7 +54,7 @@ public class FallbackDictionaryTests
         var dict = new FallbackDictionary<string, object>
             {
                 { "first", 1 },
-                { "second", 2 }
+                { "second", 2 },
             };
 
         Assert.Contains(new KeyValuePair<string, object>("first", 1), dict);
@@ -67,7 +67,7 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
             {
                 { "first", 1 },
-                { "second", 2 }
+                { "second", 2 },
             };
 
         var dict = new FallbackDictionary<string, object>(parent);
@@ -82,13 +82,13 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
         {
             ["first"] = 1,
-            ["second"] = 2
+            ["second"] = 2,
         };
 
         var dict = new FallbackDictionary<string, object>(parent)
         {
             ["second"] = "two",
-            ["third"] = 3
+            ["third"] = 3,
         };
 
         Assert.Contains(new KeyValuePair<string, object>("first", 1), dict);
@@ -110,13 +110,13 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
         {
             ["first"] = 1,
-            ["second"] = 2
+            ["second"] = 2,
         };
 
         var dict = new FallbackDictionary<string, object>(parent)
         {
             ["second"] = "two",
-            ["third"] = 3
+            ["third"] = 3,
         };
 
         Assert.Equal(3, dict.Count);
@@ -128,12 +128,12 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
             {
                 { "first", 1 },
-                { "second", 2 }
+                { "second", 2 },
             };
 
         var dict = new FallbackDictionary<string, object>(parent)
             {
-                { "third", 3 }
+                { "third", 3 },
             };
 
         Assert.Equal(3, dict.Count);
@@ -145,7 +145,7 @@ public class FallbackDictionaryTests
         var dict = new FallbackDictionary<string, object>
             {
                 { "first", 1 },
-                { "second", 2 }
+                { "second", 2 },
             };
 
         Assert.Equal(2, dict.Count);
@@ -157,7 +157,7 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
             {
                 { "first", 1 },
-                { "second", 2 }
+                { "second", 2 },
             };
 
         var dict = new FallbackDictionary<string, object>(parent);
@@ -177,13 +177,13 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
         {
             ["first"] = 1,
-            ["second"] = 2
+            ["second"] = 2,
         };
 
         var dict = new FallbackDictionary<string, object>(parent)
         {
             ["second"] = "two",
-            ["third"] = 3
+            ["third"] = 3,
         };
 
         var list = new List<KeyValuePair<string, object>>();
@@ -211,13 +211,13 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
         {
             ["first"] = 1,
-            ["second"] = 2
+            ["second"] = 2,
         };
 
         var dict = new FallbackDictionary<string, object>(parent)
         {
             ["second"] = "two",
-            ["third"] = 3
+            ["third"] = 3,
         };
 
         Assert.Equal(3, dict.Keys.Count);
@@ -232,12 +232,12 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
             {
                 { "first", 1 },
-                { "second", 2 }
+                { "second", 2 },
             };
 
         var dict = new FallbackDictionary<string, object>(parent)
             {
-                { "third", 3 }
+                { "third", 3 },
             };
 
         Assert.Equal(3, dict.Keys.Count);
@@ -252,7 +252,7 @@ public class FallbackDictionaryTests
         var dict = new FallbackDictionary<string, object>
             {
                 { "first", 1 },
-                { "second", 2 }
+                { "second", 2 },
             };
 
         Assert.Equal(2, dict.Keys.Count);
@@ -266,7 +266,7 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
             {
                 { "first", 1 },
-                { "second", 2 }
+                { "second", 2 },
             };
 
         var dict = new FallbackDictionary<string, object>(parent);
@@ -282,13 +282,13 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
         {
             ["first"] = 1,
-            ["second"] = 2
+            ["second"] = 2,
         };
 
         var dict = new FallbackDictionary<string, object>(parent)
         {
             ["second"] = "two",
-            ["third"] = 3
+            ["third"] = 3,
         };
 
         var keys = dict.Keys.ToArray();
@@ -308,12 +308,12 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
             {
                 { "first", 1 },
-                { "second", 2 }
+                { "second", 2 },
             };
 
         var dict = new FallbackDictionary<string, object>(parent)
             {
-                { "third", 3 }
+                { "third", 3 },
             };
 
         Assert.Equal(3, dict.Values.Count);
@@ -328,7 +328,7 @@ public class FallbackDictionaryTests
         var dict = new FallbackDictionary<string, object>
             {
                 { "first", 1 },
-                { "second", 2 }
+                { "second", 2 },
             };
 
         Assert.Equal(2, dict.Values.Count);
@@ -342,7 +342,7 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
             {
                 { "first", 1 },
-                { "second", 2 }
+                { "second", 2 },
             };
 
         var dict = new FallbackDictionary<string, object>(parent);
@@ -358,13 +358,13 @@ public class FallbackDictionaryTests
         var parent = new Dictionary<string, object>
         {
             ["first"] = 1,
-            ["second"] = 2
+            ["second"] = 2,
         };
 
         var dict = new FallbackDictionary<string, object>(parent)
         {
             ["second"] = "two",
-            ["third"] = 3
+            ["third"] = 3,
         };
 
         Assert.Equal(3, dict.Values.Count);
