@@ -1,15 +1,11 @@
-<p align="center">
-  <img src="https://autofac.org/img/autofac_web-banner_character.svg" width="250">
-</p>
-<p align="center">
-  <img src="https://autofac.org/img/autofac_logo-type.svg" height="100">
-</p>
+![autofac character](https://raw.githubusercontent.com/autofac/autofac.github.com/8737b1213a85ad8157ab7958aeb560c7af5eb494/img/autofac_web-banner_character_fixed_width.svg)
+![autofac logo](https://raw.githubusercontent.com/autofac/autofac.github.com/8737b1213a85ad8157ab7958aeb560c7af5eb494/img/autofac_logo-type_fixed_height.svg)
 
 Autofac is an [IoC container](http://martinfowler.com/articles/injection.html) for Microsoft .NET. It manages the dependencies between classes so that **applications stay easy to change as they grow** in size and complexity. This is achieved by treating regular .NET classes as *[components](https://autofac.readthedocs.io/en/latest/glossary.html)*.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/s0vgb4m8tv9ar7we?svg=true)](https://ci.appveyor.com/project/Autofac/autofac) [![codecov](https://codecov.io/gh/Autofac/Autofac/branch/develop/graph/badge.svg)](https://codecov.io/gh/Autofac/Autofac) ![MyGet publish status](https://www.myget.org/BuildSource/Badge/autofac?identifier=e0f25040-634c-4b7d-aebe-0f62b9c465a8) [![NuGet](https://img.shields.io/nuget/v/Autofac.svg)](https://nuget.org/packages/Autofac)
+[![Build status](https://ci.appveyor.com/api/projects/status/s0vgb4m8tv9ar7we?svg=true)](https://ci.appveyor.com/project/Autofac/autofac) [![codecov](https://codecov.io/gh/Autofac/Autofac/branch/develop/graph/badge.svg)](https://codecov.io/gh/Autofac/Autofac) [![NuGet](https://img.shields.io/nuget/v/Autofac.svg)](https://nuget.org/packages/Autofac)
 
-[![Autofac on Stack Overflow](https://img.shields.io/badge/stack%20overflow-autofac-orange.svg)](https://stackoverflow.com/questions/tagged/autofac) [![Join the chat at https://gitter.im/autofac/autofac](https://img.shields.io/gitter/room/autofac/autofac.svg)](https://gitter.im/autofac/autofac) [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/autofac/Autofac)
+[![Autofac on Stack Overflow](https://img.shields.io/badge/stack%20overflow-autofac-orange.svg)](https://stackoverflow.com/questions/tagged/autofac) [![Join the chat at https://gitter.im/autofac/autofac](https://img.shields.io/gitter/room/autofac/autofac.svg)](https://gitter.im/autofac/autofac)
 
 ## Get Packages
 
@@ -29,7 +25,7 @@ Super-duper quick start:
 
 [Register components with a `ContainerBuilder`](https://autofac.readthedocs.io/en/latest/register/registration.html) and then build the component container.
 
-```C#
+```csharp
 var builder = new ContainerBuilder();
 
 builder.Register(c => new TaskController(c.Resolve<ITaskRepository>()));
@@ -42,7 +38,7 @@ var container = builder.Build();
 
 [Resolve services from a lifetime scope](https://autofac.readthedocs.io/en/latest/resolve/index.html) - either the container or a nested scope:
 
-```C#
+```csharp
 var taskController = container.Resolve<TaskController>();
 ```
 
