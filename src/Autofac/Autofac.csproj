@@ -1,17 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.</Description>
     <!-- VersionPrefix patched by AppVeyor -->
     <VersionPrefix>0.0.1</VersionPrefix>
+    <!-- Assembly metadata -->
+    <AssemblyName>Autofac</AssemblyName>
+    <AssemblyTitle>Autofac</AssemblyTitle>
+    <Description>Autofac is an IoC container for Microsoft .NET. It manages the dependencies between classes so that applications stay easy to change as they grow in size and complexity.</Description>
+    <Copyright>Copyright © 2015 Autofac Contributors</Copyright>
+    <Authors>Autofac Contributors</Authors>
+    <Company>Autofac</Company>
+    <Product>Autofac</Product>
+    <AssemblyOriginatorKeyFile>../../Autofac.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <!-- Frameworks and language features -->
     <TargetFrameworks>net6.0;net5.0;netstandard2.1;netstandard2.0;</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);CS1591;IDE0008</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>Autofac</AssemblyName>
-    <AssemblyOriginatorKeyFile>../../Autofac.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
+    <CodeAnalysisRuleSet>../../build/Analyzers.ruleset</CodeAnalysisRuleSet>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Packaging -->
     <PackageId>Autofac</PackageId>
     <PackageTags>autofac;di;ioc;dependencyinjection</PackageTags>
     <PackageReleaseNotes>Release notes are at https://github.com/autofac/Autofac/releases</PackageReleaseNotes>
@@ -20,19 +32,11 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/autofac/Autofac</RepositoryUrl>
-    <AssemblyTitle>Autofac</AssemblyTitle>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <Copyright>Copyright © 2015 Autofac Contributors</Copyright>
-    <CodeAnalysisRuleSet>../../build/Analyzers.ruleset</CodeAnalysisRuleSet>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <ContinuousIntegrationBuild Condition="'$(CI)' != '' ">true</ContinuousIntegrationBuild>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedAllSources>true</EmbedAllSources>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <Authors>Autofac Contributors</Authors>
-    <Company>Autofac</Company>
-    <Product>Autofac</Product>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
