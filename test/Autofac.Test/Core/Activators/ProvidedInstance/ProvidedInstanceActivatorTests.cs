@@ -54,7 +54,7 @@ public class ProvidedInstanceActivatorTests
 
         var target = new ProvidedInstanceActivator(asyncDisposable)
         {
-            DisposeInstance = true
+            DisposeInstance = true,
         };
 
         target.Dispose();
@@ -69,7 +69,7 @@ public class ProvidedInstanceActivatorTests
 
         var target = new ProvidedInstanceActivator(asyncDisposable)
         {
-            DisposeInstance = true
+            DisposeInstance = true,
         };
 
         await target.DisposeAsync();
@@ -84,7 +84,7 @@ public class ProvidedInstanceActivatorTests
 
         var target = new ProvidedInstanceActivator(asyncDisposable)
         {
-            DisposeInstance = true
+            DisposeInstance = true,
         };
 
         await target.DisposeAsync();

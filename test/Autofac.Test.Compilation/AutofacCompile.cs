@@ -24,7 +24,7 @@ public class AutofacCompile
         MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
         MetadataReference.CreateFromFile(typeof(AssemblyTargetedPatchBandAttribute).Assembly.Location),
         MetadataReference.CreateFromFile(typeof(ContainerBuilder).Assembly.Location),
-        MetadataReference.CreateFromFile(typeof(AutofacCompile).Assembly.Location)
+        MetadataReference.CreateFromFile(typeof(AutofacCompile).Assembly.Location),
     };
 
     public AutofacCompile Body(string body)

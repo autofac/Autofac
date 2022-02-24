@@ -224,7 +224,7 @@ public class PipelineBuilderTests
             {
                 order.Add("3");
                 next(ctxt);
-            })
+            }),
         });
 
         var built = pipelineBuilder.Build();
@@ -260,7 +260,7 @@ public class PipelineBuilderTests
             {
                 order.Add("3");
                 next(ctxt);
-            })
+            }),
         });
 
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
@@ -331,7 +331,7 @@ public class PipelineBuilderTests
             {
                 order.Add("5");
                 next(ctxt);
-            })
+            }),
         });
 
         pipelineBuilder.UseRange(new[]
@@ -350,7 +350,7 @@ public class PipelineBuilderTests
             {
                 order.Add("6");
                 next(ctxt);
-            })
+            }),
         });
 
         var built = pipelineBuilder.Build();
@@ -419,7 +419,7 @@ public class PipelineBuilderTests
         {
             new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart,  (ctxt, next) => { }),
             new DelegateMiddleware("3", PipelinePhase.ScopeSelection,  (ctxt, next) => { }),
-            new DelegateMiddleware("5", PipelinePhase.ServicePipelineEnd,  (ctxt, next) => { })
+            new DelegateMiddleware("5", PipelinePhase.ServicePipelineEnd,  (ctxt, next) => { }),
         });
 
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]

@@ -505,7 +505,7 @@ public class LifetimeEventTests
     {
         var asyncLocal = new AsyncLocal<int>
         {
-            Value = 5
+            Value = 5,
         };
 
         var builder = new ContainerBuilder();

@@ -15,7 +15,7 @@ public class ParameterFilterTests
                 new TypedParameter(typeof(int), 5),
                 new NamedPropertyParameter("prop", "property"),
                 new NamedParameter("value", "named"),
-                new PositionalParameter(2, "position")
+                new PositionalParameter(2, "position"),
         };
 
         Assert.Equal("named", parameters.Named<string>("value"));
@@ -43,7 +43,7 @@ public class ParameterFilterTests
                 new TypedParameter(typeof(int), 5),
                 new NamedPropertyParameter("prop", "property"),
                 new NamedParameter("value", "named"),
-                new PositionalParameter(2, "position")
+                new PositionalParameter(2, "position"),
         };
 
         Assert.Throws<InvalidOperationException>(() => parameters.Named<string>("not-found"));
@@ -57,7 +57,7 @@ public class ParameterFilterTests
                 new TypedParameter(typeof(int), 5),
                 new NamedPropertyParameter("prop", "property"),
                 new NamedParameter("value", "named"),
-                new PositionalParameter(2, "position")
+                new PositionalParameter(2, "position"),
         };
 
         Assert.Equal("position", parameters.Positional<string>(2));
@@ -87,7 +87,7 @@ public class ParameterFilterTests
                 new TypedParameter(typeof(int), 5),
                 new NamedPropertyParameter("prop", "property"),
                 new NamedParameter("value", "named"),
-                new PositionalParameter(2, "position")
+                new PositionalParameter(2, "position"),
         };
 
         Assert.Throws<InvalidOperationException>(() => parameters.Positional<string>(100));
@@ -101,7 +101,7 @@ public class ParameterFilterTests
                 new TypedParameter(typeof(int), 5),
                 new NamedPropertyParameter("prop", "property"),
                 new NamedParameter("value", "named"),
-                new PositionalParameter(2, "position")
+                new PositionalParameter(2, "position"),
         };
 
         Assert.Equal(5, parameters.TypedAs<int>());
@@ -122,7 +122,7 @@ public class ParameterFilterTests
                 new TypedParameter(typeof(int), 5),
                 new NamedPropertyParameter("prop", "property"),
                 new NamedParameter("value", "named"),
-                new PositionalParameter(2, "position")
+                new PositionalParameter(2, "position"),
         };
 
         Assert.Throws<InvalidOperationException>(() => parameters.TypedAs<DivideByZeroException>());

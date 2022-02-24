@@ -39,7 +39,7 @@ public class ConstructorBinderTests
     public enum Foo
     {
         A,
-        B
+        B,
     }
 
     public class CtorWithInt
