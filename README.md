@@ -9,9 +9,9 @@ Autofac is an [IoC container](http://martinfowler.com/articles/injection.html) f
 
 ## Get Packages
 
-You can get Autofac by [grabbing the latest NuGet packages](https://github.com/autofac/Autofac/wiki/Nu-Get-Packages). If you're feeling adventurous, [continuous integration builds are on MyGet](https://www.myget.org/gallery/autofac).
+You can get Autofac by [grabbing the latest NuGet package](https://www.nuget.org/packages/Autofac/). There are several [application integration and extended functionality packages to choose from](https://www.nuget.org/profiles/Autofac). If you're feeling adventurous, [continuous integration builds are on MyGet](https://www.myget.org/gallery/autofac).
 
-[Release notes are available on the wiki](https://github.com/autofac/Autofac/wiki#release-notes).
+[Release notes are available on GitHub](https://github.com/autofac/Autofac/releases).
 
 ## Get Help
 
@@ -60,13 +60,9 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 - [Autofac.Extras.AggregateService](https://github.com/autofac/Autofac.Extras.AggregateService) - Dynamic aggregate service implementation generation.
 - [Autofac.Extras.AttributeMetadata](https://github.com/autofac/Autofac.Extras.AttributeMetadata) - Metadata scanning/filtering through attributes.
 - [Autofac.Extras.CommonServiceLocator](https://github.com/autofac/Autofac.Extras.CommonServiceLocator) - Common Service Locator implementation backed by Autofac.
-- [Autofac.Extras.DomainServices](https://github.com/autofac/Autofac.Extras.DomainServices) - RIA/domain services support.
 - [Autofac.Extras.DynamicProxy](https://github.com/autofac/Autofac.Extras.DynamicProxy) - Decorators and interceptors.
-- [Autofac.Extras.EnterpriseLibraryConfigurator](https://github.com/autofac/Autofac.Extras.EnterpriseLibraryConfigurator) - Enterprise Library 5 configuration support.
 - [Autofac.Extras.FakeItEasy](https://github.com/autofac/Autofac.Extras.FakeItEasy) - FakeItEasy mocking framework integration.
 - [Autofac.Extras.Moq](https://github.com/autofac/Autofac.Extras.Moq) - Moq mocking framework integration.
-- [Autofac.Extras.MvvmCross](https://github.com/autofac/Autofac.Extras.MvvmCross) - MvvmCross integration.
-- [Autofac.Extras.NHibernate](https://github.com/autofac/Autofac.Extras.NHibernate) - NHibernate integration.
 - [Autofac.Mef](https://github.com/autofac/Autofac.Mef) - MEF catalog integration.
 - [Autofac.Multitenant](https://github.com/autofac/Autofac.Multitenant) - Multitenant dependency resolution support.
 - [Autofac.Multitenant.Wcf](https://github.com/autofac/Autofac.Multitenant.Wcf) - Multitenant WCF service hosting.
@@ -83,7 +79,6 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 
 ## Contributing / Pull Requests
 
-Refer to the [Contributor Guide](https://github.com/autofac/.github/blob/master/CONTRIBUTING.md)
-for setting up and building Autofac source.
+Refer to the [Contributor Guide](https://github.com/autofac/.github/blob/master/CONTRIBUTING.md) for setting up and building Autofac source.
 
 You can also open this repository right now [in VS Code](https://open.vscode.dev/autofac/Autofac).
