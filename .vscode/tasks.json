@@ -3,6 +3,7 @@
     {
       "args": [
         "build",
+        "${workspaceFolder}/Autofac.sln",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -17,6 +18,24 @@
       },
       "problemMatcher": "$msCompile",
       "type": "shell"
+    },
+    {
+      "args": [
+        "test",
+        "${workspaceFolder}/Autofac.sln",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary",
+        "--filter",
+        "FullyQualifiedName!~Benchmark"
+      ],
+      "command": "dotnet",
+      "group": {
+        "isDefault": true,
+        "kind": "test"
+      },
+      "label": "test",
+      "problemMatcher": "$msCompile",
+      "type": "process"
     }
   ],
   "version": "2.0.0"
