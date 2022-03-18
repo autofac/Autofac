@@ -42,7 +42,30 @@ public class OpenGenericTests
         Assert.NotNull(resolved);
     }
 
+    // Issue #1315: Class services fail to resolve if the names on the type
+    // arguments are changed.
+    [Fact]
+    public void ResolveClassWithRenamedTypeArguments()
+    {
+        var containerBuilder = new ContainerBuilder();
+        containerBuilder.RegisterGeneric(typeof(DerivedRepository<,>)).As(typeof(BaseRepository<,>));
+
+        var container = containerBuilder.Build();
+        var resolved = container.Resolve<BaseRepository<string, int>>();
+        Assert.IsType<DerivedRepository<int, string>>(resolved);
+    }
+
     private class SelfComponent<T> : IImplementedInterface<T>
+    {
+    }
+
+    private class BaseRepository<T1, T2>
+    {
+    }
+
+    // Issue #1315: Class services fail to resolve if the names on the type
+    // arguments are changed.
+    private class DerivedRepository<TSecond, TFirst> : BaseRepository<TFirst, TSecond>
     {
     }
 }

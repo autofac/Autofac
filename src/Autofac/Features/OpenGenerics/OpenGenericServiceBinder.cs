@@ -173,7 +173,18 @@ internal static class OpenGenericServiceBinder
 
         if (!serviceType.IsInterface)
         {
-            return TryFindServiceArgumentsForImplementation(implementationType, serviceGenericArguments, serviceTypeDefinition.GetGenericArguments());
+            var baseType = GetGenericBaseType(implementationType, serviceTypeDefinition);
+            if (baseType == null)
+            {
+                // If it's not an interface, the implementation type MUST have derived from
+                // the generic service type at some point or there's no way to cast.
+                return Array.Empty<Type>();
+            }
+
+            return TryFindServiceArgumentsForImplementation(
+                    implementationType,
+                    serviceGenericArguments,
+                    baseType.GenericTypeArguments);
         }
 
         var availableArguments = GetInterfaces(implementationType, serviceType)
@@ -197,6 +208,22 @@ internal static class OpenGenericServiceBinder
             .Select(implementationGenericArgumentDefinition => TryFindServiceArgumentForImplementationArgumentDefinition(
                 implementationGenericArgumentDefinition, serviceArgumentDefinitionToArgumentMapping))
             .ToArray();
+    }
+
+    private static Type? GetGenericBaseType(Type implementationType, Type serviceTypeDefinition)
+    {
+        var baseType = implementationType.BaseType;
+        while (baseType != null)
+        {
+            if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == serviceTypeDefinition)
+            {
+                break;
+            }
+
+            baseType = baseType.BaseType;
+        }
+
+        return baseType;
     }
 
     private static Type[] GetInterfaces(Type implementationType, Type serviceType) =>
