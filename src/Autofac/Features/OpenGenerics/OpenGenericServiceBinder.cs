@@ -179,7 +179,12 @@ internal static class OpenGenericServiceBinder
              *
              * If you have a class BaseClass<T1, T2> and a derived class
              * DerivedClass<A1, A2> : BaseClass<A2, A1> then then arguments need
-             * to line up name-wise like A2 -> T1 A1 -> T2
+             * to line up name-wise like...
+             * A2 -> T1
+             * A1 -> T2
+             *
+             * Having those symbols aligned means that, later, we can do a
+             * name-based match to populate the generic arguments.
              *
              * If you do a typeof(BaseClass<,>) then the generic arguments are
              * named T1 and T2, which doesn't help us line up the arguments in
@@ -187,8 +192,7 @@ internal static class OpenGenericServiceBinder
              * However, if you start at the derived class and walk backwards up
              * the inheritance hierarchy then instead of getting the original
              * T1/T2 naming, we get the names A1/A2 - the symbols as lined up by
-             * the compiler. Having those symbols aligned means that, later, we
-             * can do a name-based match to populate the generic arguments.
+             * the compiler.
              *
              * This is the same reason why Type.GetInterfaces() "just works" -
              * it's the generic in relation to the derived/implementing type
