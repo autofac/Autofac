@@ -173,7 +173,44 @@ internal static class OpenGenericServiceBinder
 
         if (!serviceType.IsInterface)
         {
-            return TryFindServiceArgumentsForImplementation(implementationType, serviceGenericArguments, serviceTypeDefinition.GetGenericArguments());
+            /* Issue #1315: We walk backwards in the inheritance hierarchy to
+             * find the open generic because that's the only way to ensure the
+             * generic argument names match.
+             *
+             * If you have a class BaseClass<T1, T2> and a derived class
+             * DerivedClass<A1, A2> : BaseClass<A2, A1> then then arguments need
+             * to line up name-wise like...
+             * A2 -> T1
+             * A1 -> T2
+             *
+             * Having those symbols aligned means that, later, we can do a
+             * name-based match to populate the generic arguments.
+             *
+             * If you do a typeof(BaseClass<,>) then the generic arguments are
+             * named T1 and T2, which doesn't help us line up the arguments in
+             * the derived class because the names and order have changed.
+             * However, if you start at the derived class and walk backwards up
+             * the inheritance hierarchy then instead of getting the original
+             * T1/T2 naming, we get the names A1/A2 - the symbols as lined up by
+             * the compiler.
+             *
+             * This is the same reason why Type.GetInterfaces() "just works" -
+             * it's the generic in relation to the derived/implementing type
+             * rather than just typeof(MyInterface<,>), so the names all line
+             * up.
+             */
+            var baseType = GetGenericBaseType(implementationType, serviceTypeDefinition);
+            if (baseType == null)
+            {
+                // If it's not an interface, the implementation type MUST have derived from
+                // the generic service type at some point or there's no way to cast.
+                return Array.Empty<Type>();
+            }
+
+            return TryFindServiceArgumentsForImplementation(
+                    implementationType,
+                    serviceGenericArguments,
+                    baseType.GenericTypeArguments);
         }
 
         var availableArguments = GetInterfaces(implementationType, serviceType)
@@ -197,6 +234,22 @@ internal static class OpenGenericServiceBinder
             .Select(implementationGenericArgumentDefinition => TryFindServiceArgumentForImplementationArgumentDefinition(
                 implementationGenericArgumentDefinition, serviceArgumentDefinitionToArgumentMapping))
             .ToArray();
+    }
+
+    private static Type? GetGenericBaseType(Type implementationType, Type serviceTypeDefinition)
+    {
+        var baseType = implementationType.BaseType;
+        while (baseType != null)
+        {
+            if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == serviceTypeDefinition)
+            {
+                break;
+            }
+
+            baseType = baseType.BaseType;
+        }
+
+        return baseType;
     }
 
     private static Type[] GetInterfaces(Type implementationType, Type serviceType) =>

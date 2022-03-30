@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Autofac.Test.Scenarios.Graph1.GenericContraints;
+using Autofac.Test.Scenarios.Graph1.GenericConstraints;
 
 namespace Autofac.Specification.Test.Registration;
 
@@ -42,7 +42,47 @@ public class OpenGenericTests
         Assert.NotNull(resolved);
     }
 
+    // Issue #1315: Class services fail to resolve if the names on the type
+    // arguments are changed.
+    [Fact]
+    public void ResolveClassWithRenamedTypeArguments()
+    {
+        var containerBuilder = new ContainerBuilder();
+        containerBuilder.RegisterGeneric(typeof(DerivedRepository<,>)).As(typeof(BaseRepository<,>));
+
+        var container = containerBuilder.Build();
+        var resolved = container.Resolve<BaseRepository<string, int>>();
+        Assert.IsType<DerivedRepository<int, string>>(resolved);
+    }
+
+    // Issue #1315: Class services fail to resolve if the names on the type
+    // arguments are changed. We should be able to handle a deep inheritance chain.
+    [Fact]
+    public void ResolveClassTwoLevelsDownWithRenamedTypeArguments()
+    {
+        var containerBuilder = new ContainerBuilder();
+        containerBuilder.RegisterGeneric(typeof(TwoLevelsDerivedRepository<,>)).As(typeof(BaseRepository<,>));
+
+        var container = containerBuilder.Build();
+        var resolved = container.Resolve<BaseRepository<string, int>>();
+        Assert.IsType<TwoLevelsDerivedRepository<int, string>>(resolved);
+    }
+
     private class SelfComponent<T> : IImplementedInterface<T>
+    {
+    }
+
+    private class BaseRepository<T1, T2>
+    {
+    }
+
+    // Issue #1315: Class services fail to resolve if the names on the type
+    // arguments are changed.
+    private class DerivedRepository<TSecond, TFirst> : BaseRepository<TFirst, TSecond>
+    {
+    }
+
+    private class TwoLevelsDerivedRepository<TA, TB> : DerivedRepository<TA, TB>
     {
     }
 }
