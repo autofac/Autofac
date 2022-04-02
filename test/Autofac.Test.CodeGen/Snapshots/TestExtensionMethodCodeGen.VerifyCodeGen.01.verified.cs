@@ -13,7 +13,6 @@ namespace Autofac;
 [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
 public static partial class RegistrationExtensions
 {
-
     /// <summary>
     /// Register a delegate as a component.
     /// </summary>
