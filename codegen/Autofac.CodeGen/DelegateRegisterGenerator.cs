@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Autofac.CodeGen
 {
     [Generator]
-    public class Generator : IIncrementalGenerator
+    public class DelegateRegisterGenerator : IIncrementalGenerator
     {
         public const int NumberOfGenericArgs = 10;
 
@@ -95,8 +93,7 @@ namespace Autofac;
 /// </summary>
 [SuppressMessage(""Microsoft.Maintainability"", ""CA1506:AvoidExcessiveClassCoupling"")]
 public static partial class {className}
-{{
-");
+{{");
             for (var argCount = 1; argCount <= maxArgs; argCount++)
             {
                 GenerateExtensionMethod(sb, getDelegateInvokerName, argCount, withComponentContext: false);
@@ -169,8 +166,7 @@ namespace Autofac;
 /// </summary>
 [SuppressMessage(""Microsoft.Maintainability"", ""CA1506:AvoidExcessiveClassCoupling"")]
 internal static partial class {holdingTypeName}
-{{
-");
+{{");
 
             for (var argCount = 1; argCount <= maxArgs; argCount++)
             {
@@ -236,7 +232,7 @@ internal static partial class {holdingTypeName}
             sb.AppendLine($@"
     public sealed class {typeName}<{GetTypeParamList(reusableStrBuilder, withComponentContext: false, argCount)}> : BaseGenericResolveDelegateInvoker");
             WriteTypeConstraints(sb, argCount, 2);
-            sb.Append($@"    {{        
+            sb.Append($@"    {{
         private readonly Func<{delegateGenericTypeList}> _delegate;
 
         public {typeName}(Func<{delegateGenericTypeList}> @delegate)

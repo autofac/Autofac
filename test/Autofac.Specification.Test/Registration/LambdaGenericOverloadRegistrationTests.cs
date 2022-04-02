@@ -2,8 +2,11 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
+using Autofac.Core;
 
 namespace Autofac.Specification.Test.Registration;
+
+#nullable enable
 
 public class LambdaGenericOverloadRegistrationTests
 {
@@ -88,6 +91,19 @@ public class LambdaGenericOverloadRegistrationTests
         public MyComponent(MyDep1 d1, MyDep2 d2, MyDep3 d3, MyDep4 d4, MyDep5 d5, MyDep6 d6, MyDep7 d7, MyDep8 d8, MyDep9 d9, MyDep10 d10)
         {
         }
+    }
+
+    private class MyComponentWithParams
+    {
+        public MyComponentWithParams(MyDep1 dep1, string arg1, string arg2)
+        {
+            Arg1 = arg1;
+            Arg2 = arg2;
+        }
+
+        public string Arg1 { get; }
+
+        public string Arg2 { get; }
     }
 
     private static readonly Type[] _allDeps = new[]
@@ -458,6 +474,44 @@ public class LambdaGenericOverloadRegistrationTests
         context.Resolve<MyComponent>();
     }
 
+    [Fact]
+    public void RegisterLambdaWithTypedParameter()
+    {
+        var builder = GetBuilderWithDeps();
+
+        builder.Register((MyDep1 dep1, string arg) => new MyComponentWithParams(dep1, arg, arg));
+
+        var result = builder.Build().Resolve<MyComponentWithParams>(TypedParameter.From("a"));
+
+        Assert.Equal("a", result.Arg1);
+        Assert.Equal("a", result.Arg2);
+    }
+
+    [Fact]
+    public void RegisterLambdaWithNamedParameter()
+    {
+        var builder = GetBuilderWithDeps();
+
+        builder.Register((MyDep1 dep1, string arg1, string arg2) => new MyComponentWithParams(dep1, arg1, arg2));
+
+        var result = builder.Build().Resolve<MyComponentWithParams>(new NamedParameter("arg2", "b"), new NamedParameter("arg1", "a"));
+
+        Assert.Equal("a", result.Arg1);
+        Assert.Equal("b", result.Arg2);
+    }
+
+    [Fact]
+    public void RegisterLambdaWithMissingParameterThrows()
+    {
+        var builder = GetBuilderWithDeps();
+
+        builder.Register((MyDep1 dep1, string arg) => new MyComponentWithParams(dep1, arg, arg));
+
+        var container = builder.Build();
+
+        Assert.Throws<DependencyResolutionException>(() => container.Resolve<MyComponentWithParams>());
+    }
+
     [Theory]
     [MemberData(nameof(GetGenericOverloadTypeSets))]
     public void OverloadsAllCheckNullDelegate(Type[] types)
@@ -518,7 +572,7 @@ public class LambdaGenericOverloadRegistrationTests
                                                                       MethodDelegateFuncHasIComponentContext(x) == withComponentContext)
                                                           .FirstOrDefault();
 
-        var actualMethod = genericMethod.MakeGenericMethod(types.Append(typeof(MyComponent)).ToArray());
+        var actualMethod = genericMethod!.MakeGenericMethod(types.Append(typeof(MyComponent)).ToArray());
 
         return actualMethod;
     }

@@ -14,7 +14,7 @@ internal static class CompilationVerifier
     {
         var compilation = Create(source);
 
-        var generator = new Generator();
+        var generator = new DelegateRegisterGenerator();
 
         GeneratorDriver driver = CSharpGeneratorDriver.Create(generator);
 

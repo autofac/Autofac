@@ -13,12 +13,15 @@ public class LambdaResolveBenchmark
 
         builder.RegisterType<MyDependency1>();
 
-        // Existing method, capture the argument directly.
-        builder.Register((MyDependency1 dep1) => new MyComponent(dep1, "arg"))
+        // The original componentcontext way.
+        builder.Register((ctxt) => new MyComponent(ctxt.Resolve<MyDependency1>(), "arg"))
                .As<IServiceExistingMethodCapturedArg>();
 
+        // Capture the argument directly.
+        builder.Register((MyDependency1 dep1) => new MyComponent(dep1, "arg"))
+               .As<IServiceNewMethodCapturedArg>();
+
         // New parameter-supporting method, but the argument comes from a resolve parameter.
-        // Name is different just so I can run both side-by-side for now.
         builder.Register((MyDependency1 dep1, string arg1) => new MyComponent(dep1, arg1))
                .As<IServiceNewMethodOpenArg>();
 
@@ -30,6 +33,12 @@ public class LambdaResolveBenchmark
            .As<IServiceFromReflection>();
 
         _container = builder.Build();
+    }
+
+    [Benchmark]
+    public object ResolveManuallyWithComponentContext()
+    {
+        return _container.Resolve<IServiceExistingMethodCapturedArg>();
     }
 
     [Benchmark]

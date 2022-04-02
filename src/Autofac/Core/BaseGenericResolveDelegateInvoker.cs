@@ -26,7 +26,7 @@ internal abstract class BaseGenericResolveDelegateInvoker
     /// <param name="context">The context from which to resolve.</param>
     /// <param name="parameters">The set of Autofac resolve parameters.</param>
     /// <param name="parameterInfoPosition">The position of the parameter in the delegate's paramter info set.</param>
-    protected T ResolveWithParametersOrRegistration<T>(IComponentContext context, IEnumerable<Parameter> parameters, int parameterInfoPosition)
+    protected T? ResolveWithParametersOrRegistration<T>(IComponentContext context, IEnumerable<Parameter> parameters, int parameterInfoPosition)
         where T : notnull
     {
         var parameterInfo = (_methodParameters ??= GetDelegateParameters())[parameterInfoPosition];
@@ -37,12 +37,7 @@ internal abstract class BaseGenericResolveDelegateInvoker
             {
                 var value = valueProvider();
 
-                if (value is null)
-                {
-                    throw new InvalidOperationException("Parameter provider returned a null value");
-                }
-
-                return (T)value;
+                return (T?)value;
             }
         }
 
