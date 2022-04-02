@@ -26,6 +26,7 @@ public static class Benchmarks
             typeof(PropertyInjectionBenchmark),
             typeof(RootContainerResolveBenchmark),
             typeof(OpenGenericBenchmark),
-            typeof(MultiConstructorBenchmark)
+            typeof(MultiConstructorBenchmark),
+            typeof(LambdaResolveBenchmark),
         };
 }

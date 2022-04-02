@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net5.0;netcoreapp3.1;</TargetFrameworks>
+    <TargetFramework>net6.0</TargetFramework>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyOriginatorKeyFile>../../Autofac.snk</AssemblyOriginatorKeyFile>
@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\codegen\Autofac.CodeGen\Autofac.CodeGen.csproj" />
     <ProjectReference Include="..\..\src\Autofac\Autofac.csproj" />
   </ItemGroup>
 
@@ -26,11 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Helpers\**" />
     <Compile Remove="TestResults\**" />
-    <EmbeddedResource Remove="Helpers\**" />
     <EmbeddedResource Remove="TestResults\**" />
-    <None Remove="Helpers\**" />
     <None Remove="TestResults\**" />
   </ItemGroup>
 
@@ -53,6 +51,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Verify.SourceGenerators" Version="1.3.0" />
+    <PackageReference Include="Verify.Xunit" Version="15.1.1" />
   </ItemGroup>
 
   <ItemGroup>

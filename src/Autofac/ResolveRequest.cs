@@ -12,6 +12,11 @@ namespace Autofac;
 public class ResolveRequest
 {
     /// <summary>
+    /// Shared constant value defining an empty set of parameters.
+    /// </summary>
+    internal static readonly IEnumerable<Parameter> NoParameters = Enumerable.Empty<Parameter>();
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="ResolveRequest"/> class.
     /// </summary>
     /// <param name="service">The service being resolved.</param>

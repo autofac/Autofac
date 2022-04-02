@@ -19,8 +19,6 @@ public static class ResolutionExtensions
     /// </summary>
     public const string PropertyInjectedInstanceTypeNamedParameter = AutowiringPropertyInjector.InstanceTypeNamedParameter;
 
-    private static readonly IEnumerable<Parameter> NoParameters = Enumerable.Empty<Parameter>();
-
     /// <summary>
     /// Set any properties on <paramref name="instance"/> that can be
     /// resolved in the context.
@@ -32,7 +30,7 @@ public static class ResolutionExtensions
     public static TService InjectProperties<TService>(this IComponentContext context, TService instance)
         where TService : notnull
     {
-        AutowiringPropertyInjector.InjectProperties(context, instance, DefaultPropertySelector.OverwriteSetValueInstance, NoParameters);
+        AutowiringPropertyInjector.InjectProperties(context, instance, DefaultPropertySelector.OverwriteSetValueInstance, ResolveRequest.NoParameters);
         return instance;
     }
 
@@ -80,7 +78,7 @@ public static class ResolutionExtensions
     public static TService InjectProperties<TService>(this IComponentContext context, TService instance, IPropertySelector propertySelector)
         where TService : notnull
     {
-        AutowiringPropertyInjector.InjectProperties(context, instance, propertySelector, NoParameters);
+        AutowiringPropertyInjector.InjectProperties(context, instance, propertySelector, ResolveRequest.NoParameters);
         return instance;
     }
 
@@ -129,7 +127,7 @@ public static class ResolutionExtensions
     public static TService InjectUnsetProperties<TService>(this IComponentContext context, TService instance)
         where TService : notnull
     {
-        AutowiringPropertyInjector.InjectProperties(context, instance, DefaultPropertySelector.PreserveSetValueInstance, NoParameters);
+        AutowiringPropertyInjector.InjectProperties(context, instance, DefaultPropertySelector.PreserveSetValueInstance, ResolveRequest.NoParameters);
         return instance;
     }
 
@@ -270,7 +268,7 @@ public static class ResolutionExtensions
     public static TService Resolve<TService>(this IComponentContext context)
         where TService : notnull
     {
-        return Resolve<TService>(context, NoParameters);
+        return Resolve<TService>(context, ResolveRequest.NoParameters);
     }
 
     /// <summary>
@@ -319,7 +317,7 @@ public static class ResolutionExtensions
     /// <exception cref="DependencyResolutionException"/>
     public static object Resolve(this IComponentContext context, Type serviceType)
     {
-        return Resolve(context, serviceType, NoParameters);
+        return Resolve(context, serviceType, ResolveRequest.NoParameters);
     }
 
     /// <summary>
@@ -368,7 +366,7 @@ public static class ResolutionExtensions
     public static TService ResolveKeyed<TService>(this IComponentContext context, object serviceKey)
         where TService : notnull
     {
-        return ResolveKeyed<TService>(context, serviceKey, NoParameters);
+        return ResolveKeyed<TService>(context, serviceKey, ResolveRequest.NoParameters);
     }
 
     /// <summary>
@@ -420,7 +418,7 @@ public static class ResolutionExtensions
     /// <exception cref="DependencyResolutionException"/>
     public static object ResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType)
     {
-        return ResolveKeyed(context, serviceKey, serviceType, NoParameters);
+        return ResolveKeyed(context, serviceKey, serviceType, ResolveRequest.NoParameters);
     }
 
     /// <summary>
@@ -471,7 +469,7 @@ public static class ResolutionExtensions
     public static TService ResolveNamed<TService>(this IComponentContext context, string serviceName)
         where TService : notnull
     {
-        return ResolveNamed<TService>(context, serviceName, NoParameters);
+        return ResolveNamed<TService>(context, serviceName, ResolveRequest.NoParameters);
     }
 
     /// <summary>
@@ -523,7 +521,7 @@ public static class ResolutionExtensions
     /// <exception cref="DependencyResolutionException"/>
     public static object ResolveNamed(this IComponentContext context, string serviceName, Type serviceType)
     {
-        return ResolveNamed(context, serviceName, serviceType, NoParameters);
+        return ResolveNamed(context, serviceName, serviceType, ResolveRequest.NoParameters);
     }
 
     /// <summary>
@@ -573,7 +571,7 @@ public static class ResolutionExtensions
     public static TService? ResolveOptional<TService>(this IComponentContext context)
         where TService : class
     {
-        return ResolveOptional<TService>(context, NoParameters);
+        return ResolveOptional<TService>(context, ResolveRequest.NoParameters);
     }
 
     /// <summary>
@@ -622,7 +620,7 @@ public static class ResolutionExtensions
     /// <exception cref="DependencyResolutionException"/>
     public static object? ResolveOptional(this IComponentContext context, Type serviceType)
     {
-        return ResolveOptional(context, serviceType, NoParameters);
+        return ResolveOptional(context, serviceType, ResolveRequest.NoParameters);
     }
 
     /// <summary>
@@ -671,7 +669,7 @@ public static class ResolutionExtensions
     public static TService? ResolveOptionalKeyed<TService>(this IComponentContext context, object serviceKey)
         where TService : class
     {
-        return ResolveOptionalKeyed<TService>(context, serviceKey, NoParameters);
+        return ResolveOptionalKeyed<TService>(context, serviceKey, ResolveRequest.NoParameters);
     }
 
     /// <summary>
@@ -775,7 +773,7 @@ public static class ResolutionExtensions
     /// <exception cref="DependencyResolutionException"/>
     public static object? ResolveOptionalService(this IComponentContext context, Service service)
     {
-        return ResolveOptionalService(context, service, NoParameters);
+        return ResolveOptionalService(context, service, ResolveRequest.NoParameters);
     }
 
     /// <summary>
@@ -838,7 +836,7 @@ public static class ResolutionExtensions
     /// <exception cref="DependencyResolutionException"/>
     public static object ResolveService(this IComponentContext context, Service service)
     {
-        return ResolveService(context, service, NoParameters);
+        return ResolveService(context, service, ResolveRequest.NoParameters);
     }
 
     /// <summary>
@@ -944,7 +942,7 @@ public static class ResolutionExtensions
             throw new ArgumentNullException(nameof(context));
         }
 
-        return context.TryResolveService(new TypedService(serviceType), NoParameters, out instance);
+        return context.TryResolveService(new TypedService(serviceType), ResolveRequest.NoParameters, out instance);
     }
 
     /// <summary>
@@ -999,7 +997,7 @@ public static class ResolutionExtensions
             throw new ArgumentNullException(nameof(context));
         }
 
-        return context.TryResolveService(new KeyedService(serviceKey, serviceType), NoParameters, out instance);
+        return context.TryResolveService(new KeyedService(serviceKey, serviceType), ResolveRequest.NoParameters, out instance);
     }
 
     /// <summary>
@@ -1054,7 +1052,7 @@ public static class ResolutionExtensions
             throw new ArgumentNullException(nameof(context));
         }
 
-        return context.TryResolveService(new KeyedService(serviceName, serviceType), NoParameters, out instance);
+        return context.TryResolveService(new KeyedService(serviceName, serviceType), ResolveRequest.NoParameters, out instance);
     }
 
     /// <summary>
@@ -1075,7 +1073,7 @@ public static class ResolutionExtensions
             throw new ArgumentNullException(nameof(context));
         }
 
-        return context.TryResolveService(service, NoParameters, out instance);
+        return context.TryResolveService(service, ResolveRequest.NoParameters, out instance);
     }
 
     /// <summary>

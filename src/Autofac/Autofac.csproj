@@ -59,6 +59,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Include the source generator for creating our extension methods. -->
+    <ProjectReference Include="../../codegen/Autofac.CodeGen/Autofac.CodeGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
