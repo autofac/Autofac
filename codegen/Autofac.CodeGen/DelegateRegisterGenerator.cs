@@ -123,9 +123,8 @@ public static partial class {className}
 
     private static void GenerateExtensionMethod(StringBuilder sb, string methodName, Func<int, bool, string> getDelegateInvokerName, int argCount, bool withComponentContext)
     {
-        var reusableStrBuilder = new StringBuilder();
-        var delegateGenericTypeList = GetTypeParamList(reusableStrBuilder, withComponentContext, argCount);
-        var methodGenericTypeList = GetTypeParamList(reusableStrBuilder, withComponentContext: false, argCount);
+        var delegateGenericTypeList = GetTypeParamList(withComponentContext, argCount);
+        var methodGenericTypeList = GetTypeParamList(withComponentContext: false, argCount);
 
         sb.AppendLine($@"
     /// <summary>
@@ -196,11 +195,10 @@ internal static partial class {holdingTypeName}
 
     private static void GenerateDelegateInvokerWithComponentContext(StringBuilder sb, string typeName, int argCount)
     {
-        var reusableStrBuilder = new StringBuilder();
-        var delegateGenericTypeList = GetTypeParamList(reusableStrBuilder, withComponentContext: true, argCount);
+        var delegateGenericTypeList = GetTypeParamList(withComponentContext: true, argCount);
 
         sb.AppendLine($@"
-    public sealed class {typeName}<{GetTypeParamList(reusableStrBuilder, withComponentContext: false, argCount)}> : BaseGenericResolveDelegateInvoker");
+    public sealed class {typeName}<{GetTypeParamList(withComponentContext: false, argCount)}> : BaseGenericResolveDelegateInvoker");
         WriteTypeConstraints(sb, argCount, 2);
         sb.Append($@"    {{
         private readonly Func<{delegateGenericTypeList}> _delegate;
@@ -271,16 +269,7 @@ internal static partial class {holdingTypeName}
 
     private static string GetTypeParamList(bool withComponentContext, int argCount)
     {
-        var tmpStrBuilder = new StringBuilder();
-
-        GetTypeParamList(tmpStrBuilder, withComponentContext, argCount);
-
-        return tmpStrBuilder.ToString();
-    }
-
-    private static string GetTypeParamList(StringBuilder sb, bool withComponentContext, int argCount)
-    {
-        sb.Clear();
+        var sb = new StringBuilder();
 
         if (withComponentContext)
         {

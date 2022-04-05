@@ -21,6 +21,9 @@ internal static class CompilationVerifier
         // Once through for the generated code diagnostics, where we update the compilation.
         driver = driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var outputDiagnostics);
 
+        Assert.NotEmpty(outputCompilation.SyntaxTrees);
+        Assert.Empty(outputDiagnostics);
+
         return Verifier.Verify(driver)
                        .UseDirectory(Path.Combine(AttributeReader.GetProjectDirectory(), "Snapshots"));
     }
