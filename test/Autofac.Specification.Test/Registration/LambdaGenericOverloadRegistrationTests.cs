@@ -106,7 +106,7 @@ public class LambdaGenericOverloadRegistrationTests
         public string Arg2 { get; }
     }
 
-    private static readonly Type[] _allDeps = new[]
+    private static readonly Type[] AllDeps = new[]
     {
         typeof(MyDep1),
         typeof(MyDep2),
@@ -124,7 +124,7 @@ public class LambdaGenericOverloadRegistrationTests
     {
         var builder = new ContainerBuilder();
 
-        builder.RegisterTypes(_allDeps);
+        builder.RegisterTypes(AllDeps);
 
         return builder;
     }
@@ -580,9 +580,9 @@ public class LambdaGenericOverloadRegistrationTests
     public static IEnumerable<object[]> GetGenericOverloadTypeSets()
     {
         // Return a set of type arrays, each one with an additional type in the set.
-        for (var idx = 0; idx < _allDeps.Length; idx++)
+        for (var idx = 0; idx < AllDeps.Length; idx++)
         {
-            yield return new[] { _allDeps.Take(idx + 1).ToArray() };
+            yield return new[] { AllDeps.Take(idx + 1).ToArray() };
         }
     }
 }

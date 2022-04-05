@@ -6,10 +6,10 @@ using Autofac.Test.CodeGen.Helpers;
 namespace Autofac.Test.CodeGen;
 
 [UsesVerify]
-public class TestExtensionMethodCodeGen
+public class DelegateRegisterGeneratorTests
 {
     [Fact]
-    public Task VerifyCodeGen()
+    public Task VerifyGeneratedCode()
     {
        return CompilationVerifier.Verify(@"
 namespace Autofac

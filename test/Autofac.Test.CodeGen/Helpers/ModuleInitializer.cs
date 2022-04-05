@@ -61,7 +61,7 @@ public static class ModuleInitializer
 
     private static Target SourceToTarget(GeneratedSourceResult source)
     {
-        var data = $@"//HintName: {source.HintName}
+        var data = $@"// HintName: {source.HintName}
 {source.SourceText}";
         return new("cs", data);
     }

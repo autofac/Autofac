@@ -4,11 +4,14 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace Autofac.Core;
+namespace Autofac.Core.Resolving;
 
 /// <summary>
 /// Provides a base implementation for the dynamically generated DelegateInvoker classes.
 /// </summary>
+/// <remarks>
+/// See Autofac.CodeGen.DelegateRegisterGenerator.
+/// </remarks>
 internal abstract class BaseGenericResolveDelegateInvoker
 {
     private ParameterInfo[]? _methodParameters;
@@ -19,13 +22,14 @@ internal abstract class BaseGenericResolveDelegateInvoker
     protected abstract ParameterInfo[] GetDelegateParameters();
 
     /// <summary>
-    /// Resolve the specified type parameter either from the currently-in-scope resolve parameters, or
-    /// as a regular dependency.
+    /// Resolve the specified type parameter either from the currently-in-scope
+    /// resolve parameters, or as a regular dependency.
     /// </summary>
     /// <typeparam name="T">The type to resolve.</typeparam>
     /// <param name="context">The context from which to resolve.</param>
     /// <param name="parameters">The set of Autofac resolve parameters.</param>
-    /// <param name="parameterInfoPosition">The position of the parameter in the delegate's paramter info set.</param>
+    /// <param name="parameterInfoPosition">The position of the parameter in the
+    /// delegate's parameter info set.</param>
     protected T? ResolveWithParametersOrRegistration<T>(IComponentContext context, IEnumerable<Parameter> parameters, int parameterInfoPosition)
         where T : notnull
     {
@@ -51,11 +55,12 @@ internal abstract class BaseGenericResolveDelegateInvoker
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static bool AnyParameters(IEnumerable<Parameter> parameters)
     {
-        // The by-far most common way you'll end up with no parameters
-        // is by invoking a Resolve() function call that doesn't accept parameters, so the readonly NoParameters shared value is
-        // used.
-        // A referenceequals comparison here handles that neatly, and is significantly faster in benchmarks than doing the Any()
-        // call in every case.
+        // The by-far most common way you'll end up with no parameters is by
+        // invoking a Resolve() function call that doesn't accept parameters, so
+        // the readonly NoParameters shared value is used.
+        // A ReferenceEquals comparison here handles that neatly, and is
+        // significantly faster in benchmarks than doing the Any() call in every
+        // case.
         if (ReferenceEquals(parameters, ResolveRequest.NoParameters))
         {
             return false;

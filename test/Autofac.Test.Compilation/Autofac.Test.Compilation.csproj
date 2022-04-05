@@ -26,11 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Helpers\**" />
     <Compile Remove="TestResults\**" />
-    <EmbeddedResource Remove="Helpers\**" />
     <EmbeddedResource Remove="TestResults\**" />
-    <None Remove="Helpers\**" />
     <None Remove="TestResults\**" />
   </ItemGroup>
 

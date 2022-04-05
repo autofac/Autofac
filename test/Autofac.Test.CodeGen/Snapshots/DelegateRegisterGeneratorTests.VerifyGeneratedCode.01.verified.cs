@@ -1,9 +1,10 @@
-﻿//HintName: Autofac.RegistrationExtensions.g.cs
+﻿// HintName: Autofac.RegistrationExtensions.g.cs
 // Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Resolving;
 
 namespace Autofac;
 
@@ -22,7 +23,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TComponent> (
+        Register<TDependency1, TComponent>(
             this ContainerBuilder builder,
             Func<TDependency1, TComponent> @delegate)
         where TDependency1 : notnull
@@ -46,7 +47,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TComponent> (
+        Register<TDependency1, TComponent>(
             this ContainerBuilder builder,
             Func<IComponentContext, TDependency1, TComponent> @delegate)
         where TDependency1 : notnull
@@ -71,7 +72,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TComponent> (
+        Register<TDependency1, TDependency2, TComponent>(
             this ContainerBuilder builder,
             Func<TDependency1, TDependency2, TComponent> @delegate)
         where TDependency1 : notnull
@@ -97,7 +98,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TComponent> (
+        Register<TDependency1, TDependency2, TComponent>(
             this ContainerBuilder builder,
             Func<IComponentContext, TDependency1, TDependency2, TComponent> @delegate)
         where TDependency1 : notnull
@@ -124,7 +125,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TComponent>(
             this ContainerBuilder builder,
             Func<TDependency1, TDependency2, TDependency3, TComponent> @delegate)
         where TDependency1 : notnull
@@ -152,7 +153,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TComponent>(
             this ContainerBuilder builder,
             Func<IComponentContext, TDependency1, TDependency2, TDependency3, TComponent> @delegate)
         where TDependency1 : notnull
@@ -181,7 +182,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TComponent>(
             this ContainerBuilder builder,
             Func<TDependency1, TDependency2, TDependency3, TDependency4, TComponent> @delegate)
         where TDependency1 : notnull
@@ -211,7 +212,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TComponent>(
             this ContainerBuilder builder,
             Func<IComponentContext, TDependency1, TDependency2, TDependency3, TDependency4, TComponent> @delegate)
         where TDependency1 : notnull
@@ -242,7 +243,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TComponent>(
             this ContainerBuilder builder,
             Func<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TComponent> @delegate)
         where TDependency1 : notnull
@@ -274,7 +275,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TComponent>(
             this ContainerBuilder builder,
             Func<IComponentContext, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TComponent> @delegate)
         where TDependency1 : notnull
@@ -307,7 +308,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TComponent>(
             this ContainerBuilder builder,
             Func<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TComponent> @delegate)
         where TDependency1 : notnull
@@ -341,7 +342,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TComponent>(
             this ContainerBuilder builder,
             Func<IComponentContext, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TComponent> @delegate)
         where TDependency1 : notnull
@@ -376,7 +377,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TComponent>(
             this ContainerBuilder builder,
             Func<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TComponent> @delegate)
         where TDependency1 : notnull
@@ -412,7 +413,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TComponent>(
             this ContainerBuilder builder,
             Func<IComponentContext, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TComponent> @delegate)
         where TDependency1 : notnull
@@ -449,7 +450,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TComponent>(
             this ContainerBuilder builder,
             Func<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TComponent> @delegate)
         where TDependency1 : notnull
@@ -487,7 +488,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TComponent>(
             this ContainerBuilder builder,
             Func<IComponentContext, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TComponent> @delegate)
         where TDependency1 : notnull
@@ -526,7 +527,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TComponent>(
             this ContainerBuilder builder,
             Func<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TComponent> @delegate)
         where TDependency1 : notnull
@@ -566,7 +567,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TComponent>(
             this ContainerBuilder builder,
             Func<IComponentContext, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TComponent> @delegate)
         where TDependency1 : notnull
@@ -607,7 +608,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TComponent>(
             this ContainerBuilder builder,
             Func<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TComponent> @delegate)
         where TDependency1 : notnull
@@ -649,7 +650,7 @@ public static partial class RegistrationExtensions
     /// <param name="delegate">The delegate to register.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle>
-        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TComponent> (
+        Register<TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TComponent>(
             this ContainerBuilder builder,
             Func<IComponentContext, TDependency1, TDependency2, TDependency3, TDependency4, TDependency5, TDependency6, TDependency7, TDependency8, TDependency9, TDependency10, TComponent> @delegate)
         where TDependency1 : notnull
