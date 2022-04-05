@@ -12,16 +12,6 @@ insert_final_newline = true
 
 ; .NET Code - almost, but not exactly, the same suggestions as corefx
 ; https://github.com/dotnet/corefx/blob/master/.editorconfig
-dotnet_style_operator_placement_when_wrapping = beginning_of_line
-tab_width = 4
-indent_size = 4
-end_of_line = crlf
-dotnet_style_coalesce_expression = true:suggestion
-dotnet_style_null_propagation = true:suggestion
-dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
-dotnet_style_prefer_auto_properties = true:suggestion
-dotnet_style_object_initializer = true:suggestion
-dotnet_style_collection_initializer = true:suggestion
 [*.cs]
 indent_size = 4
 charset = utf-8-bom
@@ -60,7 +50,7 @@ dotnet_style_predefined_type_for_member_access = true:suggestion
 ; Name all constant fields using PascalCase
 dotnet_naming_rule.constant_fields_should_be_pascal_case.severity = warning
 dotnet_naming_rule.constant_fields_should_be_pascal_case.symbols  = constant_fields
-dotnet_naming_rule.constant_fields_should_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.constant_fields_should_be_pascal_case.style    = pascal_case_style
 dotnet_naming_symbols.constant_fields.applicable_kinds   = field
 dotnet_naming_symbols.constant_fields.required_modifiers = const
 dotnet_naming_style.pascal_case_style.capitalization = pascal_case
@@ -68,7 +58,7 @@ dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 ; Static fields should be _camelCase
 dotnet_naming_rule.static_fields_should_be_camel_case.severity = warning
 dotnet_naming_rule.static_fields_should_be_camel_case.symbols  = static_fields
-dotnet_naming_rule.static_fields_should_be_camel_case.style = camel_case_underscore_style
+dotnet_naming_rule.static_fields_should_be_camel_case.style    = camel_case_underscore_style
 dotnet_naming_symbols.static_fields.applicable_kinds   = field
 dotnet_naming_symbols.static_fields.required_modifiers = static
 dotnet_naming_symbols.static_fields.applicable_accessibilities = private, internal, private_protected
@@ -76,7 +66,7 @@ dotnet_naming_symbols.static_fields.applicable_accessibilities = private, intern
 ; Static readonly fields should be PascalCase
 dotnet_naming_rule.static_readonly_fields_should_be_pascal_case.severity = warning
 dotnet_naming_rule.static_readonly_fields_should_be_pascal_case.symbols  = static_readonly_fields
-dotnet_naming_rule.static_readonly_fields_should_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.static_readonly_fields_should_be_pascal_case.style    = pascal_case_style
 dotnet_naming_symbols.static_readonly_fields.applicable_kinds   = field
 dotnet_naming_symbols.static_readonly_fields.required_modifiers = static, readonly
 dotnet_naming_symbols.static_readonly_fields.applicable_accessibilities = private, internal, private_protected
@@ -84,7 +74,7 @@ dotnet_naming_symbols.static_readonly_fields.applicable_accessibilities = privat
 ; Internal and private fields should be _camelCase
 dotnet_naming_rule.camel_case_for_private_internal_fields.severity = warning
 dotnet_naming_rule.camel_case_for_private_internal_fields.symbols  = private_internal_fields
-dotnet_naming_rule.camel_case_for_private_internal_fields.style = camel_case_underscore_style
+dotnet_naming_rule.camel_case_for_private_internal_fields.style    = camel_case_underscore_style
 dotnet_naming_symbols.private_internal_fields.applicable_kinds = field
 dotnet_naming_symbols.private_internal_fields.applicable_accessibilities = private, internal
 dotnet_naming_style.camel_case_underscore_style.required_prefix = _
@@ -93,7 +83,7 @@ dotnet_naming_style.camel_case_underscore_style.capitalization = camel_case
 ; Code style defaults
 csharp_using_directive_placement = outside_namespace:suggestion
 dotnet_sort_system_directives_first = true
-csharp_prefer_braces = true:silent
+csharp_prefer_braces = true:refactoring
 csharp_preserve_single_line_blocks = true:none
 csharp_preserve_single_line_statements = false:none
 csharp_prefer_static_local_function = true:suggestion
@@ -119,14 +109,14 @@ dotnet_style_prefer_conditional_expression_over_return = true:refactoring
 csharp_prefer_simple_default_expression = true:suggestion
 
 # Expression-bodied members
-csharp_style_expression_bodied_methods = true:silent
-csharp_style_expression_bodied_constructors = true:silent
-csharp_style_expression_bodied_operators = true:silent
-csharp_style_expression_bodied_properties = true:silent
-csharp_style_expression_bodied_indexers = true:silent
-csharp_style_expression_bodied_accessors = true:silent
-csharp_style_expression_bodied_lambdas = true:silent
-csharp_style_expression_bodied_local_functions = true:silent
+csharp_style_expression_bodied_methods = true:refactoring
+csharp_style_expression_bodied_constructors = true:refactoring
+csharp_style_expression_bodied_operators = true:refactoring
+csharp_style_expression_bodied_properties = true:refactoring
+csharp_style_expression_bodied_indexers = true:refactoring
+csharp_style_expression_bodied_accessors = true:refactoring
+csharp_style_expression_bodied_lambdas = true:refactoring
+csharp_style_expression_bodied_local_functions = true:refactoring
 
 # Pattern matching
 csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
@@ -172,7 +162,6 @@ csharp_space_between_square_brackets = false
 indent_size = 2
 
 ; .NET solution files - match defaults for VS
-csharp_style_prefer_method_group_conversion = true:silent
 [*.sln]
 indent_style = tab
 
