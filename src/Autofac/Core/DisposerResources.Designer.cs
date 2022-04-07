@@ -19,7 +19,7 @@ namespace Autofac.Core {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class DisposerResources {
@@ -70,7 +70,7 @@ namespace Autofac.Core {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AUTOFAC: A synchronous Dispose has been attempted, but the tracked object of type &apos;{0}&apos; only implements IAsyncDisposable. This will result in an efficient blocking dispose. Consider either implementing IDisposable on &apos;{0}&apos; or disposing of the scope/container with DisposeAsync..
+        ///   Looks up a localized string similar to AUTOFAC: A synchronous Dispose has been attempted, but the tracked object of type &apos;{0}&apos; only implements IAsyncDisposable. This will result in an inefficient blocking dispose. Consider either implementing IDisposable on &apos;{0}&apos; or disposing of the scope/container with DisposeAsync..
         /// </summary>
         internal static string TypeOnlyImplementsIAsyncDisposable {
             get {
