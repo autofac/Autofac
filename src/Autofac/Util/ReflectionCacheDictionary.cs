@@ -18,12 +18,20 @@ internal class ReflectionCacheDictionary<TKey, TValue> : ConcurrentDictionary<TK
     /// <summary>
     /// Initializes a new instance of the <see cref="ReflectionCacheDictionary{TKey, TValue}"/> class.
     /// </summary>
-    public ReflectionCacheDictionary()
+    /// <param name="doNotAutoRegister">If set, the dictionary will not auto-register with <see cref="ReflectionCache"/>.</param>
+    public ReflectionCacheDictionary(bool doNotAutoRegister = false)
     {
-        ReflectionCache.Register(CacheClear);
+        if (!doNotAutoRegister)
+        {
+            ReflectionCache.Register(CacheClear);
+        }
     }
 
-    private void CacheClear(ReflectionCacheShouldClearPredicate? predicate)
+    /// <summary>
+    /// Clear this cache.
+    /// </summary>
+    /// <param name="predicate">An optional predicate to filter with.</param>
+    public void CacheClear(ReflectionCacheShouldClearPredicate? predicate)
     {
         if (predicate is null)
         {

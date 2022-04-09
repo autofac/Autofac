@@ -38,14 +38,25 @@ public static class ReflectionCache
     /// </summary>
     /// <param name="registrationCallback">The callback to invoke.</param>
     /// <remarks>
-    /// The owner of the callback should only ever be a static readonly field,
-    /// since there is no way to un-register a callback.
+    /// The owner of the callback should only ever be a static readonly field.
     /// </remarks>
     public static void Register(ReflectionCacheRegistrationCallback registrationCallback)
     {
         lock (_cacheRegistrations)
         {
             _cacheRegistrations.Add(registrationCallback);
+        }
+    }
+
+    /// <summary>
+    /// Unregister a callback previously registered using <see cref="Register"/>.
+    /// </summary>
+    /// <param name="registrationCallback">The callback to unregister.</param>
+    public static void Unregister(ReflectionCacheRegistrationCallback registrationCallback)
+    {
+        lock (_cacheRegistrations)
+        {
+            _cacheRegistrations.Remove(registrationCallback);
         }
     }
 
