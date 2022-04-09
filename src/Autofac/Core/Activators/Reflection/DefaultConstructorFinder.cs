@@ -3,6 +3,7 @@
 
 using System.Collections.Concurrent;
 using System.Reflection;
+using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -13,7 +14,7 @@ public class DefaultConstructorFinder : IConstructorFinder
 {
     private readonly Func<Type, ConstructorInfo[]> _finder;
 
-    private static readonly ConcurrentDictionary<Type, ConstructorInfo[]> DefaultPublicConstructorsCache = new();
+    private static readonly ReflectionCacheDictionary<Type, ConstructorInfo[]> DefaultPublicConstructorsCache = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultConstructorFinder" /> class.

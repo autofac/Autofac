@@ -17,9 +17,9 @@ internal static class AutowiringPropertyInjector
     /// </summary>
     internal const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
 
-    private static readonly ConcurrentDictionary<PropertyInfo, Action<object, object?>> PropertySetters = new();
+    private static readonly ReflectionCacheDictionary<PropertyInfo, Action<object, object?>> PropertySetters = new();
 
-    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> InjectableProperties = new();
+    private static readonly ReflectionCacheDictionary<Type, PropertyInfo[]> InjectableProperties = new();
 
     private static readonly MethodInfo CallPropertySetterOpenGenericMethod =
         typeof(AutowiringPropertyInjector).GetDeclaredMethod(nameof(CallPropertySetter));
