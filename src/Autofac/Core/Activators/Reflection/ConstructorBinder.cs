@@ -36,7 +36,7 @@ public class ConstructorBinder
         if (_illegalParameter is null)
         {
             // Build the invoker.
-            _factory = FactoryCache.GetOrAdd(constructorInfo, FactoryBuilder);
+            _factory = FactoryCache.GetOrAdd(Constructor, FactoryBuilder);
         }
     }
 
@@ -111,6 +111,11 @@ public class ConstructorBinder
         }
 
         return BoundConstructor.ForBindSuccess(this, _factory!, valueRetrievers);
+    }
+
+    internal Func<object?[], object> GetConstructorInvoker()
+    {
+        return FactoryCache.GetOrAdd(Constructor, FactoryBuilder);
     }
 
     private static Func<object?[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)

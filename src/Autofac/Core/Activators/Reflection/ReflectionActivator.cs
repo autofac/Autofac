@@ -3,7 +3,9 @@
 
 using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
+using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Activators.Reflection;
@@ -91,6 +93,20 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             binders[idx] = new ConstructorBinder(availableConstructors[idx]);
         }
 
+        if (binders.Length == 1)
+        {
+            UseSingleConstructorActivation(pipelineBuilder, binders[0]);
+            return;
+        }
+        else if (ConstructorSelector is MatchingSignatureConstructorSelector matchingSelector)
+        {
+            var matchedConstructor = matchingSelector.SelectConstructorBinding(binders);
+
+            UseSingleConstructorActivation(pipelineBuilder, matchedConstructor);
+
+            return;
+        }
+
         _constructorBinders = binders;
 
         pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
@@ -99,6 +115,52 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
             next(ctxt);
         });
+    }
+
+    private void UseSingleConstructorActivation(IResolvePipelineBuilder pipelineBuilder, ConstructorBinder singleConstructor)
+    {
+        if (singleConstructor.ParameterCount == 0)
+        {
+            // If there are no arguments to the constructor, bypass all argument binding and pre-bind the constructor.
+            var boundConstructor = BoundConstructor.ForBindSuccess(
+                singleConstructor,
+                singleConstructor.GetConstructorInvoker(),
+                Array.Empty<Func<object?>>());
+
+            // Fast-path to just create an instance.
+            pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
+            {
+                var instance = boundConstructor.Instantiate();
+
+                InjectProperties(instance, ctxt);
+
+                ctxt.Instance = instance;
+
+                next(ctxt);
+            });
+        }
+        else
+        {
+            pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
+            {
+                var prioritisedParameters = GetAllParameters(ctxt.Parameters);
+
+                var bound = singleConstructor.Bind(prioritisedParameters, ctxt);
+
+                if (!bound.CanInstantiate)
+                {
+                    throw new DependencyResolutionException(GetBindingFailureMessage(new[] { bound }));
+                }
+
+                var instance = bound.Instantiate();
+
+                InjectProperties(instance, ctxt);
+
+                ctxt.Instance = instance;
+
+                next(ctxt);
+            });
+        }
     }
 
     /// <summary>
@@ -147,7 +209,8 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     private BoundConstructor[] GetAllBindings(ConstructorBinder[] availableConstructors, IComponentContext context, IEnumerable<Parameter> parameters)
     {
         // Most often, there will be no `parameters` and/or no `_defaultParameters`; in both of those cases we can avoid allocating.
-        var prioritisedParameters = parameters.Any() ? EnumerateParameters(parameters) : _defaultParameters;
+        // Do a reference compare with the NoParameters constant; faster than an Any() check for the common case.
+        var prioritisedParameters = GetAllParameters(parameters);
 
         var boundConstructors = new BoundConstructor[availableConstructors.Length];
         var validBindings = availableConstructors.Length;
@@ -170,6 +233,21 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
 
         return boundConstructors;
+    }
+
+    private IEnumerable<Parameter> GetAllParameters(IEnumerable<Parameter> parameters)
+    {
+        if (ReferenceEquals(ResolveRequest.NoParameters, parameters))
+        {
+            return _defaultParameters;
+        }
+
+        if (parameters.Any())
+        {
+            return EnumerateParameters(parameters);
+        }
+
+        return _defaultParameters;
     }
 
     private IEnumerable<Parameter> EnumerateParameters(IEnumerable<Parameter> parameters)

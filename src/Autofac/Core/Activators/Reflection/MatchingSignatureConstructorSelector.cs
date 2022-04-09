@@ -77,4 +77,49 @@ public class MatchingSignatureConstructorSelector : IConstructorSelector
 
         throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, MatchingSignatureConstructorSelectorResources.TooManyConstructorsMatch, signature));
     }
+
+    /// <summary>
+    /// Selects the best constructor from the available constructor bindings.
+    /// </summary>
+    /// <param name="constructorBindings">Available constructors.</param>
+    /// <returns>The best constructor.</returns>
+    public ConstructorBinder SelectConstructorBinding(ConstructorBinder[] constructorBindings)
+    {
+        if (constructorBindings == null)
+        {
+            throw new ArgumentNullException(nameof(constructorBindings));
+        }
+
+        var matchingCount = 0;
+        ConstructorBinder? chosen = null;
+
+        for (var idx = 0; idx < constructorBindings.Length; idx++)
+        {
+            var binding = constructorBindings[idx];
+
+            // Concievably could store the set of parameter types in the binder as well, but
+            // that's yet more memory up-front, for a less used constructor selector.
+            if (binding.Parameters.Select(p => p.ParameterType).SequenceEqual(_signature))
+            {
+                chosen = binding;
+                matchingCount++;
+            }
+        }
+
+        if (matchingCount == 1)
+        {
+            return chosen!;
+        }
+
+        // DeclaringType will be non-null for constructors.
+        var targetTypeName = constructorBindings[0].Constructor.DeclaringType!.Name;
+        var signature = string.Join(", ", _signature.Select(t => t.Name).ToArray());
+
+        if (matchingCount == 0)
+        {
+            throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, MatchingSignatureConstructorSelectorResources.RequiredConstructorNotAvailable, targetTypeName, signature));
+        }
+
+        throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, MatchingSignatureConstructorSelectorResources.TooManyConstructorsMatch, signature));
+    }
 }
