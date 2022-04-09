@@ -113,6 +113,9 @@ public class ConstructorBinder
         return BoundConstructor.ForBindSuccess(this, _factory!, valueRetrievers);
     }
 
+    /// <summary>
+    /// Get the constructor factory delegate.
+    /// </summary>
     internal Func<object?[], object> GetConstructorInvoker()
     {
         return FactoryCache.GetOrAdd(Constructor, FactoryBuilder);
