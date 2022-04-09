@@ -130,6 +130,8 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             // Fast-path to just create an instance.
             pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
             {
+                CheckNotDisposed();
+
                 var instance = boundConstructor.Instantiate();
 
                 InjectProperties(instance, ctxt);
@@ -143,6 +145,8 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         {
             pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
             {
+                CheckNotDisposed();
+
                 var prioritisedParameters = GetAllParameters(ctxt.Parameters);
 
                 var bound = singleConstructor.Bind(prioritisedParameters, ctxt);
