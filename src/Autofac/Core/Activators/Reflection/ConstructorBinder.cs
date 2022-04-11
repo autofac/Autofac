@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection;
+using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -14,7 +14,7 @@ public class ConstructorBinder
 {
     private static readonly Func<ConstructorInfo, Func<object?[], object>> FactoryBuilder = GetConstructorInvoker;
 
-    private static readonly ConcurrentDictionary<ConstructorInfo, Func<object?[], object>> FactoryCache = new();
+    private static readonly ReflectionCacheDictionary<ConstructorInfo, Func<object?[], object>> FactoryCache = new();
 
     private readonly ParameterInfo[] _constructorArgs;
     private readonly Func<object?[], object>? _factory;
