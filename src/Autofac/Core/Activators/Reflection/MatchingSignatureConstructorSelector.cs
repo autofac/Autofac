@@ -8,7 +8,7 @@ namespace Autofac.Core.Activators.Reflection;
 /// <summary>
 /// Selects a constructor based on its signature.
 /// </summary>
-public class MatchingSignatureConstructorSelector : IConstructorSelector
+public class MatchingSignatureConstructorSelector : IConstructorSelector, IConstructorSelectorWithEarlyBinding
 {
     private readonly Type[] _signature;
 
@@ -81,21 +81,21 @@ public class MatchingSignatureConstructorSelector : IConstructorSelector
     /// <summary>
     /// Selects the best constructor from the available constructor bindings.
     /// </summary>
-    /// <param name="constructorBindings">Available constructors.</param>
+    /// <param name="constructorBinders">Available constructors.</param>
     /// <returns>The best constructor.</returns>
-    public ConstructorBinder SelectConstructorBinding(ConstructorBinder[] constructorBindings)
+    public ConstructorBinder SelectConstructorBinder(ConstructorBinder[] constructorBinders)
     {
-        if (constructorBindings == null)
+        if (constructorBinders == null)
         {
-            throw new ArgumentNullException(nameof(constructorBindings));
+            throw new ArgumentNullException(nameof(constructorBinders));
         }
 
         var matchingCount = 0;
         ConstructorBinder? chosen = null;
 
-        for (var idx = 0; idx < constructorBindings.Length; idx++)
+        for (var idx = 0; idx < constructorBinders.Length; idx++)
         {
-            var binding = constructorBindings[idx];
+            var binding = constructorBinders[idx];
 
             // Concievably could store the set of parameter types in the binder as well, but
             // that's yet more memory up-front, for a less used constructor selector.
@@ -112,7 +112,7 @@ public class MatchingSignatureConstructorSelector : IConstructorSelector
         }
 
         // DeclaringType will be non-null for constructors.
-        var targetTypeName = constructorBindings[0].Constructor.DeclaringType!.Name;
+        var targetTypeName = constructorBinders[0].Constructor.DeclaringType!.Name;
         var signature = string.Join(", ", _signature.Select(t => t.Name).ToArray());
 
         if (matchingCount == 0)

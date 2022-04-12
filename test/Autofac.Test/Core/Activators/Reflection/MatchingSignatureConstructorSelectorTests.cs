@@ -67,7 +67,7 @@ public class MatchingSignatureConstructorSelectorTests
     public void SelectsConstructorInEarlyBinding()
     {
         var target0 = new MatchingSignatureConstructorSelector();
-        var c0 = target0.SelectConstructorBinding(GetConstructorBinders());
+        var c0 = target0.SelectConstructorBinder(GetConstructorBinders());
         Assert.Empty(c0.Constructor.GetParameters());
     }
 
@@ -75,7 +75,7 @@ public class MatchingSignatureConstructorSelectorTests
     public void SelectsConstructorWithParametersInEarlyBinding()
     {
         var target2 = new MatchingSignatureConstructorSelector(typeof(int), typeof(string));
-        var c2 = target2.SelectConstructorBinding(GetConstructorBinders());
+        var c2 = target2.SelectConstructorBinder(GetConstructorBinders());
         Assert.Equal(2, c2.Constructor.GetParameters().Length);
     }
 
@@ -85,7 +85,7 @@ public class MatchingSignatureConstructorSelectorTests
         var target = new MatchingSignatureConstructorSelector(typeof(string));
 
         var dx = Assert.Throws<DependencyResolutionException>(() =>
-            target.SelectConstructorBinding(GetConstructorBinders()));
+            target.SelectConstructorBinder(GetConstructorBinders()));
 
         Assert.Contains(typeof(FourConstructors).Name, dx.Message);
         Assert.Contains(typeof(string).Name, dx.Message);
