@@ -36,7 +36,7 @@ public class ConstructorBinder
         if (_illegalParameter is null)
         {
             // Build the invoker.
-            _factory = FactoryCache.GetOrAdd(constructorInfo, FactoryBuilder);
+            _factory = FactoryCache.GetOrAdd(Constructor, FactoryBuilder);
         }
     }
 
@@ -111,6 +111,15 @@ public class ConstructorBinder
         }
 
         return BoundConstructor.ForBindSuccess(this, _factory!, valueRetrievers);
+    }
+
+    /// <summary>
+    /// Get the constructor factory delegate.
+    /// </summary>
+    /// <remarks>Will return null if the constructor contains an invalid parameter.</remarks>
+    internal Func<object?[], object>? GetConstructorInvoker()
+    {
+        return _factory;
     }
 
     private static Func<object?[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)
