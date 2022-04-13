@@ -119,8 +119,6 @@ public class ConstructorBinder
     /// <remarks>Will return null if the constructor contains an invalid parameter.</remarks>
     internal Func<object?[], object>? GetConstructorInvoker()
     {
-        // Method is only used in zero-parameter constructors, so illegal parameters cannot happen.
-        // Adding the null check + throw just in case.
         return _factory;
     }
 
