@@ -77,6 +77,10 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 - [Autofac.WebApi](https://github.com/autofac/Autofac.WebApi) - Application integration for Web API.
 - [Autofac.WebApi.Owin](https://github.com/autofac/Autofac.WebApi.Owin) - OWIN support for Web API.
 
+## Sponsors
+
+Autofac is supported by AWS. Thanks for your contribution!
+
 ## Contributing / Pull Requests
 
 Refer to the [Contributor Guide](https://github.com/autofac/.github/blob/master/CONTRIBUTING.md) for setting up and building Autofac source.
