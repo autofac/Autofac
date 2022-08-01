@@ -79,18 +79,24 @@ public class CircularDependencyTests
     [Fact]
     public void OnDisableProactiveCircularDependencyChecks_AreDisabled()
     {
-        DefaultMiddlewareConfiguration.UnsafeDisableProactiveCircularDependencyChecks();
-        var builder = new ContainerBuilder();
-        builder.RegisterType<D>().As<ID>();
-        builder.RegisterType<A>().As<IA>();
-        builder.RegisterType<BC>().As<IB, IC>();
-        var target = builder.Build();
-        var de = Assert.Throws<DependencyResolutionException>(() => target.Resolve<ID>());
+        try
+        {
+            DefaultMiddlewareConfiguration.UnsafeDisableProactiveCircularDependencyChecks();
+            var builder = new ContainerBuilder();
+            builder.RegisterType<D>().As<ID>();
+            builder.RegisterType<A>().As<IA>();
+            builder.RegisterType<BC>().As<IB, IC>();
+            var target = builder.Build();
+            var de = Assert.Throws<DependencyResolutionException>(() => target.Resolve<ID>());
 
-        // The exception should contain a loop because we have not caught it
-        Assert.Contains("Autofac.Specification.Test.Features.CircularDependency.D -> Autofac.Specification.Test.Features.CircularDependency.A -> Autofac.Specification.Test.Features.CircularDependency.BC -> Autofac.Specification.Test.Features.CircularDependency.A", de.Message);
-        Assert.DoesNotContain("component dependency", de.Message);
-        DefaultMiddlewareConfiguration.EnableProactiveCircularDependencyChecks();
+            // The exception should contain a loop because we have not caught it
+            Assert.Contains("Autofac.Specification.Test.Features.CircularDependency.D -> Autofac.Specification.Test.Features.CircularDependency.A -> Autofac.Specification.Test.Features.CircularDependency.BC -> Autofac.Specification.Test.Features.CircularDependency.A", de.Message);
+            Assert.DoesNotContain("component dependency", de.Message);
+        }
+        finally
+        {
+            DefaultMiddlewareConfiguration.EnableProactiveCircularDependencyChecks();
+        }
     }
 
     [Fact]

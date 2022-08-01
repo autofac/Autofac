@@ -73,15 +73,14 @@ public class DeepGraphResolveBenchmark
     {
         public B(C c) { }
     }
-
-
+    
     internal class C
     {
         public C(D d) { }
     }
-
-
-    internal class D {
+    
+    internal class D
+    {
         public D(E e) { }
     }
 

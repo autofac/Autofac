@@ -13,6 +13,8 @@ public static class DefaultMiddlewareConfiguration
     /// a circular dependency may be caught after many loops and may cause undesirable
     /// side effects, however resolution performance should improve with deep resolution chains.
     /// </summary>
+    /// <remarks>Extensive testing of the application to ensure no circular
+    /// dependencies exist should be done before disabling the proactive dependency checks.</remarks>
     public static void UnsafeDisableProactiveCircularDependencyChecks()
     {
         CircularDependencyDetectorMiddleware.Default.UnsafeDisableProactiveCircularDependencyChecks();
