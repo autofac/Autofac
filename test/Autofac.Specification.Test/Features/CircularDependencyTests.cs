@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core;
+using Autofac.Core.Resolving.Middleware;
 using Autofac.Diagnostics;
 using Autofac.Specification.Test.Features.CircularDependency;
 using Xunit.Abstractions;
@@ -73,6 +74,23 @@ public class CircularDependencyTests
 
         // Make sure we're getting the detected exception, not the depth one.
         Assert.Contains("component dependency", ex.ToString());
+    }
+
+    [Fact]
+    public void OnDisableProactiveCircularDependencyChecks_AreDisabled()
+    {
+        DefaultMiddlewareConfiguration.UnsafeDisableProactiveCircularDependencyChecks();
+        var builder = new ContainerBuilder();
+        builder.RegisterType<D>().As<ID>();
+        builder.RegisterType<A>().As<IA>();
+        builder.RegisterType<BC>().As<IB, IC>();
+        var target = builder.Build();
+        var de = Assert.Throws<DependencyResolutionException>(() => target.Resolve<ID>());
+
+        // The exception should contain a loop because we have not caught it
+        Assert.Contains("Autofac.Specification.Test.Features.CircularDependency.D -> Autofac.Specification.Test.Features.CircularDependency.A -> Autofac.Specification.Test.Features.CircularDependency.BC -> Autofac.Specification.Test.Features.CircularDependency.A", de.Message);
+        Assert.DoesNotContain("component dependency", de.Message);
+        DefaultMiddlewareConfiguration.EnableProactiveCircularDependencyChecks();
     }
 
     [Fact]

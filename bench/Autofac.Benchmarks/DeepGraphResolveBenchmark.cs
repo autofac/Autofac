@@ -1,59 +1,147 @@
-﻿namespace Autofac.Benchmarks;
+﻿using Autofac.Core.Resolving.Middleware;
+
+namespace Autofac.Benchmarks;
 
 /// <summary>
-/// Tests the performance of retrieving a (reasonably) deeply-nested object graph.
+/// Tests the performance of retrieving a very deeply-nested object graph.
 /// </summary>
 public class DeepGraphResolveBenchmark
 {
     private IContainer _container;
 
-    [GlobalSetup]
+    [GlobalSetup(Target = nameof(Resolve16Deep))]
     public void Setup()
+    {
+        SetUpContainer();
+    }
+
+    [GlobalSetup(Target = nameof(Resolve16DeepWithCircularDependencyChecksDisabled))]
+    public void DisableCircularDependencyChecks()
+    {
+        DefaultMiddlewareConfiguration.UnsafeDisableProactiveCircularDependencyChecks();
+        SetUpContainer();
+    }
+
+    private void SetUpContainer()
     {
         var builder = new ContainerBuilder();
         builder.RegisterType<A>();
-        builder.RegisterType<B1>();
-        builder.RegisterType<B2>();
-        builder.RegisterType<C1>();
-        builder.RegisterType<C2>();
-        builder.RegisterType<D1>();
-        builder.RegisterType<D2>();
+        builder.RegisterType<B>();
+        builder.RegisterType<C>();
+        builder.RegisterType<D>();
+        builder.RegisterType<E>();
+        builder.RegisterType<F>();
+        builder.RegisterType<G>();
+        builder.RegisterType<H>();
+        builder.RegisterType<I>();
+        builder.RegisterType<J>();
+        builder.RegisterType<K>();
+        builder.RegisterType<L>();
+        builder.RegisterType<M>();
+        builder.RegisterType<N>();
+        builder.RegisterType<O>();
+        builder.RegisterType<P>();
         _container = builder.Build();
     }
 
-    [Benchmark]
-    public void Resolve()
+    [GlobalCleanup(Target = nameof(Resolve16DeepWithCircularDependencyChecksDisabled))]
+    public void EnableCircularDependencyChecks()
+    {
+        DefaultMiddlewareConfiguration.EnableProactiveCircularDependencyChecks();
+    }
+
+    [Benchmark(Baseline = true )]
+    public void Resolve16Deep()
     {
         var instance = _container.Resolve<A>();
         GC.KeepAlive(instance);
     }
 
+    [Benchmark]
+    public void Resolve16DeepWithCircularDependencyChecksDisabled()
+    {
+        var instance = _container.Resolve<A>();
+        GC.KeepAlive(instance);
+    }
+    
     internal class A
     {
-        public A(B1 b1, B2 b2) { }
+        public A(B b) { }
     }
 
-    internal class B1
+    internal class B
     {
-        public B1(B2 b2, C1 c1, C2 c2) { }
+        public B(C c) { }
     }
 
-    internal class B2
+
+    internal class C
     {
-        public B2(C1 c1, C2 c2) { }
+        public C(D d) { }
     }
 
-    internal class C1
+
+    internal class D {
+        public D(E e) { }
+    }
+
+    internal class E
     {
-        public C1(C2 c2, D1 d1, D2 d2) { }
+        public E(F f) { }
     }
 
-    internal class C2
+    internal class F
     {
-        public C2(D1 d1, D2 d2) { }
+        public F(G g) { }
     }
 
-    internal class D1 { }
+    internal class G
+    {
+        public G(H h) { }
+    }
 
-    internal class D2 { }
+    internal class H
+    {
+        public H(I i) { }
+    }
+
+    internal class I
+    {
+        public I(J j) { }
+    }
+
+    internal class J
+    {
+        public J(K k) { }
+    }
+
+    internal class K
+    {
+        public K(L l) { }
+    }
+
+    internal class L
+    {
+        public L(M m) { }
+    }
+
+    internal class M
+    {
+        public M(N n) { }
+    }
+
+    internal class N
+    {
+        public N(O o) { }
+    }
+
+    internal class O
+    {
+        public O(P p) { }
+    }
+
+    internal class P
+    {
+    }
+
 }

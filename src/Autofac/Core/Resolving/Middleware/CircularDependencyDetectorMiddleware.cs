@@ -17,6 +17,8 @@ internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
     /// </summary>
     public const int DefaultMaxResolveDepth = 50;
 
+    private bool _doCircularDependencyChecks = true;
+
     /// <summary>
     /// Gets the default instance of <see cref="CircularDependencyDetectorMiddleware"/>.
     /// </summary>
@@ -31,6 +33,24 @@ internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
     public CircularDependencyDetectorMiddleware(int maxResolveDepth)
     {
         _maxResolveDepth = maxResolveDepth;
+    }
+
+    /// <summary>
+    /// Universally disables the circular dependency check on every resolution. Instead,
+    /// a circular dependency may be caught after many loops and may cause undesirable
+    /// side effects, however improving performance for very deep resolution chains.
+    /// </summary>
+    public void UnsafeDisableProactiveCircularDependencyChecks()
+    {
+        _doCircularDependencyChecks = false;
+    }
+
+    /// <summary>
+    /// Enable the default circular dependency checks.
+    /// </summary>
+    public void EnableProactiveCircularDependencyChecks()
+    {
+        _doCircularDependencyChecks = true;
     }
 
     /// <inheritdoc/>
@@ -48,24 +68,9 @@ internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
         }
 
         var activationDepth = context.Operation.RequestDepth;
-        var requestStack = dependencyTrackingResolveOperation.RequestStack;
+
         if (activationDepth > _maxResolveDepth)
         {
-            var registration = context.Registration;
-
-            foreach (var requestEntry in requestStack)
-            {
-                if (requestEntry.Registration == registration)
-                {
-                    string dependencyGraph = CreateDependencyGraphTo(requestStack);
-                    throw new CircularDependencyException(
-                        string.Format(
-                        CultureInfo.CurrentCulture,
-                        CircularDependencyDetectorMessages.CircularDependency,
-                        dependencyGraph),
-                        string.Format(CultureInfo.CurrentCulture, dependencyGraph));
-                }
-            }
 #if NETSTANDARD2_1
             // In .NET Standard 2.1 we will try and keep going until we run out of stack space.
             if (!RuntimeHelpers.TryEnsureSufficientExecutionStack())
@@ -76,6 +81,26 @@ internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
             // Pre .NET Standard 2.1 we just end at 50.
             throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, CircularDependencyDetectorMessages.MaxDepthExceeded, context.Service));
 #endif
+        }
+
+        var requestStack = dependencyTrackingResolveOperation.RequestStack;
+
+        // The first one is the current resolve request.
+        // Do our circular dependency check.
+        if (_doCircularDependencyChecks && activationDepth > 1)
+        {
+            var registration = context.Registration;
+
+            foreach (var requestEntry in requestStack)
+            {
+                if (requestEntry.Registration == registration)
+                {
+                    throw new DependencyResolutionException(string.Format(
+                        CultureInfo.CurrentCulture,
+                        CircularDependencyDetectorMessages.CircularDependency,
+                        CreateDependencyGraphTo(registration, requestStack)));
+                }
+            }
         }
 
         requestStack.Push(context);
@@ -94,27 +119,22 @@ internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
     /// <inheritdoc/>
     public override string ToString() => nameof(CircularDependencyDetectorMiddleware);
 
-    private static string CreateDependencyGraphTo(IEnumerable<ResolveRequestContext> requestStack)
+    private static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<ResolveRequestContext> requestStack)
     {
+        if (registration == null)
+        {
+            throw new ArgumentNullException(nameof(registration));
+        }
+
         if (requestStack == null)
         {
             throw new ArgumentNullException(nameof(requestStack));
         }
 
-        var resolveLookup = new HashSet<IComponentRegistration>();
-        var foundFirstLoop = false;
-        var chain = requestStack.Reverse().TakeWhile(r =>
-        {
-            if (!foundFirstLoop && !resolveLookup.Add(r.Registration))
-            {
-                foundFirstLoop = true;
-                return true;
-            }
+        var dependencyGraph = Display(registration);
 
-            return !foundFirstLoop;
-        }).Select(a => a.Registration);
-
-        return chain.Aggregate("", (current, requestor) => $"{current} -> {Display(requestor)}");
+        return requestStack.Select(a => a.Registration)
+            .Aggregate(dependencyGraph, (current, requestor) => Display(requestor) + " -> " + current);
     }
 
     private static string Display(IComponentRegistration registration)
