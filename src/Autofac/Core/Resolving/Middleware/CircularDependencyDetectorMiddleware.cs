@@ -86,7 +86,7 @@ internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
         var requestStack = dependencyTrackingResolveOperation.RequestStack;
 
         // The first one is the current resolve request.
-        // Do our circular dependency check.
+        // Do our circular dependency check if it is enabled.
         if (_doCircularDependencyChecks && activationDepth > 1)
         {
             var registration = context.Registration;

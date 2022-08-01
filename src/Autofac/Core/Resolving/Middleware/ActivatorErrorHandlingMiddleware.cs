@@ -56,10 +56,7 @@ internal class ActivatorErrorHandlingMiddleware : IResolveMiddleware
         if (exception.Data.Contains(ActivatorChainExceptionData) &&
             exception.Data[ActivatorChainExceptionData] is string innerChain)
         {
-            activatorChain = exception.InnerException is CircularDependencyException ?
-            ((CircularDependencyException)exception.InnerException).DependencyGraph
-            : activatorChain + " -> " + innerChain;
-            innerException = exception.InnerException;
+            activatorChain = activatorChain + " -> " + innerChain;
         }
 
         var result = new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ErrorDuringActivation, activatorChain), innerException);
