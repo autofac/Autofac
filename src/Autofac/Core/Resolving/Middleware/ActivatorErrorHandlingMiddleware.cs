@@ -57,6 +57,7 @@ internal class ActivatorErrorHandlingMiddleware : IResolveMiddleware
             exception.Data[ActivatorChainExceptionData] is string innerChain)
         {
             activatorChain = activatorChain + " -> " + innerChain;
+            innerException = exception.InnerException;
         }
 
         var result = new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ErrorDuringActivation, activatorChain), innerException);
