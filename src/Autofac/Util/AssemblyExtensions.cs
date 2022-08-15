@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Collections.Concurrent;
 using System.Reflection;
 
 namespace Autofac.Util;
@@ -21,7 +22,7 @@ public static class AssemblyExtensions
     /// <exception cref="System.ArgumentNullException">
     /// Thrown if <paramref name="assembly" /> is <see langword="null" />.
     /// </exception>
-    public static IEnumerable<Type> GetLoadableTypes(this Assembly assembly)
+    private static IEnumerable<Type> GetLoadableTypes(this Assembly assembly)
     {
         // Algorithm from StackOverflow answer here:
         // https://stackoverflow.com/questions/7889228/how-to-prevent-reflectiontypeloadexception-when-calling-assembly-gettypes
@@ -39,4 +40,16 @@ public static class AssemblyExtensions
             return ex.Types.Where(t => t is not null)!;
         }
     }
+
+    private static readonly ConcurrentDictionary<Assembly, IEnumerable<Type>> PossibleAssemblyTypes = new();
+
+    /// <summary>
+    /// A first filter for possible assembly types to register.
+    /// </summary>
+    /// <param name="assembly">The <see cref="System.Reflection.Assembly"/> from which to load types.</param>
+    public static IEnumerable<Type> PossibleScanTypes(this Assembly assembly) =>
+        PossibleAssemblyTypes.GetOrAdd(assembly, ass =>
+            ass.GetLoadableTypes().Where(t => t.IsClass &&
+                                              !t.IsAbstract &&
+                                              !t.IsDelegate()).ToArray());
 }

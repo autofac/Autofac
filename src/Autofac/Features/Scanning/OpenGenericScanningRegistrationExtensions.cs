@@ -92,7 +92,7 @@ internal static partial class ScanningRegistrationExtensions
             rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
                 t.IsOpenGenericTypeOf(swt.ServiceType)));
 
-        var types = assemblies.SelectMany(a => a.GetLoadableTypes())
+        var types = assemblies.SelectMany(a => a.PossibleScanTypes())
             .Where(t => t.IsGenericTypeDefinition)
             .CanBeRegistered(rb.ActivatorData);
 
@@ -141,10 +141,7 @@ internal static partial class ScanningRegistrationExtensions
         // non-public types here. Folks use assembly scanning on their
         // own stuff, so encapsulation is a tricky thing to manage.
         // If people want only public types, a LINQ Where clause can be used.
-        return types.Where(t => t.IsClass &&
-                                !t.IsAbstract &&
-                                !t.IsDelegate() &&
-                                activatorData.Filters.All(p => p(t)) &&
+        return types.Where(t => activatorData.Filters.All(p => p(t)) &&
                                 !t.IsCompilerGenerated()); // run iscompilergenerated check last due to perf. See AssemblyScanningPerformanceTests.MeasurePerformance.
     }
 

@@ -17,7 +17,7 @@ public class AssemblyScanningPerformanceTests
     public void MeasurePerformance()
     {
         var builder = new ContainerBuilder();
-        for (var i = 0; i < 1000; i++)
+        for (var i = 0; i < 10_000; i++)
         {
             // Just to simulate a lot of "scanning" with few (in this case zero) "hits"
             builder.RegisterAssemblyTypes(GetType().Assembly).Where(x => false);
@@ -26,7 +26,7 @@ public class AssemblyScanningPerformanceTests
         var stopwatch = Stopwatch.StartNew();
         builder.Build().Dispose();
 
-        // After fix drops from ~500ms to ~100ms
+        // Should take no more than ~500ms
         _output.WriteLine(stopwatch.Elapsed.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));
     }
 }
