@@ -3,7 +3,7 @@
 
 using System.Collections.Concurrent;
 using System.Reflection;
-using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -12,9 +12,7 @@ namespace Autofac.Core.Activators.Reflection;
 /// </summary>
 public class DefaultConstructorFinder : IConstructorFinder
 {
-    private readonly Func<Type, ConstructorInfo[]> _finder;
-
-    private static readonly ReflectionCacheDictionary<Type, ConstructorInfo[]> DefaultPublicConstructorsCache = new();
+    private readonly Func<Type, IReflectionCache, ConstructorInfo[]> _finder;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultConstructorFinder" /> class.
@@ -31,7 +29,7 @@ public class DefaultConstructorFinder : IConstructorFinder
     /// Initializes a new instance of the <see cref="DefaultConstructorFinder" /> class.
     /// </summary>
     /// <param name="finder">The finder function.</param>
-    public DefaultConstructorFinder(Func<Type, ConstructorInfo[]> finder)
+    public DefaultConstructorFinder(Func<Type, IReflectionCache, ConstructorInfo[]> finder)
     {
         _finder = finder ?? throw new ArgumentNullException(nameof(finder));
     }
@@ -41,14 +39,15 @@ public class DefaultConstructorFinder : IConstructorFinder
     /// </summary>
     /// <param name="targetType">Type to search for constructors.</param>
     /// <returns>Suitable constructors.</returns>
-    public ConstructorInfo[] FindConstructors(Type targetType)
+    public ConstructorInfo[] FindConstructors(Type targetType, IReflectionCache reflectionCache)
     {
-        return _finder(targetType);
+        return _finder(targetType, reflectionCache);
     }
 
-    private static ConstructorInfo[] GetDefaultPublicConstructors(Type type)
+    private static ConstructorInfo[] GetDefaultPublicConstructors(Type type, IReflectionCache reflectionCache)
     {
-        var retval = DefaultPublicConstructorsCache.GetOrAdd(type, t => t.GetDeclaredPublicConstructors());
+        var retval = reflectionCache.Internal.DefaultPublicConstructors
+            .GetOrAdd(type, t => t.GetDeclaredPublicConstructors());
 
         if (retval.Length == 0)
         {

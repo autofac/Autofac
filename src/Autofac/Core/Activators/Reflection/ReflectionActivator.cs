@@ -88,7 +88,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         for (var idx = 0; idx < availableConstructors.Length; idx++)
         {
-            binders[idx] = new ConstructorBinder(availableConstructors[idx]);
+            binders[idx] = new ConstructorBinder(availableConstructors[idx], componentRegistryServices.ReflectionCache);
         }
 
         _constructorBinders = binders;

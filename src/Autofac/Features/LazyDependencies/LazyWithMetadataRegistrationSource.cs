@@ -7,6 +7,7 @@ using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Metadata;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Features.LazyDependencies;
 
@@ -23,7 +24,12 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 
     private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo);
 
-    private readonly ConcurrentDictionary<(Type ValueType, Type MetaType), RegistrationCreator> _methodCache = new();
+    private readonly IReflectionCacheAccessor _reflectionCacheAccessor;
+
+    public LazyWithMetadataRegistrationSource(IReflectionCacheAccessor reflectionCacheAccessor)
+    {
+        _reflectionCacheAccessor = reflectionCacheAccessor;
+    }
 
     /// <inheritdoc/>
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
@@ -34,7 +40,7 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
         }
 
         var lazyType = typeof(Lazy<,>);
-        if (service is not IServiceWithType swt || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType))
+        if (service is not IServiceWithType swt || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType, _reflectionCacheAccessor.ReflectionCache))
         {
             return Enumerable.Empty<IComponentRegistration>();
         }
@@ -50,9 +56,13 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 
         var valueService = swt.ChangeType(valueType);
 
-        var registrationCreator = _methodCache.GetOrAdd((valueType, metaType), types =>
+        // Use the non-internal form here because the dictionary value is a type internal to
+        // this source.
+        var methodCache = _reflectionCacheAccessor.ReflectionCache.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>("_lazyWithMetadataMethods");
+
+        var registrationCreator = methodCache.GetOrAdd((valueType, metaType), types =>
         {
-            return CreateLazyRegistrationMethod.MakeGenericMethod(types.ValueType, types.MetaType).CreateDelegate<RegistrationCreator>(null);
+            return CreateLazyRegistrationMethod.MakeGenericMethod(types.Item1, types.Item2).CreateDelegate<RegistrationCreator>(null);
         });
 
         return registrationAccessor(valueService)

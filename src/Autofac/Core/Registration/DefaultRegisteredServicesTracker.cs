@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Core.Registration;
 
@@ -36,6 +37,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
 
     private Dictionary<Service, ServiceRegistrationInfo>? _ephemeralServiceInfo;
     private bool _trackerPopulationComplete;
+    private IReflectionCache? _reflectionCache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker"/> class.
@@ -43,6 +45,18 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     public DefaultRegisteredServicesTracker()
     {
         _registrationAccessor = ServiceRegistrationsFor;
+    }
+
+    public DefaultRegisteredServicesTracker(IReflectionCache reflectionCache)
+        : this()
+    {
+        _reflectionCache = reflectionCache;
+    }
+
+    public IReflectionCache ReflectionCache
+    {
+        get => _reflectionCache ??= DefaultReflectionCache.Shared;
+        set => _reflectionCache = value ?? throw new ArgumentNullException(nameof(value));
     }
 
     /// <summary>

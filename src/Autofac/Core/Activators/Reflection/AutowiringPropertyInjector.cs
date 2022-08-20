@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -16,10 +17,6 @@ internal static class AutowiringPropertyInjector
     /// Name of the parameter containing the instance type provided when resolving an injected service.
     /// </summary>
     internal const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
-
-    private static readonly ReflectionCacheDictionary<PropertyInfo, Action<object, object?>> PropertySetters = new();
-
-    private static readonly ReflectionCacheDictionary<Type, PropertyInfo[]> InjectableProperties = new();
 
     private static readonly MethodInfo CallPropertySetterOpenGenericMethod =
         typeof(AutowiringPropertyInjector).GetDeclaredMethod(nameof(CallPropertySetter));
@@ -55,10 +52,14 @@ internal static class AutowiringPropertyInjector
 
         var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
 
-        var instanceType = instance.GetType();
-        var injectableProperties = InjectableProperties.GetOrAdd(instanceType, type => GetInjectableProperties(type).ToArray());
+        var reflectionCache = context.GetReflectionCache();
 
-        for (var index = 0; index < injectableProperties.Length; index++)
+        var injectablePropertiesCache = reflectionCache.Internal.AutowiringInjectableProperties;
+
+        var instanceType = instance.GetType();
+        var injectableProperties = injectablePropertiesCache.GetOrAdd(instanceType, type => GetInjectableProperties(type, reflectionCache).ToList());
+
+        for (var index = 0; index < injectableProperties.Count; index++)
         {
             var property = injectableProperties[index];
 
@@ -78,7 +79,7 @@ internal static class AutowiringPropertyInjector
                 !(p is NamedParameter n && n.Name.Equals("value", StringComparison.Ordinal)));
             if (parameter != null)
             {
-                var setter = PropertySetters.GetOrAdd(property, MakeFastPropertySetter);
+                var setter = reflectionCache.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
                 setter(instance, valueProvider!());
                 continue;
             }
@@ -87,13 +88,13 @@ internal static class AutowiringPropertyInjector
             var instanceTypeParameter = new NamedParameter(InstanceTypeNamedParameter, instanceType);
             if (context.TryResolveService(propertyService, new Parameter[] { instanceTypeParameter }, out var propertyValue))
             {
-                var setter = PropertySetters.GetOrAdd(property, MakeFastPropertySetter);
+                var setter = reflectionCache.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
                 setter(instance, propertyValue);
             }
         }
     }
 
-    private static IEnumerable<PropertyInfo> GetInjectableProperties(Type instanceType)
+    private static IEnumerable<PropertyInfo> GetInjectableProperties(Type instanceType, IReflectionCache reflectionCache)
     {
         foreach (var property in instanceType.GetRuntimeProperties())
         {
@@ -122,7 +123,7 @@ internal static class AutowiringPropertyInjector
                 continue;
             }
 
-            if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GenericTypeArguments[0].IsValueType)
+            if (propertyType.IsGenericEnumerableInterfaceType(reflectionCache) && propertyType.GenericTypeArguments[0].IsValueType)
             {
                 continue;
             }

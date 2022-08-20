@@ -3,6 +3,7 @@
 
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Core.Registration;
 
@@ -39,6 +40,8 @@ internal class ComponentRegistry : Disposable, IComponentRegistry
     /// context across registrations.
     /// </value>
     public IDictionary<string, object?> Properties { get; }
+
+    public IReflectionCache ReflectionCache => _registeredServicesTracker.ReflectionCache;
 
     /// <summary>
     /// Gets the registered components.

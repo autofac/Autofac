@@ -74,7 +74,7 @@ internal static partial class ScanningRegistrationExtensions
 
     private static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
     {
-        ScanTypes(assemblies.SelectMany(a => a.GetLoadableTypes()), cr, rb);
+        ScanTypes(assemblies.SelectMany(a => a.GetPermittedTypesForAssemblyScanning(cr.ReflectionCache)), cr, rb);
     }
 
     private static void ScanTypes(IEnumerable<Type> types, IComponentRegistryBuilder cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)

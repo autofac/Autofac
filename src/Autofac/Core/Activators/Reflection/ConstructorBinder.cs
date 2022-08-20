@@ -3,7 +3,7 @@
 
 using System.Linq.Expressions;
 using System.Reflection;
-using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -14,8 +14,6 @@ public class ConstructorBinder
 {
     private static readonly Func<ConstructorInfo, Func<object?[], object>> FactoryBuilder = GetConstructorInvoker;
 
-    private static readonly ReflectionCacheDictionary<ConstructorInfo, Func<object?[], object>> FactoryCache = new();
-
     private readonly ParameterInfo[] _constructorArgs;
     private readonly Func<object?[], object>? _factory;
     private readonly ParameterInfo? _illegalParameter;
@@ -24,8 +22,13 @@ public class ConstructorBinder
     /// Initializes a new instance of the <see cref="ConstructorBinder"/> class.
     /// </summary>
     /// <param name="constructorInfo">The constructor.</param>
-    public ConstructorBinder(ConstructorInfo constructorInfo)
+    public ConstructorBinder(ConstructorInfo constructorInfo, IReflectionCache reflectionCache)
     {
+        if (reflectionCache is null)
+        {
+            throw new ArgumentNullException(nameof(reflectionCache));
+        }
+
         Constructor = constructorInfo ?? throw new ArgumentNullException(nameof(constructorInfo));
         _constructorArgs = constructorInfo.GetParameters();
 
@@ -35,8 +38,10 @@ public class ConstructorBinder
 
         if (_illegalParameter is null)
         {
+            var factoryCache = reflectionCache.Internal.ConstructorBinderFactory;
+
             // Build the invoker.
-            _factory = FactoryCache.GetOrAdd(constructorInfo, FactoryBuilder);
+            _factory = factoryCache.GetOrAdd(constructorInfo, FactoryBuilder);
         }
     }
 

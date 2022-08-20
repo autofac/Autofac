@@ -1,12 +1,19 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Util.Cache;
+
 namespace Autofac.Core;
+
+public interface IReflectionCacheAccessor
+{
+    IReflectionCache ReflectionCache { get; }
+}
 
 /// <summary>
 /// Defines an interface for accessing the set of services available during pipeline build time.
 /// </summary>
-public interface IComponentRegistryServices
+public interface IComponentRegistryServices : IReflectionCacheAccessor
 {
     /// <summary>
     /// Selects from the available registrations after ensuring that any

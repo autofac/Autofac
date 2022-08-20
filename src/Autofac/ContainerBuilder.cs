@@ -172,6 +172,9 @@ public sealed class ContainerBuilder
         // Run any build callbacks.
         BuildCallbackManager.RunBuildCallbacks(result);
 
+        // Allow the reflection cache to empty any registration-time caches to save memory.
+        componentRegistry.ReflectionCache.OnContainerBuild(result);
+
         return result;
     }
 
@@ -223,12 +226,12 @@ public sealed class ContainerBuilder
     private void RegisterDefaultAdapters(IComponentRegistryBuilder componentRegistry)
     {
         this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
-        componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
+        componentRegistry.AddRegistrationSource(new CollectionRegistrationSource(componentRegistry));
         componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
         componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
         componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
-        componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
-        componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
+        componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource(componentRegistry));
+        componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource(componentRegistry));
         componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
     }
 }

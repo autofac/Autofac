@@ -2,8 +2,10 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
+using Autofac.Core;
 using Autofac.Features.Metadata;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Features.AttributeFilters;
 
@@ -140,7 +142,7 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
         // is in IEnumerable and if it is, get the type being enumerated." This doesn't support
         // the other relationship types like Lazy<T>, Func<T>, etc. If we need to add that,
         // this is the place to do it.
-        var elementType = GetElementType(parameter.ParameterType);
+        var elementType = GetElementType(parameter.ParameterType, context.GetReflectionCache());
         var hasMany = elementType != parameter.ParameterType;
 
         return hasMany
@@ -170,15 +172,15 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
         // is in IEnumerable and if it is, get the type being enumerated." This doesn't support
         // the other relationship types like Lazy<T>, Func<T>, etc. If we need to add that,
         // this is the place to do it.
-        var elementType = GetElementType(parameter.ParameterType);
+        var elementType = GetElementType(parameter.ParameterType, context.GetReflectionCache());
 
         // CanResolveMethod always returns a value.
         return (bool)CanResolveMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value })!;
     }
 
-    private static Type GetElementType(Type type)
+    private static Type GetElementType(Type type, IReflectionCache reflectionCache)
     {
-        return type.IsGenericEnumerableInterfaceType() ? type.GenericTypeArguments[0] : type;
+        return type.IsGenericEnumerableInterfaceType(reflectionCache) ? type.GenericTypeArguments[0] : type;
     }
 
     private static T? FilterOne<T>(IComponentContext context, string metadataKey, object metadataValue)

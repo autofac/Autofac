@@ -4,7 +4,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace Autofac.Util;
+namespace Autofac.Util.Cache;
 
 /// <summary>
 /// An internal variant of <see cref="ReflectionCacheDictionary{TKey, TValue}"/>
@@ -13,18 +13,13 @@ namespace Autofac.Util;
 /// </summary>
 /// <typeparam name="TKey">The member items in the tuple key.</typeparam>
 /// <typeparam name="TValue">The value type.</typeparam>
-internal class ReflectionCacheTupleDictionary<TKey, TValue> : ConcurrentDictionary<(TKey, TKey), TValue>
+internal class ReflectionCacheTupleDictionary<TKey, TValue>
+    : ConcurrentDictionary<(TKey, TKey), TValue>, IReflectionCacheStore
     where TKey : MemberInfo
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ReflectionCacheTupleDictionary{TKey, TValue}"/> class.
-    /// </summary>
-    public ReflectionCacheTupleDictionary()
-    {
-        ReflectionCache.Register(CacheClear);
-    }
+    public bool UsedAtRegistrationOnly { get; set; }
 
-    private void CacheClear(ReflectionCacheShouldClearPredicate? predicate)
+    public void Clear(ReflectionCacheShouldClearPredicate predicate)
     {
         if (predicate is null)
         {
@@ -34,10 +29,25 @@ internal class ReflectionCacheTupleDictionary<TKey, TValue> : ConcurrentDictiona
 
         foreach (var kvp in this)
         {
-            if (predicate(kvp.Key.Item1) || predicate(kvp.Key.Item2))
+            if (predicate(GetKeyAssembly(kvp.Key.Item1), kvp.Key.Item1) ||
+                predicate(GetKeyAssembly(kvp.Key.Item2), kvp.Key.Item2))
             {
                 TryRemove(kvp.Key, out _);
             }
         }
+    }
+
+    private static Assembly GetKeyAssembly(TKey key)
+    {
+        if (key is Type keyType)
+        {
+            return keyType.Assembly;
+        }
+        else if (key.DeclaringType is Type declaredType)
+        {
+            return declaredType.Assembly;
+        }
+
+        throw new InvalidOperationException("Impossible state");
     }
 }

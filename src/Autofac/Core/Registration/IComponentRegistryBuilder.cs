@@ -2,13 +2,15 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Core.Registration;
 
 /// <summary>
 /// Used to build a <see cref="IComponentRegistry" />.
 /// </summary>
-public interface IComponentRegistryBuilder : IDisposable, IAsyncDisposable
+public interface IComponentRegistryBuilder : IDisposable, IAsyncDisposable, IReflectionCacheAccessor
 {
     /// <summary>
     /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.

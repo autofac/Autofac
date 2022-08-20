@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Autofac.Builder;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Core.Registration;
 
@@ -73,6 +74,8 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     /// context across registrations.
     /// </value>
     public IDictionary<string, object?> Properties { get; }
+
+    public IReflectionCache ReflectionCache => _registeredServicesTracker.ReflectionCache;
 
     /// <summary>
     /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.

@@ -10,6 +10,7 @@ using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Autofac.Features.Decorators;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Features.Collections;
 
@@ -42,6 +43,13 @@ namespace Autofac.Features.Collections;
 /// </remarks>
 internal class CollectionRegistrationSource : IRegistrationSource
 {
+    private readonly IReflectionCacheAccessor _reflectionCacheAccessor;
+
+    public CollectionRegistrationSource(IReflectionCacheAccessor reflectionCacheAccessor)
+    {
+        _reflectionCacheAccessor = reflectionCacheAccessor;
+    }
+
     /// <summary>
     /// Retrieve registrations for an unregistered service, to be used
     /// by the container.
@@ -75,7 +83,7 @@ internal class CollectionRegistrationSource : IRegistrationSource
         Type? limitType = null;
         Func<int, IList>? factory = null;
 
-        if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
+        if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>), _reflectionCacheAccessor.ReflectionCache))
         {
             elementType = serviceType.GenericTypeArguments[0];
             limitType = elementType.MakeArrayType();
@@ -88,7 +96,7 @@ internal class CollectionRegistrationSource : IRegistrationSource
             limitType = serviceType;
             factory = GenerateArrayFactory(elementType);
         }
-        else if (serviceType.IsGenericListOrCollectionInterfaceType())
+        else if (serviceType.IsGenericListOrCollectionInterfaceType(_reflectionCacheAccessor.ReflectionCache))
         {
             elementType = serviceType.GenericTypeArguments[0];
             limitType = typeof(List<>).MakeGenericType(elementType);
