@@ -6,6 +6,7 @@ using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Util.Cache;
 
 namespace Autofac.Test;
 
@@ -65,6 +66,8 @@ public static class ActivatorPipelineExtensions
         {
             _registry = registry;
         }
+
+        public IReflectionCache ReflectionCache => DefaultReflectionCache.Shared;
 
         public bool IsRegistered(Service service)
         {

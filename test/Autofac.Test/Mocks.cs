@@ -8,6 +8,7 @@ using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Diagnostics;
+using Autofac.Util.Cache;
 
 namespace Autofac.Test;
 
@@ -49,7 +50,7 @@ internal static class Mocks
 
     internal class MockConstructorFinder : IConstructorFinder
     {
-        public ConstructorInfo[] FindConstructors(Type targetType)
+        public ConstructorInfo[] FindConstructors(Type targetType, IReflectionCache reflectionCache)
         {
             return Array.Empty<ConstructorInfo>();
         }

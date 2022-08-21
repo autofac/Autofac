@@ -233,7 +233,7 @@ public class ComponentRegistryTests
     public void AfterResolvingAdapter_AddingMoreAdaptees_AddsMoreAdapters()
     {
         var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
-        registryBuilder.AddRegistrationSource(new MetaRegistrationSource());
+        registryBuilder.AddRegistrationSource(new MetaRegistrationSource(registryBuilder));
         var metaService = new TypedService(typeof(Meta<object>));
 
         var first = RegistrationBuilder.ForType<object>().CreateRegistration();
@@ -259,8 +259,8 @@ public class ComponentRegistryTests
     public void AdaptingAGeneratedServiceYieldsASingleAdapter()
     {
         var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
-        registryBuilder.AddRegistrationSource(new MetaRegistrationSource());
-        registryBuilder.AddRegistrationSource(new CollectionRegistrationSource());
+        registryBuilder.AddRegistrationSource(new MetaRegistrationSource(registryBuilder));
+        registryBuilder.AddRegistrationSource(new CollectionRegistrationSource(registryBuilder));
         var registry = registryBuilder.Build();
 
         var metaCollections = registry.RegistrationsFor(
@@ -273,7 +273,7 @@ public class ComponentRegistryTests
     {
         var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
-        registryBuilder.AddRegistrationSource(new MetaRegistrationSource());
+        registryBuilder.AddRegistrationSource(new MetaRegistrationSource(registryBuilder));
         registryBuilder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
         var registry = registryBuilder.Build();
 
@@ -308,7 +308,7 @@ public class ComponentRegistryTests
     {
         var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-        registryBuilder.AddRegistrationSource(new MetaRegistrationSource());
+        registryBuilder.AddRegistrationSource(new MetaRegistrationSource(registryBuilder));
         registryBuilder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
 
         var chainedService = new TypedService(typeof(Meta<Func<object>>));

@@ -5,6 +5,7 @@ using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
+using Autofac.Util.Cache;
 
 namespace Autofac.Test.Core.Registration;
 
@@ -29,7 +30,7 @@ public sealed class ScopeRestrictedRegisteredServicesTrackerTests
     public void SingletonsFromRegistrationSourceAreWrappedWithLifetimeDecorator()
     {
         var restrictedRootScopeLifetime = new MatchingScopeLifetime(new object());
-        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
+        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime, DefaultReflectionCache.Shared);
 
         var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
 
@@ -46,7 +47,7 @@ public sealed class ScopeRestrictedRegisteredServicesTrackerTests
     public void SingletonsRegisteredDirectlyAreWrappedWithLifetimeDecorator()
     {
         var restrictedRootScopeLifetime = new MatchingScopeLifetime(new object());
-        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
+        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime, DefaultReflectionCache.Shared);
 
         var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
 

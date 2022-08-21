@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Test.Util;
 
@@ -11,6 +12,8 @@ public class ReflectionCacheTests
     public void ClearingReflectionCacheBetweenResolvesIsOk()
     {
         var builder = new ContainerBuilder();
+        var customReflectionCache = new DefaultReflectionCache();
+        builder.UseReflectionCache(customReflectionCache);
 
         builder.RegisterType<CDerivedSingle<int>>().As<ISingle<int>>();
 
@@ -18,7 +21,7 @@ public class ReflectionCacheTests
 
         container.Resolve<ISingle<int>>();
 
-        ReflectionCache.Clear();
+        customReflectionCache.Clear();
 
         container.Resolve<ISingle<int>>();
     }
@@ -27,6 +30,8 @@ public class ReflectionCacheTests
     public async Task ConcurrentCacheClearsAndResolvesIsOk()
     {
         var builder = new ContainerBuilder();
+        var customReflectionCache = new DefaultReflectionCache();
+        builder.UseReflectionCache(customReflectionCache);
 
         builder.RegisterType<CDerivedSingle<int>>().As<ISingle<int>>();
 
@@ -44,7 +49,7 @@ public class ReflectionCacheTests
         {
             for (var index = 0; index < 1000; index++)
             {
-                ReflectionCache.Clear((t) => t == typeof(CDerivedSingle<int>));
+                customReflectionCache.Clear((assembly, type) => type == typeof(CDerivedSingle<int>));
             }
         });
 
@@ -55,6 +60,8 @@ public class ReflectionCacheTests
     public void ClearingReflectionCacheBetweenOpenGenericResolvesIsOk()
     {
         var builder = new ContainerBuilder();
+        var customReflectionCache = new DefaultReflectionCache();
+        builder.UseReflectionCache(customReflectionCache);
 
         builder.RegisterGeneric(typeof(CDerivedSingle<>)).As(typeof(ISingle<>));
 
@@ -62,34 +69,9 @@ public class ReflectionCacheTests
 
         container.Resolve<ISingle<int>>();
 
-        ReflectionCache.Clear();
+        customReflectionCache.Clear();
 
         container.Resolve<ISingle<int>>();
-    }
-
-    [Fact]
-    public void CanRegisterAndUnRegister()
-    {
-        int clearCount = 0;
-
-        void ClearCallback(ReflectionCacheShouldClearPredicate predicate)
-        {
-            clearCount++;
-
-            Assert.NotNull(predicate);
-        }
-
-        ReflectionCache.Register(ClearCallback);
-
-        ReflectionCache.Clear(_ => true);
-
-        Assert.Equal(1, clearCount);
-
-        ReflectionCache.Unregister(ClearCallback);
-
-        ReflectionCache.Clear(_ => true);
-
-        Assert.Equal(1, clearCount);
     }
 
     private interface ISingle<T>

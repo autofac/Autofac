@@ -3,6 +3,7 @@
 
 using Autofac.Core;
 using Autofac.Core.Registration;
+using Autofac.Util.Cache;
 
 namespace Autofac.Test.Core;
 
@@ -105,7 +106,7 @@ public class ImplicitRegistrationSourceTests
     private class AnyTypeImplicitRegistrationSource : ImplicitRegistrationSource
     {
         public AnyTypeImplicitRegistrationSource(Type type)
-            : base(type)
+            : base(type, new SharedReflectionCacheAccessor())
         {
         }
 
@@ -125,7 +126,7 @@ public class ImplicitRegistrationSourceTests
     private class MappedImplicitRegistrationSource : ImplicitRegistrationSource
     {
         public MappedImplicitRegistrationSource()
-            : base(typeof(Mapped<>))
+            : base(typeof(Mapped<>), new SharedReflectionCacheAccessor())
         {
         }
 
@@ -133,5 +134,10 @@ public class ImplicitRegistrationSourceTests
         {
             return new Mapped<T>((T)ctx.ResolveComponent(request));
         }
+    }
+
+    private class SharedReflectionCacheAccessor : IReflectionCacheAccessor
+    {
+        public IReflectionCache ReflectionCache => DefaultReflectionCache.Shared;
     }
 }

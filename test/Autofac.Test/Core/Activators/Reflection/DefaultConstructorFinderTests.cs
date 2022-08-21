@@ -3,6 +3,7 @@
 
 using System.Reflection;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Util.Cache;
 
 namespace Autofac.Test.Core.Activators.Reflection;
 
@@ -15,7 +16,7 @@ public class DefaultConstructorFinderTests
         var targetType = typeof(HasConstructors);
         var publicConstructor = targetType.GetConstructor(Array.Empty<Type>());
 
-        var constructors = finder.FindConstructors(targetType).ToList();
+        var constructors = finder.FindConstructors(targetType, DefaultReflectionCache.Shared).ToList();
 
         Assert.Single(constructors);
         Assert.Contains(publicConstructor, constructors);
@@ -24,11 +25,11 @@ public class DefaultConstructorFinderTests
     [Fact]
     public void CanFindNonPublicConstructorsUsingFinderFunction()
     {
-        var finder = new DefaultConstructorFinder(type => type.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance));
+        var finder = new DefaultConstructorFinder((type, cache) => type.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance));
         var targetType = typeof(HasConstructors);
         var privateConstructor = targetType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).Single();
 
-        var constructors = finder.FindConstructors(targetType).ToList();
+        var constructors = finder.FindConstructors(targetType, DefaultReflectionCache.Shared).ToList();
 
         Assert.Single(constructors);
         Assert.Contains(privateConstructor, constructors);

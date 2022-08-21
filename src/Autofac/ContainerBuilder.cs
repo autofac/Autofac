@@ -227,9 +227,9 @@ public sealed class ContainerBuilder
     {
         this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
         componentRegistry.AddRegistrationSource(new CollectionRegistrationSource(componentRegistry));
-        componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
-        componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
-        componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
+        componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource(componentRegistry));
+        componentRegistry.AddRegistrationSource(new MetaRegistrationSource(componentRegistry));
+        componentRegistry.AddRegistrationSource(new LazyRegistrationSource(componentRegistry));
         componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource(componentRegistry));
         componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource(componentRegistry));
         componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());

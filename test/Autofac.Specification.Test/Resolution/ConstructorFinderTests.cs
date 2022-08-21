@@ -3,6 +3,7 @@
 
 using System.Reflection;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Util.Cache;
 
 namespace Autofac.Specification.Test.Resolution;
 
@@ -117,10 +118,10 @@ public class ConstructorFinderTests
     {
         public bool FindConstructorsCalled { get; private set; }
 
-        public ConstructorInfo[] FindConstructors(Type targetType)
+        public ConstructorInfo[] FindConstructors(Type targetType, IReflectionCache reflectionCache)
         {
             FindConstructorsCalled = true;
-            return new DefaultConstructorFinder().FindConstructors(targetType);
+            return new DefaultConstructorFinder().FindConstructors(targetType, reflectionCache);
         }
     }
 

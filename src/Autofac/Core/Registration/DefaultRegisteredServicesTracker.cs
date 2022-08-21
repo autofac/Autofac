@@ -53,7 +53,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         _reflectionCache = reflectionCache;
     }
 
-    public IReflectionCache ReflectionCache
+    public virtual IReflectionCache ReflectionCache
     {
         get => _reflectionCache ??= DefaultReflectionCache.Shared;
         set => _reflectionCache = value ?? throw new ArgumentNullException(nameof(value));

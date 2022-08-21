@@ -75,7 +75,11 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     /// </value>
     public IDictionary<string, object?> Properties { get; }
 
-    public IReflectionCache ReflectionCache => _registeredServicesTracker.ReflectionCache;
+    public IReflectionCache ReflectionCache
+    {
+        get => _registeredServicesTracker.ReflectionCache;
+        set => _registeredServicesTracker.ReflectionCache = value;
+    }
 
     /// <summary>
     /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.

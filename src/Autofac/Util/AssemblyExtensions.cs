@@ -46,7 +46,7 @@ public static class AssemblyExtensions
         return cache.Internal.AssemblyScanAllowedTypes.GetOrAdd(
             assembly,
             ass => ass.GetLoadableTypes()
-                      .Where(t => t.IsClass && !t.IsAbstract && !t.IsDelegate() && t.IsCompilerGenerated())
+                      .Where(t => t.IsClass && !t.IsAbstract && !t.IsDelegate() && !t.IsCompilerGenerated())
                       .ToList());
     }
 }

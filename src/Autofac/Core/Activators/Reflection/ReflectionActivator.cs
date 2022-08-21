@@ -77,7 +77,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
 
         // Locate the possible constructors at container build time.
-        var availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
+        var availableConstructors = ConstructorFinder.FindConstructors(_implementationType, componentRegistryServices.ReflectionCache);
 
         if (availableConstructors.Length == 0)
         {

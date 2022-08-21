@@ -43,7 +43,7 @@ internal class InternalReflectionCaches
             yield return ConstructorBinderFactory;
             yield return AutowiringPropertySetters;
             yield return AutowiringInjectableProperties;
-            yield return DefaultPublicConstructorsCache;
+            yield return DefaultPublicConstructors;
         }
     }
 }

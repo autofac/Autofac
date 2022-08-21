@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Core;
 
@@ -18,15 +19,18 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
     private static readonly MethodInfo CreateRegistrationMethod = typeof(ImplicitRegistrationSource).GetDeclaredMethod(nameof(CreateRegistration));
 
     private readonly Type _type;
-    private readonly ConcurrentDictionary<Type, RegistrationCreator> _methodCache;
+    private readonly IReflectionCacheAccessor _reflectionCacheAccessor;
+    private readonly string _cacheKey;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ImplicitRegistrationSource"/> class.
     /// </summary>
     /// <param name="type">The implicit type. Must be generic with only one type parameter.</param>
-    protected ImplicitRegistrationSource(Type type)
+    protected ImplicitRegistrationSource(Type type, IReflectionCacheAccessor reflectionCacheAccessor)
     {
         _type = type ?? throw new ArgumentNullException(nameof(type));
+        _reflectionCacheAccessor = reflectionCacheAccessor ?? throw new ArgumentNullException(nameof(type));
+        _cacheKey = $"_implSource_{Guid.NewGuid()}";
 
         if (!type.IsGenericType)
         {
@@ -37,8 +41,6 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
         {
             throw new InvalidOperationException(ImplicitRegistrationSourceResources.GenericTypeMustBeUnary);
         }
-
-        _methodCache = new ConcurrentDictionary<Type, RegistrationCreator>();
     }
 
     /// <inheritdoc />
@@ -49,14 +51,19 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
             throw new ArgumentNullException(nameof(registrationAccessor));
         }
 
-        if (service is not IServiceWithType swt || !swt.ServiceType.IsGenericTypeDefinedBy(_type))
+        var reflectionCache = _reflectionCacheAccessor.ReflectionCache;
+
+        if (service is not IServiceWithType swt || !swt.ServiceType.IsGenericTypeDefinedBy(_type, reflectionCache))
         {
             return Enumerable.Empty<IComponentRegistration>();
         }
 
         var valueType = swt.ServiceType.GenericTypeArguments[0];
         var valueService = swt.ChangeType(valueType);
-        var registrationCreator = _methodCache.GetOrAdd(valueType, t =>
+
+        var methodCache = reflectionCache.GetOrCreateCache<ReflectionCacheDictionary<Type, RegistrationCreator>>(_cacheKey);
+
+        var registrationCreator = methodCache.GetOrAdd(valueType, t =>
         {
             return CreateRegistrationMethod.MakeGenericMethod(t).CreateDelegate<RegistrationCreator>(this);
         });

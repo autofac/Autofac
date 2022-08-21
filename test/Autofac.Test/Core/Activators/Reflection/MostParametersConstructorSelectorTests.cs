@@ -4,6 +4,7 @@
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Util.Cache;
 
 namespace Autofac.Test.Core.Activators.Reflection;
 
@@ -62,7 +63,7 @@ public class MostParametersConstructorSelectorTests
         var container = builder.Build();
 
         return typeof(TTarget).GetTypeInfo().DeclaredConstructors
-            .Select(ci => new ConstructorBinder(ci).Bind(new[] { new AutowiringParameter() }, container))
+            .Select(ci => new ConstructorBinder(ci, DefaultReflectionCache.Shared).Bind(new[] { new AutowiringParameter() }, container))
             .ToArray();
     }
 

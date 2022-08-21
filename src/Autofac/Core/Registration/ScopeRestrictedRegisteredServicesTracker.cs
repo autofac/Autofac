@@ -2,13 +2,14 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core.Lifetime;
+using Autofac.Util.Cache;
 
 namespace Autofac.Core.Registration;
 
 /// <summary>
 /// A <see cref="IRegisteredServicesTracker" /> where the singletons are scoped with the provided <see cref="IComponentLifetime" />.
 /// </summary>
-internal class ScopeRestrictedRegisteredServicesTracker : DefaultRegisteredServicesTracker
+internal sealed class ScopeRestrictedRegisteredServicesTracker : DefaultRegisteredServicesTracker
 {
     private readonly IComponentLifetime _restrictedRootScopeLifetime;
 
@@ -16,9 +17,23 @@ internal class ScopeRestrictedRegisteredServicesTracker : DefaultRegisteredServi
     /// Initializes a new instance of the <see cref="ScopeRestrictedRegisteredServicesTracker"/> class.
     /// </summary>
     /// <param name="restrictedRootScopeLifetime">The scope to which registrations are restricted.</param>
-    internal ScopeRestrictedRegisteredServicesTracker(IComponentLifetime restrictedRootScopeLifetime)
+    internal ScopeRestrictedRegisteredServicesTracker(IComponentLifetime restrictedRootScopeLifetime, IReflectionCache reflectionCache)
+        : base(reflectionCache)
     {
         _restrictedRootScopeLifetime = restrictedRootScopeLifetime;
+    }
+
+    public override IReflectionCache ReflectionCache
+    {
+        get => base.ReflectionCache;
+
+        // The reason for this exception (preventing reflection cache modification in nested scopes),
+        // is that even if you give a new reflection cache in a nested scope, not all the resolves that happen in
+        // that scope will use that cache. Registration Sources in parent scopes will use the original
+        // cache, leading to user confusion. Since there isn't a strong usecase for replacing the reflection cache
+        // in nested scopes (as opposed to clearing specific Assemblies from the top-level cache), it makes
+        // most sense to explicitly prevent the override to reduce confusion.
+        set => throw new InvalidOperationException("The reflection cache for a container cannot be changed in nested lifetime scopes.");
     }
 
     /// <inheritdoc/>
