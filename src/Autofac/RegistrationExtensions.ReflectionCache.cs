@@ -4,7 +4,6 @@
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Scanning;
-using Autofac.Util.Cache;
 
 namespace Autofac;
 
@@ -14,7 +13,7 @@ namespace Autofac;
 [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
 public static partial class RegistrationExtensions
 {
-    public static void UseReflectionCache(this ContainerBuilder builder, IReflectionCache reflectionCache)
+    public static void UseReflectionCache(this ContainerBuilder builder, ReflectionCache reflectionCache)
     {
         if (builder is null)
         {

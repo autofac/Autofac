@@ -2,8 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
+using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
-using Autofac.Util.Cache;
 
 namespace Autofac.Test.Core.Activators.Reflection;
 
@@ -16,7 +16,7 @@ public class DefaultConstructorFinderTests
         var targetType = typeof(HasConstructors);
         var publicConstructor = targetType.GetConstructor(Array.Empty<Type>());
 
-        var constructors = finder.FindConstructors(targetType, DefaultReflectionCache.Shared).ToList();
+        var constructors = finder.FindConstructors(targetType, ReflectionCache.Shared).ToList();
 
         Assert.Single(constructors);
         Assert.Contains(publicConstructor, constructors);
@@ -29,7 +29,7 @@ public class DefaultConstructorFinderTests
         var targetType = typeof(HasConstructors);
         var privateConstructor = targetType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).Single();
 
-        var constructors = finder.FindConstructors(targetType, DefaultReflectionCache.Shared).ToList();
+        var constructors = finder.FindConstructors(targetType, ReflectionCache.Shared).ToList();
 
         Assert.Single(constructors);
         Assert.Contains(privateConstructor, constructors);

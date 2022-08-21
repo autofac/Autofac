@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
-using Autofac.Util.Cache;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -16,5 +15,5 @@ public interface IConstructorFinder
     /// </summary>
     /// <param name="targetType">Type to search for constructors.</param>
     /// <returns>Suitable constructors.</returns>
-    ConstructorInfo[] FindConstructors(Type targetType, IReflectionCache reflectionCache);
+    ConstructorInfo[] FindConstructors(Type targetType, ReflectionCache reflectionCache);
 }

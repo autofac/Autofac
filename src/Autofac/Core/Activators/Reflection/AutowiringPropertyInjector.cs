@@ -4,7 +4,6 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac.Util;
-using Autofac.Util.Cache;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -94,7 +93,7 @@ internal static class AutowiringPropertyInjector
         }
     }
 
-    private static IEnumerable<PropertyInfo> GetInjectableProperties(Type instanceType, IReflectionCache reflectionCache)
+    private static IEnumerable<PropertyInfo> GetInjectableProperties(Type instanceType, ReflectionCache reflectionCache)
     {
         foreach (var property in instanceType.GetRuntimeProperties())
         {

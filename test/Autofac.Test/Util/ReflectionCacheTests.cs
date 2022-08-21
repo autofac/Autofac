@@ -1,9 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Autofac.Util;
-using Autofac.Util.Cache;
-
+using Autofac.Core;
 namespace Autofac.Test.Util;
 
 public class ReflectionCacheTests
@@ -12,7 +10,7 @@ public class ReflectionCacheTests
     public void ClearingReflectionCacheBetweenResolvesIsOk()
     {
         var builder = new ContainerBuilder();
-        var customReflectionCache = new DefaultReflectionCache();
+        var customReflectionCache = new ReflectionCache();
         builder.UseReflectionCache(customReflectionCache);
 
         builder.RegisterType<CDerivedSingle<int>>().As<ISingle<int>>();
@@ -30,7 +28,7 @@ public class ReflectionCacheTests
     public async Task ConcurrentCacheClearsAndResolvesIsOk()
     {
         var builder = new ContainerBuilder();
-        var customReflectionCache = new DefaultReflectionCache();
+        var customReflectionCache = new ReflectionCache();
         builder.UseReflectionCache(customReflectionCache);
 
         builder.RegisterType<CDerivedSingle<int>>().As<ISingle<int>>();
@@ -60,7 +58,7 @@ public class ReflectionCacheTests
     public void ClearingReflectionCacheBetweenOpenGenericResolvesIsOk()
     {
         var builder = new ContainerBuilder();
-        var customReflectionCache = new DefaultReflectionCache();
+        var customReflectionCache = new ReflectionCache();
         builder.UseReflectionCache(customReflectionCache);
 
         builder.RegisterGeneric(typeof(CDerivedSingle<>)).As(typeof(ISingle<>));

@@ -3,6 +3,7 @@
 
 using System.Collections.Concurrent;
 using System.Reflection;
+using Autofac.Core;
 
 namespace Autofac.Util.Cache;
 
@@ -11,7 +12,7 @@ namespace Autofac.Util.Cache;
 /// </summary>
 /// <typeparam name="TKey">The dictionary key, derived from <see cref="MemberInfo"/>.</typeparam>
 /// <typeparam name="TValue">The value type.</typeparam>
-internal class ReflectionCacheDictionary<TKey, TValue>
+internal sealed class ReflectionCacheDictionary<TKey, TValue>
     : ConcurrentDictionary<TKey, TValue>, IReflectionCacheStore
     where TKey : MemberInfo
 {
@@ -21,7 +22,7 @@ internal class ReflectionCacheDictionary<TKey, TValue>
     /// Clear this cache.
     /// </summary>
     /// <param name="predicate">An optional predicate to filter with.</param>
-    public void Clear(ReflectionCacheShouldClearPredicate predicate)
+    public void Clear(ReflectionCacheClearPredicate predicate)
     {
         foreach (var kvp in this)
         {

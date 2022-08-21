@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core.Resolving.Pipeline;
-using Autofac.Util.Cache;
 
 namespace Autofac.Core.Registration;
 
@@ -11,7 +10,7 @@ namespace Autofac.Core.Registration;
 /// </summary>
 internal interface IRegisteredServicesTracker : IDisposable, IAsyncDisposable, IComponentRegistryServices
 {
-    new IReflectionCache ReflectionCache { get; set; }
+    new ReflectionCache ReflectionCache { get; set; }
 
     /// <summary>
     /// Adds a registration to the list of registered services.

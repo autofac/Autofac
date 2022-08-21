@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
-using Autofac.Util.Cache;
+using Autofac.Core;
 
 namespace Autofac.Util;
 
@@ -41,7 +41,7 @@ public static class AssemblyExtensions
         }
     }
 
-    internal static IEnumerable<Type> GetPermittedTypesForAssemblyScanning(this Assembly assembly, IReflectionCache cache)
+    internal static IEnumerable<Type> GetPermittedTypesForAssemblyScanning(this Assembly assembly, ReflectionCache cache)
     {
         return cache.Internal.AssemblyScanAllowedTypes.GetOrAdd(
             assembly,

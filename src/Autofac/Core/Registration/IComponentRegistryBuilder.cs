@@ -3,7 +3,6 @@
 
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
-using Autofac.Util.Cache;
 
 namespace Autofac.Core.Registration;
 
@@ -27,7 +26,7 @@ public interface IComponentRegistryBuilder : IDisposable, IAsyncDisposable, IRef
     /// </value>
     IDictionary<string, object?> Properties { get; }
 
-    new IReflectionCache ReflectionCache { get; set; }
+    new ReflectionCache ReflectionCache { get; set; }
 
     /// <summary>
     /// Register a component.

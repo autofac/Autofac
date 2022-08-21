@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
+using Autofac.Util.Cache;
 
-namespace Autofac.Util.Cache;
+namespace Autofac.Core;
 
 /// <summary>
 /// Defines known, internal-only caches that are used in relatively hot paths, so we want to
-/// avoid the additional dictionary lookup in <see cref="IReflectionCache.GetOrCreateCache(string)"/>.
+/// avoid the additional dictionary lookup in <see cref="ReflectionCache.GetOrCreateCache(string)"/>.
 /// </summary>
 internal class InternalReflectionCaches
 {

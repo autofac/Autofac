@@ -5,7 +5,6 @@ using System.Reflection;
 using Autofac.Core;
 using Autofac.Features.Metadata;
 using Autofac.Util;
-using Autofac.Util.Cache;
 
 namespace Autofac.Features.AttributeFilters;
 
@@ -178,7 +177,7 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
         return (bool)CanResolveMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value })!;
     }
 
-    private static Type GetElementType(Type type, IReflectionCache reflectionCache)
+    private static Type GetElementType(Type type, ReflectionCache reflectionCache)
     {
         return type.IsGenericEnumerableInterfaceType(reflectionCache) ? type.GenericTypeArguments[0] : type;
     }

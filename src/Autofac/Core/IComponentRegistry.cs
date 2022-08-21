@@ -3,7 +3,6 @@
 
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving.Pipeline;
-using Autofac.Util.Cache;
 
 namespace Autofac.Core;
 
@@ -21,7 +20,7 @@ public interface IComponentRegistry : IDisposable, IAsyncDisposable
     /// </value>
     IDictionary<string, object?> Properties { get; }
 
-    IReflectionCache ReflectionCache { get; }
+    ReflectionCache ReflectionCache { get; }
 
     /// <summary>
     /// Gets the set of registered components.

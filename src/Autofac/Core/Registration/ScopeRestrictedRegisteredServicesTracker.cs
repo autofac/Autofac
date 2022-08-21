@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core.Lifetime;
-using Autofac.Util.Cache;
 
 namespace Autofac.Core.Registration;
 
@@ -17,13 +16,13 @@ internal sealed class ScopeRestrictedRegisteredServicesTracker : DefaultRegister
     /// Initializes a new instance of the <see cref="ScopeRestrictedRegisteredServicesTracker"/> class.
     /// </summary>
     /// <param name="restrictedRootScopeLifetime">The scope to which registrations are restricted.</param>
-    internal ScopeRestrictedRegisteredServicesTracker(IComponentLifetime restrictedRootScopeLifetime, IReflectionCache reflectionCache)
+    internal ScopeRestrictedRegisteredServicesTracker(IComponentLifetime restrictedRootScopeLifetime, ReflectionCache reflectionCache)
         : base(reflectionCache)
     {
         _restrictedRootScopeLifetime = restrictedRootScopeLifetime;
     }
 
-    public override IReflectionCache ReflectionCache
+    public override ReflectionCache ReflectionCache
     {
         get => base.ReflectionCache;
 

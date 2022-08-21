@@ -4,7 +4,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using Autofac.Util.Cache;
+using Autofac.Core;
 
 namespace Autofac.Util;
 
@@ -137,7 +137,7 @@ internal static class TypeExtensions
     /// </summary>
     /// <param name="type">The type to check.</param>
     /// <returns>True if the type is one of the supported enumerable interface types.</returns>
-    public static bool IsGenericEnumerableInterfaceType(this Type type, IReflectionCache cache)
+    public static bool IsGenericEnumerableInterfaceType(this Type type, ReflectionCache cache)
     {
         return cache.Internal.IsGenericEnumerableInterface.GetOrAdd(
             type, t => t.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
@@ -149,7 +149,7 @@ internal static class TypeExtensions
     /// </summary>
     /// <param name="type">The type to check.</param>
     /// <returns>True if the type is one of the supported list/collection types.</returns>
-    public static bool IsGenericListOrCollectionInterfaceType(this Type type, IReflectionCache cache)
+    public static bool IsGenericListOrCollectionInterfaceType(this Type type, ReflectionCache cache)
     {
         return cache.Internal.IsGenericListOrCollectionInterfaceType.GetOrAdd(
             type, IsGenericListOrCollectionInterfaceType);
@@ -169,7 +169,7 @@ internal static class TypeExtensions
     /// <param name="this">The type to check.</param>
     /// <param name="openGeneric">The open generic to check against.</param>
     /// <returns>True if the type is defined by the specified open generic; false otherwise.</returns>
-    public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric, IReflectionCache cache)
+    public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric, ReflectionCache cache)
     {
         return cache.Internal.IsGenericTypeDefinedBy.GetOrAdd(
             (@this, openGeneric),

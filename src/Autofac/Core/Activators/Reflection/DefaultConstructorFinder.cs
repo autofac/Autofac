@@ -3,7 +3,6 @@
 
 using System.Collections.Concurrent;
 using System.Reflection;
-using Autofac.Util.Cache;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -12,7 +11,7 @@ namespace Autofac.Core.Activators.Reflection;
 /// </summary>
 public class DefaultConstructorFinder : IConstructorFinder
 {
-    private readonly Func<Type, IReflectionCache, ConstructorInfo[]> _finder;
+    private readonly Func<Type, ReflectionCache, ConstructorInfo[]> _finder;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultConstructorFinder" /> class.
@@ -29,7 +28,7 @@ public class DefaultConstructorFinder : IConstructorFinder
     /// Initializes a new instance of the <see cref="DefaultConstructorFinder" /> class.
     /// </summary>
     /// <param name="finder">The finder function.</param>
-    public DefaultConstructorFinder(Func<Type, IReflectionCache, ConstructorInfo[]> finder)
+    public DefaultConstructorFinder(Func<Type, ReflectionCache, ConstructorInfo[]> finder)
     {
         _finder = finder ?? throw new ArgumentNullException(nameof(finder));
     }
@@ -39,12 +38,12 @@ public class DefaultConstructorFinder : IConstructorFinder
     /// </summary>
     /// <param name="targetType">Type to search for constructors.</param>
     /// <returns>Suitable constructors.</returns>
-    public ConstructorInfo[] FindConstructors(Type targetType, IReflectionCache reflectionCache)
+    public ConstructorInfo[] FindConstructors(Type targetType, ReflectionCache reflectionCache)
     {
         return _finder(targetType, reflectionCache);
     }
 
-    private static ConstructorInfo[] GetDefaultPublicConstructors(Type type, IReflectionCache reflectionCache)
+    private static ConstructorInfo[] GetDefaultPublicConstructors(Type type, ReflectionCache reflectionCache)
     {
         var retval = reflectionCache.Internal.DefaultPublicConstructors
             .GetOrAdd(type, t => t.GetDeclaredPublicConstructors());

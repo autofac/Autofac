@@ -2,8 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
+using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
-using Autofac.Util.Cache;
 
 namespace Autofac.Specification.Test.Resolution;
 
@@ -118,7 +118,7 @@ public class ConstructorFinderTests
     {
         public bool FindConstructorsCalled { get; private set; }
 
-        public ConstructorInfo[] FindConstructors(Type targetType, IReflectionCache reflectionCache)
+        public ConstructorInfo[] FindConstructors(Type targetType, ReflectionCache reflectionCache)
         {
             FindConstructorsCalled = true;
             return new DefaultConstructorFinder().FindConstructors(targetType, reflectionCache);

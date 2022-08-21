@@ -3,6 +3,7 @@
 
 using System.Collections.Concurrent;
 using System.Reflection;
+using Autofac.Core;
 
 namespace Autofac.Util.Cache;
 
@@ -13,20 +14,14 @@ namespace Autofac.Util.Cache;
 /// </summary>
 /// <typeparam name="TKey">The member items in the tuple key.</typeparam>
 /// <typeparam name="TValue">The value type.</typeparam>
-internal class ReflectionCacheTupleDictionary<TKey, TValue>
+internal sealed class ReflectionCacheTupleDictionary<TKey, TValue>
     : ConcurrentDictionary<(TKey, TKey), TValue>, IReflectionCacheStore
     where TKey : MemberInfo
 {
     public bool UsedAtRegistrationOnly { get; set; }
 
-    public void Clear(ReflectionCacheShouldClearPredicate predicate)
+    public void Clear(ReflectionCacheClearPredicate predicate)
     {
-        if (predicate is null)
-        {
-            Clear();
-            return;
-        }
-
         foreach (var kvp in this)
         {
             if (predicate(GetKeyAssembly(kvp.Key.Item1), kvp.Key.Item1) ||

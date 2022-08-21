@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac.Util.Cache;
 
-namespace Autofac.Util.Cache;
+namespace Autofac.Core;
 
 /// <summary>
 /// Delegate for predicates that can choose whether to remove a member from the
@@ -17,34 +17,66 @@ namespace Autofac.Util.Cache;
 /// <returns>
 /// True to remove the member from the cache, false to leave it.
 /// </returns>
-public delegate bool ReflectionCacheShouldClearPredicate(Assembly assembly, MemberInfo? member);
+public delegate bool ReflectionCacheClearPredicate(Assembly assembly, MemberInfo? member);
 
-public sealed class DefaultReflectionCache : ReflectionCache
+public class ReflectionCacheOptions
 {
-    private static IReflectionCache? _sharedCache;
+    public static ReflectionCacheOptions Default { get; } = new();
 
-    public static IReflectionCache Shared => _sharedCache ??= new DefaultReflectionCache();
-
-    public override void OnContainerBuild(IContainer container)
-    {
-        // Default behaviour on container build is to clear any caches marked
-        // as only being used during registration.
-        foreach (var cache in GetAllCaches())
-        {
-            if (cache.UsedAtRegistrationOnly)
-            {
-                cache.Clear();
-            }
-        }
-    }
+    public bool RetainAllCachesAfterContainerBuild { get; set; }
 }
 
-public abstract class ReflectionCache : IReflectionCache
+public sealed class ReflectionCache
 {
-    private readonly ConcurrentDictionary<string, IReflectionCacheStore> _caches = new();
-    private readonly InternalReflectionCaches _internal = new();
+    private static WeakReference<ReflectionCache>? _sharedCache;
+    private static object _cacheAllocationLock = new();
 
-    InternalReflectionCaches IReflectionCache.Internal => _internal;
+    private readonly ConcurrentDictionary<string, IReflectionCacheStore> _caches = new();
+    private readonly ReflectionCacheOptions _options;
+
+    public static ReflectionCache Shared
+    {
+        get
+        {
+            if (!TryGetSharedCache(out var sharedCache))
+            {
+                lock (_cacheAllocationLock)
+                {
+                    // Check the cache again inside the lock, another thread may have updated it.
+                    if (!TryGetSharedCache(out sharedCache))
+                    {
+                        sharedCache = new ReflectionCache();
+                        _sharedCache = new WeakReference<ReflectionCache>(sharedCache);
+                    }
+                }
+            }
+
+            return sharedCache;
+        }
+    }
+
+    private static bool TryGetSharedCache([NotNullWhen(true)] out ReflectionCache? sharedCache)
+    {
+        if (_sharedCache is null)
+        {
+            sharedCache = null;
+            return false;
+        }
+
+        return _sharedCache.TryGetTarget(out sharedCache);
+    }
+
+    public ReflectionCache()
+    {
+        _options = ReflectionCacheOptions.Default;
+    }
+
+    public ReflectionCache(ReflectionCacheOptions cacheOptions)
+    {
+        _options = ReflectionCacheOptions.Default;
+    }
+
+    internal InternalReflectionCaches Internal { get; } = new();
 
     public TCacheDictionary GetOrCreateCache<TCacheDictionary>(string cacheName)
         where TCacheDictionary : IReflectionCacheStore, new()
@@ -92,7 +124,7 @@ public abstract class ReflectionCache : IReflectionCache
     /// will be empty by the time the method exits, or that all items matched by
     /// the provided predicate have been removed.
     /// </remarks>
-    public void Clear(ReflectionCacheShouldClearPredicate predicate)
+    public void Clear(ReflectionCacheClearPredicate predicate)
     {
         foreach (var cache in GetAllCaches())
         {
@@ -102,7 +134,7 @@ public abstract class ReflectionCache : IReflectionCache
 
     protected IEnumerable<IReflectionCacheStore> GetAllCaches()
     {
-        foreach (var internalItem in _internal.All)
+        foreach (var internalItem in Internal.All)
         {
             yield return internalItem;
         }
@@ -113,5 +145,19 @@ public abstract class ReflectionCache : IReflectionCache
         }
     }
 
-    public abstract void OnContainerBuild(IContainer container);
+    public void OnContainerBuild(IContainer container)
+    {
+        if (!_options.RetainAllCachesAfterContainerBuild)
+        {
+            // Default behaviour on container build is to clear any caches marked
+            // as only being used during registration.
+            foreach (var cache in GetAllCaches())
+            {
+                if (cache.UsedAtRegistrationOnly)
+                {
+                    cache.Clear();
+                }
+            }
+        }
+    }
 }

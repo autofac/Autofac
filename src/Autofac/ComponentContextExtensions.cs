@@ -1,12 +1,11 @@
 ﻿using Autofac.Core;
 using Autofac.Core.Registration;
-using Autofac.Util.Cache;
 
 namespace Autofac;
 
 public static class ComponentContextExtensions
 {
-    public static IReflectionCache GetReflectionCache(this IComponentContext context)
+    public static ReflectionCache GetReflectionCache(this IComponentContext context)
     {
         if (context is null)
         {

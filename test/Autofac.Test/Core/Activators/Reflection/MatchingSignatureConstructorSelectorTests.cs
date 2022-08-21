@@ -108,7 +108,7 @@ public class MatchingSignatureConstructorSelectorTests
     {
         return typeof(FourConstructors)
        .GetTypeInfo().DeclaredConstructors
-       .Select(ci => new ConstructorBinder(ci, DefaultReflectionCache.Shared))
+       .Select(ci => new ConstructorBinder(ci, ReflectionCache.Shared))
        .ToArray();
     }
 }

@@ -3,7 +3,6 @@
 
 using System.Linq.Expressions;
 using System.Reflection;
-using Autofac.Util.Cache;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -22,7 +21,7 @@ public class ConstructorBinder
     /// Initializes a new instance of the <see cref="ConstructorBinder"/> class.
     /// </summary>
     /// <param name="constructorInfo">The constructor.</param>
-    public ConstructorBinder(ConstructorInfo constructorInfo, IReflectionCache reflectionCache)
+    public ConstructorBinder(ConstructorInfo constructorInfo, ReflectionCache reflectionCache)
     {
         if (reflectionCache is null)
         {

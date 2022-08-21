@@ -138,6 +138,6 @@ public class ImplicitRegistrationSourceTests
 
     private class SharedReflectionCacheAccessor : IReflectionCacheAccessor
     {
-        public IReflectionCache ReflectionCache => DefaultReflectionCache.Shared;
+        public ReflectionCache ReflectionCache => ReflectionCache.Shared;
     }
 }

@@ -37,7 +37,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
 
     private Dictionary<Service, ServiceRegistrationInfo>? _ephemeralServiceInfo;
     private bool _trackerPopulationComplete;
-    private IReflectionCache? _reflectionCache;
+    private ReflectionCache? _reflectionCache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker"/> class.
@@ -47,15 +47,15 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         _registrationAccessor = ServiceRegistrationsFor;
     }
 
-    public DefaultRegisteredServicesTracker(IReflectionCache reflectionCache)
+    public DefaultRegisteredServicesTracker(ReflectionCache reflectionCache)
         : this()
     {
         _reflectionCache = reflectionCache;
     }
 
-    public virtual IReflectionCache ReflectionCache
+    public virtual ReflectionCache ReflectionCache
     {
-        get => _reflectionCache ??= DefaultReflectionCache.Shared;
+        get => _reflectionCache ??= ReflectionCache.Shared;
         set => _reflectionCache = value ?? throw new ArgumentNullException(nameof(value));
     }
 

@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using Autofac.Builder;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
-using Autofac.Util.Cache;
 
 namespace Autofac.Core.Registration;
 
@@ -75,7 +74,7 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     /// </value>
     public IDictionary<string, object?> Properties { get; }
 
-    public IReflectionCache ReflectionCache
+    public ReflectionCache ReflectionCache
     {
         get => _registeredServicesTracker.ReflectionCache;
         set => _registeredServicesTracker.ReflectionCache = value;
