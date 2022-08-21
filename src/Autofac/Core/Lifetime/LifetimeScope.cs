@@ -443,7 +443,8 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     {
         if (IsTreeDisposed())
         {
-            throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
+            // Throw in a separate method to allow this check to be inlined.
+            ThrowDisposedException();
         }
     }
 
@@ -490,4 +491,10 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// Fired when a resolve operation is beginning in this scope.
     /// </summary>
     public event EventHandler<ResolveOperationBeginningEventArgs>? ResolveOperationBeginning;
+
+    [DoesNotReturn]
+    private static void ThrowDisposedException()
+    {
+        throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
+    }
 }

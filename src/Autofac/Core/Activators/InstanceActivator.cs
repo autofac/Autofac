@@ -42,7 +42,14 @@ public abstract class InstanceActivator : Disposable
     {
         if (IsDisposed)
         {
-            throw new ObjectDisposedException(InstanceActivatorResources.InstanceActivatorDisposed, innerException: null);
+            // Call separate throw method to allow inlining of the disposal check.
+            ThrowDisposedException();
         }
+    }
+
+    [DoesNotReturn]
+    private static void ThrowDisposedException()
+    {
+        throw new ObjectDisposedException(InstanceActivatorResources.InstanceActivatorDisposed, innerException: null);
     }
 }

@@ -98,10 +98,19 @@ public class BoundConstructor
             throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.CannotInstantitate, Description));
         }
 
-        var values = new object?[_valueRetrievers!.Length];
-        for (var i = 0; i < _valueRetrievers.Length; ++i)
+        object?[] values;
+
+        if (_valueRetrievers!.Length != 0)
         {
-            values[i] = _valueRetrievers[i]();
+            values = new object?[_valueRetrievers!.Length];
+            for (var i = 0; i < _valueRetrievers.Length; ++i)
+            {
+                values[i] = _valueRetrievers[i]();
+            }
+        }
+        else
+        {
+            values = Array.Empty<object?>();
         }
 
         try
