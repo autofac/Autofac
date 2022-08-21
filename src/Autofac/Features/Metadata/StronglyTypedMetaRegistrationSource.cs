@@ -21,11 +21,11 @@ internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
 
     private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration valueRegistration);
 
-    private readonly IReflectionCacheAccessor _reflectionCacheAccessor;
+    private readonly ReflectionCache _reflectionCache;
 
-    public StronglyTypedMetaRegistrationSource(IReflectionCacheAccessor reflectionCacheAccessor)
+    public StronglyTypedMetaRegistrationSource(ReflectionCache reflectionCache)
     {
-        _reflectionCacheAccessor = reflectionCacheAccessor;
+        _reflectionCache = reflectionCache;
     }
 
     /// <inheritdoc/>
@@ -36,10 +36,8 @@ internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
             throw new ArgumentNullException(nameof(registrationAccessor));
         }
 
-        var reflectionCache = _reflectionCacheAccessor.ReflectionCache;
-
         if (service is not IServiceWithType swt ||
-            !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<,>), reflectionCache))
+            !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<,>), _reflectionCache))
         {
             return Enumerable.Empty<IComponentRegistration>();
         }
@@ -55,7 +53,7 @@ internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
 
         var valueService = swt.ChangeType(valueType);
 
-        var methodCache = reflectionCache.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>("_stronglyTypedMetadataMethods");
+        var methodCache = _reflectionCache.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>("_stronglyTypedMetadataMethods");
 
         var registrationCreator = methodCache.GetOrAdd((valueType, metaType), t =>
         {

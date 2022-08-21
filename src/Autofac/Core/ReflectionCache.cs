@@ -19,22 +19,16 @@ namespace Autofac.Core;
 /// </returns>
 public delegate bool ReflectionCacheClearPredicate(Assembly assembly, MemberInfo? member);
 
-public class ReflectionCacheOptions
-{
-    public static ReflectionCacheOptions Default { get; } = new();
-
-    public bool RetainAllCachesAfterContainerBuild { get; set; }
-}
-
 public sealed class ReflectionCache
 {
     private static WeakReference<ReflectionCache>? _sharedCache;
     private static object _cacheAllocationLock = new();
+    private static int _multipleRequestsForSharedCache;
 
     private readonly ConcurrentDictionary<string, IReflectionCacheStore> _caches = new();
-    private readonly ReflectionCacheOptions _options;
+    private bool _preserveAllCachesAfterRegistration;
 
-    public static ReflectionCache Shared
+    internal static ReflectionCache Shared
     {
         get
         {
@@ -46,9 +40,27 @@ public sealed class ReflectionCache
                     if (!TryGetSharedCache(out sharedCache))
                     {
                         sharedCache = new ReflectionCache();
+
+                        if (_multipleRequestsForSharedCache == 1)
+                        {
+                            // We're in "multiple container" mode, so keep our registration-time
+                            // caches.
+                            sharedCache._preserveAllCachesAfterRegistration = true;
+                        }
+
                         _sharedCache = new WeakReference<ReflectionCache>(sharedCache);
                     }
                 }
+            }
+
+            if (Interlocked.CompareExchange(ref _multipleRequestsForSharedCache, 1, 0) == 0)
+            {
+                // This is the second request for the same instance of the shared cache. This implies
+                // multiple container registrations per-process, so caches used in
+                // the container that optimise registrations should be preserved.
+                // We'll update the shared cache to now start preserving cache's
+                // used at registration.
+                sharedCache._preserveAllCachesAfterRegistration = true;
             }
 
             return sharedCache;
@@ -64,16 +76,6 @@ public sealed class ReflectionCache
         }
 
         return _sharedCache.TryGetTarget(out sharedCache);
-    }
-
-    public ReflectionCache()
-    {
-        _options = ReflectionCacheOptions.Default;
-    }
-
-    public ReflectionCache(ReflectionCacheOptions cacheOptions)
-    {
-        _options = ReflectionCacheOptions.Default;
     }
 
     internal InternalReflectionCaches Internal { get; } = new();
@@ -147,7 +149,7 @@ public sealed class ReflectionCache
 
     public void OnContainerBuild(IContainer container)
     {
-        if (!_options.RetainAllCachesAfterContainerBuild)
+        if (!_preserveAllCachesAfterRegistration)
         {
             // Default behaviour on container build is to clear any caches marked
             // as only being used during registration.

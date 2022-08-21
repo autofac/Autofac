@@ -10,8 +10,6 @@ namespace Autofac.Core.Registration;
 /// </summary>
 internal interface IRegisteredServicesTracker : IDisposable, IAsyncDisposable, IComponentRegistryServices
 {
-    new ReflectionCache ReflectionCache { get; set; }
-
     /// <summary>
     /// Adds a registration to the list of registered services.
     /// </summary>

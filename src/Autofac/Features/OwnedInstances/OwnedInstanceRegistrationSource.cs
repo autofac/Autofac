@@ -15,8 +15,8 @@ internal class OwnedInstanceRegistrationSource : ImplicitRegistrationSource
     /// <summary>
     /// Initializes a new instance of the <see cref="OwnedInstanceRegistrationSource"/> class.
     /// </summary>
-    public OwnedInstanceRegistrationSource(IReflectionCacheAccessor reflectionCacheAccessor)
-        : base(typeof(Owned<>), reflectionCacheAccessor)
+    public OwnedInstanceRegistrationSource(ReflectionCache reflectionCache)
+        : base(typeof(Owned<>), reflectionCache)
     {
     }
 

@@ -3,16 +3,13 @@
 
 namespace Autofac.Core;
 
-public interface IReflectionCacheAccessor
-{
-    ReflectionCache ReflectionCache { get; }
-}
-
 /// <summary>
 /// Defines an interface for accessing the set of services available during pipeline build time.
 /// </summary>
-public interface IComponentRegistryServices : IReflectionCacheAccessor
+public interface IComponentRegistryServices
 {
+    ReflectionCache ReflectionCache { get; }
+
     /// <summary>
     /// Selects from the available registrations after ensuring that any
     /// dynamic registration sources that may provide <paramref name="service"/>

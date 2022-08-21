@@ -22,19 +22,6 @@ internal sealed class ScopeRestrictedRegisteredServicesTracker : DefaultRegister
         _restrictedRootScopeLifetime = restrictedRootScopeLifetime;
     }
 
-    public override ReflectionCache ReflectionCache
-    {
-        get => base.ReflectionCache;
-
-        // The reason for this exception (preventing reflection cache modification in nested scopes),
-        // is that even if you give a new reflection cache in a nested scope, not all the resolves that happen in
-        // that scope will use that cache. Registration Sources in parent scopes will use the original
-        // cache, leading to user confusion. Since there isn't a strong usecase for replacing the reflection cache
-        // in nested scopes (as opposed to clearing specific Assemblies from the top-level cache), it makes
-        // most sense to explicitly prevent the override to reduce confusion.
-        set => throw new InvalidOperationException("The reflection cache for a container cannot be changed in nested lifetime scopes.");
-    }
-
     /// <inheritdoc/>
     public override void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
     {

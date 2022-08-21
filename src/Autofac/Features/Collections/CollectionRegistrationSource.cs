@@ -43,11 +43,11 @@ namespace Autofac.Features.Collections;
 /// </remarks>
 internal class CollectionRegistrationSource : IRegistrationSource
 {
-    private readonly IReflectionCacheAccessor _reflectionCacheAccessor;
+    private readonly ReflectionCache _reflectionCache;
 
-    public CollectionRegistrationSource(IReflectionCacheAccessor reflectionCacheAccessor)
+    public CollectionRegistrationSource(ReflectionCache reflectionCache)
     {
-        _reflectionCacheAccessor = reflectionCacheAccessor;
+        _reflectionCache = reflectionCache;
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ internal class CollectionRegistrationSource : IRegistrationSource
         Type? limitType = null;
         Func<int, IList>? factory = null;
 
-        if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>), _reflectionCacheAccessor.ReflectionCache))
+        if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>), _reflectionCache))
         {
             elementType = serviceType.GenericTypeArguments[0];
             limitType = elementType.MakeArrayType();
@@ -96,7 +96,7 @@ internal class CollectionRegistrationSource : IRegistrationSource
             limitType = serviceType;
             factory = GenerateArrayFactory(elementType);
         }
-        else if (serviceType.IsGenericListOrCollectionInterfaceType(_reflectionCacheAccessor.ReflectionCache))
+        else if (serviceType.IsGenericListOrCollectionInterfaceType(_reflectionCache))
         {
             elementType = serviceType.GenericTypeArguments[0];
             limitType = typeof(List<>).MakeGenericType(elementType);

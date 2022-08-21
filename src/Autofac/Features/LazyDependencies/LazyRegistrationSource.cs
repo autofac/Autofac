@@ -16,8 +16,8 @@ internal class LazyRegistrationSource : ImplicitRegistrationSource
     /// <summary>
     /// Initializes a new instance of the <see cref="LazyRegistrationSource"/> class.
     /// </summary>
-    public LazyRegistrationSource(IReflectionCacheAccessor reflectionCacheAccessor)
-        : base(typeof(Lazy<>), reflectionCacheAccessor)
+    public LazyRegistrationSource(ReflectionCache reflectionCache)
+        : base(typeof(Lazy<>), reflectionCache)
     {
     }
 

@@ -106,7 +106,7 @@ public class ImplicitRegistrationSourceTests
     private class AnyTypeImplicitRegistrationSource : ImplicitRegistrationSource
     {
         public AnyTypeImplicitRegistrationSource(Type type)
-            : base(type, new SharedReflectionCacheAccessor())
+            : base(type, new ReflectionCache())
         {
         }
 
@@ -126,7 +126,7 @@ public class ImplicitRegistrationSourceTests
     private class MappedImplicitRegistrationSource : ImplicitRegistrationSource
     {
         public MappedImplicitRegistrationSource()
-            : base(typeof(Mapped<>), new SharedReflectionCacheAccessor())
+            : base(typeof(Mapped<>), new ReflectionCache())
         {
         }
 
@@ -134,10 +134,5 @@ public class ImplicitRegistrationSourceTests
         {
             return new Mapped<T>((T)ctx.ResolveComponent(request));
         }
-    }
-
-    private class SharedReflectionCacheAccessor : IReflectionCacheAccessor
-    {
-        public ReflectionCache ReflectionCache => ReflectionCache.Shared;
     }
 }

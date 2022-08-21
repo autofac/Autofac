@@ -5,7 +5,6 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
-using Autofac.Util.Cache;
 
 namespace Autofac.Core.Registration;
 
@@ -53,10 +52,9 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         _reflectionCache = reflectionCache;
     }
 
-    public virtual ReflectionCache ReflectionCache
+    public ReflectionCache ReflectionCache
     {
         get => _reflectionCache ??= ReflectionCache.Shared;
-        set => _reflectionCache = value ?? throw new ArgumentNullException(nameof(value));
     }
 
     /// <summary>

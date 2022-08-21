@@ -24,11 +24,11 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 
     private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo);
 
-    private readonly IReflectionCacheAccessor _reflectionCacheAccessor;
+    private readonly ReflectionCache _reflectionCache;
 
-    public LazyWithMetadataRegistrationSource(IReflectionCacheAccessor reflectionCacheAccessor)
+    public LazyWithMetadataRegistrationSource(ReflectionCache reflectionCache)
     {
-        _reflectionCacheAccessor = reflectionCacheAccessor;
+        _reflectionCache = reflectionCache;
     }
 
     /// <inheritdoc/>
@@ -40,7 +40,7 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
         }
 
         var lazyType = typeof(Lazy<,>);
-        if (service is not IServiceWithType swt || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType, _reflectionCacheAccessor.ReflectionCache))
+        if (service is not IServiceWithType swt || !swt.ServiceType.IsGenericTypeDefinedBy(lazyType, _reflectionCache))
         {
             return Enumerable.Empty<IComponentRegistration>();
         }
@@ -58,7 +58,7 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 
         // Use the non-internal form here because the dictionary value is a type internal to
         // this source.
-        var methodCache = _reflectionCacheAccessor.ReflectionCache.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>("_lazyWithMetadataMethods");
+        var methodCache = _reflectionCache.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>("_lazyWithMetadataMethods");
 
         var registrationCreator = methodCache.GetOrAdd((valueType, metaType), types =>
         {
