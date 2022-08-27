@@ -57,7 +57,7 @@ public class ConstructorBinderTests
     public void WhenAnExceptionIsThrownFromAConstructor_TheInnerExceptionIsWrapped()
     {
         var ci = typeof(ThrowsInCtor).GetTypeInfo().DeclaredConstructors.Single();
-        var cpb = new ConstructorBinder(ci, ReflectionCache.Shared).Bind(Enumerable.Empty<Parameter>(), new ContainerBuilder().Build());
+        var cpb = new ConstructorBinder(ci).Bind(Enumerable.Empty<Parameter>(), new ContainerBuilder().Build());
         var dx = Assert.Throws<DependencyResolutionException>(() =>
             cpb.Instantiate());
 
@@ -70,7 +70,7 @@ public class ConstructorBinderTests
     public void WhenPrimitiveTypeIsProvidedForPrimitiveParameterConversionWillBeAttempted()
     {
         var ci = typeof(CtorWithDoubleParam).GetTypeInfo().DeclaredConstructors.Single();
-        var cpb = new ConstructorBinder(ci, ReflectionCache.Shared).Bind(new[] { new PositionalParameter(0, 1), }, new ContainerBuilder().Build());
+        var cpb = new ConstructorBinder(ci).Bind(new[] { new PositionalParameter(0, 1), }, new ContainerBuilder().Build());
         var instance = (CtorWithDoubleParam)cpb.Instantiate();
 
         Assert.Equal(1d, instance.Value);
@@ -80,7 +80,7 @@ public class ConstructorBinderTests
     public void WhenEnumTypeIsProvidedForIntParameterConversionWillBeAttempted()
     {
         var ci = typeof(CtorWithInt).GetTypeInfo().DeclaredConstructors.Single();
-        var cpb = new ConstructorBinder(ci, ReflectionCache.Shared).Bind(new[] { new PositionalParameter(0, Foo.B), }, new ContainerBuilder().Build());
+        var cpb = new ConstructorBinder(ci).Bind(new[] { new PositionalParameter(0, Foo.B), }, new ContainerBuilder().Build());
         var instance = (CtorWithInt)cpb.Instantiate();
 
         Assert.Equal(1, instance.Value);
@@ -90,7 +90,7 @@ public class ConstructorBinderTests
     public void WhenUsingByRefParameterExceptionIsThrownForIllegalParameter() // added for issue 1126
     {
         var constructorInfo = typeof(ServiceWithInParameter).GetTypeInfo().DeclaredConstructors.Single();
-        var constructorBinder = new ConstructorBinder(constructorInfo, ReflectionCache.Shared);
+        var constructorBinder = new ConstructorBinder(constructorInfo);
         var boundConstructor = constructorBinder.Bind(new[] { new PositionalParameter(0, 111) }, new ContainerBuilder().Build());
         Assert.False(boundConstructor.CanInstantiate);
         Assert.Throws<InvalidOperationException>(() => boundConstructor.Instantiate());

@@ -26,8 +26,6 @@ public interface IComponentRegistryBuilder : IDisposable, IAsyncDisposable
     /// </value>
     IDictionary<string, object?> Properties { get; }
 
-    ReflectionCache ReflectionCache { get; }
-
     /// <summary>
     /// Register a component.
     /// </summary>

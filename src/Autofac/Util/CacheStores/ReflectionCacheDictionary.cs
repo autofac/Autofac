@@ -8,22 +8,25 @@ using Autofac.Core;
 namespace Autofac.Util.Cache;
 
 /// <summary>
-/// A concurrent dictionary that automatically registers with <see cref="ReflectionCache"/>.
+/// A reflection cache dictionary, keyed on a <see cref="MemberInfo"/>, such as <see cref="Type"/> or <see cref="MethodInfo"/>.
 /// </summary>
 /// <typeparam name="TKey">The dictionary key, derived from <see cref="MemberInfo"/>.</typeparam>
 /// <typeparam name="TValue">The value type.</typeparam>
-internal sealed class ReflectionCacheDictionary<TKey, TValue>
+public sealed class ReflectionCacheDictionary<TKey, TValue>
     : ConcurrentDictionary<TKey, TValue>, IReflectionCacheStore
     where TKey : MemberInfo
 {
-    public bool UsedAtRegistrationOnly { get; set; }
+    /// <inheritdoc />
+    public ReflectionCacheUsage Usage { get; set; } = ReflectionCacheUsage.All;
 
-    /// <summary>
-    /// Clear this cache.
-    /// </summary>
-    /// <param name="predicate">An optional predicate to filter with.</param>
+    /// <inheritdoc />
     public void Clear(ReflectionCacheClearPredicate predicate)
     {
+        if (predicate is null)
+        {
+            throw new ArgumentNullException(nameof(predicate));
+        }
+
         foreach (var kvp in this)
         {
             if (kvp.Key is Type keyType)

@@ -230,7 +230,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     private IComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
     {
         var restrictedRootScopeLifetime = new MatchingScopeLifetime(tag);
-        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime, ComponentRegistry.ReflectionCache);
+        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
 
         var fallbackProperties = new FallbackDictionary<string, object?>(ComponentRegistry.Properties);
         var registryBuilder = new ComponentRegistryBuilder(tracker, fallbackProperties);

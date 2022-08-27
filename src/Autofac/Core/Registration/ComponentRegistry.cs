@@ -40,8 +40,6 @@ internal class ComponentRegistry : Disposable, IComponentRegistry
     /// </value>
     public IDictionary<string, object?> Properties { get; }
 
-    public ReflectionCache ReflectionCache => _registeredServicesTracker.ReflectionCache;
-
     /// <summary>
     /// Gets the registered components.
     /// </summary>

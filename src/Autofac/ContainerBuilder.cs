@@ -36,9 +36,11 @@ namespace Autofac;
 /// <see cref="RegistrationExtensions"/>
 public sealed class ContainerBuilder
 {
+    private static int _builderAlreadyAllocated;
+
+    private readonly bool _clearRegistrationCaches;
     private readonly IList<DeferredCallback> _configurationCallbacks = new List<DeferredCallback>();
     private BuildCallbackService? _buildCallbacks;
-
     private bool _wasBuilt;
 
     /// <summary>
@@ -47,6 +49,12 @@ public sealed class ContainerBuilder
     public ContainerBuilder()
         : this(new Dictionary<string, object?>())
     {
+        // If this is not the first container builder we have constructed in this process,
+        // it's entirely likely we are going to create more (for example, in unit tests).
+        // So, all container builders after the first will preserve cache's that
+        // only have the RegistrationCacheUsage.Registration flag, to improve
+        // the performance of subsequent container builds.
+        _clearRegistrationCaches = IsFirstContainerBuilder();
     }
 
     /// <summary>
@@ -173,7 +181,7 @@ public sealed class ContainerBuilder
         BuildCallbackManager.RunBuildCallbacks(result);
 
         // Allow the reflection cache to empty any registration-time caches to save memory.
-        componentRegistry.ReflectionCache.OnContainerBuild(result);
+        ReflectionCache.Shared.OnContainerBuild(_clearRegistrationCaches);
 
         return result;
     }
@@ -225,15 +233,20 @@ public sealed class ContainerBuilder
 
     private void RegisterDefaultAdapters(IComponentRegistryBuilder componentRegistry)
     {
-        var reflectionCache = componentRegistry.ReflectionCache;
-
         this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
-        componentRegistry.AddRegistrationSource(new CollectionRegistrationSource(reflectionCache));
-        componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource(reflectionCache));
-        componentRegistry.AddRegistrationSource(new MetaRegistrationSource(reflectionCache));
-        componentRegistry.AddRegistrationSource(new LazyRegistrationSource(reflectionCache));
-        componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource(reflectionCache));
-        componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource(reflectionCache));
+        componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
+        componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
+        componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
+        componentRegistry.AddRegistrationSource(new LazyRegistrationSource());
+        componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
+        componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
         componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
+    }
+
+    private static bool IsFirstContainerBuilder()
+    {
+        // First container will start with a value of 0, we will try and set it to 1;
+        // if the value is 0, it means it's the first builder.
+        return Interlocked.CompareExchange(ref _builderAlreadyAllocated, 1, 0) == 0;
     }
 }

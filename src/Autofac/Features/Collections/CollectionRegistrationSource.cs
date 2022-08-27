@@ -43,13 +43,6 @@ namespace Autofac.Features.Collections;
 /// </remarks>
 internal class CollectionRegistrationSource : IRegistrationSource
 {
-    private readonly ReflectionCache _reflectionCache;
-
-    public CollectionRegistrationSource(ReflectionCache reflectionCache)
-    {
-        _reflectionCache = reflectionCache;
-    }
-
     /// <summary>
     /// Retrieve registrations for an unregistered service, to be used
     /// by the container.
@@ -83,7 +76,7 @@ internal class CollectionRegistrationSource : IRegistrationSource
         Type? limitType = null;
         Func<int, IList>? factory = null;
 
-        if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>), _reflectionCache))
+        if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
         {
             elementType = serviceType.GenericTypeArguments[0];
             limitType = elementType.MakeArrayType();
@@ -96,7 +89,7 @@ internal class CollectionRegistrationSource : IRegistrationSource
             limitType = serviceType;
             factory = GenerateArrayFactory(elementType);
         }
-        else if (serviceType.IsGenericListOrCollectionInterfaceType(_reflectionCache))
+        else if (serviceType.IsGenericListOrCollectionInterfaceType())
         {
             elementType = serviceType.GenericTypeArguments[0];
             limitType = typeof(List<>).MakeGenericType(elementType);

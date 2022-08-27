@@ -106,7 +106,7 @@ public class ImplicitRegistrationSourceTests
     private class AnyTypeImplicitRegistrationSource : ImplicitRegistrationSource
     {
         public AnyTypeImplicitRegistrationSource(Type type)
-            : base(type, new ReflectionCache())
+            : base(type)
         {
         }
 
@@ -126,7 +126,7 @@ public class ImplicitRegistrationSourceTests
     private class MappedImplicitRegistrationSource : ImplicitRegistrationSource
     {
         public MappedImplicitRegistrationSource()
-            : base(typeof(Mapped<>), new ReflectionCache())
+            : base(typeof(Mapped<>))
         {
         }
 

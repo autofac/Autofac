@@ -51,12 +51,10 @@ internal static class AutowiringPropertyInjector
 
         var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
 
-        var reflectionCache = context.GetReflectionCache();
-
-        var injectablePropertiesCache = reflectionCache.Internal.AutowiringInjectableProperties;
+        var injectablePropertiesCache = ReflectionCache.Shared.Internal.AutowiringInjectableProperties;
 
         var instanceType = instance.GetType();
-        var injectableProperties = injectablePropertiesCache.GetOrAdd(instanceType, type => GetInjectableProperties(type, reflectionCache).ToList());
+        var injectableProperties = injectablePropertiesCache.GetOrAdd(instanceType, type => GetInjectableProperties(type).ToList());
 
         for (var index = 0; index < injectableProperties.Count; index++)
         {
@@ -78,7 +76,7 @@ internal static class AutowiringPropertyInjector
                 !(p is NamedParameter n && n.Name.Equals("value", StringComparison.Ordinal)));
             if (parameter != null)
             {
-                var setter = reflectionCache.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
+                var setter = ReflectionCache.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
                 setter(instance, valueProvider!());
                 continue;
             }
@@ -87,13 +85,13 @@ internal static class AutowiringPropertyInjector
             var instanceTypeParameter = new NamedParameter(InstanceTypeNamedParameter, instanceType);
             if (context.TryResolveService(propertyService, new Parameter[] { instanceTypeParameter }, out var propertyValue))
             {
-                var setter = reflectionCache.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
+                var setter = ReflectionCache.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
                 setter(instance, propertyValue);
             }
         }
     }
 
-    private static IEnumerable<PropertyInfo> GetInjectableProperties(Type instanceType, ReflectionCache reflectionCache)
+    private static IEnumerable<PropertyInfo> GetInjectableProperties(Type instanceType)
     {
         foreach (var property in instanceType.GetRuntimeProperties())
         {
@@ -122,7 +120,7 @@ internal static class AutowiringPropertyInjector
                 continue;
             }
 
-            if (propertyType.IsGenericEnumerableInterfaceType(reflectionCache) && propertyType.GenericTypeArguments[0].IsValueType)
+            if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GenericTypeArguments[0].IsValueType)
             {
                 continue;
             }

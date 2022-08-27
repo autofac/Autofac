@@ -15,8 +15,8 @@ internal class MetaRegistrationSource : ImplicitRegistrationSource
     /// <summary>
     /// Initializes a new instance of the <see cref="MetaRegistrationSource"/> class.
     /// </summary>
-    public MetaRegistrationSource(ReflectionCache reflectionCache)
-        : base(typeof(Meta<>), reflectionCache)
+    public MetaRegistrationSource()
+        : base(typeof(Meta<>))
     {
     }
 

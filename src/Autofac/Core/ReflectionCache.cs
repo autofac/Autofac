@@ -8,27 +8,24 @@ using Autofac.Util.Cache;
 namespace Autofac.Core;
 
 /// <summary>
-/// Delegate for predicates that can choose whether to remove a member from the
-/// reflection cache.
+/// Defines a cache of reflection-related data. Access the shared instance using <see cref="ReflectionCache.Shared"/>.
 /// </summary>
-/// <param name="member">
-/// The member information (will be an instance of a more-derived type).
-/// </param>
-/// <returns>
-/// True to remove the member from the cache, false to leave it.
-/// </returns>
-public delegate bool ReflectionCacheClearPredicate(Assembly assembly, MemberInfo? member);
-
 public sealed class ReflectionCache
 {
     private static WeakReference<ReflectionCache>? _sharedCache;
     private static object _cacheAllocationLock = new();
-    private static int _multipleRequestsForSharedCache;
 
     private readonly ConcurrentDictionary<string, IReflectionCacheStore> _caches = new();
-    private bool _preserveAllCachesAfterRegistration;
 
-    internal static ReflectionCache Shared
+    /// <summary>
+    /// Gets the shared <see cref="ReflectionCache"/>.
+    /// </summary>
+    /// <remarks>
+    /// Avoid storing the value of this property, and access
+    /// <see cref="GetOrCreateCache(string)"/> directly instead,
+    /// to ensure caches can be freed correctly.
+    /// </remarks>
+    public static ReflectionCache Shared
     {
         get
         {
@@ -40,57 +37,54 @@ public sealed class ReflectionCache
                     if (!TryGetSharedCache(out sharedCache))
                     {
                         sharedCache = new ReflectionCache();
-
-                        if (_multipleRequestsForSharedCache == 1)
-                        {
-                            // We're in "multiple container" mode, so keep our registration-time
-                            // caches.
-                            sharedCache._preserveAllCachesAfterRegistration = true;
-                        }
-
                         _sharedCache = new WeakReference<ReflectionCache>(sharedCache);
                     }
                 }
-            }
-
-            if (Interlocked.CompareExchange(ref _multipleRequestsForSharedCache, 1, 0) == 0)
-            {
-                // This is the second request for the same instance of the shared cache. This implies
-                // multiple container registrations per-process, so caches used in
-                // the container that optimise registrations should be preserved.
-                // We'll update the shared cache to now start preserving cache's
-                // used at registration.
-                sharedCache._preserveAllCachesAfterRegistration = true;
             }
 
             return sharedCache;
         }
     }
 
-    private static bool TryGetSharedCache([NotNullWhen(true)] out ReflectionCache? sharedCache)
-    {
-        if (_sharedCache is null)
-        {
-            sharedCache = null;
-            return false;
-        }
-
-        return _sharedCache.TryGetTarget(out sharedCache);
-    }
-
+    /// <summary>
+    /// Gets the instance of the known Internal caches defined in <see cref="InternalReflectionCaches"/>.
+    /// </summary>
     internal InternalReflectionCaches Internal { get; } = new();
 
-    public TCacheDictionary GetOrCreateCache<TCacheDictionary>(string cacheName)
-        where TCacheDictionary : IReflectionCacheStore, new()
-        => GetOrCreateCache<TCacheDictionary>(cacheName, CacheFactory<TCacheDictionary>.Factory);
+    /// <summary>
+    /// Get a typed cache store with a given name, that is held in this instance. An instance will be created if it does not already exist.
+    /// </summary>
+    /// <typeparam name="TCacheStore">
+    /// The type of cache store; must implement <see cref="IReflectionCacheStore"/>. See <see cref="ReflectionCacheDictionary{TKey, TValue}"/> for a typical example.
+    /// </typeparam>
+    /// <param name="cacheName">The unique name of the cache.</param>
+    /// <returns>An instance of <typeparamref name="TCacheStore"/>.</returns>
+    public TCacheStore GetOrCreateCache<TCacheStore>(string cacheName)
+        where TCacheStore : IReflectionCacheStore, new()
+        => GetOrCreateCache<TCacheStore>(cacheName, CacheFactory<TCacheStore>.Factory);
 
-    public TCacheDictionary GetOrCreateCache<TCacheDictionary>(string cacheName, Func<string, IReflectionCacheStore> cacheFactory)
-        where TCacheDictionary : IReflectionCacheStore
+    /// <summary>
+    /// Get a typed cache store with a given name, that is held in this instance. An instance will be created if it does not already exist.
+    /// </summary>
+    /// <typeparam name="TCacheStore">
+    /// The type of cache store; must implement <see cref="IReflectionCacheStore"/>. See <see cref="ReflectionCacheDictionary{TKey, TValue}"/> for a typical example.
+    /// </typeparam>
+    /// <param name="cacheName">The unique name of the cache.</param>
+    /// <param name="cacheFactory">A custom factory for the cache store.</param>
+    /// <returns>An instance of <typeparamref name="TCacheStore"/>.</returns>
+    public TCacheStore GetOrCreateCache<TCacheStore>(string cacheName, Func<string, TCacheStore> cacheFactory)
+        where TCacheStore : IReflectionCacheStore
     {
         // This path is present for external code that wishes to store items in the reflection cache.
         try
         {
-            return (TCacheDictionary)_caches.GetOrAdd(cacheName, cacheFactory);
+#if NETSTANDARD2_0
+            return (TCacheStore)_caches.GetOrAdd(cacheName, name => cacheFactory(name));
+#else
+            // A bit of get/add indirection here we can only do after NS2.0 to get the right type of object to store in the dictionary,
+            // without allocating a closure over cacheFactory, while still allowing cacheFactory to be strongly typed.
+            return (TCacheStore)_caches.GetOrAdd(cacheName, static (name, factory) => factory(name), cacheFactory);
+#endif
         }
         catch (InvalidCastException)
         {
@@ -98,12 +92,22 @@ public sealed class ReflectionCache
         }
     }
 
-    private static class CacheFactory<TCacheDictionary>
-        where TCacheDictionary : IReflectionCacheStore, new()
+    private static class CacheFactory<TCacheStore>
+        where TCacheStore : IReflectionCacheStore, new()
     {
-        public static Func<string, IReflectionCacheStore> Factory { get; } = (k) => new TCacheDictionary();
+        public static Func<string, TCacheStore> Factory { get; } = static (k) => new TCacheStore();
     }
 
+    /// <summary>
+    /// Clear the internal reflection cache. Only call this method if you are
+    /// dynamically unloading types from the process; calling this method
+    /// otherwise will only slow down Autofac during normal operation.
+    /// </summary>
+    /// <remarks>
+    /// This method is non-deterministic; there is no guarantee that the cache
+    /// will be empty by the time the method exits, or that all items matched by
+    /// the provided predicate have been removed.
+    /// </remarks>
     public void Clear()
     {
         foreach (var cache in GetAllCaches())
@@ -134,7 +138,39 @@ public sealed class ReflectionCache
         }
     }
 
-    protected IEnumerable<IReflectionCacheStore> GetAllCaches()
+    /// <summary>
+    /// Invoked when the container is built, to allow the cache to apply clearing behaviour.
+    /// </summary>
+    /// <param name="clearRegistrationCaches">True if we should clear caches marked only for registration.</param>
+    internal void OnContainerBuild(bool clearRegistrationCaches)
+    {
+        if (clearRegistrationCaches)
+        {
+            // Default behaviour on container build is to clear any caches marked
+            // as only being used during registration.
+            foreach (var cache in GetAllCaches())
+            {
+                // Cache is not used at resolution stage, so clear it.
+                if (!cache.Usage.HasFlag(ReflectionCacheUsage.Resolution))
+                {
+                    cache.Clear();
+                }
+            }
+        }
+    }
+
+    private static bool TryGetSharedCache([NotNullWhen(true)] out ReflectionCache? sharedCache)
+    {
+        if (_sharedCache is null)
+        {
+            sharedCache = null;
+            return false;
+        }
+
+        return _sharedCache.TryGetTarget(out sharedCache);
+    }
+
+    private IEnumerable<IReflectionCacheStore> GetAllCaches()
     {
         foreach (var internalItem in Internal.All)
         {
@@ -144,22 +180,6 @@ public sealed class ReflectionCache
         foreach (var externalItem in _caches)
         {
             yield return externalItem.Value;
-        }
-    }
-
-    public void OnContainerBuild(IContainer container)
-    {
-        if (!_preserveAllCachesAfterRegistration)
-        {
-            // Default behaviour on container build is to clear any caches marked
-            // as only being used during registration.
-            foreach (var cache in GetAllCaches())
-            {
-                if (cache.UsedAtRegistrationOnly)
-                {
-                    cache.Clear();
-                }
-            }
         }
     }
 }

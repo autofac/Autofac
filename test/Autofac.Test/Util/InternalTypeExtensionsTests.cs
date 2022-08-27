@@ -3,7 +3,7 @@
 
 using Autofac.Test.Scenarios.ScannedAssembly;
 
-using InternalTypeExtensions = Autofac.Util.TypeExtensions;
+using InternalTypeExtensions = Autofac.Util.InternalTypeExtensions;
 
 namespace Autofac.Test.Util;
 

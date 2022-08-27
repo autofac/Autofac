@@ -363,7 +363,7 @@ public static partial class RegistrationExtensions
             throw new ArgumentNullException(nameof(finder));
         }
 
-        return registration.FindConstructorsWith(new DefaultConstructorFinder((t, reflectionCache) => finder(t)));
+        return registration.FindConstructorsWith(new DefaultConstructorFinder((t) => finder(t)));
     }
 
     /// <summary>

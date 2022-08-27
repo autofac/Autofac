@@ -41,12 +41,20 @@ public static class AssemblyExtensions
         }
     }
 
-    internal static IEnumerable<Type> GetPermittedTypesForAssemblyScanning(this Assembly assembly, ReflectionCache cache)
+    /// <summary>
+    /// Get the set of types that Autofac will allow to be loaded from the given assembly.
+    /// </summary>
+    /// <param name="assembly">The assembly to load types from.</param>
+    /// <returns>The set of loadable types.</returns>
+    internal static IEnumerable<Type> GetPermittedTypesForAssemblyScanning(this Assembly assembly)
     {
-        return cache.Internal.AssemblyScanAllowedTypes.GetOrAdd(
-            assembly,
-            ass => ass.GetLoadableTypes()
-                      .Where(t => t.IsClass && !t.IsAbstract && !t.IsDelegate() && !t.IsCompilerGenerated())
-                      .ToList());
+        static IReadOnlyList<Type> Uncached(Assembly assembly)
+        {
+            return assembly.GetLoadableTypes()
+                           .Where(t => t.IsClass && !t.IsAbstract && !t.IsDelegate() && !t.IsCompilerGenerated())
+                           .ToList();
+        }
+
+        return ReflectionCache.Shared.Internal.AssemblyScanAllowedTypes.GetOrAdd(assembly, Uncached);
     }
 }

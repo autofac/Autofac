@@ -16,8 +16,7 @@ internal sealed class ScopeRestrictedRegisteredServicesTracker : DefaultRegister
     /// Initializes a new instance of the <see cref="ScopeRestrictedRegisteredServicesTracker"/> class.
     /// </summary>
     /// <param name="restrictedRootScopeLifetime">The scope to which registrations are restricted.</param>
-    internal ScopeRestrictedRegisteredServicesTracker(IComponentLifetime restrictedRootScopeLifetime, ReflectionCache reflectionCache)
-        : base(reflectionCache)
+    internal ScopeRestrictedRegisteredServicesTracker(IComponentLifetime restrictedRootScopeLifetime)
     {
         _restrictedRootScopeLifetime = restrictedRootScopeLifetime;
     }

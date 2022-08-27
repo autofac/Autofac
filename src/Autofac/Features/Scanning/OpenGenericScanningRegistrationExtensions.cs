@@ -92,7 +92,7 @@ internal static partial class ScanningRegistrationExtensions
             rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
                 t.IsOpenGenericTypeOf(swt.ServiceType)));
 
-        var types = assemblies.SelectMany(a => a.GetPermittedTypesForAssemblyScanning(cr.ReflectionCache))
+        var types = assemblies.SelectMany(a => a.GetPermittedTypesForAssemblyScanning())
             .Where(t => t.IsGenericTypeDefinition)
             .CanBeRegistered(rb.ActivatorData);
 

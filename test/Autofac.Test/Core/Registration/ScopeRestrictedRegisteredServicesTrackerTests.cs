@@ -30,7 +30,7 @@ public sealed class ScopeRestrictedRegisteredServicesTrackerTests
     public void SingletonsFromRegistrationSourceAreWrappedWithLifetimeDecorator()
     {
         var restrictedRootScopeLifetime = new MatchingScopeLifetime(new object());
-        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime, ReflectionCache.Shared);
+        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
 
         var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
 
@@ -47,7 +47,7 @@ public sealed class ScopeRestrictedRegisteredServicesTrackerTests
     public void SingletonsRegisteredDirectlyAreWrappedWithLifetimeDecorator()
     {
         var restrictedRootScopeLifetime = new MatchingScopeLifetime(new object());
-        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime, ReflectionCache.Shared);
+        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
 
         var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
 

@@ -8,8 +8,6 @@ namespace Autofac.Core;
 /// </summary>
 public interface IComponentRegistryServices
 {
-    ReflectionCache ReflectionCache { get; }
-
     /// <summary>
     /// Selects from the available registrations after ensuring that any
     /// dynamic registration sources that may provide <paramref name="service"/>

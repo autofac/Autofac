@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Core;
+
 namespace Autofac.Test.Util;
 
 public class ReflectionCacheTests
@@ -16,7 +18,7 @@ public class ReflectionCacheTests
 
         container.Resolve<ISingle<int>>();
 
-        container.ComponentRegistry.ReflectionCache.Clear();
+        ReflectionCache.Shared.Clear();
 
         container.Resolve<ISingle<int>>();
     }
@@ -42,7 +44,7 @@ public class ReflectionCacheTests
         {
             for (var index = 0; index < 1000; index++)
             {
-                container.ComponentRegistry.ReflectionCache.Clear((assembly, type) => type == typeof(CDerivedSingle<int>));
+                ReflectionCache.Shared.Clear((assembly, type) => type == typeof(CDerivedSingle<int>));
             }
         });
 
@@ -60,7 +62,7 @@ public class ReflectionCacheTests
 
         container.Resolve<ISingle<int>>();
 
-        container.ComponentRegistry.ReflectionCache.Clear();
+        ReflectionCache.Shared.Clear();
 
         container.Resolve<ISingle<int>>();
     }

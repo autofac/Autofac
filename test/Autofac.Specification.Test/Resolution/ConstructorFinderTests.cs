@@ -118,10 +118,10 @@ public class ConstructorFinderTests
     {
         public bool FindConstructorsCalled { get; private set; }
 
-        public ConstructorInfo[] FindConstructors(Type targetType, ReflectionCache reflectionCache)
+        public ConstructorInfo[] FindConstructors(Type targetType)
         {
             FindConstructorsCalled = true;
-            return new DefaultConstructorFinder().FindConstructors(targetType, reflectionCache);
+            return new DefaultConstructorFinder().FindConstructors(targetType);
         }
     }
 

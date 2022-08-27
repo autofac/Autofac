@@ -63,7 +63,7 @@ public class MostParametersConstructorSelectorTests
         var container = builder.Build();
 
         return typeof(TTarget).GetTypeInfo().DeclaredConstructors
-            .Select(ci => new ConstructorBinder(ci, ReflectionCache.Shared).Bind(new[] { new AutowiringParameter() }, container))
+            .Select(ci => new ConstructorBinder(ci).Bind(new[] { new AutowiringParameter() }, container))
             .ToArray();
     }
 

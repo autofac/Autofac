@@ -15,5 +15,5 @@ public interface IConstructorFinder
     /// </summary>
     /// <param name="targetType">Type to search for constructors.</param>
     /// <returns>Suitable constructors.</returns>
-    ConstructorInfo[] FindConstructors(Type targetType, ReflectionCache reflectionCache);
+    ConstructorInfo[] FindConstructors(Type targetType);
 }

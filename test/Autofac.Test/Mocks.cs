@@ -49,7 +49,7 @@ internal static class Mocks
 
     internal class MockConstructorFinder : IConstructorFinder
     {
-        public ConstructorInfo[] FindConstructors(Type targetType, ReflectionCache reflectionCache)
+        public ConstructorInfo[] FindConstructors(Type targetType)
         {
             return Array.Empty<ConstructorInfo>();
         }

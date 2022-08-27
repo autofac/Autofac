@@ -20,8 +20,6 @@ public interface IComponentRegistry : IDisposable, IAsyncDisposable
     /// </value>
     IDictionary<string, object?> Properties { get; }
 
-    ReflectionCache ReflectionCache { get; }
-
     /// <summary>
     /// Gets the set of registered components.
     /// </summary>

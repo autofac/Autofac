@@ -9,8 +9,7 @@ namespace Autofac.Util.Cache;
 
 /// <summary>
 /// An internal variant of <see cref="ReflectionCacheDictionary{TKey, TValue}"/>
-/// that handles a tuple key. Instances of this class must only be held as
-/// static readonly fields.
+/// that handles a tuple key.
 /// </summary>
 /// <typeparam name="TKey">The member items in the tuple key.</typeparam>
 /// <typeparam name="TValue">The value type.</typeparam>
@@ -18,8 +17,10 @@ internal sealed class ReflectionCacheTupleDictionary<TKey, TValue>
     : ConcurrentDictionary<(TKey, TKey), TValue>, IReflectionCacheStore
     where TKey : MemberInfo
 {
-    public bool UsedAtRegistrationOnly { get; set; }
+    /// <inheritdoc />
+    public ReflectionCacheUsage Usage { get; set; } = ReflectionCacheUsage.All;
 
+    /// <inheritdoc />
     public void Clear(ReflectionCacheClearPredicate predicate)
     {
         foreach (var kvp in this)

@@ -79,7 +79,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
 
         // Locate the possible constructors at container build time.
-        var availableConstructors = ConstructorFinder.FindConstructors(_implementationType, componentRegistryServices.ReflectionCache);
+        var availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
 
         if (availableConstructors.Length == 0)
         {
@@ -90,7 +90,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         for (var idx = 0; idx < availableConstructors.Length; idx++)
         {
-            binders[idx] = new ConstructorBinder(availableConstructors[idx], componentRegistryServices.ReflectionCache);
+            binders[idx] = new ConstructorBinder(availableConstructors[idx]);
         }
 
         if (binders.Length == 1)

@@ -21,13 +21,8 @@ public class ConstructorBinder
     /// Initializes a new instance of the <see cref="ConstructorBinder"/> class.
     /// </summary>
     /// <param name="constructorInfo">The constructor.</param>
-    public ConstructorBinder(ConstructorInfo constructorInfo, ReflectionCache reflectionCache)
+    public ConstructorBinder(ConstructorInfo constructorInfo)
     {
-        if (reflectionCache is null)
-        {
-            throw new ArgumentNullException(nameof(reflectionCache));
-        }
-
         Constructor = constructorInfo ?? throw new ArgumentNullException(nameof(constructorInfo));
         _constructorArgs = constructorInfo.GetParameters();
 
@@ -37,7 +32,7 @@ public class ConstructorBinder
 
         if (_illegalParameter is null)
         {
-            var factoryCache = reflectionCache.Internal.ConstructorBinderFactory;
+            var factoryCache = ReflectionCache.Shared.Internal.ConstructorBinderFactory;
 
             // Build the invoker.
             _factory = factoryCache.GetOrAdd(constructorInfo, FactoryBuilder);

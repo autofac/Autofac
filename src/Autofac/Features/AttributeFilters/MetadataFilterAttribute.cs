@@ -141,7 +141,7 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
         // is in IEnumerable and if it is, get the type being enumerated." This doesn't support
         // the other relationship types like Lazy<T>, Func<T>, etc. If we need to add that,
         // this is the place to do it.
-        var elementType = GetElementType(parameter.ParameterType, context.GetReflectionCache());
+        var elementType = GetElementType(parameter.ParameterType);
         var hasMany = elementType != parameter.ParameterType;
 
         return hasMany
@@ -171,15 +171,15 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
         // is in IEnumerable and if it is, get the type being enumerated." This doesn't support
         // the other relationship types like Lazy<T>, Func<T>, etc. If we need to add that,
         // this is the place to do it.
-        var elementType = GetElementType(parameter.ParameterType, context.GetReflectionCache());
+        var elementType = GetElementType(parameter.ParameterType);
 
         // CanResolveMethod always returns a value.
         return (bool)CanResolveMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value })!;
     }
 
-    private static Type GetElementType(Type type, ReflectionCache reflectionCache)
+    private static Type GetElementType(Type type)
     {
-        return type.IsGenericEnumerableInterfaceType(reflectionCache) ? type.GenericTypeArguments[0] : type;
+        return type.IsGenericEnumerableInterfaceType() ? type.GenericTypeArguments[0] : type;
     }
 
     private static T? FilterOne<T>(IComponentContext context, string metadataKey, object metadataValue)

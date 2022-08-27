@@ -11,7 +11,7 @@ namespace Autofac.Util;
 /// <summary>
 /// Provides helper methods for manipulating and inspecting types.
 /// </summary>
-internal static class TypeExtensions
+internal static class InternalTypeExtensions
 {
     /// <summary>
     /// For a delegate type, outputs the return type of the delegate.
@@ -137,11 +137,15 @@ internal static class TypeExtensions
     /// </summary>
     /// <param name="type">The type to check.</param>
     /// <returns>True if the type is one of the supported enumerable interface types.</returns>
-    public static bool IsGenericEnumerableInterfaceType(this Type type, ReflectionCache cache)
+    public static bool IsGenericEnumerableInterfaceType(this Type type)
     {
-        return cache.Internal.IsGenericEnumerableInterface.GetOrAdd(
-            type, t => t.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
-                       || t.IsGenericListOrCollectionInterfaceType());
+        static bool Uncached(Type type)
+        {
+            return type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
+                   || type.IsGenericListOrCollectionInterfaceType();
+        }
+
+        return ReflectionCache.Shared.Internal.IsGenericEnumerableInterface.GetOrAdd(type, Uncached);
     }
 
     /// <summary>
@@ -149,18 +153,18 @@ internal static class TypeExtensions
     /// </summary>
     /// <param name="type">The type to check.</param>
     /// <returns>True if the type is one of the supported list/collection types.</returns>
-    public static bool IsGenericListOrCollectionInterfaceType(this Type type, ReflectionCache cache)
+    public static bool IsGenericListOrCollectionInterfaceType(this Type type)
     {
-        return cache.Internal.IsGenericListOrCollectionInterfaceType.GetOrAdd(
-            type, IsGenericListOrCollectionInterfaceType);
-    }
+        static bool Uncached(Type type)
+        {
+            return type.IsGenericTypeDefinedBy(typeof(IList<>))
+                   || type.IsGenericTypeDefinedBy(typeof(ICollection<>))
+                   || type.IsGenericTypeDefinedBy(typeof(IReadOnlyCollection<>))
+                   || type.IsGenericTypeDefinedBy(typeof(IReadOnlyList<>));
+        }
 
-    private static bool IsGenericListOrCollectionInterfaceType(this Type type)
-    {
-        return type.IsGenericTypeDefinedBy(typeof(IList<>))
-               || type.IsGenericTypeDefinedBy(typeof(ICollection<>))
-               || type.IsGenericTypeDefinedBy(typeof(IReadOnlyCollection<>))
-               || type.IsGenericTypeDefinedBy(typeof(IReadOnlyList<>));
+        return ReflectionCache.Shared.Internal
+                              .IsGenericListOrCollectionInterfaceType.GetOrAdd(type, Uncached);
     }
 
     /// <summary>
@@ -169,18 +173,18 @@ internal static class TypeExtensions
     /// <param name="this">The type to check.</param>
     /// <param name="openGeneric">The open generic to check against.</param>
     /// <returns>True if the type is defined by the specified open generic; false otherwise.</returns>
-    public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric, ReflectionCache cache)
+    public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric)
     {
-        return cache.Internal.IsGenericTypeDefinedBy.GetOrAdd(
-            (@this, openGeneric),
-            key => IsGenericTypeDefinedBy(key.Item1, key.Item2));
-    }
+        static bool Uncached(Type type, Type openGeneric)
+        {
+            return !type.ContainsGenericParameters
+                    && type.IsGenericType
+                    && type.GetGenericTypeDefinition() == openGeneric;
+        }
 
-    private static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric)
-    {
-        return !@this.ContainsGenericParameters
-                && @this.IsGenericType
-                && @this.GetGenericTypeDefinition() == openGeneric;
+        return ReflectionCache.Shared.Internal.IsGenericTypeDefinedBy.GetOrAdd(
+            (@this, openGeneric),
+            key => Uncached(key.Item1, key.Item2));
     }
 
     /// <summary>
