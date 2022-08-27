@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
-using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Test.Core.Activators.Reflection;
@@ -25,7 +24,7 @@ public class DefaultConstructorFinderTests
     [Fact]
     public void CanFindNonPublicConstructorsUsingFinderFunction()
     {
-        var finder = new DefaultConstructorFinder((type) => type.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance));
+        var finder = new DefaultConstructorFinder(type => type.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance));
         var targetType = typeof(HasConstructors);
         var privateConstructor = targetType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).Single();
 

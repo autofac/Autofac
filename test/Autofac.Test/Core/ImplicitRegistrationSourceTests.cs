@@ -3,7 +3,6 @@
 
 using Autofac.Core;
 using Autofac.Core.Registration;
-using Autofac.Util.Cache;
 
 namespace Autofac.Test.Core;
 

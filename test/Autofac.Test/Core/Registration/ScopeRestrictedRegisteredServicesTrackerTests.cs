@@ -5,7 +5,6 @@ using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
-using Autofac.Util.Cache;
 
 namespace Autofac.Test.Core.Registration;
 

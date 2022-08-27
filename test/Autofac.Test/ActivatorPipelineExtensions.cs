@@ -67,8 +67,6 @@ public static class ActivatorPipelineExtensions
             _registry = registry;
         }
 
-        public ReflectionCache ReflectionCache => ReflectionCache.Shared;
-
         public bool IsRegistered(Service service)
         {
             return _registry.IsRegistered(service);

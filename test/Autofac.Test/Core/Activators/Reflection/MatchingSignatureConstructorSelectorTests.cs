@@ -4,7 +4,6 @@
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
-using Autofac.Util.Cache;
 
 namespace Autofac.Test.Core.Activators.Reflection;
 
