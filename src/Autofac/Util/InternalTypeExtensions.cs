@@ -145,7 +145,7 @@ internal static class InternalTypeExtensions
                    || type.IsGenericListOrCollectionInterfaceType();
         }
 
-        return ReflectionCache.Shared.Internal.IsGenericEnumerableInterface.GetOrAdd(type, Uncached);
+        return ReflectionCacheSet.Shared.Internal.IsGenericEnumerableInterface.GetOrAdd(type, Uncached);
     }
 
     /// <summary>
@@ -163,7 +163,7 @@ internal static class InternalTypeExtensions
                    || type.IsGenericTypeDefinedBy(typeof(IReadOnlyList<>));
         }
 
-        return ReflectionCache.Shared.Internal
+        return ReflectionCacheSet.Shared.Internal
                               .IsGenericListOrCollectionInterfaceType.GetOrAdd(type, Uncached);
     }
 
@@ -182,7 +182,7 @@ internal static class InternalTypeExtensions
                     && type.GetGenericTypeDefinition() == openGeneric;
         }
 
-        return ReflectionCache.Shared.Internal.IsGenericTypeDefinedBy.GetOrAdd(
+        return ReflectionCacheSet.Shared.Internal.IsGenericTypeDefinedBy.GetOrAdd(
             (@this, openGeneric),
             key => Uncached(key.Item1, key.Item2));
     }

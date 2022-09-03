@@ -38,7 +38,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         "CodeQuality",
         "IDE0052:Remove unread private members",
         Justification = "Intentionally holding a reference to the reflection cache in the tracker to keep the shared instance 'alive'.")]
-    private readonly ReflectionCache _capturedReflectionCache;
+    private readonly ReflectionCacheSet _capturedReflectionCache;
 
     private Dictionary<Service, ServiceRegistrationInfo>? _ephemeralServiceInfo;
     private bool _trackerPopulationComplete;
@@ -52,7 +52,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
 
         // Hold a reference to the reflection cache here so the current instance stays
         // 'active' for the lifetime of the tracker (and therefore the container build + container).
-        _capturedReflectionCache = ReflectionCache.Shared;
+        _capturedReflectionCache = ReflectionCacheSet.Shared;
     }
 
     /// <summary>

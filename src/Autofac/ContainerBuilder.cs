@@ -181,7 +181,7 @@ public sealed class ContainerBuilder
         BuildCallbackManager.RunBuildCallbacks(result);
 
         // Allow the reflection cache to empty any registration-time caches to save memory.
-        ReflectionCache.Shared.OnContainerBuild(_clearRegistrationCaches);
+        ReflectionCacheSet.Shared.OnContainerBuild(_clearRegistrationCaches);
 
         return result;
     }

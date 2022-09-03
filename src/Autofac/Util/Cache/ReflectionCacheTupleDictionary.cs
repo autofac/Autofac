@@ -14,7 +14,7 @@ namespace Autofac.Util.Cache;
 /// <typeparam name="TKey">The member items in the tuple key.</typeparam>
 /// <typeparam name="TValue">The value type.</typeparam>
 internal sealed class ReflectionCacheTupleDictionary<TKey, TValue>
-    : ConcurrentDictionary<(TKey, TKey), TValue>, IReflectionCacheStore
+    : ConcurrentDictionary<(TKey, TKey), TValue>, IReflectionCache
     where TKey : MemberInfo
 {
     /// <inheritdoc />

@@ -51,7 +51,7 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 
         // Use the non-internal form here because the dictionary value is a type internal to
         // this source.
-        var methodCache = ReflectionCache.Shared.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>("_lazyWithMetadataMethods");
+        var methodCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>("_lazyWithMetadataMethods");
 
         var registrationCreator = methodCache.GetOrAdd((valueType, metaType), types =>
         {

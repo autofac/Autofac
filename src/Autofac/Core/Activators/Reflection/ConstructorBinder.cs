@@ -32,7 +32,7 @@ public class ConstructorBinder
 
         if (_illegalParameter is null)
         {
-            var factoryCache = ReflectionCache.Shared.Internal.ConstructorBinderFactory;
+            var factoryCache = ReflectionCacheSet.Shared.Internal.ConstructorBinderFactory;
 
             // Build the invoker.
             _factory = factoryCache.GetOrAdd(constructorInfo, FactoryBuilder);

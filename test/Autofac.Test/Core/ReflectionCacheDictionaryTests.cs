@@ -3,7 +3,7 @@
 
 using Autofac.Util.Cache;
 
-namespace Autofac.Test.Util;
+namespace Autofac.Test.Core;
 
 public class ReflectionCacheDictionaryTests
 {

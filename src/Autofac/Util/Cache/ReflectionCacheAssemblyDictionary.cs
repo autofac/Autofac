@@ -13,7 +13,7 @@ namespace Autofac.Util.Cache;
 /// <typeparam name="TKey">The dictionary key.</typeparam>
 /// <typeparam name="TValue">The value type.</typeparam>
 public sealed class ReflectionCacheAssemblyDictionary<TKey, TValue>
-    : ConcurrentDictionary<TKey, TValue>, IReflectionCacheStore
+    : ConcurrentDictionary<TKey, TValue>, IReflectionCache
     where TKey : Assembly
 {
     /// <inheritdoc />

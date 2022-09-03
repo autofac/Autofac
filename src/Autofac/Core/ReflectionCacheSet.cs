@@ -8,24 +8,25 @@ using Autofac.Util.Cache;
 namespace Autofac.Core;
 
 /// <summary>
-/// Defines a cache of reflection-related data. Access the shared instance using <see cref="ReflectionCache.Shared"/>.
+/// Defines the set of all caches of reflection-related data.
+/// Access the shared instance using <see cref="Shared"/>.
 /// </summary>
-public sealed class ReflectionCache
+public sealed class ReflectionCacheSet
 {
-    private static WeakReference<ReflectionCache>? _sharedCache;
+    private static WeakReference<ReflectionCacheSet>? _sharedSet;
     private static object _cacheAllocationLock = new();
 
-    private readonly ConcurrentDictionary<string, IReflectionCacheStore> _caches = new();
+    private readonly ConcurrentDictionary<string, IReflectionCache> _caches = new();
 
     /// <summary>
-    /// Gets the shared <see cref="ReflectionCache"/>.
+    /// Gets the shared <see cref="ReflectionCacheSet"/>.
     /// </summary>
     /// <remarks>
     /// Avoid storing the value of this property, and access
     /// <see cref="GetOrCreateCache(string)"/> directly instead,
     /// to ensure caches can be freed correctly.
     /// </remarks>
-    public static ReflectionCache Shared
+    public static ReflectionCacheSet Shared
     {
         get
         {
@@ -36,8 +37,8 @@ public sealed class ReflectionCache
                     // Check the cache again inside the lock, another thread may have updated it.
                     if (!TryGetSharedCache(out sharedCache))
                     {
-                        sharedCache = new ReflectionCache();
-                        _sharedCache = new WeakReference<ReflectionCache>(sharedCache);
+                        sharedCache = new ReflectionCacheSet();
+                        _sharedSet = new WeakReference<ReflectionCacheSet>(sharedCache);
                     }
                 }
             }
@@ -47,33 +48,41 @@ public sealed class ReflectionCache
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="ReflectionCacheSet"/> class.
+    /// </summary>
+    public ReflectionCacheSet()
+    {
+        Internal = new InternalReflectionCaches(this);
+    }
+
+    /// <summary>
     /// Gets the instance of the known Internal caches defined in <see cref="InternalReflectionCaches"/>.
     /// </summary>
-    internal InternalReflectionCaches Internal { get; } = new();
+    internal InternalReflectionCaches Internal { get; }
 
     /// <summary>
     /// Get a typed cache store with a given name, that is held in this instance. An instance will be created if it does not already exist.
     /// </summary>
     /// <typeparam name="TCacheStore">
-    /// The type of cache store; must implement <see cref="IReflectionCacheStore"/>. See <see cref="ReflectionCacheDictionary{TKey, TValue}"/> for a typical example.
+    /// The type of cache store; must implement <see cref="IReflectionCache"/>. See <see cref="ReflectionCacheDictionary{TKey, TValue}"/> for a typical example.
     /// </typeparam>
     /// <param name="cacheName">The unique name of the cache.</param>
     /// <returns>An instance of <typeparamref name="TCacheStore"/>.</returns>
     public TCacheStore GetOrCreateCache<TCacheStore>(string cacheName)
-        where TCacheStore : IReflectionCacheStore, new()
+        where TCacheStore : IReflectionCache, new()
         => GetOrCreateCache<TCacheStore>(cacheName, CacheFactory<TCacheStore>.Factory);
 
     /// <summary>
     /// Get a typed cache store with a given name, that is held in this instance. An instance will be created if it does not already exist.
     /// </summary>
     /// <typeparam name="TCacheStore">
-    /// The type of cache store; must implement <see cref="IReflectionCacheStore"/>. See <see cref="ReflectionCacheDictionary{TKey, TValue}"/> for a typical example.
+    /// The type of cache store; must implement <see cref="IReflectionCache"/>. See <see cref="ReflectionCacheDictionary{TKey, TValue}"/> for a typical example.
     /// </typeparam>
     /// <param name="cacheName">The unique name of the cache.</param>
     /// <param name="cacheFactory">A custom factory for the cache store.</param>
     /// <returns>An instance of <typeparamref name="TCacheStore"/>.</returns>
     public TCacheStore GetOrCreateCache<TCacheStore>(string cacheName, Func<string, TCacheStore> cacheFactory)
-        where TCacheStore : IReflectionCacheStore
+        where TCacheStore : IReflectionCache
     {
         // This path is present for external code that wishes to store items in the reflection cache.
         try
@@ -93,7 +102,7 @@ public sealed class ReflectionCache
     }
 
     private static class CacheFactory<TCacheStore>
-        where TCacheStore : IReflectionCacheStore, new()
+        where TCacheStore : IReflectionCache, new()
     {
         public static Func<string, TCacheStore> Factory { get; } = static (k) => new TCacheStore();
     }
@@ -159,24 +168,19 @@ public sealed class ReflectionCache
         }
     }
 
-    private static bool TryGetSharedCache([NotNullWhen(true)] out ReflectionCache? sharedCache)
+    private static bool TryGetSharedCache([NotNullWhen(true)] out ReflectionCacheSet? sharedCache)
     {
-        if (_sharedCache is null)
+        if (_sharedSet is null)
         {
             sharedCache = null;
             return false;
         }
 
-        return _sharedCache.TryGetTarget(out sharedCache);
+        return _sharedSet.TryGetTarget(out sharedCache);
     }
 
-    private IEnumerable<IReflectionCacheStore> GetAllCaches()
+    private IEnumerable<IReflectionCache> GetAllCaches()
     {
-        foreach (var internalItem in Internal.All)
-        {
-            yield return internalItem;
-        }
-
         foreach (var externalItem in _caches)
         {
             yield return externalItem.Value;

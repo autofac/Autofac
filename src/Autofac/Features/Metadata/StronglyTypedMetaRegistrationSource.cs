@@ -46,7 +46,7 @@ internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
 
         var valueService = swt.ChangeType(valueType);
 
-        var methodCache = ReflectionCache.Shared.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>("_stronglyTypedMetadataMethods");
+        var methodCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>("_stronglyTypedMetadataMethods");
 
         var registrationCreator = methodCache.GetOrAdd((valueType, metaType), t =>
         {

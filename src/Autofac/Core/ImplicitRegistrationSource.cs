@@ -57,7 +57,7 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
         var valueType = swt.ServiceType.GenericTypeArguments[0];
         var valueService = swt.ChangeType(valueType);
 
-        var methodCache = ReflectionCache.Shared.GetOrCreateCache<ReflectionCacheDictionary<Type, RegistrationCreator>>(_cacheKey);
+        var methodCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheDictionary<Type, RegistrationCreator>>(_cacheKey);
 
         var registrationCreator = methodCache.GetOrAdd(valueType, t =>
         {

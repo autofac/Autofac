@@ -3,9 +3,9 @@
 
 using Autofac.Core;
 
-namespace Autofac.Test.Util;
+namespace Autofac.Test.Core;
 
-public class ReflectionCacheTests
+public class ReflectionCacheSetTests
 {
     [Fact]
     public void ClearingReflectionCacheBetweenResolvesIsOk()
@@ -18,7 +18,7 @@ public class ReflectionCacheTests
 
         container.Resolve<ISingle<int>>();
 
-        ReflectionCache.Shared.Clear();
+        ReflectionCacheSet.Shared.Clear();
 
         container.Resolve<ISingle<int>>();
     }
@@ -44,7 +44,7 @@ public class ReflectionCacheTests
         {
             for (var index = 0; index < 1000; index++)
             {
-                ReflectionCache.Shared.Clear((assembly, type) => type == typeof(CDerivedSingle<int>));
+                ReflectionCacheSet.Shared.Clear((assembly, type) => type == typeof(CDerivedSingle<int>));
             }
         });
 
@@ -62,7 +62,7 @@ public class ReflectionCacheTests
 
         container.Resolve<ISingle<int>>();
 
-        ReflectionCache.Shared.Clear();
+        ReflectionCacheSet.Shared.Clear();
 
         container.Resolve<ISingle<int>>();
     }

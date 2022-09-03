@@ -3,7 +3,7 @@
 
 using System.Reflection;
 
-namespace Autofac.Util.Cache;
+namespace Autofac.Core;
 
 /// <summary>
 /// Delegate for predicates that can choose whether to remove a member from the
@@ -25,7 +25,7 @@ public delegate bool ReflectionCacheClearPredicate(Assembly assembly, MemberInfo
 /// <summary>
 /// Defines an individual store of cached reflection data.
 /// </summary>
-public interface IReflectionCacheStore
+public interface IReflectionCache
 {
     /// <summary>
     /// Gets a value indicating when the cache is used.

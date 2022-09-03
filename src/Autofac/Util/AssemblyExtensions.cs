@@ -55,6 +55,6 @@ public static class AssemblyExtensions
                            .ToList();
         }
 
-        return ReflectionCache.Shared.Internal.AssemblyScanAllowedTypes.GetOrAdd(assembly, Uncached);
+        return ReflectionCacheSet.Shared.Internal.AssemblyScanAllowedTypes.GetOrAdd(assembly, Uncached);
     }
 }

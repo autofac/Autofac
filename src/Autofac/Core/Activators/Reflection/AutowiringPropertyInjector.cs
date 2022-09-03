@@ -51,7 +51,7 @@ internal static class AutowiringPropertyInjector
 
         var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
 
-        var injectablePropertiesCache = ReflectionCache.Shared.Internal.AutowiringInjectableProperties;
+        var injectablePropertiesCache = ReflectionCacheSet.Shared.Internal.AutowiringInjectableProperties;
 
         var instanceType = instance.GetType();
         var injectableProperties = injectablePropertiesCache.GetOrAdd(instanceType, type => GetInjectableProperties(type).ToList());
@@ -76,7 +76,7 @@ internal static class AutowiringPropertyInjector
                 !(p is NamedParameter n && n.Name.Equals("value", StringComparison.Ordinal)));
             if (parameter != null)
             {
-                var setter = ReflectionCache.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
+                var setter = ReflectionCacheSet.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
                 setter(instance, valueProvider!());
                 continue;
             }
@@ -85,7 +85,7 @@ internal static class AutowiringPropertyInjector
             var instanceTypeParameter = new NamedParameter(InstanceTypeNamedParameter, instanceType);
             if (context.TryResolveService(propertyService, new Parameter[] { instanceTypeParameter }, out var propertyValue))
             {
-                var setter = ReflectionCache.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
+                var setter = ReflectionCacheSet.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
                 setter(instance, propertyValue);
             }
         }
