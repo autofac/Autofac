@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core.Resolving.Pipeline;
-using Autofac.Util;
 
 namespace Autofac.Core.Registration;
 

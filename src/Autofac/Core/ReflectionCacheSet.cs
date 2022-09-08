@@ -13,8 +13,9 @@ namespace Autofac.Core;
 /// </summary>
 public sealed class ReflectionCacheSet
 {
+    private static readonly object CacheAllocationLock = new();
+
     private static WeakReference<ReflectionCacheSet>? _sharedSet;
-    private static object _cacheAllocationLock = new();
 
     private readonly ConcurrentDictionary<string, IReflectionCache> _caches = new();
 
@@ -32,7 +33,7 @@ public sealed class ReflectionCacheSet
         {
             if (!TryGetSharedCache(out var sharedCache))
             {
-                lock (_cacheAllocationLock)
+                lock (CacheAllocationLock)
                 {
                     // Check the cache again inside the lock, another thread may have updated it.
                     if (!TryGetSharedCache(out sharedCache))
@@ -97,7 +98,7 @@ public sealed class ReflectionCacheSet
         }
         catch (InvalidCastException)
         {
-            throw new InvalidOperationException("Attempted to retrieve a previously stored cache with a different type than originally stored.");
+            throw new InvalidOperationException(ReflectionCacheSetResources.CacheRetrievalTypeChange);
         }
     }
 
@@ -151,7 +152,7 @@ public sealed class ReflectionCacheSet
     /// Invoked when the container is built, to allow the cache to apply clearing behaviour.
     /// </summary>
     /// <param name="clearRegistrationCaches">True if we should clear caches marked only for registration.</param>
-    internal void OnContainerBuild(bool clearRegistrationCaches)
+    internal void OnContainerBuildClearCaches(bool clearRegistrationCaches)
     {
         if (clearRegistrationCaches)
         {

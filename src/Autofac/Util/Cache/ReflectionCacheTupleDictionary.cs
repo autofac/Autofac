@@ -25,6 +25,9 @@ internal sealed class ReflectionCacheTupleDictionary<TKey, TValue>
     {
         foreach (var kvp in this)
         {
+            // Remove an item if *either* member of the tuple matches,
+            // for generic implementation type caches where the closed generic
+            // is in a different assembly to the open one.
             if (predicate(GetKeyAssembly(kvp.Key.Item1), kvp.Key.Item1) ||
                 predicate(GetKeyAssembly(kvp.Key.Item2), kvp.Key.Item2))
             {

@@ -10,7 +10,6 @@ using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Autofac.Features.Decorators;
 using Autofac.Util;
-using Autofac.Util.Cache;
 
 namespace Autofac.Features.Collections;
 

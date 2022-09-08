@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
@@ -17,6 +16,8 @@ namespace Autofac.Features.Metadata;
 /// </summary>
 internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
 {
+    private const string ReflectionCacheName = $"{nameof(StronglyTypedMetaRegistrationSource)}.Cache";
+
     private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetDeclaredMethod(nameof(CreateMetaRegistration));
 
     private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration valueRegistration);
@@ -46,7 +47,7 @@ internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
 
         var valueService = swt.ChangeType(valueType);
 
-        var methodCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>("_stronglyTypedMetadataMethods");
+        var methodCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>(ReflectionCacheName);
 
         var registrationCreator = methodCache.GetOrAdd((valueType, metaType), t =>
         {

@@ -28,7 +28,7 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
     protected ImplicitRegistrationSource(Type type)
     {
         _type = type ?? throw new ArgumentNullException(nameof(type));
-        _cacheKey = $"_implSource_{Guid.NewGuid()}";
+        _cacheKey = $"{nameof(ImplicitRegistrationSource)}.{Guid.NewGuid()}";
 
         if (!type.IsGenericType)
         {

@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Reflection;
 using Autofac.Util.Cache;
 
-namespace Autofac.Test.Core;
+namespace Autofac.Test.Util.Cache;
 
 public class ReflectionCacheDictionaryTests
 {
@@ -35,5 +36,22 @@ public class ReflectionCacheDictionaryTests
         });
 
         Assert.Collection(cacheDict, (kvp) => Assert.Equal(typeof(int), kvp.Key));
+    }
+
+    [Fact]
+    public void MethodInfoAssemblyIsCorrect()
+    {
+        var cacheDict = new ReflectionCacheDictionary<MethodInfo, bool>();
+
+        cacheDict[typeof(string).GetMethod("IsNullOrEmpty")] = false;
+
+        cacheDict.Clear((assembly, member) =>
+        {
+            Assert.Equal(typeof(string).Assembly, assembly);
+
+            return member == typeof(string);
+        });
+
+        Assert.Empty(cacheDict);
     }
 }

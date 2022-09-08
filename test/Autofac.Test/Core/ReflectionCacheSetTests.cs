@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Reflection;
 using Autofac.Core;
+using Autofac.Util.Cache;
 
 namespace Autofac.Test.Core;
 
@@ -65,6 +67,16 @@ public class ReflectionCacheSetTests
         ReflectionCacheSet.Shared.Clear();
 
         container.Resolve<ISingle<int>>();
+    }
+
+    [Fact]
+    public void ChangingTypeBetweenCacheFetchesThrows()
+    {
+        var cache = new ReflectionCacheSet();
+
+        cache.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, bool>>("cache");
+
+        Assert.Throws<InvalidOperationException>(() => cache.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>("cache"));
     }
 
     private interface ISingle<T>

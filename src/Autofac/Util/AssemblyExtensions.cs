@@ -50,6 +50,7 @@ public static class AssemblyExtensions
     {
         static IReadOnlyList<Type> Uncached(Assembly assembly)
         {
+            // Run IsCompilerGenerated check last due to perf. See AssemblyScanningPerformanceTests.MeasurePerformance.
             return assembly.GetLoadableTypes()
                            .Where(t => t.IsClass && !t.IsAbstract && !t.IsDelegate() && !t.IsCompilerGenerated())
                            .ToList();

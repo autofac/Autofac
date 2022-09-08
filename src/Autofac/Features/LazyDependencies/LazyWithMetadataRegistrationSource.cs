@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
@@ -20,6 +19,8 @@ namespace Autofac.Features.LazyDependencies;
 /// </summary>
 internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 {
+    private const string ReflectionCacheName = $"{nameof(LazyWithMetadataRegistrationSource)}.Cache";
+
     private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetDeclaredMethod(nameof(CreateLazyRegistration));
 
     private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo);
@@ -51,7 +52,7 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 
         // Use the non-internal form here because the dictionary value is a type internal to
         // this source.
-        var methodCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>("_lazyWithMetadataMethods");
+        var methodCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>(ReflectionCacheName);
 
         var registrationCreator = methodCache.GetOrAdd((valueType, metaType), types =>
         {
