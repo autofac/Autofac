@@ -101,13 +101,7 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
             // If the item implements IAsyncDisposable we will call its DisposeAsync Method.
             if (_instance is IAsyncDisposable asyncDisposable)
             {
-                var vt = asyncDisposable.DisposeAsync();
-
-                // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
-                if (!vt.IsCompletedSuccessfully)
-                {
-                    await vt.ConfigureAwait(false);
-                }
+                await asyncDisposable.DisposeAsync().ConfigureAwait(false);
             }
             else if (_instance is IDisposable disposable)
             {

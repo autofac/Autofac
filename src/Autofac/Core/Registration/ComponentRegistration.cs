@@ -325,13 +325,7 @@ public class ComponentRegistration : Disposable, IComponentRegistration
             // Check the Activator type so we don't have to force Activators to implement IAsyncDisposable if they don't need it.
             if (Activator is IAsyncDisposable asyncDispose)
             {
-                var vt = asyncDispose.DisposeAsync();
-
-                // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
-                if (!vt.IsCompletedSuccessfully)
-                {
-                    await vt.ConfigureAwait(false);
-                }
+                await asyncDispose.DisposeAsync().ConfigureAwait(false);
             }
             else
             {

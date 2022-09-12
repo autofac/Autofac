@@ -259,13 +259,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     {
         foreach (var registration in _registrations)
         {
-            var vt = registration.DisposeAsync();
-
-            // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
-            if (!vt.IsCompletedSuccessfully)
-            {
-                await vt.ConfigureAwait(false);
-            }
+            await registration.DisposeAsync().ConfigureAwait(false);
         }
 
         // Do not call the base, otherwise the standard Dispose will fire.
