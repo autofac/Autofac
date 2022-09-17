@@ -10,80 +10,77 @@ namespace Autofac.Test.Core;
 public class ReflectionCacheSetTests
 {
     [Fact]
-    public void ClearingReflectionCacheBetweenResolvesIsOk()
+    public void GettingCacheSubsequentlyReturnsSameInstance()
     {
-        var builder = new ContainerBuilder();
+        var set = new ReflectionCacheSet();
 
-        builder.RegisterType<CDerivedSingle<int>>().As<ISingle<int>>();
+        var cache = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>("cache");
 
-        var container = builder.Build();
+        var secondCache = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>("cache");
 
-        container.Resolve<ISingle<int>>();
-
-        ReflectionCacheSet.Shared.Clear();
-
-        container.Resolve<ISingle<int>>();
+        Assert.Same(cache, secondCache);
     }
 
     [Fact]
-    public async Task ConcurrentCacheClearsAndResolvesIsOk()
+    public void InvokingClearCallsClearOnAllCaches()
     {
-        var builder = new ContainerBuilder();
+        var set = new ReflectionCacheSet();
 
-        builder.RegisterType<CDerivedSingle<int>>().As<ISingle<int>>();
+        var internalCache = set.Internal.IsGenericEnumerableInterface;
+        internalCache[typeof(IEnumerable<>)] = true;
 
-        var container = builder.Build();
+        var externalCache = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>("cache");
+        externalCache[typeof(string)] = true;
 
-        var resolveLoopTask = Task.Run(() =>
-        {
-            for (var index = 0; index < 10_000; index++)
-            {
-                container.Resolve<ISingle<int>>();
-            }
-        });
+        set.Clear();
 
-        var cacheClearTask = Task.Run(() =>
-        {
-            for (var index = 0; index < 1000; index++)
-            {
-                ReflectionCacheSet.Shared.Clear((assembly, type) => type == typeof(CDerivedSingle<int>));
-            }
-        });
-
-        await Task.WhenAll(resolveLoopTask, cacheClearTask);
+        Assert.Empty(internalCache);
+        Assert.Empty(externalCache);
     }
 
     [Fact]
-    public void ClearingReflectionCacheBetweenOpenGenericResolvesIsOk()
+    public void InvokingClearWithPredicateCallsClearOnAllCaches()
     {
-        var builder = new ContainerBuilder();
+        var set = new ReflectionCacheSet();
 
-        builder.RegisterGeneric(typeof(CDerivedSingle<>)).As(typeof(ISingle<>));
+        var internalCache = set.Internal.IsGenericEnumerableInterface;
+        internalCache[typeof(IEnumerable<>)] = true;
+        internalCache[typeof(string)] = false;
 
-        var container = builder.Build();
+        var externalCache = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>("cache");
+        externalCache[typeof(string)] = true;
 
-        container.Resolve<ISingle<int>>();
+        set.Clear((assembly, member) => member == typeof(string));
 
-        ReflectionCacheSet.Shared.Clear();
-
-        container.Resolve<ISingle<int>>();
+        Assert.Collection(internalCache, item => Assert.Equal(typeof(IEnumerable<>), item.Key));
+        Assert.Empty(externalCache);
     }
 
     [Fact]
     public void ChangingTypeBetweenCacheFetchesThrows()
     {
-        var cache = new ReflectionCacheSet();
+        var set = new ReflectionCacheSet();
 
-        cache.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, bool>>("cache");
+        set.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, bool>>("cache");
 
-        Assert.Throws<InvalidOperationException>(() => cache.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>("cache"));
+        Assert.Throws<InvalidOperationException>(() => set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>("cache"));
     }
 
-    private interface ISingle<T>
+    [Fact]
+    public void OnContainerBuildClearCachesOnlyClearsRegistrationOnlyCaches()
     {
-    }
+        var set = new ReflectionCacheSet();
 
-    private class CDerivedSingle<T> : ISingle<T>
-    {
+        var cacheRegOnly = set.GetOrCreateCache("cacheRegistrationOnly", _ => new ReflectionCacheDictionary<Type, bool> { Usage = ReflectionCacheUsage.Registration });
+
+        var cacheAllStages = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>("cacheAllStages");
+
+        cacheRegOnly[typeof(string)] = true;
+        cacheAllStages[typeof(string)] = true;
+
+        set.OnContainerBuildClearCaches(clearRegistrationCaches: true);
+
+        Assert.Empty(cacheRegOnly);
+        Assert.NotEmpty(cacheAllStages);
     }
 }
