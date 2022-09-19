@@ -2,8 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Test.Scenarios.ScannedAssembly;
-
-using InternalTypeExtensions = Autofac.Util.TypeExtensions;
+using Autofac.Util;
 
 namespace Autofac.Test.Util;
 

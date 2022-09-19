@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.Metadata;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Features.LazyDependencies;
 
@@ -19,11 +19,11 @@ namespace Autofac.Features.LazyDependencies;
 /// </summary>
 internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 {
+    private const string ReflectionCacheName = $"{nameof(LazyWithMetadataRegistrationSource)}.Cache";
+
     private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetDeclaredMethod(nameof(CreateLazyRegistration));
 
     private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo);
-
-    private readonly ConcurrentDictionary<(Type ValueType, Type MetaType), RegistrationCreator> _methodCache = new();
 
     /// <inheritdoc/>
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
@@ -50,9 +50,13 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 
         var valueService = swt.ChangeType(valueType);
 
-        var registrationCreator = _methodCache.GetOrAdd((valueType, metaType), types =>
+        // Use the non-internal form here because the dictionary value is a type internal to
+        // this source.
+        var methodCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>(ReflectionCacheName);
+
+        var registrationCreator = methodCache.GetOrAdd((valueType, metaType), types =>
         {
-            return CreateLazyRegistrationMethod.MakeGenericMethod(types.ValueType, types.MetaType).CreateDelegate<RegistrationCreator>(null);
+            return CreateLazyRegistrationMethod.MakeGenericMethod(types.Item1, types.Item2).CreateDelegate<RegistrationCreator>(null);
         });
 
         return registrationAccessor(valueService)

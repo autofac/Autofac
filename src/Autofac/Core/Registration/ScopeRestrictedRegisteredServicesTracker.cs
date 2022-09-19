@@ -8,7 +8,7 @@ namespace Autofac.Core.Registration;
 /// <summary>
 /// A <see cref="IRegisteredServicesTracker" /> where the singletons are scoped with the provided <see cref="IComponentLifetime" />.
 /// </summary>
-internal class ScopeRestrictedRegisteredServicesTracker : DefaultRegisteredServicesTracker
+internal sealed class ScopeRestrictedRegisteredServicesTracker : DefaultRegisteredServicesTracker
 {
     private readonly IComponentLifetime _restrictedRootScopeLifetime;
 

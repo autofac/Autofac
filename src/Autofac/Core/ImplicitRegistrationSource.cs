@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Core;
 
@@ -18,7 +19,7 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
     private static readonly MethodInfo CreateRegistrationMethod = typeof(ImplicitRegistrationSource).GetDeclaredMethod(nameof(CreateRegistration));
 
     private readonly Type _type;
-    private readonly ConcurrentDictionary<Type, RegistrationCreator> _methodCache;
+    private readonly string _cacheKey;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ImplicitRegistrationSource"/> class.
@@ -27,6 +28,7 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
     protected ImplicitRegistrationSource(Type type)
     {
         _type = type ?? throw new ArgumentNullException(nameof(type));
+        _cacheKey = $"{nameof(ImplicitRegistrationSource)}.{Guid.NewGuid()}";
 
         if (!type.IsGenericType)
         {
@@ -37,8 +39,6 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
         {
             throw new InvalidOperationException(ImplicitRegistrationSourceResources.GenericTypeMustBeUnary);
         }
-
-        _methodCache = new ConcurrentDictionary<Type, RegistrationCreator>();
     }
 
     /// <inheritdoc />
@@ -56,7 +56,10 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
 
         var valueType = swt.ServiceType.GenericTypeArguments[0];
         var valueService = swt.ChangeType(valueType);
-        var registrationCreator = _methodCache.GetOrAdd(valueType, t =>
+
+        var methodCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheDictionary<Type, RegistrationCreator>>(_cacheKey);
+
+        var registrationCreator = methodCache.GetOrAdd(valueType, t =>
         {
             return CreateRegistrationMethod.MakeGenericMethod(t).CreateDelegate<RegistrationCreator>(this);
         });

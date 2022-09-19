@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
+using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Specification.Test.Resolution;
