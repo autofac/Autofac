@@ -94,14 +94,23 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
     }
 
     /// <inheritdoc />
-    protected override async ValueTask DisposeAsync(bool disposing)
+    protected override ValueTask DisposeAsync(bool disposing)
     {
         if (disposing && DisposeInstance && !_activated)
         {
             // If the item implements IAsyncDisposable we will call its DisposeAsync Method.
             if (_instance is IAsyncDisposable asyncDisposable)
             {
-                await asyncDisposable.DisposeAsync().ConfigureAwait(false);
+                var vt = asyncDisposable.DisposeAsync();
+                if (vt.IsCompletedSuccessfully)
+                {
+                    return vt;
+                }
+                else
+                {
+                    static async ValueTask Awaiter(ValueTask vt) => await vt.ConfigureAwait(false);
+                    return Awaiter(vt);
+                }
             }
             else if (_instance is IDisposable disposable)
             {

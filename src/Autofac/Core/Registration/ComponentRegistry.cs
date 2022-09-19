@@ -108,9 +108,18 @@ internal class ComponentRegistry : Disposable, IComponentRegistry
     }
 
     /// <inheritdoc />
-    protected override async ValueTask DisposeAsync(bool disposing)
+    protected override ValueTask DisposeAsync(bool disposing)
     {
-        await _registeredServicesTracker.DisposeAsync().ConfigureAwait(false);
+        var vt = _registeredServicesTracker.DisposeAsync();
+        if (vt.IsCompletedSuccessfully)
+        {
+            return vt;
+        }
+        else
+        {
+            static async ValueTask Awaiter(ValueTask vt) => await vt.ConfigureAwait(false);
+            return Awaiter(vt);
+        }
 
         // Do not call the base, otherwise the standard Dispose will fire.
     }

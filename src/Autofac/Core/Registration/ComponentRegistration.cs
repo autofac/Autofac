@@ -318,14 +318,23 @@ public class ComponentRegistration : Disposable, IComponentRegistration
     }
 
     /// <inheritdoc />
-    protected override async ValueTask DisposeAsync(bool disposing)
+    protected override ValueTask DisposeAsync(bool disposing)
     {
         if (disposing)
         {
             // Check the Activator type so we don't have to force Activators to implement IAsyncDisposable if they don't need it.
             if (Activator is IAsyncDisposable asyncDispose)
             {
-                await asyncDispose.DisposeAsync().ConfigureAwait(false);
+                var vt = asyncDispose.DisposeAsync();
+                if (vt.IsCompletedSuccessfully)
+                {
+                    return vt;
+                }
+                else
+                {
+                    static async ValueTask Awaiter(ValueTask vt) => await vt.ConfigureAwait(false);
+                    return Awaiter(vt);
+                }
             }
             else
             {
