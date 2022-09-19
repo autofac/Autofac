@@ -106,6 +106,7 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
                 {
                     return vt;
                 }
+
                 static async ValueTask Awaiter(ValueTask vt) => await vt.ConfigureAwait(false);
                 return Awaiter(vt);
             }
@@ -113,9 +114,10 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
             {
                 // Call the standard Dispose.
                 disposable.Dispose();
-                return default;
             }
         }
+
+        return default;
 
         // Do not call the base, otherwise the standard Dispose will fire.
     }

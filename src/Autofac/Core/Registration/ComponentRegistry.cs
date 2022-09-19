@@ -115,11 +115,9 @@ internal class ComponentRegistry : Disposable, IComponentRegistry
         {
             return vt;
         }
-        else
-        {
-            static async ValueTask Awaiter(ValueTask vt) => await vt.ConfigureAwait(false);
-            return Awaiter(vt);
-        }
+
+        static async ValueTask Awaiter(ValueTask vt) => await vt.ConfigureAwait(false);
+        return Awaiter(vt);
 
         // Do not call the base, otherwise the standard Dispose will fire.
     }
