@@ -330,15 +330,13 @@ public class ComponentRegistration : Disposable, IComponentRegistration
                 {
                     return vt;
                 }
-                else
-                {
-                    static async ValueTask Awaiter(ValueTask vt) => await vt.ConfigureAwait(false);
-                    return Awaiter(vt);
-                }
+                static async ValueTask Awaiter(ValueTask vt) => await vt.ConfigureAwait(false);
+                return Awaiter(vt);
             }
             else
             {
                 Activator.Dispose();
+                return default;
             }
         }
 

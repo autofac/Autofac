@@ -106,16 +106,14 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
                 {
                     return vt;
                 }
-                else
-                {
-                    static async ValueTask Awaiter(ValueTask vt) => await vt.ConfigureAwait(false);
-                    return Awaiter(vt);
-                }
+                static async ValueTask Awaiter(ValueTask vt) => await vt.ConfigureAwait(false);
+                return Awaiter(vt);
             }
             else if (_instance is IDisposable disposable)
             {
                 // Call the standard Dispose.
                 disposable.Dispose();
+                return default;
             }
         }
 
