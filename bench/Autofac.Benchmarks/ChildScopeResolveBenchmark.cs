@@ -17,6 +17,19 @@ public class ChildScopeResolveBenchmark
         }
     }
 
+    [Benchmark]
+    public void ResolveNeverRegisteredFromChild()
+    {
+        using (var requestScope = _container.BeginLifetimeScope("request", b => b.RegisterType<C1>()))
+        {
+            using (var unitOfWorkScope = requestScope.BeginLifetimeScope())
+            {
+                var instance = unitOfWorkScope.Resolve<IEnumerable<NeverRegistered>>();
+                GC.KeepAlive(instance);
+            }
+        }
+    }
+
     [GlobalSetup]
     public void Setup()
     {
@@ -58,4 +71,6 @@ public class ChildScopeResolveBenchmark
     internal class D1 { }
 
     internal class D2 { }
+
+    internal class NeverRegistered { }
 }

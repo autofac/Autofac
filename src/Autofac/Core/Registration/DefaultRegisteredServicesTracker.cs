@@ -274,6 +274,15 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
     {
         var createdEphemeralSet = false;
+        var isIsolatedService = false;
+
+        if (service is IsolatedService isolatedService)
+        {
+            // This is an isolated service query; use the internal service instead and
+            // remember that fact for later.
+            isIsolatedService = true;
+            service = isolatedService.Service;
+        }
 
         var info = GetServiceInfo(service);
         if (info.IsInitialized)
@@ -355,9 +364,19 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         {
             info.InitializationDepth--;
 
-            if (info.InitializationDepth == 0 && succeeded)
+            if (info.InitializationDepth == 0)
             {
-                info.CompleteInitialization();
+                if (succeeded)
+                {
+                    info.CompleteInitialization();
+                }
+
+                if ((!succeeded || (!info.IsRegistered && !info.IsCustomServiceMiddleware)) && isIsolatedService)
+                {
+                    // No registrations or custom middleware was found for this service, and this service enquiry is marked as "isolated",
+                    // meaning that we shouldn't remember any info for it if it has no registrations.
+                    DeleteInfoForService(service);
+                }
             }
 
             if (lockTaken)
@@ -404,6 +423,11 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     private ServiceRegistrationInfo GetServiceInfo(Service service)
     {
         return _serviceInfo.GetOrAdd(service, RegInfoFactory);
+    }
+
+    private void DeleteInfoForService(Service service)
+    {
+        _serviceInfo.TryRemove(service, out _);
     }
 
     private static ServiceRegistrationInfo GetEphemeralServiceInfo(Dictionary<Service, ServiceRegistrationInfo> ephemeralSet, Service service, ServiceRegistrationInfo info)

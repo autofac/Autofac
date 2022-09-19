@@ -153,6 +153,15 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         }
     }
 
+    public bool IsCustomServiceMiddleware
+    {
+        get
+        {
+            RequiresInitialization();
+            return _customPipelineBuilder is not null;
+        }
+    }
+
     private bool Any =>
         _defaultImplementations.Count > 0 ||
         _sourceImplementations != null ||

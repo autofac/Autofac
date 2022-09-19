@@ -18,7 +18,9 @@ internal class ExternalRegistrySource : IRegistrationSource
     /// </summary>
     /// <param name="registry">Component registry to pull registrations from.</param>
     public ExternalRegistrySource(IComponentRegistry registry)
-        => _registry = registry ?? throw new ArgumentNullException(nameof(registry));
+    {
+        _registry = registry ?? throw new ArgumentNullException(nameof(registry));
+    }
 
     /// <summary>
     /// Retrieve registrations for an unregistered service, to be used
@@ -35,7 +37,7 @@ internal class ExternalRegistrySource : IRegistrationSource
 
         // Issue #272: Taking from the registry the following registrations:
         //   - non-adapting own registrations: wrap them with ExternalComponentRegistration
-        foreach (var registration in _registry.RegistrationsFor(service))
+        foreach (var registration in _registry.RegistrationsFor(new IsolatedService(service)))
         {
             if (registration is ExternalComponentRegistration || !registration.IsAdapting())
             {

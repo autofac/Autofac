@@ -36,6 +36,16 @@ public class NestedScopeRegistrationTests
     }
 
     [Fact]
+    public void ParentTracker()
+    {
+        var cb = new ContainerBuilder();
+        var container = cb.Build();
+        var ls1 = container.BeginLifetimeScope(b => { });
+        var ls2 = ls1.BeginLifetimeScope(b => b.RegisterType<MyComponent>());
+        Assert.Equal(1, ls2.Resolve<IEnumerable<MyComponent>>().Count());
+    }
+
+    [Fact]
     public void BothLocalAndParentRegistrationsAreAvailableViaAdapter()
     {
         var cb = new ContainerBuilder();

@@ -24,6 +24,6 @@ internal class ExternalRegistryServiceMiddlewareSource : IServiceMiddlewareSourc
     /// <inheritdoc/>
     public void ProvideMiddleware(Service service, IComponentRegistryServices availableServices, IResolvePipelineBuilder pipelineBuilder)
     {
-        pipelineBuilder.UseRange(_componentRegistry.ServiceMiddlewareFor(service));
+        pipelineBuilder.UseRange(_componentRegistry.ServiceMiddlewareFor(new IsolatedService(service)));
     }
 }
