@@ -87,13 +87,7 @@ internal class Disposer : Disposable, IDisposer
                     // If the item implements IAsyncDisposable we will call its DisposeAsync Method.
                     if (item is IAsyncDisposable asyncDisposable)
                     {
-                        var vt = asyncDisposable.DisposeAsync();
-
-                        // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
-                        if (!vt.IsCompletedSuccessfully)
-                        {
-                            await vt.ConfigureAwait(false);
-                        }
+                        await asyncDisposable.DisposeAsync().ConfigureAwait(false);
                     }
                     else if (item is IDisposable disposable)
                     {
