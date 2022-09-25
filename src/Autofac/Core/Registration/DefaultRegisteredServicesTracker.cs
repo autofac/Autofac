@@ -8,10 +8,6 @@ using Autofac.Util;
 
 namespace Autofac.Core.Registration;
 
-internal interface IPerScopeRegistrationSource
-{
-}
-
 /// <summary>
 /// Keeps track of the status of registered services.
 /// </summary>

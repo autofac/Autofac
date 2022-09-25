@@ -153,6 +153,9 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether this registration info has any custom service middleware registered.
+    /// </summary>
     public bool HasCustomServiceMiddleware
     {
         get

@@ -4,17 +4,21 @@
 namespace Autofac.Core;
 
 /// <summary>
-/// Services are the lookup keys used to locate component instances.
+/// Defines an isolated wrapper for a regular service.
 /// </summary>
 internal class ScopeIsolatedService : Service
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ScopeIsolatedService"/> class.
+    /// </summary>
+    /// <param name="service">The service to wrap for isolation.</param>
     public ScopeIsolatedService(Service service)
     {
         Service = service;
     }
 
     /// <summary>
-    /// Contains the actual service that has been isolated.
+    /// Gets the actual service that has been isolated.
     /// </summary>
     public Service Service { get; }
 
