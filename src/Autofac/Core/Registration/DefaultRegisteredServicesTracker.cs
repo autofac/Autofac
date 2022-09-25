@@ -383,7 +383,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
                     info.CompleteInitialization();
                 }
 
-                if ((!succeeded || (!info.IsRegistered && !info.HasCustomServiceMiddleware)) && isScopeIsolatedService)
+                if (isScopeIsolatedService && (!succeeded || (!info.IsRegistered && !info.HasCustomServiceMiddleware)))
                 {
                     // No registrations or custom middleware was found for this service, and this service enquiry is marked as "isolated",
                     // meaning that we shouldn't remember any info for it if it has no registrations.
