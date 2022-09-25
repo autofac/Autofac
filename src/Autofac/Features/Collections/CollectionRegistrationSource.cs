@@ -10,6 +10,7 @@ using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Autofac.Features.Decorators;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Features.Collections;
 
@@ -74,25 +75,37 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
         Type? elementType = null;
         Type? limitType = null;
         Func<int, IList>? factory = null;
+        var factoryCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, (Type, Func<int, IList>)>>("CollectionRegistrationSource");
 
         if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
         {
             elementType = serviceType.GenericTypeArguments[0];
-            limitType = elementType.MakeArrayType();
-            factory = GenerateArrayFactory(elementType);
+
+            (limitType, factory) = factoryCache.GetOrAdd((serviceType, elementType), static t =>
+            {
+                var limit = t.Item2.MakeArrayType();
+                return (limit, GenerateArrayFactory(t.Item2));
+            });
         }
         else if (serviceType.IsArray)
         {
             // GetElementType always non-null if IsArray is true.
             elementType = serviceType.GetElementType()!;
+
             limitType = serviceType;
-            factory = GenerateArrayFactory(elementType);
+            (_, factory) = factoryCache.GetOrAdd((serviceType, elementType), static t =>
+            {
+                return (t.Item2, GenerateArrayFactory(t.Item2));
+            });
         }
         else if (serviceType.IsGenericListOrCollectionInterfaceType())
         {
             elementType = serviceType.GenericTypeArguments[0];
-            limitType = typeof(List<>).MakeGenericType(elementType);
-            factory = GenerateListFactory(elementType);
+
+            (limitType, factory) = factoryCache.GetOrAdd((serviceType, elementType), static t =>
+            {
+                return (typeof(List<>).MakeGenericType(t.Item2), GenerateListFactory(t.Item2));
+            });
         }
 
         if (elementType == null || factory == null || limitType == null)
