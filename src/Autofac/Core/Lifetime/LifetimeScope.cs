@@ -234,15 +234,12 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
 
         var fallbackProperties = new FallbackDictionary<string, object?>(ComponentRegistry.Properties);
-        var registryBuilder = new ComponentRegistryBuilder(tracker, fallbackProperties);
-
-        var builder = new ContainerBuilder(fallbackProperties, registryBuilder);
 
         foreach (var source in ComponentRegistry.Sources)
         {
             if (source.IsAdapterForIndividualComponents || source is IPerScopeRegistrationSource)
             {
-                builder.RegisterSource(source);
+                tracker.AddRegistrationSource(source);
             }
         }
 
@@ -254,17 +251,20 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             if (parent.ComponentRegistry.HasLocalComponents)
             {
                 var externalSource = new ExternalRegistrySource(parent.ComponentRegistry);
-                builder.RegisterSource(externalSource);
+                tracker.AddRegistrationSource(externalSource);
 
                 // Add a source for the service pipeline stages.
                 var externalServicePipelineSource = new ExternalRegistryServiceMiddlewareSource(parent.ComponentRegistry);
-                builder.RegisterServiceMiddlewareSource(externalServicePipelineSource);
+                tracker.AddServiceMiddlewareSource(externalServicePipelineSource);
 
                 break;
             }
 
             parent = parent.ParentLifetimeScope;
         }
+
+        var registryBuilder = new ComponentRegistryBuilder(tracker, fallbackProperties);
+        var builder = new ContainerBuilder(fallbackProperties, registryBuilder);
 
         configurationAction(builder);
 
