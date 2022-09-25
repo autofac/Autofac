@@ -13,8 +13,6 @@ public class DefaultConstructorFinder : IConstructorFinder
 {
     private readonly Func<Type, ConstructorInfo[]> _finder;
 
-    private static readonly ConcurrentDictionary<Type, ConstructorInfo[]> DefaultPublicConstructorsCache = new();
-
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultConstructorFinder" /> class.
     /// </summary>
@@ -47,7 +45,8 @@ public class DefaultConstructorFinder : IConstructorFinder
 
     private static ConstructorInfo[] GetDefaultPublicConstructors(Type type)
     {
-        var retval = DefaultPublicConstructorsCache.GetOrAdd(type, t => t.GetDeclaredPublicConstructors());
+        var retval = ReflectionCacheSet.Shared.Internal.DefaultPublicConstructors
+            .GetOrAdd(type, t => t.GetDeclaredPublicConstructors());
 
         if (retval.Length == 0)
         {

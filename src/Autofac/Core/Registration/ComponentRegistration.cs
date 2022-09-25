@@ -318,7 +318,7 @@ public class ComponentRegistration : Disposable, IComponentRegistration
     }
 
     /// <inheritdoc />
-    protected override async ValueTask DisposeAsync(bool disposing)
+    protected override ValueTask DisposeAsync(bool disposing)
     {
         if (disposing)
         {
@@ -326,18 +326,21 @@ public class ComponentRegistration : Disposable, IComponentRegistration
             if (Activator is IAsyncDisposable asyncDispose)
             {
                 var vt = asyncDispose.DisposeAsync();
-
-                // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
-                if (!vt.IsCompletedSuccessfully)
+                if (vt.IsCompletedSuccessfully)
                 {
-                    await vt.ConfigureAwait(false);
+                    return vt;
                 }
+
+                static async ValueTask Awaiter(ValueTask vt) => await vt.ConfigureAwait(false);
+                return Awaiter(vt);
             }
             else
             {
                 Activator.Dispose();
             }
         }
+
+        return default;
 
         // Do not call the base, otherwise the standard Dispose will fire.
     }

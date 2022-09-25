@@ -34,6 +34,12 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
 
     private readonly List<IServiceMiddlewareSource> _servicePipelineSources = new();
 
+    [SuppressMessage(
+        "CodeQuality",
+        "IDE0052:Remove unread private members",
+        Justification = "Intentionally holding a reference to the reflection cache in the tracker to keep the shared instance 'alive'.")]
+    private readonly ReflectionCacheSet _capturedReflectionCache;
+
     private Dictionary<Service, ServiceRegistrationInfo>? _ephemeralServiceInfo;
     private bool _trackerPopulationComplete;
 
@@ -43,6 +49,10 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     public DefaultRegisteredServicesTracker()
     {
         _registrationAccessor = ServiceRegistrationsFor;
+
+        // Hold a reference to the reflection cache here so the current instance stays
+        // 'active' for the lifetime of the tracker (and therefore the container build + container).
+        _capturedReflectionCache = ReflectionCacheSet.Shared;
     }
 
     /// <summary>
@@ -259,13 +269,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     {
         foreach (var registration in _registrations)
         {
-            var vt = registration.DisposeAsync();
-
-            // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
-            if (!vt.IsCompletedSuccessfully)
-            {
-                await vt.ConfigureAwait(false);
-            }
+            await registration.DisposeAsync().ConfigureAwait(false);
         }
 
         // Do not call the base, otherwise the standard Dispose will fire.

@@ -94,7 +94,7 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
     }
 
     /// <inheritdoc />
-    protected override async ValueTask DisposeAsync(bool disposing)
+    protected override ValueTask DisposeAsync(bool disposing)
     {
         if (disposing && DisposeInstance && !_activated)
         {
@@ -102,12 +102,13 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
             if (_instance is IAsyncDisposable asyncDisposable)
             {
                 var vt = asyncDisposable.DisposeAsync();
-
-                // Don't await if it's already completed (this is a slight gain in performance of using ValueTask).
-                if (!vt.IsCompletedSuccessfully)
+                if (vt.IsCompletedSuccessfully)
                 {
-                    await vt.ConfigureAwait(false);
+                    return vt;
                 }
+
+                static async ValueTask Awaiter(ValueTask vt) => await vt.ConfigureAwait(false);
+                return Awaiter(vt);
             }
             else if (_instance is IDisposable disposable)
             {
@@ -115,6 +116,8 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
                 disposable.Dispose();
             }
         }
+
+        return default;
 
         // Do not call the base, otherwise the standard Dispose will fire.
     }

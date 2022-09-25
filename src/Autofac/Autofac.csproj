@@ -149,6 +149,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ContainerResources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Core\ReflectionCacheSetResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ReflectionCacheSetResources.resx</DependentUpon>
+    </Compile>
     <Compile Update="Diagnostics\TracerMessages.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -384,6 +389,10 @@
     <EmbeddedResource Update="Core\ContainerResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>ContainerResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Core\ReflectionCacheSetResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ReflectionCacheSetResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Diagnostics\TracerMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>

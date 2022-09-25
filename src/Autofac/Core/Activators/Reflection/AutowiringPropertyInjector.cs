@@ -17,10 +17,6 @@ internal static class AutowiringPropertyInjector
     /// </summary>
     internal const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
 
-    private static readonly ConcurrentDictionary<PropertyInfo, Action<object, object?>> PropertySetters = new();
-
-    private static readonly ConcurrentDictionary<Type, PropertyInfo[]> InjectableProperties = new();
-
     private static readonly MethodInfo CallPropertySetterOpenGenericMethod =
         typeof(AutowiringPropertyInjector).GetDeclaredMethod(nameof(CallPropertySetter));
 
@@ -55,10 +51,12 @@ internal static class AutowiringPropertyInjector
 
         var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
 
-        var instanceType = instance.GetType();
-        var injectableProperties = InjectableProperties.GetOrAdd(instanceType, type => GetInjectableProperties(type).ToArray());
+        var injectablePropertiesCache = ReflectionCacheSet.Shared.Internal.AutowiringInjectableProperties;
 
-        for (var index = 0; index < injectableProperties.Length; index++)
+        var instanceType = instance.GetType();
+        var injectableProperties = injectablePropertiesCache.GetOrAdd(instanceType, type => GetInjectableProperties(type).ToList());
+
+        for (var index = 0; index < injectableProperties.Count; index++)
         {
             var property = injectableProperties[index];
 
@@ -78,7 +76,7 @@ internal static class AutowiringPropertyInjector
                 !(p is NamedParameter n && n.Name.Equals("value", StringComparison.Ordinal)));
             if (parameter != null)
             {
-                var setter = PropertySetters.GetOrAdd(property, MakeFastPropertySetter);
+                var setter = ReflectionCacheSet.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
                 setter(instance, valueProvider!());
                 continue;
             }
@@ -87,7 +85,7 @@ internal static class AutowiringPropertyInjector
             var instanceTypeParameter = new NamedParameter(InstanceTypeNamedParameter, instanceType);
             if (context.TryResolveService(propertyService, new Parameter[] { instanceTypeParameter }, out var propertyValue))
             {
-                var setter = PropertySetters.GetOrAdd(property, MakeFastPropertySetter);
+                var setter = ReflectionCacheSet.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
                 setter(instance, propertyValue);
             }
         }

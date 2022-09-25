@@ -4,20 +4,15 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using Autofac.Core;
 
 namespace Autofac.Util;
 
 /// <summary>
 /// Provides helper methods for manipulating and inspecting types.
 /// </summary>
-internal static class TypeExtensions
+internal static class InternalTypeExtensions
 {
-    private static readonly ConcurrentDictionary<Type, bool> IsGenericEnumerableInterfaceCache = new();
-
-    private static readonly ConcurrentDictionary<Type, bool> IsGenericListOrCollectionInterfaceTypeCache = new();
-
-    private static readonly ConcurrentDictionary<(Type, Type), bool> IsGenericTypeDefinedByCache = new();
-
     /// <summary>
     /// For a delegate type, outputs the return type of the delegate.
     /// </summary>
@@ -144,9 +139,13 @@ internal static class TypeExtensions
     /// <returns>True if the type is one of the supported enumerable interface types.</returns>
     public static bool IsGenericEnumerableInterfaceType(this Type type)
     {
-        return IsGenericEnumerableInterfaceCache.GetOrAdd(
-            type, t => type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
-                       || type.IsGenericListOrCollectionInterfaceType());
+        static bool Uncached(Type type)
+        {
+            return type.IsGenericTypeDefinedBy(typeof(IEnumerable<>))
+                   || type.IsGenericListOrCollectionInterfaceType();
+        }
+
+        return ReflectionCacheSet.Shared.Internal.IsGenericEnumerableInterface.GetOrAdd(type, Uncached);
     }
 
     /// <summary>
@@ -156,11 +155,16 @@ internal static class TypeExtensions
     /// <returns>True if the type is one of the supported list/collection types.</returns>
     public static bool IsGenericListOrCollectionInterfaceType(this Type type)
     {
-        return IsGenericListOrCollectionInterfaceTypeCache.GetOrAdd(
-            type, t => t.IsGenericTypeDefinedBy(typeof(IList<>))
-                       || t.IsGenericTypeDefinedBy(typeof(ICollection<>))
-                       || t.IsGenericTypeDefinedBy(typeof(IReadOnlyCollection<>))
-                       || t.IsGenericTypeDefinedBy(typeof(IReadOnlyList<>)));
+        static bool Uncached(Type type)
+        {
+            return type.IsGenericTypeDefinedBy(typeof(IList<>))
+                   || type.IsGenericTypeDefinedBy(typeof(ICollection<>))
+                   || type.IsGenericTypeDefinedBy(typeof(IReadOnlyCollection<>))
+                   || type.IsGenericTypeDefinedBy(typeof(IReadOnlyList<>));
+        }
+
+        return ReflectionCacheSet.Shared.Internal
+                              .IsGenericListOrCollectionInterfaceType.GetOrAdd(type, Uncached);
     }
 
     /// <summary>
@@ -171,11 +175,16 @@ internal static class TypeExtensions
     /// <returns>True if the type is defined by the specified open generic; false otherwise.</returns>
     public static bool IsGenericTypeDefinedBy(this Type @this, Type openGeneric)
     {
-        return IsGenericTypeDefinedByCache.GetOrAdd(
+        static bool Uncached(Type type, Type openGeneric)
+        {
+            return !type.ContainsGenericParameters
+                    && type.IsGenericType
+                    && type.GetGenericTypeDefinition() == openGeneric;
+        }
+
+        return ReflectionCacheSet.Shared.Internal.IsGenericTypeDefinedBy.GetOrAdd(
             (@this, openGeneric),
-            key => !key.Item1.ContainsGenericParameters
-                && key.Item1.IsGenericType
-                && key.Item1.GetGenericTypeDefinition() == key.Item2);
+            key => Uncached(key.Item1, key.Item2));
     }
 
     /// <summary>

@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Collections.Concurrent;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Features.Metadata;
 
@@ -16,11 +16,11 @@ namespace Autofac.Features.Metadata;
 /// </summary>
 internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
 {
+    private const string ReflectionCacheName = $"{nameof(StronglyTypedMetaRegistrationSource)}.Cache";
+
     private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetDeclaredMethod(nameof(CreateMetaRegistration));
 
     private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration valueRegistration);
-
-    private readonly ConcurrentDictionary<(Type ValueType, Type MetaType), RegistrationCreator> _methodCache = new();
 
     /// <inheritdoc/>
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
@@ -30,7 +30,8 @@ internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
             throw new ArgumentNullException(nameof(registrationAccessor));
         }
 
-        if (service is not IServiceWithType swt || !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<,>)))
+        if (service is not IServiceWithType swt ||
+            !swt.ServiceType.IsGenericTypeDefinedBy(typeof(Meta<,>)))
         {
             return Enumerable.Empty<IComponentRegistration>();
         }
@@ -46,9 +47,11 @@ internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
 
         var valueService = swt.ChangeType(valueType);
 
-        var registrationCreator = _methodCache.GetOrAdd((valueType, metaType), t =>
+        var methodCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, RegistrationCreator>>(ReflectionCacheName);
+
+        var registrationCreator = methodCache.GetOrAdd((valueType, metaType), t =>
         {
-            return CreateMetaRegistrationMethod.MakeGenericMethod(t.ValueType, t.MetaType).CreateDelegate<RegistrationCreator>(null);
+            return CreateMetaRegistrationMethod.MakeGenericMethod(t.Item1, t.Item2).CreateDelegate<RegistrationCreator>(null);
         });
 
         return registrationAccessor(valueService)
