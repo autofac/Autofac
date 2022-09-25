@@ -40,7 +40,7 @@ namespace Autofac.Features.Collections;
 /// for something you don't expect to resolve".
 /// </para>
 /// </remarks>
-internal class CollectionRegistrationSource : IRegistrationSource
+internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegistrationSource
 {
     /// <summary>
     /// Retrieve registrations for an unregistered service, to be used

@@ -6,9 +6,9 @@ namespace Autofac.Core;
 /// <summary>
 /// Services are the lookup keys used to locate component instances.
 /// </summary>
-internal class IsolatedService : Service
+internal class ScopeIsolatedService : Service
 {
-    public IsolatedService(Service service)
+    public ScopeIsolatedService(Service service)
     {
         Service = service;
     }

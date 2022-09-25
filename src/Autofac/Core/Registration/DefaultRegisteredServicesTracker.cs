@@ -8,6 +8,10 @@ using Autofac.Util;
 
 namespace Autofac.Core.Registration;
 
+internal interface IPerScopeRegistrationSource
+{
+}
+
 /// <summary>
 /// Keeps track of the status of registered services.
 /// </summary>
@@ -278,13 +282,13 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
     {
         var createdEphemeralSet = false;
-        var isIsolatedService = false;
+        var isScopeIsolatedService = false;
 
-        if (service is IsolatedService isolatedService)
+        if (service is ScopeIsolatedService isolatedService)
         {
             // This is an isolated service query; use the internal service instead and
             // remember that fact for later.
-            isIsolatedService = true;
+            isScopeIsolatedService = true;
             service = isolatedService.Service;
         }
 
@@ -327,6 +331,14 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
             while (info.HasSourcesToQuery)
             {
                 var next = info.DequeueNextSource();
+
+                // Do not query per-scope registration sources
+                // for isolated services.
+                if (isScopeIsolatedService && next is IPerScopeRegistrationSource)
+                {
+                    continue;
+                }
+
                 foreach (var provided in next.RegistrationsFor(service, _registrationAccessor))
                 {
                     // This ensures that multiple services provided by the same
@@ -375,7 +387,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
                     info.CompleteInitialization();
                 }
 
-                if ((!succeeded || (!info.IsRegistered && !info.IsCustomServiceMiddleware)) && isIsolatedService)
+                if ((!succeeded || (!info.IsRegistered && !info.HasCustomServiceMiddleware)) && isScopeIsolatedService)
                 {
                     // No registrations or custom middleware was found for this service, and this service enquiry is marked as "isolated",
                     // meaning that we shouldn't remember any info for it if it has no registrations.

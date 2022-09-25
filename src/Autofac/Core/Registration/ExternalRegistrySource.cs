@@ -37,7 +37,7 @@ internal class ExternalRegistrySource : IRegistrationSource
 
         // Issue #272: Taking from the registry the following registrations:
         //   - non-adapting own registrations: wrap them with ExternalComponentRegistration
-        foreach (var registration in _registry.RegistrationsFor(new IsolatedService(service)))
+        foreach (var registration in _registry.RegistrationsFor(new ScopeIsolatedService(service)))
         {
             if (registration is ExternalComponentRegistration || !registration.IsAdapting())
             {

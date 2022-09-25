@@ -153,7 +153,7 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         }
     }
 
-    public bool IsCustomServiceMiddleware
+    public bool HasCustomServiceMiddleware
     {
         get
         {

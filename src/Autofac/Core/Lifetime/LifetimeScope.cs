@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
+using Autofac.Features.Collections;
 using Autofac.Util;
 
 namespace Autofac.Core.Lifetime;
@@ -239,7 +240,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
 
         foreach (var source in ComponentRegistry.Sources)
         {
-            if (source.IsAdapterForIndividualComponents)
+            if (source.IsAdapterForIndividualComponents || source is IPerScopeRegistrationSource)
             {
                 builder.RegisterSource(source);
             }
