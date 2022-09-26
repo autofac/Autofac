@@ -280,12 +280,12 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         var createdEphemeralSet = false;
         var isScopeIsolatedService = false;
 
-        if (service is ScopeIsolatedService isolatedService)
+        if (service is ScopeIsolatedService scopeIsolatedService)
         {
-            // This is an isolated service query; use the internal service instead and
+            // This is an isolated service query; use the wrapped service instead and
             // remember that fact for later.
             isScopeIsolatedService = true;
-            service = isolatedService.Service;
+            service = scopeIsolatedService.Service;
         }
 
         var info = GetServiceInfo(service);
