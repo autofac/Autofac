@@ -3,6 +3,7 @@
 
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Registration;
 
 namespace Autofac.Features.ResolveAnything;
 
@@ -10,7 +11,7 @@ namespace Autofac.Features.ResolveAnything;
 /// Provides registrations on-the-fly for any concrete type not already registered with
 /// the container.
 /// </summary>
-public class AnyConcreteTypeNotAlreadyRegisteredSource : IRegistrationSource
+public class AnyConcreteTypeNotAlreadyRegisteredSource : IRegistrationSource, IPerScopeRegistrationSource
 {
     private readonly Func<Type, bool> _predicate;
 
