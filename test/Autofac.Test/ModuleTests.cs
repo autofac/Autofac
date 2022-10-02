@@ -47,7 +47,6 @@ public class ModuleTests
         }
     }
 
-
     [Fact]
     public void AttachesToRegistrations()
     {
