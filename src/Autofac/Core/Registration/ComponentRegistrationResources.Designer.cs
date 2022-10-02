@@ -19,7 +19,7 @@ namespace Autofac.Core.Registration {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class ComponentRegistrationResources {
@@ -84,6 +84,33 @@ namespace Autofac.Core.Registration {
         internal static string PipelineNotBuilt {
             get {
                 return ResourceManager.GetString("PipelineNotBuilt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The limit type &apos;{0}&apos; of the new activator is not assignable to service &apos;{1}&apos;..
+        /// </summary>
+        internal static string ReplaceActivatorComponentDoesNotSupportService {
+            get {
+                return ResourceManager.GetString("ReplaceActivatorComponentDoesNotSupportService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot replace the activator of a registration once the registration pipeline has been built..
+        /// </summary>
+        internal static string ReplaceActivatorPipelineAlreadyBuilt {
+            get {
+                return ResourceManager.GetString("ReplaceActivatorPipelineAlreadyBuilt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot replace the activator of a registration that targets another registration..
+        /// </summary>
+        internal static string ReplaceActivatorTargetingRegistration {
+            get {
+                return ResourceManager.GetString("ReplaceActivatorTargetingRegistration", resourceCulture);
             }
         }
         

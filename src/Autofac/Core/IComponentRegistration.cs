@@ -78,4 +78,18 @@ public interface IComponentRegistration : IDisposable, IAsyncDisposable
     /// </summary>
     /// <param name="registryServices">The available services.</param>
     void BuildResolvePipeline(IComponentRegistryServices registryServices);
+
+    /// <summary>
+    /// Replaces the activator for the registration.
+    /// </summary>
+    /// <remarks>
+    /// You can only invoke this method inside
+    /// a <see cref="IComponentRegistryBuilder.Registered"/> handler.
+    /// </remarks>
+    /// <param name="activator">The new activator.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown if <see cref="ReplaceActivator"/> is invoked
+    /// after the registration pipeline has been built, or if this registration targets a different one.
+    /// </exception>
+    void ReplaceActivator(IInstanceActivator activator);
 }

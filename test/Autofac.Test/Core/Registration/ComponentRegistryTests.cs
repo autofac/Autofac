@@ -3,6 +3,7 @@
 
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Activators.Delegate;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Metadata;
@@ -368,5 +369,56 @@ public class ComponentRegistryTests
         Assert.Same(registryBuilder, sender);
         Assert.Same(registryBuilder, args.ComponentRegistry);
         Assert.Same(source, args.RegistrationSource);
+    }
+
+    [Fact]
+    public void CanReplaceComponentActivatorDuringRegisterEvent()
+    {
+        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+
+        var newActivator = new DelegateActivator(typeof(string), (c, p) => "activator2");
+
+        registryBuilder.Registered += (sender, args) =>
+        {
+            if (args.ComponentRegistration.Services.Any(x => x is TypedService ts && ts.ServiceType == typeof(string)))
+            {
+                args.ComponentRegistration.ReplaceActivator(newActivator);
+            }
+        };
+
+        registryBuilder.Register(RegistrationBuilder.ForDelegate((c, p) => "activator1").CreateRegistration());
+
+        var registry = registryBuilder.Build();
+
+        Assert.True(registry.TryGetRegistration(new TypedService(typeof(string)), out var foundRegistration));
+
+        Assert.Same(foundRegistration.Activator, newActivator);
+    }
+
+    [Fact]
+    public void CanReplaceComponentActivatorDuringRegisterEventFromDynamicSource()
+    {
+        var r = Factory.CreateSingletonObjectRegistration();
+
+        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        registryBuilder.AddRegistrationSource(new ObjectRegistrationSource(new object()));
+
+        var newActivator = new DelegateActivator(typeof(string), (c, p) => "activator2");
+
+        registryBuilder.Registered += (sender, args) =>
+        {
+            if (args.ComponentRegistration.Services.Any(x => x is TypedService ts && ts.ServiceType == typeof(object)))
+            {
+                args.ComponentRegistration.ReplaceActivator(newActivator);
+            }
+        };
+
+        var registry = registryBuilder.Build();
+
+        var forObject = registry.RegistrationsFor(new TypedService(typeof(object)));
+
+        Assert.Single(forObject);
+
+        Assert.Same(newActivator, forObject.First().Activator);
     }
 }

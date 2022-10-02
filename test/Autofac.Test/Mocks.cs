@@ -109,6 +109,8 @@ internal static class Mocks
         {
             PipelineBuilding?.Invoke(this, new ResolvePipelineBuilder(PipelineType.Registration));
         }
+
+        public void ReplaceActivator(IInstanceActivator activator) => throw new NotImplementedException();
     }
 
     internal class MockTracer : DiagnosticTracerBase

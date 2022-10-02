@@ -68,6 +68,9 @@ internal class ComponentRegistrationLifetimeDecorator : Disposable, IComponentRe
         _inner.BuildResolvePipeline(registryServices);
     }
 
+    /// <inheritdoc />
+    public void ReplaceActivator(IInstanceActivator activator) => _inner.ReplaceActivator(activator);
+
     /// <inheritdoc/>
     protected override void Dispose(bool disposing)
     {

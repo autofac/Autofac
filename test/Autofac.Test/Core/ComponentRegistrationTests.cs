@@ -86,4 +86,71 @@ public class ComponentRegistrationTests
 
         Assert.Throws<InvalidOperationException>(() => registration.PipelineBuilding += (s, p) => { });
     }
+
+    [Fact]
+    public void CanReplaceActivatorBeforePipelineHasBeenBuilt()
+    {
+        var services = new Service[] { new TypedService(typeof(object)) };
+
+        var registration = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
+
+        var newActivator = Factory.CreateProvidedInstanceActivator(new object());
+
+        registration.ReplaceActivator(newActivator);
+
+        Assert.Same(registration.Activator, newActivator);
+    }
+
+    [Fact]
+    public void CannotReplaceActivatorAfterRegistrationHasBeenBuilt()
+    {
+        var services = new Service[] { new TypedService(typeof(object)) };
+
+        var registration = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
+
+        var builder = Factory.CreateEmptyComponentRegistryBuilder();
+        builder.Register(registration);
+
+        builder.Build();
+
+        Assert.Throws<InvalidOperationException>(() => registration.ReplaceActivator(Factory.CreateProvidedInstanceActivator(new object())));
+    }
+
+    [Fact]
+    public void CannotReplaceActivatorIfTargetingAnotherRegistration()
+    {
+        var services = new Service[] { new TypedService(typeof(object)) };
+
+        var registration = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
+
+        var targetingRegistration = Factory.CreateTargetingRegistration(registration);
+
+        Assert.Throws<InvalidOperationException>(() => targetingRegistration.ReplaceActivator(Factory.CreateProvidedInstanceActivator(new object())));
+    }
+
+    [Fact]
+    public void ReplacementActivatorLimitTypeMustSatisfyAllServices()
+    {
+        var services = new Service[] { new TypedService(typeof(IServiceA)), new TypedService(typeof(IServiceB)) };
+
+        var registration = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new ComponentAB()));
+
+        Assert.Throws<ArgumentException>(() => registration.ReplaceActivator(Factory.CreateProvidedInstanceActivator(new ComponentA())));
+    }
+
+    private interface IServiceA
+    {
+    }
+
+    private interface IServiceB
+    {
+    }
+
+    public class ComponentA : IServiceA
+    {
+    }
+
+    public class ComponentAB : IServiceA, IServiceB
+    {
+    }
 }

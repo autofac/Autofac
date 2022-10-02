@@ -37,6 +37,19 @@ internal static class Factory
             GetDefaultMetadata());
     }
 
+    public static IComponentRegistration CreateTargetingRegistration(IComponentRegistration target)
+    {
+        return new ComponentRegistration(
+            target.Id,
+            target.Activator,
+            target.Lifetime,
+            target.Sharing,
+            target.Ownership,
+            target.Services,
+            target.Metadata,
+            target);
+    }
+
     public static IComponentRegistration CreateSingletonRegistration<T>(T instance)
     {
         return RegistrationBuilder

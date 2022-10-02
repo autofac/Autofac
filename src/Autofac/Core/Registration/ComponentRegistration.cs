@@ -165,7 +165,7 @@ public class ComponentRegistration : Disposable, IComponentRegistration
     /// <summary>
     /// Gets the activator for the registration.
     /// </summary>
-    public IInstanceActivator Activator { get; }
+    public IInstanceActivator Activator { get; private set; }
 
     /// <summary>
     /// Gets the lifetime associated with the component.
@@ -242,6 +242,44 @@ public class ComponentRegistration : Disposable, IComponentRegistration
         }
 
         ResolvePipeline = BuildResolvePipeline(registryServices, _lateBuildPipeline);
+    }
+
+    /// <inheritdoc />
+    public void ReplaceActivator(IInstanceActivator activator)
+    {
+        if (activator is null)
+        {
+            throw new ArgumentNullException(nameof(activator));
+        }
+
+        if (_builtComponentPipeline is not null)
+        {
+            throw new InvalidOperationException(ComponentRegistrationResources.ReplaceActivatorPipelineAlreadyBuilt);
+        }
+
+        if (Target != this)
+        {
+            throw new InvalidOperationException(ComponentRegistrationResources.ReplaceActivatorTargetingRegistration);
+        }
+
+        var limitType = activator.LimitType;
+        if (limitType != typeof(object))
+        {
+            foreach (var ts in Services)
+            {
+                if (ts is not IServiceWithType asServiceWithType)
+                {
+                    continue;
+                }
+
+                if (!asServiceWithType.ServiceType.IsAssignableFrom(limitType))
+                {
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, ComponentRegistrationResources.ReplaceActivatorComponentDoesNotSupportService, limitType, ts));
+                }
+            }
+        }
+
+        Activator = activator;
     }
 
     /// <summary>

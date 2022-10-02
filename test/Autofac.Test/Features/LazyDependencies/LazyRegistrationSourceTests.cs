@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Core;
+using Autofac.Core.Activators.ProvidedInstance;
+
 namespace Autofac.Test.Features.LazyDependencies;
 
 public class LazyRegistrationSourceTests
@@ -59,6 +62,28 @@ public class LazyRegistrationSourceTests
         Assert.NotNull(container.Resolve<A>());
     }
 
+    [Fact]
+    public void LazyWorksWithAReplacedActivator()
+    {
+        var builder = new ContainerBuilder();
+
+        builder.ComponentRegistryBuilder.Registered += (sender, args) =>
+        {
+            if (args.ComponentRegistration.Services.OfType<TypedService>().Any(s => s.ServiceType == typeof(C)))
+            {
+                args.ComponentRegistration.ReplaceActivator(new ProvidedInstanceActivator(new C(true)));
+            }
+        };
+
+        builder.RegisterType<C>()
+            .SingleInstance();
+
+        var container = builder.Build();
+        var lazy = container.Resolve<Lazy<C>>();
+
+        Assert.True(lazy.Value.CustomActivated);
+    }
+
     private class A
     {
         public A(Lazy<B> b)
@@ -69,5 +94,19 @@ public class LazyRegistrationSourceTests
     private class B
     {
         public A A { get; set; }
+    }
+
+    private class C
+    {
+        public C()
+        {
+        }
+
+        public C(bool customActivated)
+        {
+            CustomActivated = customActivated;
+        }
+
+        public bool CustomActivated { get; }
     }
 }

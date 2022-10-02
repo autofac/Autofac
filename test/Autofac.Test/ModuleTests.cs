@@ -4,6 +4,8 @@
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Activators.Delegate;
+using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
 
 namespace Autofac.Test;
@@ -44,6 +46,7 @@ public class ModuleTests
             Registrations.Add(registration);
         }
     }
+
 
     [Fact]
     public void AttachesToRegistrations()
@@ -141,6 +144,44 @@ public class ModuleTests
             {
             }
         }
+    }
+
+    internal class ActivatorReplacingModule : Module
+    {
+        public List<Type> Activated { get; } = new();
+
+        protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
+        {
+            if (registration.Activator is ReflectionActivator)
+            {
+                var defaultActivator = new DelegateActivator(registration.Activator.LimitType, (ctxt, p) =>
+                {
+                    Activated.Add(registration.Activator.LimitType);
+
+                    return Activator.CreateInstance(registration.Activator.LimitType);
+                });
+
+                registration.ReplaceActivator(defaultActivator);
+            }
+        }
+    }
+
+    [Fact]
+    public void ModulesCanReplaceComponentActivator()
+    {
+        var replacingModule = new ActivatorReplacingModule();
+
+        var builder = new ContainerBuilder();
+        builder.RegisterModule(replacingModule);
+
+        builder.RegisterType<Service1>();
+
+        var container = builder.Build();
+
+        container.Resolve<Service1>();
+
+        Assert.Single(replacingModule.Activated);
+        Assert.Equal(typeof(Service1), replacingModule.Activated[0]);
     }
 
     internal class ModuleExposingThisAssembly : Module
