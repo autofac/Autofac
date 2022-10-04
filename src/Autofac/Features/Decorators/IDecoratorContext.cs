@@ -6,7 +6,7 @@ namespace Autofac.Features.Decorators;
 /// <summary>
 /// Defines the context interface used during the decoration process.
 /// </summary>
-public interface IDecoratorContext
+public interface IDecoratorContext : IComponentContext
 {
     /// <summary>
     /// Gets the implementation type of the service that is being decorated.

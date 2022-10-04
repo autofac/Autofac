@@ -62,7 +62,7 @@ internal class DecoratorMiddleware : IResolveMiddleware
 
         if (context.DecoratorContext is null)
         {
-            context.DecoratorContext = DecoratorContext.Create(context.Instance.GetType(), serviceType, context.Instance);
+            context.DecoratorContext = DecoratorContext.Create(context, context.Instance.GetType(), serviceType, context.Instance);
         }
         else
         {

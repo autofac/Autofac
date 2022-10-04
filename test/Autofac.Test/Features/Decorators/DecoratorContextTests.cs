@@ -12,7 +12,7 @@ public class DecoratorContextTests
     {
         const string implementationInstance = "Initial";
 
-        var context = DecoratorContext.Create(typeof(string), typeof(string), implementationInstance);
+        var context = DecoratorContext.Create(Factory.CreateEmptyContext(), typeof(string), typeof(string), implementationInstance);
 
         Assert.Equal(typeof(string), context.ServiceType);
         Assert.Equal(typeof(string), context.ImplementationType);
@@ -25,7 +25,7 @@ public class DecoratorContextTests
     public void UpdateAddsDecoratorStateToContext()
     {
         const string implementationInstance = "Initial";
-        var context = DecoratorContext.Create(typeof(string), typeof(string), implementationInstance);
+        var context = DecoratorContext.Create(Factory.CreateEmptyContext(), typeof(string), typeof(string), implementationInstance);
 
         const string decoratorA = "DecoratorA";
         context = context.UpdateContext(decoratorA);
