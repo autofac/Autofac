@@ -82,6 +82,16 @@ internal static class Factory
             properties);
     }
 
+    public static ReflectionActivator CreateReflectionActivator(Type implementation, IConstructorFinder customFinder)
+    {
+        return new ReflectionActivator(
+            implementation,
+            customFinder,
+            new MostParametersConstructorSelector(),
+            NoParameters,
+            NoProperties);
+    }
+
     public static ReflectionActivator CreateReflectionActivator(Type implementation, IConstructorSelector customSelector)
     {
         return new ReflectionActivator(
