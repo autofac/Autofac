@@ -1,21 +1,20 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-namespace Autofac.Core.Registration
+namespace Autofac.Core.Registration;
+
+/// <summary>
+/// Internal Extension methods for component registrations.
+/// </summary>
+internal static class ComponentRegistrationExtensions
 {
     /// <summary>
-    /// Internal Extension methods for component registrations.
+    /// Gets a value indicating whether a given registration is adapting another registration.
     /// </summary>
-    internal static class ComponentRegistrationExtensions
+    /// <param name="componentRegistration">The component registration.</param>
+    /// <returns>True if adapting; false otherwise.</returns>
+    public static bool IsAdapting(this IComponentRegistration componentRegistration)
     {
-        /// <summary>
-        /// Gets a value indicating whether a given registration is adapting another registration.
-        /// </summary>
-        /// <param name="componentRegistration">The component registration.</param>
-        /// <returns>True if adapting; false otherwise.</returns>
-        public static bool IsAdapting(this IComponentRegistration componentRegistration)
-        {
-            return componentRegistration.Target != componentRegistration;
-        }
+        return componentRegistration.Target != componentRegistration;
     }
 }

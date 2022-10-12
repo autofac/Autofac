@@ -34,25 +34,6 @@ function Install-DotNetCli {
         [string]
         $Version = "Latest"
     )
-
-    if ($null -ne (Get-Command "dotnet" -ErrorAction SilentlyContinue)) {
-        $installedVersions = dotnet --list-sdks
-        foreach ($sdkListLine in $installedVersions)
-        {
-            $splitParts = $sdkListLine.Split(" ");
-
-            $versionPart = $splitParts[0];
-            $globalInstallLocation = $splitParts[1].Replace("[", "").Replace("]", "")
-
-            if ($versionPart -eq $Version)
-            {
-                Write-Message ".NET Core SDK version $Version is already installed in $globalInstallLocation"
-                Add-Path "$globalInstallLocation"
-                return;
-            }
-        }
-    }
-
     Write-Message "Installing .NET SDK version $Version"
 
     $callerPath = Split-Path $MyInvocation.PSCommandPath
@@ -92,11 +73,19 @@ function Add-Path {
         [string]
         $Path
     )
-    $pathValues = $env:PATH.Split(";");
+
+    $pathSeparator = ":";
+
+    if ($IsWindows) {
+        $pathSeparator = ";";
+    }
+
+    $pathValues = $env:PATH.Split($pathSeparator);
     if ($pathValues -Contains $Path) {
       return;
     }
-    $env:PATH = "$Path;$env:PATH"
+
+    $env:PATH = "${Path}${pathSeparator}$env:PATH"
 }
 
 <#

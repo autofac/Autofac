@@ -1,52 +1,94 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
 using Autofac.Core.Activators.ProvidedInstance;
-using Xunit;
+using Autofac.Test.Util;
 
-namespace Autofac.Test.Component.Activation
+namespace Autofac.Test.Component.Activation;
+
+public class ProvidedInstanceActivatorTests
 {
-    public class ProvidedInstanceActivatorTests
+    [Fact]
+    public void NullIsNotAValidInstance()
     {
-        [Fact]
-        public void NullIsNotAValidInstance()
+        Assert.Throws<ArgumentNullException>(() => new ProvidedInstanceActivator(null));
+    }
+
+    [Fact]
+    public void WhenInitializedWithInstance_ThatInstanceIsReturnedFromActivateInstance()
+    {
+        var instance = new object();
+
+        var target = new ProvidedInstanceActivator(instance);
+
+        var container = Factory.CreateEmptyContainer();
+
+        var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+        var actual = invoker(container, Factory.NoParameters);
+
+        Assert.Same(instance, actual);
+    }
+
+    [Fact]
+    public void ActivatingAProvidedInstanceTwice_RaisesException()
+    {
+        var instance = new object();
+
+        var target = new ProvidedInstanceActivator(instance);
+
+        var container = Factory.CreateEmptyContainer();
+
+        var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+        invoker(container, Factory.NoParameters);
+
+        Assert.Throws<InvalidOperationException>(() =>
+            invoker(container, Factory.NoParameters));
+    }
+
+    [Fact]
+    public void SyncDisposeAsyncDisposable_DisposesAsExpected()
+    {
+        var asyncDisposable = new AsyncOnlyDisposeTracker();
+
+        var target = new ProvidedInstanceActivator(asyncDisposable)
         {
-            Assert.Throws<ArgumentNullException>(() => new ProvidedInstanceActivator(null));
-        }
+            DisposeInstance = true,
+        };
 
-        [Fact]
-        public void WhenInitializedWithInstance_ThatInstanceIsReturnedFromActivateInstance()
+        target.Dispose();
+
+        Assert.True(asyncDisposable.IsAsyncDisposed);
+    }
+
+    [Fact]
+    public async Task AsyncDisposeAsyncDisposable_DisposesAsExpected()
+    {
+        var asyncDisposable = new AsyncOnlyDisposeTracker();
+
+        var target = new ProvidedInstanceActivator(asyncDisposable)
         {
-            object instance = new object();
+            DisposeInstance = true,
+        };
 
-            ProvidedInstanceActivator target = new ProvidedInstanceActivator(instance);
+        await target.DisposeAsync();
 
-            var container = Factory.CreateEmptyContainer();
+        Assert.True(asyncDisposable.IsAsyncDisposed);
+    }
 
-            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+    [Fact]
+    public async Task AsyncDisposeSyncDisposable_DisposesAsExpected()
+    {
+        var asyncDisposable = new DisposeTracker();
 
-            var actual = invoker(container, Factory.NoParameters);
-
-            Assert.Same(instance, actual);
-        }
-
-        [Fact]
-        public void ActivatingAProvidedInstanceTwice_RaisesException()
+        var target = new ProvidedInstanceActivator(asyncDisposable)
         {
-            object instance = new object();
+            DisposeInstance = true,
+        };
 
-            ProvidedInstanceActivator target =
-                new ProvidedInstanceActivator(instance);
+        await target.DisposeAsync();
 
-            var container = Factory.CreateEmptyContainer();
-
-            var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
-
-            invoker(container, Factory.NoParameters);
-
-            Assert.Throws<InvalidOperationException>(() =>
-                invoker(container, Factory.NoParameters));
-        }
+        Assert.True(asyncDisposable.IsDisposed);
     }
 }

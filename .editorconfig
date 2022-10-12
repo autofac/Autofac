@@ -48,7 +48,7 @@ dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
 dotnet_style_predefined_type_for_member_access = true:suggestion
 
 ; Name all constant fields using PascalCase
-dotnet_naming_rule.constant_fields_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.constant_fields_should_be_pascal_case.severity = warning
 dotnet_naming_rule.constant_fields_should_be_pascal_case.symbols  = constant_fields
 dotnet_naming_rule.constant_fields_should_be_pascal_case.style    = pascal_case_style
 dotnet_naming_symbols.constant_fields.applicable_kinds   = field
@@ -56,7 +56,7 @@ dotnet_naming_symbols.constant_fields.required_modifiers = const
 dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 
 ; Static fields should be _camelCase
-dotnet_naming_rule.static_fields_should_be_camel_case.severity = suggestion
+dotnet_naming_rule.static_fields_should_be_camel_case.severity = warning
 dotnet_naming_rule.static_fields_should_be_camel_case.symbols  = static_fields
 dotnet_naming_rule.static_fields_should_be_camel_case.style    = camel_case_underscore_style
 dotnet_naming_symbols.static_fields.applicable_kinds   = field
@@ -64,7 +64,7 @@ dotnet_naming_symbols.static_fields.required_modifiers = static
 dotnet_naming_symbols.static_fields.applicable_accessibilities = private, internal, private_protected
 
 ; Static readonly fields should be PascalCase
-dotnet_naming_rule.static_readonly_fields_should_be_pascal_case.severity = suggestion
+dotnet_naming_rule.static_readonly_fields_should_be_pascal_case.severity = warning
 dotnet_naming_rule.static_readonly_fields_should_be_pascal_case.symbols  = static_readonly_fields
 dotnet_naming_rule.static_readonly_fields_should_be_pascal_case.style    = pascal_case_style
 dotnet_naming_symbols.static_readonly_fields.applicable_kinds   = field
@@ -72,7 +72,7 @@ dotnet_naming_symbols.static_readonly_fields.required_modifiers = static, readon
 dotnet_naming_symbols.static_readonly_fields.applicable_accessibilities = private, internal, private_protected
 
 ; Internal and private fields should be _camelCase
-dotnet_naming_rule.camel_case_for_private_internal_fields.severity = suggestion
+dotnet_naming_rule.camel_case_for_private_internal_fields.severity = warning
 dotnet_naming_rule.camel_case_for_private_internal_fields.symbols  = private_internal_fields
 dotnet_naming_rule.camel_case_for_private_internal_fields.style    = camel_case_underscore_style
 dotnet_naming_symbols.private_internal_fields.applicable_kinds = field
@@ -128,6 +128,7 @@ csharp_style_throw_expression = true:suggestion
 csharp_style_conditional_delegate_call = true:suggestion
 
 # Other features
+csharp_style_namespace_declarations = file_scoped:suggestion
 csharp_style_prefer_index_operator = false:none
 csharp_style_prefer_range_operator = false:none
 csharp_style_pattern_local_over_anonymous_function = false:none

@@ -3,28 +3,27 @@
 
 using Autofac.Core;
 
-namespace Autofac.Features.Metadata
+namespace Autofac.Features.Metadata;
+
+/// <summary>
+/// Support the <see cref="Meta{T}"/>
+/// types automatically whenever type T is registered with the container.
+/// Metadata values come from the component registration's metadata.
+/// </summary>
+internal class MetaRegistrationSource : ImplicitRegistrationSource
 {
     /// <summary>
-    /// Support the <see cref="Meta{T}"/>
-    /// types automatically whenever type T is registered with the container.
-    /// Metadata values come from the component registration's metadata.
+    /// Initializes a new instance of the <see cref="MetaRegistrationSource"/> class.
     /// </summary>
-    internal class MetaRegistrationSource : ImplicitRegistrationSource
+    public MetaRegistrationSource()
+        : base(typeof(Meta<>))
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MetaRegistrationSource"/> class.
-        /// </summary>
-        public MetaRegistrationSource()
-            : base(typeof(Meta<>))
-        {
-        }
-
-        /// <inheritdoc/>
-        public override string Description => MetaRegistrationSourceResources.MetaRegistrationSourceDescription;
-
-        /// <inheritdoc/>
-        protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
-            => new Meta<T>((T)ctx.ResolveComponent(request), request.Registration.Target.Metadata);
     }
+
+    /// <inheritdoc/>
+    public override string Description => MetaRegistrationSourceResources.MetaRegistrationSourceDescription;
+
+    /// <inheritdoc/>
+    protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
+        => new Meta<T>((T)ctx.ResolveComponent(request), request.Registration.Target.Metadata);
 }

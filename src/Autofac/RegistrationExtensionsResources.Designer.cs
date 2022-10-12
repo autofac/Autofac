@@ -10,8 +10,8 @@
 
 namespace Autofac {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,15 @@ namespace Autofac {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class RegistrationExtensionsResources {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal RegistrationExtensionsResources() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace Autofac {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace Autofac {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A composite registration ({0}) is registered against multiple services. Composites can only be registered as providing a single service..
         /// </summary>
@@ -68,7 +68,7 @@ namespace Autofac {
                 return ResourceManager.GetString("CompositesCannotProvideMultipleServices", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A decorator for &apos;{0}&apos; was not provided with an instance parameter..
         /// </summary>
@@ -77,7 +77,7 @@ namespace Autofac {
                 return ResourceManager.GetString("DecoratorRequiresInstanceParameter", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Expression does not refer to a property..
         /// </summary>
@@ -86,16 +86,16 @@ namespace Autofac {
                 return ResourceManager.GetString("ExpressionDoesNotReferToProperty", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to The instance  registration &apos;{0}&apos; can support SingleInstance() sharing only..
+        ///   Looks up a localized string similar to The instance registration &apos;{0}&apos; can support SingleInstance() sharing only..
         /// </summary>
         internal static string InstanceRegistrationsAreSingleInstanceOnly {
             get {
                 return ResourceManager.GetString("InstanceRegistrationsAreSingleInstanceOnly", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A metadata attribute of type &apos;{0}&apos; was not found on &apos;{1}&apos;..
         /// </summary>
@@ -104,7 +104,7 @@ namespace Autofac {
                 return ResourceManager.GetString("MetadataAttributeNotFound", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to More than one metadata attribute of type &apos;{0}&apos; was found on &apos;{1}&apos;..
         /// </summary>
@@ -113,7 +113,7 @@ namespace Autofac {
                 return ResourceManager.GetString("MultipleMetadataAttributesSameType", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No matching constructor exists on type &apos;{0}&apos;..
         /// </summary>
@@ -122,7 +122,7 @@ namespace Autofac {
                 return ResourceManager.GetString("NoMatchingConstructorExists", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You can only attach a registration predicate to a registration that has a callback container attached (e.g., one that was made with a standard ContainerBuilder extension method)..
         /// </summary>

@@ -1,25 +1,22 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System;
+namespace Autofac.Specification.Test.Features.PropertyInjection;
 
-namespace Autofac.Specification.Test.Features.PropertyInjection
+public class HasWriteOnlyProperty
 {
-    public class HasWriteOnlyProperty
+    private string _val;
+
+    public string Val
     {
-        private string _val;
-
-        public string Val
+        set
         {
-            set
-            {
-                _val = value;
-            }
+            _val = value;
         }
+    }
 
-        public string GetVal()
-        {
-            return _val;
-        }
+    public string GetVal()
+    {
+        return _val;
     }
 }

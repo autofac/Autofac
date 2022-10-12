@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac assemblies." ToolsVersion="16.0">
+  <IncludeAll Action="Warning" />
+  <Rules AnalyzerId="Microsoft.Usage" RuleNamespace="Microsoft.Usage">
+    <!-- Implement standard exception constructors - not all of the exception constructors (e.g., parameterless) are desired in our system. -->
+    <Rule Id="CA1032" Action="None" />
+    <!-- Change names to avoid reserved word overlaps (e.g., Delegate, GetType, etc.) - too many of these in the public API, we'd break if we fixed it. -->
+    <Rule Id="CA1716" Action="None" />
+    <!-- Change Dispose() to call GC.SuppressFinalize - in tests we don't really care and it can impact readability. -->
+    <Rule Id="CA1816" Action="None" />
+    <!-- Mark members static - test methods may not access member data but also can't be static. -->
+    <Rule Id="CA1822" Action="None" />
+    <!-- Implement serialization constructors - false positive when building .NET Core -->
+    <Rule Id="CA2229" Action="None" />
+    <!-- Mark ISerializable types with SerializableAttribute - false positive when building .NET Core -->
+    <Rule Id="CA2237" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <!-- Prefix local calls with this -->
+    <Rule Id="SA1101" Action="None" />
+    <!-- Use built-in type alias -->
+    <Rule Id="SA1121" Action="None" />
+    <!-- Use String.Empty instead of "" -->
+    <Rule Id="SA1122" Action="None" />
+    <!-- Using statements must be inside a namespace -->
+    <Rule Id="SA1200" Action="None" />
+    <!-- Enforce order of class members by member type -->
+    <Rule Id="SA1201" Action="None" />
+    <!-- Enforce order of class members by member visibility -->
+    <Rule Id="SA1202" Action="None" />
+    <!-- Enforce order of constantand static members -->
+    <Rule Id="SA1203" Action="None" />
+    <!-- Enforce order of static vs. non-static members -->
+    <Rule Id="SA1204" Action="None" />
+    <!-- Enforce order of readonly vs. non-readonly members -->
+    <Rule Id="SA1214" Action="None" />
+    <!-- Fields can't start with underscore -->
+    <Rule Id="SA1309" Action="None" />
+    <!-- Suppressions must have a justification -->
+    <Rule Id="SA1404" Action="None" />
+    <!-- Elements should be documented -->
+    <Rule Id="SA1600" Action="None" />
+    <!-- Enuemration items should be documented -->
+    <Rule Id="SA1602" Action="None" />
+    <!-- Parameter documentation must be in the right order -->
+    <Rule Id="SA1612" Action="None" />
+    <!-- Return value must be documented -->
+    <Rule Id="SA1615" Action="None" />
+    <!-- Generic type parameters must be documented -->
+    <Rule Id="SA1618" Action="None" />
+    <!-- Don't copy/paste documentation -->
+    <Rule Id="SA1625" Action="None" />
+    <!-- Exception documentation must not be empty -->
+    <Rule Id="SA1627" Action="None" />
+    <!-- Enable XML documentation output-->
+    <Rule Id="SA1652" Action="None" />
+    <!-- Private member is unused - tests for reflection require members that may not get used. -->
+    <Rule Id="IDE0051" Action="None" />
+    <!-- Private member assigned value never read - tests for reflection require values that may not get used. -->
+    <Rule Id="IDE0052" Action="None" />
+    <!-- Remove unused parameter - tests for reflection require parameters that may not get used. -->
+    <Rule Id="IDE0060" Action="None" />
+  </Rules>
+</RuleSet>

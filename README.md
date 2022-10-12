@@ -1,21 +1,17 @@
-<p align="center">
-  <img src="https://autofac.org/img/autofac_web-banner_character.svg" width="250">
-</p>
-<p align="center">
-  <img src="https://autofac.org/img/autofac_logo-type.svg" height="100">
-</p>
+![Autofac character](https://raw.githubusercontent.com/autofac/autofac.github.com/8737b1213a85ad8157ab7958aeb560c7af5eb494/img/autofac_web-banner_character_fixed_width.svg)
+![Autofac logo](https://raw.githubusercontent.com/autofac/autofac.github.com/8737b1213a85ad8157ab7958aeb560c7af5eb494/img/autofac_logo-type_fixed_height.svg)
 
 Autofac is an [IoC container](http://martinfowler.com/articles/injection.html) for Microsoft .NET. It manages the dependencies between classes so that **applications stay easy to change as they grow** in size and complexity. This is achieved by treating regular .NET classes as *[components](https://autofac.readthedocs.io/en/latest/glossary.html)*.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/s0vgb4m8tv9ar7we?svg=true)](https://ci.appveyor.com/project/Autofac/autofac) [![codecov](https://codecov.io/gh/Autofac/Autofac/branch/develop/graph/badge.svg)](https://codecov.io/gh/Autofac/Autofac) ![MyGet publish status](https://www.myget.org/BuildSource/Badge/autofac?identifier=e0f25040-634c-4b7d-aebe-0f62b9c465a8) [![NuGet](https://img.shields.io/nuget/v/Autofac.svg)](https://nuget.org/packages/Autofac)
+[![Build status](https://ci.appveyor.com/api/projects/status/s0vgb4m8tv9ar7we?svg=true)](https://ci.appveyor.com/project/Autofac/autofac) [![codecov](https://codecov.io/gh/Autofac/Autofac/branch/develop/graph/badge.svg)](https://codecov.io/gh/Autofac/Autofac) [![NuGet](https://img.shields.io/nuget/v/Autofac.svg)](https://nuget.org/packages/Autofac)
 
-[![Autofac on Stack Overflow](https://img.shields.io/badge/stack%20overflow-autofac-orange.svg)](https://stackoverflow.com/questions/tagged/autofac) [![Join the chat at https://gitter.im/autofac/autofac](https://img.shields.io/gitter/room/autofac/autofac.svg)](https://gitter.im/autofac/autofac) [![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/autofac/Autofac)
+[![Autofac on Stack Overflow](https://img.shields.io/badge/stack%20overflow-autofac-orange.svg)](https://stackoverflow.com/questions/tagged/autofac) [![Join the chat at https://gitter.im/autofac/autofac](https://img.shields.io/gitter/room/autofac/autofac.svg)](https://gitter.im/autofac/autofac)
 
 ## Get Packages
 
-You can get Autofac by [grabbing the latest NuGet packages](https://github.com/autofac/Autofac/wiki/Nu-Get-Packages). If you're feeling adventurous, [continuous integration builds are on MyGet](https://www.myget.org/gallery/autofac).
+You can get Autofac by [grabbing the latest NuGet package](https://www.nuget.org/packages/Autofac/). There are several [application integration and extended functionality packages to choose from](https://www.nuget.org/profiles/Autofac). If you're feeling adventurous, [continuous integration builds are on MyGet](https://www.myget.org/gallery/autofac).
 
-[Release notes are available on the wiki](https://github.com/autofac/Autofac/wiki#release-notes).
+[Release notes are available on GitHub](https://github.com/autofac/Autofac/releases).
 
 ## Get Help
 
@@ -29,7 +25,7 @@ Super-duper quick start:
 
 [Register components with a `ContainerBuilder`](https://autofac.readthedocs.io/en/latest/register/registration.html) and then build the component container.
 
-```C#
+```csharp
 var builder = new ContainerBuilder();
 
 builder.Register(c => new TaskController(c.Resolve<ITaskRepository>()));
@@ -42,7 +38,7 @@ var container = builder.Build();
 
 [Resolve services from a lifetime scope](https://autofac.readthedocs.io/en/latest/resolve/index.html) - either the container or a nested scope:
 
-```C#
+```csharp
 var taskController = container.Resolve<TaskController>();
 ```
 
@@ -64,13 +60,9 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 - [Autofac.Extras.AggregateService](https://github.com/autofac/Autofac.Extras.AggregateService) - Dynamic aggregate service implementation generation.
 - [Autofac.Extras.AttributeMetadata](https://github.com/autofac/Autofac.Extras.AttributeMetadata) - Metadata scanning/filtering through attributes.
 - [Autofac.Extras.CommonServiceLocator](https://github.com/autofac/Autofac.Extras.CommonServiceLocator) - Common Service Locator implementation backed by Autofac.
-- [Autofac.Extras.DomainServices](https://github.com/autofac/Autofac.Extras.DomainServices) - RIA/domain services support.
 - [Autofac.Extras.DynamicProxy](https://github.com/autofac/Autofac.Extras.DynamicProxy) - Decorators and interceptors.
-- [Autofac.Extras.EnterpriseLibraryConfigurator](https://github.com/autofac/Autofac.Extras.EnterpriseLibraryConfigurator) - Enterprise Library 5 configuration support.
 - [Autofac.Extras.FakeItEasy](https://github.com/autofac/Autofac.Extras.FakeItEasy) - FakeItEasy mocking framework integration.
 - [Autofac.Extras.Moq](https://github.com/autofac/Autofac.Extras.Moq) - Moq mocking framework integration.
-- [Autofac.Extras.MvvmCross](https://github.com/autofac/Autofac.Extras.MvvmCross) - MvvmCross integration.
-- [Autofac.Extras.NHibernate](https://github.com/autofac/Autofac.Extras.NHibernate) - NHibernate integration.
 - [Autofac.Mef](https://github.com/autofac/Autofac.Mef) - MEF catalog integration.
 - [Autofac.Multitenant](https://github.com/autofac/Autofac.Multitenant) - Multitenant dependency resolution support.
 - [Autofac.Multitenant.Wcf](https://github.com/autofac/Autofac.Multitenant.Wcf) - Multitenant WCF service hosting.
@@ -85,7 +77,12 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 - [Autofac.WebApi](https://github.com/autofac/Autofac.WebApi) - Application integration for Web API.
 - [Autofac.WebApi.Owin](https://github.com/autofac/Autofac.WebApi.Owin) - OWIN support for Web API.
 
+## Sponsors
+
+Autofac is supported by AWS. Thanks for your contribution!
+
 ## Contributing / Pull Requests
 
-Refer to the [Contributor Guide](https://github.com/autofac/.github/blob/master/CONTRIBUTING.md)
-for setting up and building Autofac source.
+Refer to the [Contributor Guide](https://github.com/autofac/.github/blob/master/CONTRIBUTING.md) for setting up and building Autofac source.
+
+You can also open this repository right now [in VS Code](https://open.vscode.dev/autofac/Autofac).
