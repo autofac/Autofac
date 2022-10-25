@@ -114,7 +114,6 @@ publish/
 *.pubxml
 
 # NuGet Packages Directory
-## TODO: If you have NuGet Package Restore enabled, uncomment the next line
 packages/
 
 # Windows Azure Build Output
@@ -139,6 +138,7 @@ node_modules/
 bower_components/
 wwwroot/
 project.lock.json
+*.Designer.cs
 
 # RIA/Silverlight projects
 Generated_Code/
