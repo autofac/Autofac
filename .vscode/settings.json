@@ -1,11 +1,25 @@
 {
   "cSpell.words": [
     "autofac",
+    "autowired",
+    "autowiring",
+    "browsable",
     "cref",
     "diagnoser",
+    "inheritdoc",
+    "langword",
+    "netstandard",
+    "notnull",
+    "paramref",
+    "startable",
+    "typeparam",
     "xunit"
   ],
   "dotnet-test-explorer.testProjectPath": "test/**/*Test.csproj",
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.resx": "$(capture).*.resx, $(capture).designer.cs, $(capture).designer.vb"
+  },
   "omnisharp.enableEditorConfigSupport": true,
   "omnisharp.enableRoslynAnalyzers": true
 }
