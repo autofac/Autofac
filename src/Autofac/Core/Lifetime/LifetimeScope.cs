@@ -5,6 +5,9 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+#if NET5_0_OR_GREATER
+using System.Runtime.Loader;
+#endif
 using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
@@ -190,6 +193,108 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// </code>
     /// </example>
     public ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction)
+    {
+        return InternalBeginLifetimeScope(tag, configurationAction, isolatedScope: false);
+    }
+
+#if NETCOREAPP1_0_OR_GREATER
+    /// <summary>
+    /// Begin a new anonymous sub-scope, with additional components available to it that may be dynamically
+    /// loaded from the provided <see cref="AssemblyLoadContext"/>.
+    /// Component instances created via the new scope
+    /// will be disposed along with it.
+    /// </summary>
+    /// <param name="loadContext">
+    /// A <see cref="AssemblyLoadContext"/> to associate to the created <see cref="ILifetimeScope"/>.
+    /// </param>
+    /// <param name="configurationAction">
+    /// Action on a <see cref="ContainerBuilder"/>
+    /// that adds component registrations visible only in the new scope.
+    /// </param>
+    /// <returns>A new lifetime scope.</returns>
+    /// <example>
+    /// <code>
+    /// IContainer cr = // ...
+    /// AssemblyLoadContext pluginContext = // ...
+    /// using (var lifetime = cr.BeginLoadContextLifetimeScope(pluginContext, builder =&gt; {
+    ///         var assembly = pluginContext.LoadFromAssemblyPath("Plugins/plugin.dll");
+    ///         builder.RegisterType(assembly.GetType("PluginEntryPoint")).As&lt;IPlugin&gt;();
+    /// {
+    ///     var plugin = lifetime.Resolve&lt;IPlugin&gt;();
+    /// }
+    /// </code>
+    /// </example>
+    /// <remarks>
+    /// When the returned lifetime scope is disposed, the provided
+    /// <paramref name="loadContext"/> *may* be unloaded, in that
+    /// Autofac will no longer have any references to types loaded from <paramref name="loadContext"/>.
+    /// However if you have captured references to types from the loaded assemblies manually, you still may not be able
+    /// to unload.
+    /// </remarks>
+    public ILifetimeScope BeginLoadContextLifetimeScope(AssemblyLoadContext loadContext, Action<ContainerBuilder> configurationAction)
+    {
+        return BeginLoadContextLifetimeScope(MakeAnonymousTag(), loadContext, configurationAction);
+    }
+
+    /// <summary>
+    /// Begin a new tagged sub-scope, with additional components available to it that may be dynamically
+    /// loaded from the provided <see cref="AssemblyLoadContext"/>.
+    /// Component instances created via the new scope
+    /// will be disposed along with it.
+    /// </summary>
+    /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
+    /// <param name="loadContext">
+    /// A <see cref="AssemblyLoadContext"/> to associate to the created <see cref="ILifetimeScope"/>.
+    /// </param>
+    /// <param name="configurationAction">
+    /// Action on a <see cref="ContainerBuilder"/>
+    /// that adds component registrations visible only in the new scope.
+    /// </param>
+    /// <returns>A new lifetime scope.</returns>
+    /// <example>
+    /// <code>
+    /// IContainer cr = // ...
+    /// AssemblyLoadContext pluginContext = // ...
+    /// using (var lifetime = cr.BeginLoadContextLifetimeScope(pluginContext, builder =&gt; {
+    ///         var assembly = pluginContext.LoadFromAssemblyPath("Plugins/plugin.dll");
+    ///         builder.RegisterType(assembly.GetType("PluginEntryPoint")).As&lt;IPlugin&gt;();
+    /// {
+    ///     var plugin = lifetime.Resolve&lt;IPlugin&gt;();
+    /// }
+    /// </code>
+    /// </example>
+    /// <remarks>
+    /// When the returned lifetime scope is disposed, the provided
+    /// <paramref name="loadContext"/> *may* be unloaded, in that
+    /// Autofac will no longer have any references to types loaded from <paramref name="loadContext"/>.
+    /// However if you have captured references to types from the loaded assemblies manually, you still may not be able
+    /// to unload.
+    /// </remarks>
+    public ILifetimeScope BeginLoadContextLifetimeScope(object tag, AssemblyLoadContext loadContext, Action<ContainerBuilder> configurationAction)
+    {
+        if (loadContext == AssemblyLoadContext.Default)
+        {
+            throw new InvalidOperationException($"Only use {nameof(BeginLoadContextLifetimeScope)} for non-default load contexts");
+        }
+
+        var newScope = InternalBeginLifetimeScope(tag, configurationAction, isolatedScope: true);
+
+        newScope.CurrentScopeEnding += (sender, args) =>
+        {
+            var alcAssemblies = loadContext.Assemblies;
+
+            // Clear the reflection cache for those assemblies when the inner scope goes away.
+            ReflectionCacheSet.Shared.Clear((assembly, type) =>
+            {
+                return alcAssemblies.Contains(assembly);
+            });
+        };
+
+        return newScope;
+    }
+#endif
+
+    private ILifetimeScope InternalBeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
     {
         if (configurationAction == null)
         {

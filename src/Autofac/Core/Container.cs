@@ -2,6 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Diagnostics;
+#if NET5_0_OR_GREATER
+using System.Runtime.Loader;
+#endif
 using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving;
 using Autofac.Util;
@@ -73,6 +76,20 @@ public class Container : Disposable, IContainer, IServiceProvider
     {
         return _rootLifetimeScope.BeginLifetimeScope(tag, configurationAction);
     }
+
+#if NET5_0_OR_GREATER
+    /// <inheritdoc />
+    public ILifetimeScope BeginLoadContextLifetimeScope(AssemblyLoadContext loadContext, Action<ContainerBuilder> configurationAction)
+    {
+        return _rootLifetimeScope.BeginLoadContextLifetimeScope(loadContext, configurationAction);
+    }
+
+    /// <inheritdoc />
+    public ILifetimeScope BeginLoadContextLifetimeScope(object tag, AssemblyLoadContext loadContext, Action<ContainerBuilder> configurationAction)
+    {
+        return _rootLifetimeScope.BeginLoadContextLifetimeScope(loadContext, configurationAction);
+    }
+#endif
 
     /// <inheritdoc/>
     public DiagnosticListener DiagnosticSource => _rootLifetimeScope.DiagnosticSource;
