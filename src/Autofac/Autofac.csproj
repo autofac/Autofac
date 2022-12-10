@@ -94,7 +94,7 @@
     <EmbeddedResource>
       <Generator>MSBuild:Compile</Generator>
       <StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
-      <StronglyTypedFileName>$(IntermediateOutputPath)\%(Filename).Designer.cs</StronglyTypedFileName>
+      <StronglyTypedFileName>$(IntermediateOutputPath)%(Filename).Designer.cs</StronglyTypedFileName>
       <StronglyTypedClassName>%(Filename)</StronglyTypedClassName>
     </EmbeddedResource>
   </ItemDefinitionGroup>
