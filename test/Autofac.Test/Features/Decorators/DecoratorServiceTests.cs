@@ -19,7 +19,7 @@ public class DecoratorServiceTests
     {
         var service = new DecoratorService(typeof(string));
 
-        var context = DecoratorContext.Create(typeof(string), typeof(string), "A");
+        var context = DecoratorContext.Create(Factory.CreateEmptyContext(), typeof(string), typeof(string), "A");
 
         Assert.True(service.Condition(context));
     }

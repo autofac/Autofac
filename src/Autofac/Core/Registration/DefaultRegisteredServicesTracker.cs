@@ -249,17 +249,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
             registration.Dispose();
         }
 
-        // If we do not explicitly empty the ConcurrentBag that stores our registrations,
-        // this will cause a memory leak due to threads holding a reference to the bag.
-        // In netstandard2.0 the faster 'Clear' method is not available,
-        // so we have do this manually. We'll use the faster method if it's available though.
-#if NETSTANDARD2_0
-        while (_registrations.TryTake(out _))
-        {
-        }
-#else
-        _registrations.Clear();
-#endif
+        ClearRegistrations();
 
         base.Dispose(disposing);
     }
@@ -272,7 +262,24 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
             await registration.DisposeAsync().ConfigureAwait(false);
         }
 
+        ClearRegistrations();
+
         // Do not call the base, otherwise the standard Dispose will fire.
+    }
+
+    private void ClearRegistrations()
+    {
+        // If we do not explicitly empty the ConcurrentBag that stores our registrations,
+        // this will cause a memory leak due to threads holding a reference to the bag.
+        // In netstandard2.0 the faster 'Clear' method is not available,
+        // so we have do this manually. We'll use the faster method if it's available though.
+#if NETSTANDARD2_0
+        while (_registrations.TryTake(out _))
+        {
+        }
+#else
+        _registrations.Clear();
+#endif
     }
 
     private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)

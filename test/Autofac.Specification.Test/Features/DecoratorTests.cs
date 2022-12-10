@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Core;
 using Autofac.Features.Decorators;
 using Autofac.Features.Metadata;
 using Autofac.Features.OwnedInstances;
@@ -1252,6 +1253,40 @@ public class DecoratorTests
         Assert.IsType<GenericComponent<int>>(((GenericDecorator<int>)instance).Decorated);
     }
 
+    [Fact]
+    public void DecoratorConditionalFunctionCanResolveFromContext()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance(new ConditionalShouldDecorate { ShouldDecorate = true });
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>(context => context.Resolve<ConditionalShouldDecorate>().ShouldDecorate);
+
+        var container = builder.Build();
+
+        var instance = container.Resolve<IDecoratedService>();
+
+        Assert.IsType<DecoratorA>(instance);
+        Assert.IsType<ImplementorA>(instance.Decorated);
+    }
+
+    [Fact]
+    public void DecoratorConditionalFunctionThrowsCircularDependencyErrorOnResolveSelf()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance(new ConditionalShouldDecorate { ShouldDecorate = true });
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>(context =>
+        {
+            // Can't do this; circular reference.
+            context.Resolve<IDecoratedService>();
+            return true;
+        });
+
+        var container = builder.Build();
+
+        Assert.Throws<DependencyResolutionException>(() => container.Resolve<IDecoratedService>());
+    }
+
     private class MyMetadata
     {
         public int A { get; set; }
@@ -1456,5 +1491,10 @@ public class DecoratorTests
         }
 
         public IGenericService<T> Decorated { get; }
+    }
+
+    private class ConditionalShouldDecorate
+    {
+        public bool ShouldDecorate { get; set; }
     }
 }
