@@ -199,7 +199,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         CheckNotDisposed();
         CheckTagIsUnique(tag);
 
-        var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction);
+        var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction, isolatedScope: false);
         var scope = new LifetimeScope(localsBuilder.Build(), this, tag);
         scope.Disposer.AddInstanceForDisposal(localsBuilder);
 
@@ -224,11 +224,15 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
     /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
     /// that adds component registrations visible only in the child scope.</param>
+    /// <param name="isolatedScope">
+    /// Indicates whether the generated registry should be 'isolated'; an isolated registry does not hold on to
+    /// any type information for retrieved services that do not result in registrations.
+    /// </param>
     /// <returns>Registry to use for a child scope.</returns>
     /// <remarks>It is the responsibility of the caller to make sure that the registry is properly
     /// disposed of. This is generally done by adding the registry to the <see cref="Disposer"/>
     /// property of the child scope.</remarks>
-    private IComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
+    private IComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
     {
         var restrictedRootScopeLifetime = new MatchingScopeLifetime(tag);
         var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
@@ -237,7 +241,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
 
         foreach (var source in ComponentRegistry.Sources)
         {
-            if (source.IsAdapterForIndividualComponents || source is IPerScopeRegistrationSource)
+            if (source.IsAdapterForIndividualComponents || (source is IPerScopeRegistrationSource && isolatedScope))
             {
                 tracker.AddRegistrationSource(source);
             }
@@ -250,11 +254,11 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         {
             if (parent.ComponentRegistry.HasLocalComponents)
             {
-                var externalSource = new ExternalRegistrySource(parent.ComponentRegistry);
+                var externalSource = new ExternalRegistrySource(parent.ComponentRegistry, isolatedScope);
                 tracker.AddRegistrationSource(externalSource);
 
                 // Add a source for the service pipeline stages.
-                var externalServicePipelineSource = new ExternalRegistryServiceMiddlewareSource(parent.ComponentRegistry);
+                var externalServicePipelineSource = new ExternalRegistryServiceMiddlewareSource(parent.ComponentRegistry, isolatedScope);
                 tracker.AddServiceMiddlewareSource(externalServicePipelineSource);
 
                 break;
