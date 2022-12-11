@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DefaultLoadContextError" xml:space="preserve">
+    <value>Only use {0} for non-default load contexts.</value>
+  </data>
   <data name="DuplicateTagDetected" xml:space="preserve">
     <value>The tag '{0}' has already been assigned to a parent lifetime scope. If you are using Owned&lt;T&gt; this indicates you may have a circular dependency chain.</value>
   </data>

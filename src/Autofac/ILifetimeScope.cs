@@ -181,7 +181,7 @@ public interface ILifetimeScope : IComponentContext, IDisposable, IAsyncDisposab
     /// </example>
     /// <remarks>
     /// When the returned lifetime scope is disposed, the provided
-    /// <paramref name="loadContext"/> *may* be unloaded, in that
+    /// <paramref name="loadContext"/> can be unloaded, in that
     /// Autofac will no longer have any references to types loaded from <paramref name="loadContext"/>.
     /// However if you have captured references to types from the loaded assemblies manually, you still may not be able
     /// to unload.
@@ -217,7 +217,7 @@ public interface ILifetimeScope : IComponentContext, IDisposable, IAsyncDisposab
     /// </example>
     /// <remarks>
     /// When the returned lifetime scope is disposed, the provided
-    /// <paramref name="loadContext"/> *may* be unloaded, in that
+    /// <paramref name="loadContext"/> can be unloaded, in that
     /// Autofac will no longer have any references to types loaded from <paramref name="loadContext"/>.
     /// However if you have captured references to types from the loaded assemblies manually, you still may not be able
     /// to unload.
