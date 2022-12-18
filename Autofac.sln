@@ -18,7 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build.ps1 = build.ps1
 		codecov.yml = codecov.yml
 		Directory.Build.props = Directory.Build.props
-		Directory.Build.targets = Directory.Build.targets
 		global.json = global.json
 		NuGet.Config = NuGet.Config
 	EndProjectSection
@@ -51,7 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Autofac.BenchmarkProfiling"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "codegen", "codegen", "{1FE012DB-9231-4F74-A38B-EC7B050CC0A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Autofac.CodeGen", "codegen\Autofac.CodeGen\Autofac.CodeGen.csproj", "{5E86E12F-DB5A-4E96-80C7-7FC7791C5DD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Autofac.CodeGen", "codegen\Autofac.CodeGen\Autofac.CodeGen.csproj", "{5E86E12F-DB5A-4E96-80C7-7FC7791C5DD2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Autofac.Test.CodeGen", "test\Autofac.Test.CodeGen\Autofac.Test.CodeGen.csproj", "{A651B51E-3CDE-410F-9354-6DB9A5A9B591}"
 EndProject
