@@ -34,6 +34,16 @@ public class DefaultConstructorFinderTests
         Assert.Contains(privateConstructor, constructors);
     }
 
+    [Fact]
+    public void SupportsZeroPublicConstructorTypes()
+    {
+        var finder = new DefaultConstructorFinder();
+        var targetType = typeof(NoPublicConstructors);
+        var constructors = finder.FindConstructors(targetType).ToList();
+
+        Assert.Empty(constructors);
+    }
+
     internal class HasConstructors
     {
         public HasConstructors()
@@ -41,6 +51,13 @@ public class DefaultConstructorFinderTests
         }
 
         private HasConstructors(int value)
+        {
+        }
+    }
+
+    internal class NoPublicConstructors
+    {
+        private NoPublicConstructors()
         {
         }
     }
