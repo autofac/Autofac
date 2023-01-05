@@ -59,7 +59,12 @@ internal class OpenGenericRegistrationSource : IRegistrationSource
             throw new ArgumentNullException(nameof(registrationAccessor));
         }
 
-        if (OpenGenericServiceBinder.TryBindOpenGenericService(service, _registrationData.Services, _activatorData.ImplementationType, out Type? constructedImplementationType, out Service[]? services))
+        if (service is not IServiceWithType swt)
+        {
+            yield break;
+        }
+
+        if (OpenGenericServiceBinder.TryBindOpenGenericTypedService(swt, _registrationData.Services, _activatorData.ImplementationType, out Type? constructedImplementationType, out Service[]? services))
         {
             // Pass the pipeline builder from the original registration to the 'CreateRegistration'.
             // So the original registration will contain all of the pipeline stages originally added, plus anything we want to add.
