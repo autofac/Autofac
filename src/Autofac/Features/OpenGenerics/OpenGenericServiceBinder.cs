@@ -22,6 +22,7 @@ internal static class OpenGenericServiceBinder
     /// <param name="constructedImplementationType">The built closed generic implementation type.</param>
     /// <param name="constructedServices">The built closed generic services.</param>
     /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
+    [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
     public static bool TryBindOpenGenericTypedService(
         IServiceWithType serviceWithType,
         IEnumerable<Service> configuredOpenGenericServices,
@@ -34,7 +35,7 @@ internal static class OpenGenericServiceBinder
             var definitionService = (IServiceWithType)serviceWithType.ChangeType(serviceWithType.ServiceType.GetGenericTypeDefinition());
             var serviceGenericArguments = serviceWithType.ServiceType.GetGenericArguments();
 
-            if (configuredOpenGenericServices.Cast<IServiceWithType>().Any(s => s.Equals(definitionService)))
+            if (configuredOpenGenericServices.OfType<IServiceWithType>().Any(s => s.Equals(definitionService)))
             {
                 var implementorGenericArguments = TryMapImplementationGenericArguments(
                     openGenericImplementationType, serviceWithType.ServiceType, definitionService.ServiceType, serviceGenericArguments);
@@ -45,7 +46,7 @@ internal static class OpenGenericServiceBinder
                     var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments!);
 
                     var implementedServices = configuredOpenGenericServices
-                        .Cast<IServiceWithType>()
+                        .OfType<IServiceWithType>()
                         .Where(s => s.ServiceType.GetGenericArguments().Length == serviceGenericArguments.Length)
                         .Select(s => new { ServiceWithType = s, GenericService = s.ServiceType.MakeGenericType(serviceGenericArguments) })
                         .Where(p => p.GenericService.IsAssignableFrom(constructedImplementationTypeTmp))
@@ -77,6 +78,7 @@ internal static class OpenGenericServiceBinder
     /// <param name="constructedFactory">The built closed generic implementation type.</param>
     /// <param name="constructedServices">The built closed generic services.</param>
     /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
+    [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
     public static bool TryBindOpenGenericDelegateService(
         IServiceWithType serviceWithType,
         IEnumerable<Service> configuredOpenGenericServices,
@@ -89,7 +91,7 @@ internal static class OpenGenericServiceBinder
             var definitionService = (IServiceWithType)serviceWithType.ChangeType(serviceWithType.ServiceType.GetGenericTypeDefinition());
             var serviceGenericArguments = serviceWithType.ServiceType.GetGenericArguments();
 
-            if (configuredOpenGenericServices.Cast<IServiceWithType>().Any(s => s.Equals(definitionService)))
+            if (configuredOpenGenericServices.OfType<IServiceWithType>().Any(s => s.Equals(definitionService)))
             {
                 constructedFactory = (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
 
@@ -203,6 +205,7 @@ internal static class OpenGenericServiceBinder
             .Where(i => i.Name == serviceType.Name && i.Namespace == serviceType.Namespace)
             .ToArray();
 
+    [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
     private static Type? TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<KeyValuePair<Type, Type>> serviceArgumentDefinitionToArgument)
     {
         var matchingRegularType = serviceArgumentDefinitionToArgument
