@@ -64,9 +64,13 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
             throw new ArgumentNullException(nameof(registrationAccessor));
         }
 
-        if (OpenGenericServiceBinder.TryBindOpenGenericService(service, _registrationData.Services, _activatorData.ImplementationType, out Type? constructedImplementationType, out Service[]? services))
+        if (service is not IServiceWithType swt)
         {
-            var swt = (IServiceWithType)service;
+            return Enumerable.Empty<IComponentRegistration>();
+        }
+
+        if (OpenGenericServiceBinder.TryBindOpenGenericTypedService(swt, _registrationData.Services, _activatorData.ImplementationType, out Type? constructedImplementationType, out Service[]? services))
+        {
             var fromService = _activatorData.FromService.ChangeType(swt.ServiceType);
 
             return registrationAccessor(fromService)
