@@ -239,7 +239,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         CheckNotDisposed();
         CheckTagIsUnique(tag);
 
-        var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction, isolatedScope: false);
+        var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction, isolatedScope);
         var scope = new LifetimeScope(localsBuilder.Build(), this, tag);
         scope.Disposer.AddInstanceForDisposal(localsBuilder);
 
