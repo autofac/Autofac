@@ -16,66 +16,13 @@ internal static class OpenGenericServiceBinder
     /// Given a closed generic service (that is being requested), creates a closed generic implementation type
     /// and associated services from the open generic implementation and services.
     /// </summary>
-    /// <param name="closedService">The closed generic service to bind.</param>
-    /// <param name="configuredOpenGenericServices">The set of configured open generic services.</param>
-    /// <param name="openGenericImplementationType">The implementation type of the open generic.</param>
-    /// <param name="constructedImplementationType">The built closed generic implementation type.</param>
-    /// <param name="constructedServices">The built closed generic services.</param>
-    /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
-    public static bool TryBindOpenGenericService(
-        Service closedService,
-        IEnumerable<Service> configuredOpenGenericServices,
-        Type openGenericImplementationType,
-        [NotNullWhen(returnValue: true)] out Type? constructedImplementationType,
-        [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
-    {
-        if (closedService is IServiceWithType swt)
-        {
-            return TryBindOpenGenericTypedService(swt, configuredOpenGenericServices, openGenericImplementationType, out constructedImplementationType, out constructedServices);
-        }
-
-        constructedImplementationType = null;
-        constructedServices = null;
-        return false;
-    }
-
-    /// <summary>
-    /// Given a closed generic service (that is being requested), creates a closed generic implementation type
-    /// and associated services from the open generic implementation and services.
-    /// </summary>
-    /// <param name="closedService">The closed generic service to bind.</param>
-    /// <param name="configuredOpenGenericServices">The set of configured open generic services.</param>
-    /// <param name="openGenericFactory">Delegate responsible for generating an instance of a closed generic based on the open generic type being registered.</param>
-    /// <param name="constructedFactory">The built closed generic implementation type.</param>
-    /// <param name="constructedServices">The built closed generic services.</param>
-    /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
-    public static bool TryBindOpenGenericDelegate(
-        Service closedService,
-        IEnumerable<Service> configuredOpenGenericServices,
-        Func<IComponentContext, Type[], IEnumerable<Parameter>, object> openGenericFactory,
-        [NotNullWhen(returnValue: true)] out Func<IComponentContext, IEnumerable<Parameter>, object>? constructedFactory,
-        [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
-    {
-        if (closedService is IServiceWithType swt)
-        {
-            return TryBindOpenGenericDelegateService(swt, configuredOpenGenericServices, openGenericFactory, out constructedFactory, out constructedServices);
-        }
-
-        constructedFactory = null;
-        constructedServices = null;
-        return false;
-    }
-
-    /// <summary>
-    /// Given a closed generic service (that is being requested), creates a closed generic implementation type
-    /// and associated services from the open generic implementation and services.
-    /// </summary>
     /// <param name="serviceWithType">The closed generic service to bind.</param>
     /// <param name="configuredOpenGenericServices">The set of configured open generic services.</param>
     /// <param name="openGenericImplementationType">The implementation type of the open generic.</param>
     /// <param name="constructedImplementationType">The built closed generic implementation type.</param>
     /// <param name="constructedServices">The built closed generic services.</param>
     /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
+    [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
     public static bool TryBindOpenGenericTypedService(
         IServiceWithType serviceWithType,
         IEnumerable<Service> configuredOpenGenericServices,
@@ -88,7 +35,7 @@ internal static class OpenGenericServiceBinder
             var definitionService = (IServiceWithType)serviceWithType.ChangeType(serviceWithType.ServiceType.GetGenericTypeDefinition());
             var serviceGenericArguments = serviceWithType.ServiceType.GetGenericArguments();
 
-            if (configuredOpenGenericServices.Cast<IServiceWithType>().Any(s => s.Equals(definitionService)))
+            if (configuredOpenGenericServices.OfType<IServiceWithType>().Any(s => s.Equals(definitionService)))
             {
                 var implementorGenericArguments = TryMapImplementationGenericArguments(
                     openGenericImplementationType, serviceWithType.ServiceType, definitionService.ServiceType, serviceGenericArguments);
@@ -99,7 +46,7 @@ internal static class OpenGenericServiceBinder
                     var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments!);
 
                     var implementedServices = configuredOpenGenericServices
-                        .Cast<IServiceWithType>()
+                        .OfType<IServiceWithType>()
                         .Where(s => s.ServiceType.GetGenericArguments().Length == serviceGenericArguments.Length)
                         .Select(s => new { ServiceWithType = s, GenericService = s.ServiceType.MakeGenericType(serviceGenericArguments) })
                         .Where(p => p.GenericService.IsAssignableFrom(constructedImplementationTypeTmp))
@@ -131,6 +78,7 @@ internal static class OpenGenericServiceBinder
     /// <param name="constructedFactory">The built closed generic implementation type.</param>
     /// <param name="constructedServices">The built closed generic services.</param>
     /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
+    [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
     public static bool TryBindOpenGenericDelegateService(
         IServiceWithType serviceWithType,
         IEnumerable<Service> configuredOpenGenericServices,
@@ -143,7 +91,7 @@ internal static class OpenGenericServiceBinder
             var definitionService = (IServiceWithType)serviceWithType.ChangeType(serviceWithType.ServiceType.GetGenericTypeDefinition());
             var serviceGenericArguments = serviceWithType.ServiceType.GetGenericArguments();
 
-            if (configuredOpenGenericServices.Cast<IServiceWithType>().Any(s => s.Equals(definitionService)))
+            if (configuredOpenGenericServices.OfType<IServiceWithType>().Any(s => s.Equals(definitionService)))
             {
                 constructedFactory = (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
 
@@ -257,6 +205,7 @@ internal static class OpenGenericServiceBinder
             .Where(i => i.Name == serviceType.Name && i.Namespace == serviceType.Namespace)
             .ToArray();
 
+    [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
     private static Type? TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<KeyValuePair<Type, Type>> serviceArgumentDefinitionToArgument)
     {
         var matchingRegularType = serviceArgumentDefinitionToArgument

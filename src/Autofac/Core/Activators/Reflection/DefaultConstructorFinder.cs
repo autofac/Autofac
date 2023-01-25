@@ -45,14 +45,7 @@ public class DefaultConstructorFinder : IConstructorFinder
 
     private static ConstructorInfo[] GetDefaultPublicConstructors(Type type)
     {
-        var retval = ReflectionCacheSet.Shared.Internal.DefaultPublicConstructors
+        return ReflectionCacheSet.Shared.Internal.DefaultPublicConstructors
             .GetOrAdd(type, t => t.GetDeclaredPublicConstructors());
-
-        if (retval.Length == 0)
-        {
-            throw new NoConstructorsFoundException(type);
-        }
-
-        return retval;
     }
 }

@@ -84,14 +84,14 @@ class Program
 
         // Workload method is generated differently when BenchmarkDotNet actually runs; we'll need to wrap it in the set of parameters.
         // It's way slower than they way they do it, but it should still give us good profiler results.
-        Action<int> workloadAction = (repeat) =>
+        void workloadAction(int repeat)
         {
             while (repeat > 0)
             {
                 selectedCase.Descriptor.WorkloadMethod.Invoke(benchInstance, selectedCase.Parameters.Items.Select(x => x.Value).ToArray());
                 repeat--;
             }
-        };
+        }
 
         setupAction.InvokeSingle();
 
