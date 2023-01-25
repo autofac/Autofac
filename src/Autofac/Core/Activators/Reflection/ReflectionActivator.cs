@@ -4,6 +4,7 @@
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Text;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
@@ -21,6 +22,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     private readonly Parameter[] _defaultParameters;
 
     private ConstructorBinder[]? _constructorBinders;
+    private IReadOnlyList<RequiredPropertyParameter>? _requiredProperties;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReflectionActivator"/> class.
@@ -93,10 +95,17 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             binders[idx] = new ConstructorBinder(availableConstructors[idx]);
         }
 
+        var skipRequiredPropertyPopulation = false;
+        var singleConstructorSelected = false;
+
         if (binders.Length == 1)
         {
-            UseSingleConstructorActivation(pipelineBuilder, binders[0]);
-            return;
+            var singleConstructor = binders[0];
+
+            UseSingleConstructorActivation(pipelineBuilder, singleConstructor);
+
+            skipRequiredPropertyPopulation = singleConstructor.SetsRequiredMembers;
+            singleConstructorSelected = true;
         }
         else if (ConstructorSelector is IConstructorSelectorWithEarlyBinding earlyBindingSelector)
         {
@@ -106,8 +115,39 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             {
                 UseSingleConstructorActivation(pipelineBuilder, matchedConstructor);
 
-                return;
+                skipRequiredPropertyPopulation = matchedConstructor.SetsRequiredMembers;
+                singleConstructorSelected = true;
             }
+        }
+
+#if NET7_0_OR_GREATER
+        if (!skipRequiredPropertyPopulation)
+        {
+            // Note that the RequiredMemberAttribute is only applied to types that directly
+            // define required members, so we must check parent types as well to determine if we need to do any of
+            // the 'required' behaviour.
+            if (_implementationType.GetCustomAttribute<RequiredMemberAttribute>(inherit: true) is not null)
+            {
+                var runtimeProps = _implementationType.GetRuntimeProperties();
+                var requiredPropParameterSet = new List<RequiredPropertyParameter>();
+
+                foreach (var prop in runtimeProps)
+                {
+                    // By virtue of the rules for required members, if a property has the RequiredMember
+                    // attribute, it must be writeable and non static.
+                    if (prop.GetCustomAttribute<RequiredMemberAttribute>() is not null)
+                    {
+                        requiredPropParameterSet.Add(new RequiredPropertyParameter(prop));
+                    }
+                }
+
+                _requiredProperties = requiredPropParameterSet;
+            }
+        }
+#endif
+        if (singleConstructorSelected)
+        {
+            return;
         }
 
         _constructorBinders = binders;
@@ -147,7 +187,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
                 var instance = boundConstructor.Instantiate();
 
-                InjectProperties(instance, ctxt);
+                InjectProperties(instance, ctxt, skipRequiredMembers: boundConstructor.SetsRequiredMembers);
 
                 ctxt.Instance = instance;
 
@@ -171,7 +211,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
                 var instance = bound.Instantiate();
 
-                InjectProperties(instance, ctxt);
+                InjectProperties(instance, ctxt, skipRequiredMembers: bound.SetsRequiredMembers);
 
                 ctxt.Instance = instance;
 
@@ -218,7 +258,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         var instance = selectedBinding.Instantiate();
 
-        InjectProperties(instance, context);
+        InjectProperties(instance, context, skipRequiredMembers: selectedBinding.SetsRequiredMembers);
 
         return instance;
     }
@@ -310,9 +350,9 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
     }
 
-    private void InjectProperties(object instance, IComponentContext context)
+    private void InjectProperties(object instance, IComponentContext context, bool skipRequiredMembers)
     {
-        if (_configuredProperties.Length == 0)
+        if (_configuredProperties.Length == 0 && (_requiredProperties is null || skipRequiredMembers))
         {
             return;
         }
@@ -334,9 +374,65 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
                 {
                     actualProperties.Remove(actualProperty);
                     actualProperty.SetValue(instance, vp(), null);
+
                     break;
                 }
             }
         }
+
+        if (_requiredProperties is null)
+        {
+            return;
+        }
+
+        List<RequiredPropertyParameter>? failingRequiredProperties = null;
+
+        foreach (var requiredProperty in _requiredProperties)
+        {
+            // We use the remaining properties in 'actualProperties' here,
+            // so any explicitly configured property parameters override the 'automatic' ones.
+            foreach (var actualProperty in actualProperties)
+            {
+                if (actualProperty != requiredProperty.Property)
+                {
+                    continue;
+                }
+
+                if (requiredProperty.CanSupplyValue(requiredProperty.Parameter, context, out var vp))
+                {
+                    actualProperties.Remove(actualProperty);
+                    actualProperty.SetValue(instance, vp(), null);
+                }
+                else
+                {
+                    failingRequiredProperties ??= new();
+                    failingRequiredProperties.Add(requiredProperty);
+                }
+
+                break;
+            }
+        }
+
+        if (failingRequiredProperties is not null)
+        {
+            throw new DependencyResolutionException(BuildRequiredPropertyResolutionMessage(failingRequiredProperties));
+        }
+    }
+
+    private string BuildRequiredPropertyResolutionMessage(IReadOnlyList<RequiredPropertyParameter> failingRequiredProperties)
+    {
+        var propertyDescriptions = new StringBuilder();
+
+        foreach (var failed in failingRequiredProperties)
+        {
+            propertyDescriptions.AppendLine();
+            propertyDescriptions.Append($"{failed.Property.Name} ({failed.Property.PropertyType.Name})");
+        }
+
+        return string.Format(
+            CultureInfo.CurrentCulture,
+            ReflectionActivatorResources.RequiredPropertiesCouldNotBeBound,
+            _implementationType,
+            propertyDescriptions);
     }
 }
