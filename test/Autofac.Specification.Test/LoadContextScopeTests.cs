@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
 using System.Reflection;
 using System.Runtime.Loader;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac.Test.Scenarios.ScannedAssembly;
 
 namespace Autofac.Specification.Test;
 
