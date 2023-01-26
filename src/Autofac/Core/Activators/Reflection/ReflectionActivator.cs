@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Util.Cache;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -22,7 +23,8 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     private readonly Parameter[] _defaultParameters;
 
     private ConstructorBinder[]? _constructorBinders;
-    private IReadOnlyList<RequiredPropertyParameter>? _requiredProperties;
+    private bool _anyRequiredMembers;
+    private ResolvedPropertyInfoState[]? _defaultFoundPropertySet;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReflectionActivator"/> class.
@@ -80,6 +82,26 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             throw new ArgumentNullException(nameof(pipelineBuilder));
         }
 
+#if NET7_0_OR_GREATER
+        _anyRequiredMembers = _implementationType.GetCustomAttribute<RequiredMemberAttribute>(inherit: true) is not null;
+#endif
+
+        if (_anyRequiredMembers || _configuredProperties.Length > 0)
+        {
+            // Get the full set of properties.
+            var actualProperties = _implementationType
+                .GetRuntimeProperties()
+                .Where(pi => pi.CanWrite)
+                .ToList();
+
+            _defaultFoundPropertySet = new ResolvedPropertyInfoState[actualProperties.Count];
+
+            for (int idx = 0; idx < actualProperties.Count; idx++)
+            {
+                _defaultFoundPropertySet[idx] = new ResolvedPropertyInfoState(new FoundProperty(actualProperties[idx]));
+            }
+        }
+
         // Locate the possible constructors at container build time.
         var availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
 
@@ -95,17 +117,13 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             binders[idx] = new ConstructorBinder(availableConstructors[idx]);
         }
 
-        var skipRequiredPropertyPopulation = false;
-        var singleConstructorSelected = false;
-
         if (binders.Length == 1)
         {
             var singleConstructor = binders[0];
 
             UseSingleConstructorActivation(pipelineBuilder, singleConstructor);
 
-            skipRequiredPropertyPopulation = singleConstructor.SetsRequiredMembers;
-            singleConstructorSelected = true;
+            return;
         }
         else if (ConstructorSelector is IConstructorSelectorWithEarlyBinding earlyBindingSelector)
         {
@@ -115,39 +133,8 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             {
                 UseSingleConstructorActivation(pipelineBuilder, matchedConstructor);
 
-                skipRequiredPropertyPopulation = matchedConstructor.SetsRequiredMembers;
-                singleConstructorSelected = true;
+                return;
             }
-        }
-
-#if NET7_0_OR_GREATER
-        if (!skipRequiredPropertyPopulation)
-        {
-            // Note that the RequiredMemberAttribute is only applied to types that directly
-            // define required members, so we must check parent types as well to determine if we need to do any of
-            // the 'required' behaviour.
-            if (_implementationType.GetCustomAttribute<RequiredMemberAttribute>(inherit: true) is not null)
-            {
-                var runtimeProps = _implementationType.GetRuntimeProperties();
-                var requiredPropParameterSet = new List<RequiredPropertyParameter>();
-
-                foreach (var prop in runtimeProps)
-                {
-                    // By virtue of the rules for required members, if a property has the RequiredMember
-                    // attribute, it must be writeable and non static.
-                    if (prop.GetCustomAttribute<RequiredMemberAttribute>() is not null)
-                    {
-                        requiredPropParameterSet.Add(new RequiredPropertyParameter(prop));
-                    }
-                }
-
-                _requiredProperties = requiredPropParameterSet;
-            }
-        }
-#endif
-        if (singleConstructorSelected)
-        {
-            return;
         }
 
         _constructorBinders = binders;
@@ -187,7 +174,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
                 var instance = boundConstructor.Instantiate();
 
-                InjectProperties(instance, ctxt, skipRequiredMembers: boundConstructor.SetsRequiredMembers);
+                InjectProperties(instance, ctxt, boundConstructor, GetAllParameters(ctxt.Parameters));
 
                 ctxt.Instance = instance;
 
@@ -211,7 +198,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
                 var instance = bound.Instantiate();
 
-                InjectProperties(instance, ctxt, skipRequiredMembers: bound.SetsRequiredMembers);
+                InjectProperties(instance, ctxt, bound, prioritisedParameters);
 
                 ctxt.Instance = instance;
 
@@ -244,7 +231,9 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         CheckNotDisposed();
 
-        var allBindings = GetAllBindings(_constructorBinders!, context, parameters);
+        var prioritisedParameters = GetAllParameters(parameters);
+
+        var allBindings = GetAllBindings(_constructorBinders!, context, prioritisedParameters);
 
         var selectedBinding = ConstructorSelector.SelectConstructorBinding(allBindings, parameters);
 
@@ -258,21 +247,19 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         var instance = selectedBinding.Instantiate();
 
-        InjectProperties(instance, context, skipRequiredMembers: selectedBinding.SetsRequiredMembers);
+        InjectProperties(instance, context, selectedBinding, prioritisedParameters);
 
         return instance;
     }
 
-    private BoundConstructor[] GetAllBindings(ConstructorBinder[] availableConstructors, IComponentContext context, IEnumerable<Parameter> parameters)
+    private BoundConstructor[] GetAllBindings(ConstructorBinder[] availableConstructors, IComponentContext context, IEnumerable<Parameter> allParameters)
     {
-        var prioritisedParameters = GetAllParameters(parameters);
-
         var boundConstructors = new BoundConstructor[availableConstructors.Length];
         var validBindings = availableConstructors.Length;
 
         for (var idx = 0; idx < availableConstructors.Length; idx++)
         {
-            var bound = availableConstructors[idx].Bind(prioritisedParameters, context);
+            var bound = availableConstructors[idx].Bind(allParameters, context);
 
             boundConstructors[idx] = bound;
 
@@ -350,76 +337,96 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
     }
 
-    private void InjectProperties(object instance, IComponentContext context, bool skipRequiredMembers)
+    private void InjectProperties(object instance, IComponentContext context, BoundConstructor constructor, IEnumerable<Parameter> allParameters)
     {
-        if (_configuredProperties.Length == 0 && (_requiredProperties is null || skipRequiredMembers))
+        // We only need to do any injection if we have a set of property information.
+        if (_defaultFoundPropertySet is null)
         {
             return;
         }
 
-        var actualProperties = instance
-            .GetType()
-            .GetRuntimeProperties()
-            .Where(pi => pi.CanWrite)
-            .ToList();
+        // If this constructor sets all required members,
+        // and we have no configured properties, we can just jump out.
+        if (_configuredProperties.Length == 0 && constructor.SetsRequiredMembers)
+        {
+            return;
+        }
+
+        var workingArray = (ResolvedPropertyInfoState[])_defaultFoundPropertySet.Clone();
 
         foreach (var configuredProperty in _configuredProperties)
         {
-            foreach (var actualProperty in actualProperties)
+            for (var propIdx = 0; propIdx < workingArray.Length; propIdx++)
             {
-                var setter = actualProperty.SetMethod;
+                ref var prop = ref workingArray[propIdx];
 
-                if (setter != null &&
-                    configuredProperty.CanSupplyValue(setter.GetParameters()[0], context, out var vp))
+                if (prop.Set)
                 {
-                    actualProperties.Remove(actualProperty);
-                    actualProperty.SetValue(instance, vp(), null);
+                    // Skip, already seen.
+                    continue;
+                }
 
+                if (prop.Property.TrySupply(instance, configuredProperty, context))
+                {
+                    prop.Set = true;
                     break;
                 }
             }
         }
 
-        if (_requiredProperties is null)
+        if (_anyRequiredMembers && !constructor.SetsRequiredMembers)
         {
-            return;
-        }
+            List<FoundProperty>? failingRequiredProperties = null;
 
-        List<RequiredPropertyParameter>? failingRequiredProperties = null;
-
-        foreach (var requiredProperty in _requiredProperties)
-        {
-            // We use the remaining properties in 'actualProperties' here,
-            // so any explicitly configured property parameters override the 'automatic' ones.
-            foreach (var actualProperty in actualProperties)
+            for (var propIdx = 0; propIdx < workingArray.Length; propIdx++)
             {
-                if (actualProperty != requiredProperty.Property)
+                ref var prop = ref workingArray[propIdx];
+
+                if (!prop.Property.IsRequired)
                 {
+                    // Only auto-populate required properties.
                     continue;
                 }
 
-                if (requiredProperty.CanSupplyValue(requiredProperty.Parameter, context, out var vp))
+                if (prop.Set)
                 {
-                    actualProperties.Remove(actualProperty);
-                    actualProperty.SetValue(instance, vp(), null);
+                    // Only auto-populate things not already populated by a specific property
+                    // being set.
+                    continue;
                 }
-                else
+
+                foreach (var parameter in allParameters)
+                {
+                    if (parameter is NamedParameter || parameter is PositionalParameter)
+                    {
+                        // Skip Named and Positional parameters, because if someone uses 'value' as a
+                        // constructor parameter name, it would also match the property, and cause confusion.
+                        continue;
+                    }
+
+                    if (prop.Property.TrySupply(instance, parameter, context))
+                    {
+                        prop.Set = true;
+
+                        break;
+                    }
+                }
+
+                if (!prop.Set)
                 {
                     failingRequiredProperties ??= new();
-                    failingRequiredProperties.Add(requiredProperty);
+                    failingRequiredProperties.Add(prop.Property);
                 }
-
-                break;
             }
-        }
 
-        if (failingRequiredProperties is not null)
-        {
-            throw new DependencyResolutionException(BuildRequiredPropertyResolutionMessage(failingRequiredProperties));
+            if (failingRequiredProperties is not null)
+            {
+                throw new DependencyResolutionException(BuildRequiredPropertyResolutionMessage(failingRequiredProperties));
+            }
         }
     }
 
-    private string BuildRequiredPropertyResolutionMessage(IReadOnlyList<RequiredPropertyParameter> failingRequiredProperties)
+    private string BuildRequiredPropertyResolutionMessage(IReadOnlyList<FoundProperty> failingRequiredProperties)
     {
         var propertyDescriptions = new StringBuilder();
 
@@ -434,5 +441,53 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             ReflectionActivatorResources.RequiredPropertiesCouldNotBeBound,
             _implementationType,
             propertyDescriptions);
+    }
+
+    private class FoundProperty
+    {
+        private readonly MethodInfo _setter;
+        private readonly ParameterInfo _setterParameter;
+
+        public FoundProperty(PropertyInfo prop)
+        {
+            Property = prop;
+
+            _setter = prop.SetMethod!;
+
+            _setterParameter = _setter.GetParameters()[0];
+
+#if NET7_0_OR_GREATER
+            IsRequired = prop.GetCustomAttribute<RequiredMemberAttribute>() is not null;
+#endif
+        }
+
+        public PropertyInfo Property { get; }
+
+        public bool IsRequired { get; }
+
+        public bool TrySupply(object instance, Parameter p, IComponentContext ctxt)
+        {
+            if (p.CanSupplyValue(_setterParameter, ctxt, out var vp))
+            {
+                Property.SetValue(instance, vp(), null);
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    private struct ResolvedPropertyInfoState
+    {
+        public ResolvedPropertyInfoState(FoundProperty property)
+        {
+            Property = property;
+            Set = false;
+        }
+
+        public FoundProperty Property { get; }
+
+        public bool Set { get; set; }
     }
 }
