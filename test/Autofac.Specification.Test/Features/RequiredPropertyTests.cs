@@ -170,6 +170,63 @@ public class RequiredPropertyTests
         Assert.Throws<DependencyResolutionException>(() => scope.Resolve<MultiConstructorComponent>());
     }
 
+    [Fact]
+    public void DerivedClassResolvesPropertiesInParent()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceA>();
+        builder.RegisterType<ServiceB>();
+        builder.RegisterType<DerivedComponent>();
+
+        var container = builder.Build();
+
+        var component = container.Resolve<DerivedComponent>();
+
+        Assert.NotNull(component.ServiceA);
+        Assert.NotNull(component.ServiceB);
+    }
+
+    [Fact]
+    public void DerivedClassResolvesPropertiesInParentAndSelf()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceA>();
+        builder.RegisterType<ServiceB>();
+        builder.RegisterType<ServiceC>();
+        builder.RegisterType<DerivedComponentWithProp>();
+
+        var container = builder.Build();
+
+        var component = container.Resolve<DerivedComponentWithProp>();
+
+        Assert.NotNull(component.ServiceA);
+        Assert.NotNull(component.ServiceB);
+        Assert.NotNull(component.ServiceC);
+    }
+
+    [Fact]
+    public void CanResolveOpenGenericComponentRequiredProperties()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterGeneric(typeof(OpenGenericService<>));
+        builder.RegisterGeneric(typeof(OpenGenericComponent<>));
+
+        var container = builder.Build();
+
+        var component = container.Resolve<OpenGenericComponent<int>>();
+
+        Assert.NotNull(component.Service);
+    }
+
+    private class OpenGenericComponent<T>
+    {
+        required public OpenGenericService<T> Service { get; set; }
+    }
+
+    private class OpenGenericService<T>
+    {
+    }
+
     private class ConstructorComponent
     {
         [SetsRequiredMembers]
@@ -201,6 +258,19 @@ public class RequiredPropertyTests
         required public ServiceA ServiceA { get; set; }
 
         required public ServiceB ServiceB { get; set; }
+    }
+
+    private class DerivedComponentWithProp : Component
+    {
+        public DerivedComponentWithProp()
+        {
+        }
+
+        required public ServiceC ServiceC { get; set; }
+    }
+
+    private class DerivedComponent : Component
+    {
     }
 
     private class ServiceA

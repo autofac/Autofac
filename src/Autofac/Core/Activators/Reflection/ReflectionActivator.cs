@@ -84,7 +84,19 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
 
 #if NET7_0_OR_GREATER
-        _anyRequiredMembers = _implementationType.GetCustomAttribute<RequiredMemberAttribute>(inherit: true) is not null;
+        // The 'inherited' flag on GetCustomAttribute does not appear to work as expected with regards to RequiredMemberAttribute,
+        // so we must walk the inheritance hierarchy checking each one.
+        var currentType = _implementationType;
+        while (currentType is not null && !currentType.Equals(typeof(object)))
+        {
+            if (currentType.GetCustomAttribute<RequiredMemberAttribute>(inherit: true) is not null)
+            {
+                _anyRequiredMembers = true;
+                break;
+            }
+
+            currentType = currentType.BaseType;
+        }
 #else
         _anyRequiredMembers = false;
 #endif
