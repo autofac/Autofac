@@ -34,7 +34,7 @@ internal class InjectableProperty
         _setterParameter = _setter.GetParameters()[0];
 
 #if NET7_0_OR_GREATER
-            IsRequired = prop.GetCustomAttribute<RequiredMemberAttribute>() is not null;
+        IsRequired = prop.GetCustomAttribute<RequiredMemberAttribute>() is not null;
 #endif
     }
 
