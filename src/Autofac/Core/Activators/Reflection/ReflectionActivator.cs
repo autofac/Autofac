@@ -450,7 +450,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             propertyDescriptions.AppendLine();
             propertyDescriptions.Append(failed.Property.Name);
             propertyDescriptions.Append(" (");
-            propertyDescriptions.Append(failed.Property.PropertyType.Name);
+            propertyDescriptions.Append(failed.Property.PropertyType.FullName);
             propertyDescriptions.Append(')');
         }
 
