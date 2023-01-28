@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using System.Diagnostics.CodeAnalysis;
 using Autofac.Core;
 
 namespace Autofac.Specification.Test.Features;
@@ -71,7 +70,7 @@ public class RequiredPropertyTests
     }
 
     [Fact]
-    public void GeneralTypePropertyParameterCanTakePlaceOfRegistration()
+    public void GeneralTypeParameterCanTakePlaceOfRegistration()
     {
         var builder = new ContainerBuilder();
         builder.RegisterType<ServiceA>();
@@ -82,6 +81,119 @@ public class RequiredPropertyTests
         var component = container.Resolve<Component>();
 
         Assert.NotNull(component.ServiceB);
+    }
+
+    [Fact]
+    public void ParameterPassedAtResolveUsedForRequiredProperty()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceA>();
+        builder.RegisterType<Component>();
+
+        var container = builder.Build();
+
+        var component = container.Resolve<Component>(new TypedParameter(typeof(ServiceB), new ServiceB()));
+
+        Assert.NotNull(component.ServiceB);
+    }
+
+    [Fact]
+    public void NamedParametersIgnoredForRequiredProperties()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceA>();
+        builder.RegisterType<Component>().WithParameter("value", new ServiceB());
+
+        var container = builder.Build();
+
+        Assert.Throws<DependencyResolutionException>(() => container.Resolve<Component>());
+    }
+
+    [Fact]
+    public void PositionalParametersIgnoredForRequiredProperties()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceA>();
+        builder.RegisterType<Component>().WithParameter(new PositionalParameter(0, new ServiceB()));
+
+        var container = builder.Build();
+
+        Assert.Throws<DependencyResolutionException>(() => container.Resolve<Component>());
+    }
+
+    [Fact]
+    public void SetsRequiredMembersConstructorSkipsRequiredProperties()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ConstructorComponent>();
+
+        var container = builder.Build();
+
+        var component = container.Resolve<ConstructorComponent>();
+
+        Assert.Null(component.ServiceA);
+        Assert.Null(component.ServiceB);
+    }
+
+    [Fact]
+    public void SetsRequiredMembersConstructorSkipsRequiredPropertiesEvenWhenRegistered()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceA>();
+        builder.RegisterType<ServiceB>();
+        builder.RegisterType<ConstructorComponent>();
+
+        var container = builder.Build();
+
+        var component = container.Resolve<ConstructorComponent>();
+
+        Assert.Null(component.ServiceA);
+        Assert.Null(component.ServiceB);
+    }
+
+    [Fact]
+    public void OnlySelectedConstructorConsideredForSetsRequiredProperties()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<MultiConstructorComponent>();
+
+        var container = builder.Build();
+
+        var component = container.Resolve<MultiConstructorComponent>();
+
+        // Allowed to not be set, because empty constructor was selected.
+        Assert.Null(component.ServiceA);
+
+        using var scope = container.BeginLifetimeScope(b => b.RegisterType<ServiceC>());
+
+        // Fails, because constructor with SetsRequiredProperties attribute is selected.
+        Assert.Throws<DependencyResolutionException>(() => scope.Resolve<MultiConstructorComponent>());
+    }
+
+    private class ConstructorComponent
+    {
+        [SetsRequiredMembers]
+        public ConstructorComponent()
+        {
+        }
+
+        required public ServiceA ServiceA { get; set; }
+
+        required public ServiceB ServiceB { get; set; }
+    }
+
+    private class MultiConstructorComponent
+    {
+        [SetsRequiredMembers]
+        public MultiConstructorComponent()
+        {
+        }
+
+        public MultiConstructorComponent(ServiceC serviceC)
+        {
+        }
+
+        required public ServiceA ServiceA { get; set; }
     }
 
     private class Component
@@ -111,6 +223,9 @@ public class RequiredPropertyTests
         public string Tag { get; set; }
     }
 
+    private class ServiceC
+    {
+    }
 }
 
 #endif

@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Util;
 using Autofac.Util.Cache;
 
 namespace Autofac.Core.Activators.Reflection;
@@ -24,7 +25,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
     private ConstructorBinder[]? _constructorBinders;
     private bool _anyRequiredMembers;
-    private ResolvedPropertyInfoState[]? _defaultFoundPropertySet;
+    private InjectablePropertyState[]? _defaultFoundPropertySet;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReflectionActivator"/> class.
@@ -84,6 +85,8 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
 #if NET7_0_OR_GREATER
         _anyRequiredMembers = _implementationType.GetCustomAttribute<RequiredMemberAttribute>(inherit: true) is not null;
+#else
+        _anyRequiredMembers = false;
 #endif
 
         if (_anyRequiredMembers || _configuredProperties.Length > 0)
@@ -94,11 +97,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
                 .Where(pi => pi.CanWrite)
                 .ToList();
 
-            _defaultFoundPropertySet = new ResolvedPropertyInfoState[actualProperties.Count];
+            _defaultFoundPropertySet = new InjectablePropertyState[actualProperties.Count];
 
             for (int idx = 0; idx < actualProperties.Count; idx++)
             {
-                _defaultFoundPropertySet[idx] = new ResolvedPropertyInfoState(new FoundProperty(actualProperties[idx]));
+                _defaultFoundPropertySet[idx] = new InjectablePropertyState(new InjectableProperty(actualProperties[idx]));
             }
         }
 
@@ -352,13 +355,13 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             return;
         }
 
-        var workingArray = (ResolvedPropertyInfoState[])_defaultFoundPropertySet.Clone();
+        var workingSetOfProperties = (InjectablePropertyState[])_defaultFoundPropertySet.Clone();
 
         foreach (var configuredProperty in _configuredProperties)
         {
-            for (var propIdx = 0; propIdx < workingArray.Length; propIdx++)
+            for (var propIdx = 0; propIdx < workingSetOfProperties.Length; propIdx++)
             {
-                ref var prop = ref workingArray[propIdx];
+                ref var prop = ref workingSetOfProperties[propIdx];
 
                 if (prop.Set)
                 {
@@ -366,7 +369,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
                     continue;
                 }
 
-                if (prop.Property.TrySupply(instance, configuredProperty, context))
+                if (prop.Property.TrySupplyValue(instance, configuredProperty, context))
                 {
                     prop.Set = true;
                     break;
@@ -376,11 +379,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         if (_anyRequiredMembers && !constructor.SetsRequiredMembers)
         {
-            List<FoundProperty>? failingRequiredProperties = null;
+            List<InjectableProperty>? failingRequiredProperties = null;
 
-            for (var propIdx = 0; propIdx < workingArray.Length; propIdx++)
+            for (var propIdx = 0; propIdx < workingSetOfProperties.Length; propIdx++)
             {
-                ref var prop = ref workingArray[propIdx];
+                ref var prop = ref workingSetOfProperties[propIdx];
 
                 if (!prop.Property.IsRequired)
                 {
@@ -404,7 +407,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
                         continue;
                     }
 
-                    if (prop.Property.TrySupply(instance, parameter, context))
+                    if (prop.Property.TrySupplyValue(instance, parameter, context))
                     {
                         prop.Set = true;
 
@@ -426,14 +429,17 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
     }
 
-    private string BuildRequiredPropertyResolutionMessage(IReadOnlyList<FoundProperty> failingRequiredProperties)
+    private string BuildRequiredPropertyResolutionMessage(IReadOnlyList<InjectableProperty> failingRequiredProperties)
     {
         var propertyDescriptions = new StringBuilder();
 
         foreach (var failed in failingRequiredProperties)
         {
             propertyDescriptions.AppendLine();
-            propertyDescriptions.Append($"{failed.Property.Name} ({failed.Property.PropertyType.Name})");
+            propertyDescriptions.Append(failed.Property.Name);
+            propertyDescriptions.Append(" (");
+            propertyDescriptions.Append(failed.Property.PropertyType.Name);
+            propertyDescriptions.Append(')');
         }
 
         return string.Format(
@@ -441,53 +447,5 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             ReflectionActivatorResources.RequiredPropertiesCouldNotBeBound,
             _implementationType,
             propertyDescriptions);
-    }
-
-    private class FoundProperty
-    {
-        private readonly MethodInfo _setter;
-        private readonly ParameterInfo _setterParameter;
-
-        public FoundProperty(PropertyInfo prop)
-        {
-            Property = prop;
-
-            _setter = prop.SetMethod!;
-
-            _setterParameter = _setter.GetParameters()[0];
-
-#if NET7_0_OR_GREATER
-            IsRequired = prop.GetCustomAttribute<RequiredMemberAttribute>() is not null;
-#endif
-        }
-
-        public PropertyInfo Property { get; }
-
-        public bool IsRequired { get; }
-
-        public bool TrySupply(object instance, Parameter p, IComponentContext ctxt)
-        {
-            if (p.CanSupplyValue(_setterParameter, ctxt, out var vp))
-            {
-                Property.SetValue(instance, vp(), null);
-
-                return true;
-            }
-
-            return false;
-        }
-    }
-
-    private struct ResolvedPropertyInfoState
-    {
-        public ResolvedPropertyInfoState(FoundProperty property)
-        {
-            Property = property;
-            Set = false;
-        }
-
-        public FoundProperty Property { get; }
-
-        public bool Set { get; set; }
     }
 }
