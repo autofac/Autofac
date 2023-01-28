@@ -41,6 +41,22 @@ public class RequiredPropertyTests
     }
 
     [Fact]
+    public void CanMixConstructorsAndProperties()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceA>();
+        builder.RegisterType<ServiceB>();
+        builder.RegisterType<MixedConstructorAndPropertyComponent>();
+
+        var container = builder.Build();
+
+        var component = container.Resolve<MixedConstructorAndPropertyComponent>();
+
+        Assert.NotNull(component.ServiceA);
+        Assert.NotNull(component.ServiceB);
+    }
+
+    [Fact]
     public void ExplicitParameterOverridesRequiredAutowiring()
     {
         var builder = new ContainerBuilder();
@@ -235,6 +251,18 @@ public class RequiredPropertyTests
         }
 
         required public ServiceA ServiceA { get; set; }
+
+        required public ServiceB ServiceB { get; set; }
+    }
+
+    private class MixedConstructorAndPropertyComponent
+    {
+        public MixedConstructorAndPropertyComponent(ServiceA serviceA)
+        {
+            ServiceA = serviceA;
+        }
+
+        public ServiceA ServiceA { get; set; }
 
         required public ServiceB ServiceB { get; set; }
     }
