@@ -87,7 +87,7 @@ public class Container : Disposable, IContainer, IServiceProvider
     /// <inheritdoc />
     public ILifetimeScope BeginLoadContextLifetimeScope(object tag, AssemblyLoadContext loadContext, Action<ContainerBuilder> configurationAction)
     {
-        return _rootLifetimeScope.BeginLoadContextLifetimeScope(loadContext, configurationAction);
+        return _rootLifetimeScope.BeginLoadContextLifetimeScope(tag, loadContext, configurationAction);
     }
 #endif
 
