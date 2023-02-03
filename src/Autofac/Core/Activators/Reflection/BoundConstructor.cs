@@ -72,6 +72,12 @@ public class BoundConstructor
     public ConstructorBinder Binder { get; }
 
     /// <summary>
+    /// Gets a value indicating whether the constructor has the SetsRequiredMembers attribute,
+    /// indicating we can skip population of required properties.
+    /// </summary>
+    public bool SetsRequiredMembers => Binder.SetsRequiredMembers;
+
+    /// <summary>
     /// Gets the constructor on the target type. The actual constructor used
     /// might differ, e.g. if using a dynamic proxy.
     /// </summary>

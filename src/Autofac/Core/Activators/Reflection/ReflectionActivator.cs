@@ -4,9 +4,12 @@
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Text;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -21,6 +24,8 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     private readonly Parameter[] _defaultParameters;
 
     private ConstructorBinder[]? _constructorBinders;
+    private bool _anyRequiredMembers;
+    private InjectablePropertyState[]? _defaultFoundPropertySet;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReflectionActivator"/> class.
@@ -78,6 +83,40 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             throw new ArgumentNullException(nameof(pipelineBuilder));
         }
 
+#if NET7_0_OR_GREATER
+        // The RequiredMemberAttribute has Inherit = false on its AttributeUsage options,
+        // so we can't use the expected GetCustomAttribute(inherit: true) option, and must walk the tree.
+        var currentType = _implementationType;
+        while (currentType is not null && !currentType.Equals(typeof(object)))
+        {
+            if (currentType.GetCustomAttribute<RequiredMemberAttribute>() is not null)
+            {
+                _anyRequiredMembers = true;
+                break;
+            }
+
+            currentType = currentType.BaseType;
+        }
+#else
+        _anyRequiredMembers = false;
+#endif
+
+        if (_anyRequiredMembers || _configuredProperties.Length > 0)
+        {
+            // Get the full set of properties.
+            var actualProperties = _implementationType
+                .GetRuntimeProperties()
+                .Where(pi => pi.CanWrite)
+                .ToList();
+
+            _defaultFoundPropertySet = new InjectablePropertyState[actualProperties.Count];
+
+            for (int idx = 0; idx < actualProperties.Count; idx++)
+            {
+                _defaultFoundPropertySet[idx] = new InjectablePropertyState(new InjectableProperty(actualProperties[idx]));
+            }
+        }
+
         // Locate the possible constructors at container build time.
         var availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
 
@@ -96,6 +135,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         if (binders.Length == 1)
         {
             UseSingleConstructorActivation(pipelineBuilder, binders[0]);
+
             return;
         }
         else if (ConstructorSelector is IConstructorSelectorWithEarlyBinding earlyBindingSelector)
@@ -147,7 +187,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
                 var instance = boundConstructor.Instantiate();
 
-                InjectProperties(instance, ctxt);
+                InjectProperties(instance, ctxt, boundConstructor, GetAllParameters(ctxt.Parameters));
 
                 ctxt.Instance = instance;
 
@@ -171,7 +211,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
                 var instance = bound.Instantiate();
 
-                InjectProperties(instance, ctxt);
+                InjectProperties(instance, ctxt, bound, prioritisedParameters);
 
                 ctxt.Instance = instance;
 
@@ -204,7 +244,9 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         CheckNotDisposed();
 
-        var allBindings = GetAllBindings(_constructorBinders!, context, parameters);
+        var prioritisedParameters = GetAllParameters(parameters);
+
+        var allBindings = GetAllBindings(_constructorBinders!, context, prioritisedParameters);
 
         var selectedBinding = ConstructorSelector.SelectConstructorBinding(allBindings, parameters);
 
@@ -218,21 +260,19 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         var instance = selectedBinding.Instantiate();
 
-        InjectProperties(instance, context);
+        InjectProperties(instance, context, selectedBinding, prioritisedParameters);
 
         return instance;
     }
 
-    private BoundConstructor[] GetAllBindings(ConstructorBinder[] availableConstructors, IComponentContext context, IEnumerable<Parameter> parameters)
+    private BoundConstructor[] GetAllBindings(ConstructorBinder[] availableConstructors, IComponentContext context, IEnumerable<Parameter> allParameters)
     {
-        var prioritisedParameters = GetAllParameters(parameters);
-
         var boundConstructors = new BoundConstructor[availableConstructors.Length];
         var validBindings = availableConstructors.Length;
 
         for (var idx = 0; idx < availableConstructors.Length; idx++)
         {
-            var bound = availableConstructors[idx].Bind(prioritisedParameters, context);
+            var bound = availableConstructors[idx].Bind(allParameters, context);
 
             boundConstructors[idx] = bound;
 
@@ -310,33 +350,112 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
     }
 
-    private void InjectProperties(object instance, IComponentContext context)
+    private void InjectProperties(object instance, IComponentContext context, BoundConstructor constructor, IEnumerable<Parameter> allParameters)
     {
-        if (_configuredProperties.Length == 0)
+        // We only need to do any injection if we have a set of property information.
+        if (_defaultFoundPropertySet is null)
         {
             return;
         }
 
-        var actualProperties = instance
-            .GetType()
-            .GetRuntimeProperties()
-            .Where(pi => pi.CanWrite)
-            .ToList();
+        // If this constructor sets all required members,
+        // and we have no configured properties, we can just jump out.
+        if (_configuredProperties.Length == 0 && constructor.SetsRequiredMembers)
+        {
+            return;
+        }
+
+        var workingSetOfProperties = (InjectablePropertyState[])_defaultFoundPropertySet.Clone();
 
         foreach (var configuredProperty in _configuredProperties)
         {
-            foreach (var actualProperty in actualProperties)
+            for (var propIdx = 0; propIdx < workingSetOfProperties.Length; propIdx++)
             {
-                var setter = actualProperty.SetMethod;
+                ref var prop = ref workingSetOfProperties[propIdx];
 
-                if (setter != null &&
-                    configuredProperty.CanSupplyValue(setter.GetParameters()[0], context, out var vp))
+                if (prop.Set)
                 {
-                    actualProperties.Remove(actualProperty);
-                    actualProperty.SetValue(instance, vp(), null);
+                    // Skip, already seen.
+                    continue;
+                }
+
+                if (prop.Property.TrySupplyValue(instance, configuredProperty, context))
+                {
+                    prop.Set = true;
                     break;
                 }
             }
         }
+
+        if (_anyRequiredMembers && !constructor.SetsRequiredMembers)
+        {
+            List<InjectableProperty>? failingRequiredProperties = null;
+
+            for (var propIdx = 0; propIdx < workingSetOfProperties.Length; propIdx++)
+            {
+                ref var prop = ref workingSetOfProperties[propIdx];
+
+                if (!prop.Property.IsRequired)
+                {
+                    // Only auto-populate required properties.
+                    continue;
+                }
+
+                if (prop.Set)
+                {
+                    // Only auto-populate things not already populated by a specific property
+                    // being set.
+                    continue;
+                }
+
+                foreach (var parameter in allParameters)
+                {
+                    if (parameter is NamedParameter || parameter is PositionalParameter)
+                    {
+                        // Skip Named and Positional parameters, because if someone uses 'value' as a
+                        // constructor parameter name, it would also match the property, and cause confusion.
+                        continue;
+                    }
+
+                    if (prop.Property.TrySupplyValue(instance, parameter, context))
+                    {
+                        prop.Set = true;
+
+                        break;
+                    }
+                }
+
+                if (!prop.Set)
+                {
+                    failingRequiredProperties ??= new();
+                    failingRequiredProperties.Add(prop.Property);
+                }
+            }
+
+            if (failingRequiredProperties is not null)
+            {
+                throw new DependencyResolutionException(BuildRequiredPropertyResolutionMessage(failingRequiredProperties));
+            }
+        }
+    }
+
+    private string BuildRequiredPropertyResolutionMessage(IReadOnlyList<InjectableProperty> failingRequiredProperties)
+    {
+        var propertyDescriptions = new StringBuilder();
+
+        foreach (var failed in failingRequiredProperties)
+        {
+            propertyDescriptions.AppendLine();
+            propertyDescriptions.Append(failed.Property.Name);
+            propertyDescriptions.Append(" (");
+            propertyDescriptions.Append(failed.Property.PropertyType.FullName);
+            propertyDescriptions.Append(')');
+        }
+
+        return string.Format(
+            CultureInfo.CurrentCulture,
+            ReflectionActivatorResources.RequiredPropertiesCouldNotBeBound,
+            _implementationType,
+            propertyDescriptions);
     }
 }
