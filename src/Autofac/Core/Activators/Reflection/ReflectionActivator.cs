@@ -84,12 +84,12 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
 
 #if NET7_0_OR_GREATER
-        // The 'inherited' flag on GetCustomAttribute does not appear to work as expected with regards to RequiredMemberAttribute,
-        // so we must walk the inheritance hierarchy checking each one.
+        // The RequiredMemberAttribute has Inherit = false on its AttributeUsage options,
+        // so we can't use the expected GetCustomAttribute(inherit: true) option, and must walk the tree.
         var currentType = _implementationType;
         while (currentType is not null && !currentType.Equals(typeof(object)))
         {
-            if (currentType.GetCustomAttribute<RequiredMemberAttribute>(inherit: true) is not null)
+            if (currentType.GetCustomAttribute<RequiredMemberAttribute>() is not null)
             {
                 _anyRequiredMembers = true;
                 break;
@@ -134,9 +134,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         if (binders.Length == 1)
         {
-            var singleConstructor = binders[0];
-
-            UseSingleConstructorActivation(pipelineBuilder, singleConstructor);
+            UseSingleConstructorActivation(pipelineBuilder, binders[0]);
 
             return;
         }

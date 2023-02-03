@@ -57,6 +57,32 @@ public class RequiredPropertyTests
     }
 
     [Fact]
+    public void PropertiesPopulatedOnAllSubsequentResolves()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceA>();
+        builder.RegisterType<ServiceB>();
+        builder.RegisterType<Component>();
+
+        var container = builder.Build();
+
+        var component = container.Resolve<Component>();
+
+        Assert.NotNull(component.ServiceA);
+        Assert.NotNull(component.ServiceB);
+
+        var component2 = container.Resolve<Component>();
+
+        Assert.NotNull(component2.ServiceA);
+        Assert.NotNull(component2.ServiceB);
+
+        var component3 = container.Resolve<Component>();
+
+        Assert.NotNull(component3.ServiceA);
+        Assert.NotNull(component3.ServiceB);
+    }
+
+    [Fact]
     public void ExplicitParameterOverridesRequiredAutowiring()
     {
         var builder = new ContainerBuilder();
