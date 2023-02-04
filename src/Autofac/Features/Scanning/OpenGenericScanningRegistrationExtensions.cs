@@ -96,16 +96,14 @@ internal static partial class ScanningRegistrationExtensions
             .Where(t => t.IsGenericTypeDefinition)
             .CanBeRegistered(rb.ActivatorData);
 
-        Func<Type, IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>> scannedConstructor =
-            (type) => new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
+        static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> TypeBuilderFactory(Type type) => new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
                 new TypedService(type),
                 new ReflectionActivatorData(type),
                 new DynamicRegistrationStyle());
 
-        Action<IComponentRegistryBuilder, IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>> register =
-            (cr, scanned) => cr.AddRegistrationSource(new OpenGenericRegistrationSource(scanned.RegistrationData, scanned.ResolvePipeline, scanned.ActivatorData));
+        static void RegistrationSourceFactory(IComponentRegistryBuilder cr, IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> scanned) => cr.AddRegistrationSource(new OpenGenericRegistrationSource(scanned.RegistrationData, scanned.ResolvePipeline, scanned.ActivatorData));
 
-        ScanTypesTemplate(types, cr, rb, scannedConstructor, register);
+        ScanTypesTemplate(types, cr, rb, TypeBuilderFactory, RegistrationSourceFactory);
     }
 
     private static void ScanTypesTemplate<TActivatorData, TScanStyle, TRegistrationBuilderStyle>(

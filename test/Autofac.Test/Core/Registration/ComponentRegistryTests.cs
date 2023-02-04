@@ -318,9 +318,9 @@ public class ComponentRegistryTests
             var pre = container.ComponentRegistry.RegistrationsFor(chainedService);
             Assert.Single(pre);
 
-            Func<object> func = () => new object();
+            static object ObjectFactory() => new();
             using (var lifetimeScope = container.BeginLifetimeScope(builder =>
-                builder.ComponentRegistryBuilder.Register(RegistrationBuilder.ForDelegate((c, p) => func).CreateRegistration())))
+                builder.ComponentRegistryBuilder.Register(RegistrationBuilder.ForDelegate((c, p) => (Func<object>)ObjectFactory).CreateRegistration())))
             {
                 var post = lifetimeScope.ComponentRegistry.RegistrationsFor(chainedService);
                 Assert.Equal(2, post.Count());

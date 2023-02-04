@@ -53,15 +53,15 @@ public static partial class RegistrationExtensions
         }
 
         var original = c.Callback;
-        Action<IComponentRegistryBuilder> updated = registry =>
+        void Updated(IComponentRegistryBuilder registry)
         {
             if (predicate(registry))
             {
                 original(registry);
             }
-        };
+        }
 
-        c.Callback = updated;
+        c.Callback = Updated;
         return registration;
     }
 
