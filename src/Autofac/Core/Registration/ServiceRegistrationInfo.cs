@@ -177,20 +177,12 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         {
             if (originatedFromSource)
             {
-                if (_sourceImplementations == null)
-                {
-                    _sourceImplementations = new List<IComponentRegistration>();
-                }
-
+                _sourceImplementations ??= new List<IComponentRegistration>();
                 _sourceImplementations.Add(registration);
             }
             else
             {
-                if (_preserveDefaultImplementations == null)
-                {
-                    _preserveDefaultImplementations = new List<IComponentRegistration>();
-                }
-
+                _preserveDefaultImplementations ??= new List<IComponentRegistration>();
                 _preserveDefaultImplementations.Add(registration);
             }
         }
@@ -214,11 +206,7 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     /// <param name="insertionMode">The insertion mode for the pipeline.</param>
     public void UseServiceMiddleware(IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
     {
-        if (_customPipelineBuilder is null)
-        {
-            _customPipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
-        }
-
+        _customPipelineBuilder ??= new ResolvePipelineBuilder(PipelineType.Service);
         _customPipelineBuilder.Use(middleware, insertionMode);
     }
 
@@ -234,11 +222,7 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
             return;
         }
 
-        if (_customPipelineBuilder is null)
-        {
-            _customPipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
-        }
-
+        _customPipelineBuilder ??= new ResolvePipelineBuilder(PipelineType.Service);
         _customPipelineBuilder.UseRange(middleware, insertionMode);
     }
 
@@ -280,10 +264,7 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
 
         // Build the pipeline during service info initialization, so that sources can access it
         // while getting a registration recursively.
-        if (_resolvePipeline is null)
-        {
-            _resolvePipeline = BuildPipeline();
-        }
+        _resolvePipeline ??= BuildPipeline();
     }
 
     /// <summary>
