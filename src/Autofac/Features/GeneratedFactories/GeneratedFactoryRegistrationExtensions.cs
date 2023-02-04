@@ -6,6 +6,8 @@ using Autofac.Core;
 
 namespace Autofac.Features.GeneratedFactories;
 
+#pragma warning disable CS0618
+
 /// <summary>
 /// Helper methods for registering factories.
 /// </summary>

@@ -6,6 +6,8 @@ using Autofac.Core;
 
 namespace Autofac.Test.Features.GeneratedFactories;
 
+#pragma warning disable CS0618
+
 public class GeneratedFactoriesTests
 {
     public class A<T>
@@ -164,7 +166,7 @@ public class GeneratedFactoriesTests
     }
 
     [Fact]
-    public void CanSetParmeterMappingToPositional()
+    public void CanSetParameterMappingToPositional()
     {
         var builder = new ContainerBuilder();
 
@@ -259,7 +261,7 @@ public class GeneratedFactoriesTests
     }
 
     [Fact]
-    public void CreateGenericFromNongenericFactoryDelegate()
+    public void CreateGenericFromNonGenericFactoryDelegate()
     {
         var builder = new ContainerBuilder();
 
@@ -278,7 +280,7 @@ public class GeneratedFactoriesTests
     }
 
     [Fact]
-    public void CreateGenericFromNongenericFactoryDelegateImpliedServiceType()
+    public void CreateGenericFromNonGenericFactoryDelegateImpliedServiceType()
     {
         var builder = new ContainerBuilder();
 

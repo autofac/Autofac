@@ -237,10 +237,12 @@ public class RegistrationOnlyIfTests
         builder.RegisterDecorator<IService>((ctx, p, s) => new Decorator(s), "from").OnlyIf(r => true);
         builder.RegisterDecorator<IService>((ctx, s) => new Decorator(s), "from").OnlyIf(r => true);
         builder.RegisterDecorator<IService>(s => new Decorator(s), "from").OnlyIf(r => true);
+#pragma warning disable CS0618
         builder.RegisterGeneratedFactory(typeof(SimpleFactory)).OnlyIf(r => true);
         builder.RegisterGeneratedFactory(typeof(SimpleFactory), new TypedService(typeof(object))).OnlyIf(r => true);
         builder.RegisterGeneratedFactory<SimpleFactory>().OnlyIf(r => true);
         builder.RegisterGeneratedFactory<SimpleFactory>(new TypedService(typeof(object))).OnlyIf(r => true);
+#pragma warning restore CS0618
         builder.RegisterGeneric(typeof(SimpleGeneric<>)).OnlyIf(r => true);
         builder.RegisterGenericDecorator(typeof(Decorator<>), typeof(IService<>), fromKey: "b").OnlyIf(r => true);
         builder.RegisterInstance(new object()).OnlyIf(r => true);
