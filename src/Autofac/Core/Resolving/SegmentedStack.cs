@@ -112,7 +112,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         return new Enumerator(this);
     }
 
-    private struct StackSegment : IDisposable
+    private readonly struct StackSegment : IDisposable
     {
         private readonly SegmentedStack<T> _stack;
         private readonly int _resetPosition;
