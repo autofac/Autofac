@@ -101,7 +101,7 @@ internal static partial class ScanningRegistrationExtensions
                 new ReflectionActivatorData(type),
                 new DynamicRegistrationStyle());
 
-        static void RegistrationSourceFactory(IComponentRegistryBuilder cr, IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> scanned) => cr.AddRegistrationSource(new OpenGenericRegistrationSource(scanned.RegistrationData, scanned.ResolvePipeline, scanned.ActivatorData));
+        static void RegistrationSourceFactory(IComponentRegistryBuilder registry, IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> data) => registry.AddRegistrationSource(new OpenGenericRegistrationSource(data.RegistrationData, data.ResolvePipeline, data.ActivatorData));
 
         ScanTypesTemplate(types, cr, rb, TypeBuilderFactory, RegistrationSourceFactory);
     }
