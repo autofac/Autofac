@@ -25,6 +25,7 @@ public static class RegistrationExtensions
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     /// <remarks>Factory delegates are provided automatically in Autofac 2,
     /// and this method is generally not required.</remarks>
+    [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
     public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
         RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType)
     {
@@ -48,6 +49,7 @@ public static class RegistrationExtensions
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     /// <remarks>Factory delegates are provided automatically in Autofac 2, and
     /// this method is generally not required.</remarks>
+    [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
     public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
         RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType, Service service)
     {
@@ -68,6 +70,7 @@ public static class RegistrationExtensions
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     /// <remarks>Factory delegates are provided automatically in Autofac 2,
     /// and this method is generally not required.</remarks>
+    [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
     public static IRegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
         RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder, Service service)
         where TDelegate : class
@@ -88,6 +91,7 @@ public static class RegistrationExtensions
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     /// <remarks>Factory delegates are provided automatically in Autofac 2,
     /// and this method is generally not required.</remarks>
+    [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
     public static IRegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
         RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder)
         where TDelegate : class
@@ -115,6 +119,7 @@ public static class RegistrationExtensions
     /// <exception cref="System.ArgumentNullException">
     /// Thrown if <paramref name="registration" /> is <see langword="null" />.
     /// </exception>
+    [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
     public static IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
         NamedParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
             this IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
@@ -142,6 +147,7 @@ public static class RegistrationExtensions
     /// <exception cref="System.ArgumentNullException">
     /// Thrown if <paramref name="registration" /> is <see langword="null" />.
     /// </exception>
+    [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
     public static IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
         PositionalParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
             this IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)
@@ -169,6 +175,7 @@ public static class RegistrationExtensions
     /// <exception cref="System.ArgumentNullException">
     /// Thrown if <paramref name="registration" /> is <see langword="null" />.
     /// </exception>
+    [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
     public static IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>
         TypedParameterMapping<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle>(
             this IRegistrationBuilder<TDelegate, TGeneratedFactoryActivatorData, TSingleRegistrationStyle> registration)

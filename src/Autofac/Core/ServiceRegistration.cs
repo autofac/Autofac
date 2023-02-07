@@ -9,7 +9,7 @@ namespace Autofac.Core;
 /// <summary>
 /// Defines a combination of a service pipeline and a registration. Used to instantiate a <see cref="ResolveRequest"/>.
 /// </summary>
-public struct ServiceRegistration : IEquatable<ServiceRegistration>
+public readonly struct ServiceRegistration : IEquatable<ServiceRegistration>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ServiceRegistration"/> struct.

@@ -106,7 +106,7 @@ public sealed class ConcurrencyTests
 
         var container = builder.Build();
 
-        ThreadStart work = () =>
+        void Work()
         {
             try
             {
@@ -117,10 +117,10 @@ public sealed class ConcurrencyTests
             {
                 exceptions.Add(ex);
             }
-        };
+        }
 
-        var t1 = new Thread(work);
-        var t2 = new Thread(work);
+        var t1 = new Thread(Work);
+        var t2 = new Thread(Work);
         t1.Start();
         t2.Start();
         t1.Join();

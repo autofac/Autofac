@@ -278,15 +278,15 @@ public static class ModuleRegistrationExtensions
         var registrarCallback = registrar.RegistrarData.Callback;
 
         var original = registrarCallback.Callback;
-        Action<IComponentRegistryBuilder> updated = registry =>
+        void Updated(IComponentRegistryBuilder registry)
         {
             if (predicate(registry))
             {
                 original(registry);
             }
-        };
+        }
 
-        registrarCallback.Callback = updated;
+        registrarCallback.Callback = Updated;
 
         return registrar;
     }

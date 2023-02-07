@@ -86,13 +86,11 @@ internal static partial class ScanningRegistrationExtensions
             rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
                 swt.ServiceType.IsAssignableFrom(t)));
 
-        Func<Type, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>> scannedConstructor =
-            (type) => RegistrationBuilder.ForType(type);
+        static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> TypeBuilderFactory(Type type) => RegistrationBuilder.ForType(type);
 
-        Action<IComponentRegistryBuilder, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>> register =
-            (cr, scanned) => RegistrationBuilder.RegisterSingleComponent(cr, scanned);
+        static void SingleComponentRegistration(IComponentRegistryBuilder registry, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> data) => RegistrationBuilder.RegisterSingleComponent(registry, data);
 
-        ScanTypesTemplate(closedTypes, cr, rb, scannedConstructor, register);
+        ScanTypesTemplate(closedTypes, cr, rb, TypeBuilderFactory, SingleComponentRegistration);
     }
 
     /// <summary>
