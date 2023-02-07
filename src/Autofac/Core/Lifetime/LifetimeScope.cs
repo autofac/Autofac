@@ -209,7 +209,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     {
         if (loadContext == AssemblyLoadContext.Default)
         {
-            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, LifetimeScopeResources.DefaultLoadContextError, nameof(BeginLoadContextLifetimeScope)));
+            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, LifetimeScopeResources.DefaultLoadContextError, nameof(BeginLoadContextLifetimeScope), nameof(BeginLifetimeScope)));
         }
 
         var newScope = InternalBeginLifetimeScope(tag, configurationAction, isolatedScope: true);

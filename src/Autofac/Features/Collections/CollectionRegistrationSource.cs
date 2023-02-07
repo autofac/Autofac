@@ -63,7 +63,7 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
 
         if (registrationAccessor == null)
         {
-            throw new ArgumentNullException(nameof(registrationAccessor));
+            throw new ArgumentNullException(nameof(registrationAccessor));`
         }
 
         if (service is not IServiceWithType swt || service is DecoratorService)
@@ -73,7 +73,7 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
 
         var serviceType = swt.ServiceType;
 
-        var factoryCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheDictionary<Type, (Type? ElementType, Type? LimitType, Func<int, IList>? Factory)>>("CollectionRegistrationSource");
+        var factoryCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheDictionary<Type, (Type? ElementType, Type? LimitType, Func<int, IList>? Factory)>>(nameof(CollectionRegistrationSource));
 
         var (elementType, limitType, factory) = factoryCache.GetOrAdd(serviceType, static serviceType =>
         {

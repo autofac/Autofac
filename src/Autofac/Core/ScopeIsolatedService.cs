@@ -4,7 +4,9 @@
 namespace Autofac.Core;
 
 /// <summary>
-/// Defines an isolated wrapper for a regular service.
+/// Decorator for a <see cref="Service"/> that indicates the service should
+/// be isolated from the current scope so references to it are not
+/// retained. Enables isolated services to be later unloaded.
 /// </summary>
 internal class ScopeIsolatedService : Service
 {

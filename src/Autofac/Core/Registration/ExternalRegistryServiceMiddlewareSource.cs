@@ -18,7 +18,7 @@ internal class ExternalRegistryServiceMiddlewareSource : IServiceMiddlewareSourc
     /// </summary>
     /// <param name="componentRegistry">The component registry to retrieve middleware from.</param>
     /// <param name="isolatedScope">
-    /// Indicates whether queries to the external registry and wrapped with
+    /// Indicates whether queries to the external registry should be wrapped with
     /// <see cref="ScopeIsolatedService"/>, to indicate that the destination
     /// registry should not hold on to type information that does not result in a registration.
     /// </param>

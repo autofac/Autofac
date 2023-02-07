@@ -394,7 +394,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
                 {
                     // No registrations or custom middleware was found for this service, and this service enquiry is marked as "isolated",
                     // meaning that we shouldn't remember any info for it if it has no registrations.
-                    DeleteInfoForService(service);
+                    _serviceInfo.TryRemove(service, out _);
                 }
             }
 
@@ -442,11 +442,6 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     private ServiceRegistrationInfo GetServiceInfo(Service service)
     {
         return _serviceInfo.GetOrAdd(service, RegInfoFactory);
-    }
-
-    private void DeleteInfoForService(Service service)
-    {
-        _serviceInfo.TryRemove(service, out _);
     }
 
     private static ServiceRegistrationInfo GetEphemeralServiceInfo(Dictionary<Service, ServiceRegistrationInfo> ephemeralSet, Service service, ServiceRegistrationInfo info)
