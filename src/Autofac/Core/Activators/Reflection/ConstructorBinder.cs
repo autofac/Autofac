@@ -26,6 +26,10 @@ public class ConstructorBinder
         Constructor = constructorInfo ?? throw new ArgumentNullException(nameof(constructorInfo));
         _constructorArgs = constructorInfo.GetParameters();
 
+#if NET7_0_OR_GREATER
+        SetsRequiredMembers = constructorInfo.GetCustomAttribute<SetsRequiredMembersAttribute>() is not null;
+#endif
+
         // If any of the parameters are unsafe, do not create an invoker, and store the parameter
         // that broke the rule.
         _illegalParameter = DetectIllegalParameter(_constructorArgs);
@@ -43,6 +47,12 @@ public class ConstructorBinder
     /// Gets the constructor this binder is responsible for binding.
     /// </summary>
     public ConstructorInfo Constructor { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the constructor has the SetsRequiredMembers attribute,
+    /// indicating we can skip population of required properties.
+    /// </summary>
+    public bool SetsRequiredMembers { get; }
 
     /// <summary>
     /// Gets the set of parameters to bind against.

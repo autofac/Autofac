@@ -10,6 +10,7 @@ namespace Autofac.Features.GeneratedFactories;
 /// <summary>
 /// Data used to create factory activators.
 /// </summary>
+[Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
 public class GeneratedFactoryActivatorData : IConcreteActivatorData
 {
     private readonly Type _delegateType;

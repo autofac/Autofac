@@ -38,6 +38,7 @@ public class OwnedInstanceRegistrationSourceTests
         Assert.False(containerDisposeTracker.IsDisposed);
     }
 
+#pragma warning disable CS0618
     [Fact]
     public void CanResolveAndUse_OwnedGeneratedFactory()
     {
@@ -55,6 +56,7 @@ public class OwnedInstanceRegistrationSourceTests
 
         Assert.True(isAccessed);
     }
+#pragma warning restore CS0618
 
     [Fact]
     public void IfInnerTypeIsNotRegistered_OwnedTypeIsNotEither()

@@ -92,13 +92,14 @@ public class ConstructorFinderTests
     {
         var cb = new ContainerBuilder();
         var finderCalled = false;
-        Func<Type, ConstructorInfo[]> finder = type =>
+        ConstructorInfo[] Finder(Type type)
         {
             finderCalled = true;
             return type.GetConstructors();
-        };
+        }
+
         cb.RegisterType<A1>();
-        cb.RegisterType<MultipleConstructors>().FindConstructorsWith(finder);
+        cb.RegisterType<MultipleConstructors>().FindConstructorsWith(Finder);
         var container = cb.Build();
 
         container.Resolve<MultipleConstructors>();
