@@ -63,7 +63,7 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
 
         if (registrationAccessor == null)
         {
-            throw new ArgumentNullException(nameof(registrationAccessor));`
+            throw new ArgumentNullException(nameof(registrationAccessor));
         }
 
         if (service is not IServiceWithType swt || service is DecoratorService)
