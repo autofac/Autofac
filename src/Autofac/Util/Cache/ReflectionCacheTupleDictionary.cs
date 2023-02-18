@@ -23,28 +23,38 @@ internal sealed class ReflectionCacheTupleDictionary<TKey, TValue>
     /// <inheritdoc />
     public void Clear(ReflectionCacheClearPredicate predicate)
     {
+        HashSet<Assembly>? reusableAssemblySet = null;
+
         foreach (var kvp in this)
         {
+            reusableAssemblySet ??= new();
+
             // Remove an item if *either* member of the tuple matches,
             // for generic implementation type caches where the closed generic
             // is in a different assembly to the open one.
-            if (predicate(GetKeyAssembly(kvp.Key.Item1), kvp.Key.Item1) ||
-                predicate(GetKeyAssembly(kvp.Key.Item2), kvp.Key.Item2))
+            if (predicate(kvp.Key.Item1, GetKeyAssemblies(kvp.Key.Item1, reusableAssemblySet)) ||
+                predicate(kvp.Key.Item2, GetKeyAssemblies(kvp.Key.Item2, reusableAssemblySet)))
             {
                 TryRemove(kvp.Key, out _);
             }
         }
     }
 
-    private static Assembly GetKeyAssembly(TKey key)
+    private static IEnumerable<Assembly> GetKeyAssemblies(TKey key, HashSet<Assembly> reusableSet)
     {
+        reusableSet.Clear();
+
         if (key is Type keyType)
         {
-            return keyType.Assembly;
+            TypeAssemblyReferenceProvider.PopulateAllReferencedAssemblies(keyType, reusableSet);
+
+            return reusableSet;
         }
         else if (key.DeclaringType is Type declaredType)
         {
-            return declaredType.Assembly;
+            TypeAssemblyReferenceProvider.PopulateAllReferencedAssemblies(declaredType, reusableSet);
+
+            return reusableSet;
         }
 
         throw new InvalidOperationException("Impossible state");

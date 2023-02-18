@@ -28,11 +28,11 @@ public class ReflectionCacheAssemblyDictionaryTests
         cacheDict[typeof(string).Assembly] = false;
         cacheDict[typeof(ContainerBuilder).Assembly] = false;
 
-        cacheDict.Clear((assembly, member) =>
+        cacheDict.Clear((member, assemblies) =>
         {
             Assert.Null(member);
 
-            return assembly == typeof(string).Assembly;
+            return assemblies.Contains(typeof(string).Assembly);
         });
 
         Assert.Collection(cacheDict, (kvp) => Assert.Equal(typeof(ContainerBuilder).Assembly, kvp.Key));

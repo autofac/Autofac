@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Reflection;
 using Autofac.Core;
 
@@ -28,9 +29,13 @@ public sealed class ReflectionCacheAssemblyDictionary<TKey, TValue>
             return;
         }
 
+        var reusableArrayForPredicate = new Assembly[1];
+
         foreach (var kvp in this)
         {
-            if (predicate(kvp.Key, null))
+            reusableArrayForPredicate[0] = kvp.Key;
+
+            if (predicate(null, reusableArrayForPredicate))
             {
                 TryRemove(kvp.Key, out _);
             }

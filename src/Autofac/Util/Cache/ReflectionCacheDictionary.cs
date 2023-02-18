@@ -27,18 +27,33 @@ public sealed class ReflectionCacheDictionary<TKey, TValue>
             throw new ArgumentNullException(nameof(predicate));
         }
 
+        HashSet<Assembly>? reusableAssemblySet = null;
+
         foreach (var kvp in this)
         {
+            if (reusableAssemblySet is null)
+            {
+                reusableAssemblySet = new();
+            }
+            else
+            {
+                reusableAssemblySet.Clear();
+            }
+
             if (kvp.Key is Type keyType)
             {
-                if (predicate(keyType.Assembly, keyType))
+                TypeAssemblyReferenceProvider.PopulateAllReferencedAssemblies(keyType, reusableAssemblySet);
+
+                if (predicate(kvp.Key, reusableAssemblySet))
                 {
                     TryRemove(kvp.Key, out _);
                 }
             }
             else if (kvp.Key.DeclaringType is Type declaredType)
             {
-                if (predicate(declaredType.Assembly, declaredType))
+                TypeAssemblyReferenceProvider.PopulateAllReferencedAssemblies(declaredType, reusableAssemblySet);
+
+                if (predicate(kvp.Key, reusableAssemblySet))
                 {
                     TryRemove(kvp.Key, out _);
                 }

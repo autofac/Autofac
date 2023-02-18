@@ -216,12 +216,18 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
 
         newScope.CurrentScopeEnding += (sender, args) =>
         {
-            var alcAssemblies = loadContext.Assemblies;
-
             // Clear the reflection cache for those assemblies when the inner scope goes away.
-            ReflectionCacheSet.Shared.Clear((assembly, type) =>
+            ReflectionCacheSet.Shared.Clear((cacheKey, referencedAssemblySet) =>
             {
-                return alcAssemblies.Contains(assembly);
+                foreach (var refAssembly in referencedAssemblySet)
+                {
+                    if (AssemblyLoadContext.GetLoadContext(refAssembly) is AssemblyLoadContext assemblyContext && assemblyContext.Equals(loadContext))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             });
         };
 

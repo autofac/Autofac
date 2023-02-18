@@ -9,18 +9,18 @@ namespace Autofac.Core;
 /// Delegate for predicates that can choose whether to remove a member from the
 /// reflection cache.
 /// </summary>
-/// <param name="assembly">
-/// The assembly the cache entry relates to (i.e. the source of a type of
-/// member).
-/// </param>
 /// <param name="member">
 /// The member information (will be an instance of a more-derived type). This
 /// value may be null if the cache entry relates only to an assembly.
 /// </param>
+/// <param name="referencedAssemblies">
+/// All assemblies the cache entry key references; this set includes both the direct assembly reference for the member,
+/// and all indirectly-referenced assemblies via generic type arguments or array element types.
+/// </param>
 /// <returns>
 /// True to remove the member from the cache, false to leave it.
 /// </returns>
-public delegate bool ReflectionCacheClearPredicate(Assembly assembly, MemberInfo? member);
+public delegate bool ReflectionCacheClearPredicate(MemberInfo? member, IEnumerable<Assembly> referencedAssemblies);
 
 /// <summary>
 /// Defines an individual store of cached reflection data.
