@@ -12,6 +12,11 @@ namespace Autofac.Util.Cache;
 /// </summary>
 internal static class TypeAssemblyReferenceProvider
 {
+    /// <summary>
+    /// Get all distinct assemblies referenced by the given type.
+    /// </summary>
+    /// <param name="inputType">The type to retrieve references for.</param>
+    /// <returns>The set of assemblies.</returns>
     public static IEnumerable<Assembly> GetAllReferencedAssemblies(Type inputType)
     {
         var set = new HashSet<Assembly>();
@@ -21,6 +26,11 @@ internal static class TypeAssemblyReferenceProvider
         return set;
     }
 
+    /// <summary>
+    /// Add to a provided <see cref="HashSet{T}"/> all assemblies referenced by a given type.
+    /// </summary>
+    /// <param name="inputType">The type to reterieve references for.</param>
+    /// <param name="holdingSet">A set to add any assemblies to.</param>
     public static void PopulateAllReferencedAssemblies(Type inputType, HashSet<Assembly> holdingSet)
     {
         if (inputType.IsArray && inputType.GetElementType() is Type elementType)
