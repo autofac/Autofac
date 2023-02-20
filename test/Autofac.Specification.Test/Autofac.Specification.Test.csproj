@@ -22,10 +22,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Autofac\Autofac.csproj" />
     <ProjectReference Include="..\Autofac.Test.Scenarios.ScannedAssembly\Autofac.Test.Scenarios.ScannedAssembly.csproj" />
-    <ProjectReference Include="..\Autofac.Test.Scenarios.LoadContext\Autofac.Test.Scenarios.LoadContext.csproj">
-      <!-- Don't reference the assembly, we're going to load it manually -->
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
