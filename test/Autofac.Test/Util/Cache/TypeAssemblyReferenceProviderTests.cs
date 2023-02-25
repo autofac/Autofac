@@ -18,7 +18,7 @@ public class TypeAssemblyReferenceProviderTests
     [InlineData(typeof(IEnumerable<IIndex<int, Assert>>), new[] { typeof(IEnumerable<>), typeof(IIndex<,>), typeof(Assert) })]
     [InlineData(typeof(DerivedClass), new[] { typeof(DerivedClass), typeof(RegistrationBuilder<,,>), typeof(Assert) })]
     [InlineData(typeof(GenericDerivedClass<Assert>), new[] { typeof(DerivedClass), typeof(RegistrationBuilder<,,>), typeof(Assert), typeof(Mock) })]
-    public void SimpleType(Type inputType, Type[] expandedTypeAssemblies)
+    public void TypeReferencesCanBeDetermined(Type inputType, Type[] expandedTypeAssemblies)
     {
         var set = TypeAssemblyReferenceProvider.GetAllReferencedAssemblies(inputType);
 
@@ -28,6 +28,24 @@ public class TypeAssemblyReferenceProviderTests
         foreach (var item in expandedTypeAssemblies)
         {
             Assert.Contains(item, expandedTypeAssemblies);
+        }
+    }
+
+    [Fact]
+    public void MemberInfoReferencesCanBeDetermined()
+    {
+        var memberInfo = typeof(PropertyOwner<ContainerBuilder>).GetProperty(nameof(PropertyOwner<ContainerBuilder>.Property));
+
+        var expectedResults = new[] { typeof(ContainerBuilder), typeof(PropertyOwner<>) };
+
+        var set = TypeAssemblyReferenceProvider.GetAllReferencedAssemblies(memberInfo);
+
+        Assert.Distinct(set);
+        Assert.Equal(expectedResults.Length, set.Count());
+
+        foreach (var item in expectedResults)
+        {
+            Assert.Contains(item, expectedResults);
         }
     }
 
@@ -47,5 +65,10 @@ public class TypeAssemblyReferenceProviderTests
             : base(defaultService, activatorData, style)
         {
         }
+    }
+
+    private class PropertyOwner<T>
+    {
+        public string Property { get; set; }
     }
 }
