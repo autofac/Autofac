@@ -54,10 +54,6 @@ try {
     Write-Message "Building projects and packages"
     Get-DotNetProjectDirectory -RootPath $PSScriptRoot\src | Invoke-DotNetPack -PackagesPath $packagesPath -VersionSuffix $versionSuffix
 
-    # Build scenario projects
-    Write-Message "Building scenario projects"
-    Get-DotNetProjectDirectory -RootPath $PSScriptRoot\test | Where-Object { $_ -ilike "*Autofac.Test.Scenarios.*" } | Invoke-DotNetBuild
-
     # Test
     Write-Message "Executing unit tests"
     Get-DotNetProjectDirectory -RootPath $PSScriptRoot\test | Where-Object { $_ -inotlike "*Autofac.Test.Scenarios.*" } | Invoke-Test
