@@ -2,10 +2,12 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Collections;
+using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
+using Autofac.Core;
 using Autofac.Features.ResolveAnything;
 
 namespace Autofac.Specification.Test;
@@ -34,7 +36,7 @@ public class LoadContextScopeTests
     }
 
     [Fact]
-    public void CanLoadInstanceOfScanAssemblyAndUnloadItAfterActnars()
+    public void CanLoadInstanceOfAssemblyAndUnloadItAfterActnars()
     {
         var builder = new ContainerBuilder();
 
@@ -54,6 +56,72 @@ public class LoadContextScopeTests
             });
 
         WaitForUnload(loadContextRef);
+    }
+
+    [Fact]
+    public void CanLoadInstanceOfAssemblyAndUnloadItAfterOnActivatedInModule()
+    {
+        var builder = new ContainerBuilder();
+
+        using var rootContainer = builder.Build();
+
+        LoadAssemblyAndTest(
+            rootContainer,
+            out var loadContextRef,
+            (builder, assembly) =>
+            {
+                var module = (IModule)Activator.CreateInstance(assembly.GetType("A.OnActivatedModule"), 100);
+
+                builder.RegisterModule(module);
+            },
+            (scope, loadContext, assembly) =>
+            {
+                var serviceType = assembly.GetType("A.Service1");
+
+                var instance = scope.Resolve(serviceType);
+
+                Assert.Contains(instance.GetType().Assembly, loadContext.Assemblies);
+
+                var valueProp = serviceType.GetProperty("Value");
+
+                Assert.Equal(100, valueProp.GetValue(instance));
+            });
+
+        WaitForUnload(loadContextRef);
+    }
+
+    [Fact]
+    public void CanLoadInstanceOfAssemblyAndUnloadItAfterLifetimeScopeEndingInModule()
+    {
+        var builder = new ContainerBuilder();
+
+        using var rootContainer = builder.Build();
+
+        bool callbackInvoked = false;
+
+        LoadAssemblyAndTest(
+            rootContainer,
+            out var loadContextRef,
+            (builder, assembly) =>
+            {
+                Action invoke = () => { callbackInvoked = true; };
+
+                var module = (IModule)Activator.CreateInstance(assembly.GetType("A.LifetimeScopeEndingModule"), invoke);
+
+                builder.RegisterModule(module);
+            },
+            (scope, loadContext, assembly) =>
+            {
+                var serviceType = assembly.GetType("A.Service1");
+
+                var instance = scope.Resolve(serviceType);
+
+                Assert.Contains(instance.GetType().Assembly, loadContext.Assemblies);
+            });
+
+        WaitForUnload(loadContextRef);
+
+        Assert.True(callbackInvoked);
     }
 
     [Fact]
