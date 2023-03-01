@@ -28,9 +28,9 @@ public class ReflectionCacheDictionaryTests
         cacheDict[typeof(string)] = false;
         cacheDict[typeof(int)] = false;
 
-        cacheDict.Clear((assembly, member) =>
+        cacheDict.Clear((member, assemblies) =>
         {
-            Assert.Equal(typeof(string).Assembly, assembly);
+            Assert.Collection(assemblies, a => Assert.Equal(typeof(string).Assembly, a));
 
             return member == typeof(string);
         });
@@ -45,11 +45,11 @@ public class ReflectionCacheDictionaryTests
 
         cacheDict[typeof(string).GetMethod("IsNullOrEmpty")] = false;
 
-        cacheDict.Clear((assembly, member) =>
+        cacheDict.Clear((member, assemblies) =>
         {
-            Assert.Equal(typeof(string).Assembly, assembly);
+            Assert.Collection(assemblies, a => Assert.Equal(typeof(string).Assembly, a));
 
-            return member == typeof(string);
+            return member == typeof(string).GetMethod("IsNullOrEmpty");
         });
 
         Assert.Empty(cacheDict);

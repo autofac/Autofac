@@ -50,7 +50,7 @@ public class ReflectionCacheSetTests
         var externalCache = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>("cache");
         externalCache[typeof(string)] = true;
 
-        set.Clear((assembly, member) => member == typeof(string));
+        set.Clear((member, assembly) => member == typeof(string));
 
         Assert.Collection(internalCache, item => Assert.Equal(typeof(IEnumerable<>), item.Key));
         Assert.Empty(externalCache);

@@ -5,9 +5,13 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+#if NET5_0_OR_GREATER
+using System.Runtime.Loader;
+#endif
 using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
+using Autofac.Features.Collections;
 using Autofac.Util;
 
 namespace Autofac.Core.Lifetime;
@@ -190,6 +194,49 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// </example>
     public ILifetimeScope BeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction)
     {
+        return InternalBeginLifetimeScope(tag, configurationAction, isolatedScope: false);
+    }
+
+#if NETCOREAPP1_0_OR_GREATER
+    /// <inheritdoc />
+    public ILifetimeScope BeginLoadContextLifetimeScope(AssemblyLoadContext loadContext, Action<ContainerBuilder> configurationAction)
+    {
+        return BeginLoadContextLifetimeScope(MakeAnonymousTag(), loadContext, configurationAction);
+    }
+
+    /// <inheritdoc />
+    public ILifetimeScope BeginLoadContextLifetimeScope(object tag, AssemblyLoadContext loadContext, Action<ContainerBuilder> configurationAction)
+    {
+        if (loadContext == AssemblyLoadContext.Default)
+        {
+            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, LifetimeScopeResources.DefaultLoadContextError, nameof(BeginLoadContextLifetimeScope), nameof(BeginLifetimeScope)));
+        }
+
+        var newScope = InternalBeginLifetimeScope(tag, configurationAction, isolatedScope: true);
+
+        newScope.CurrentScopeEnding += (sender, args) =>
+        {
+            // Clear the reflection cache for those assemblies when the inner scope goes away.
+            ReflectionCacheSet.Shared.Clear((cacheKey, referencedAssemblySet) =>
+            {
+                foreach (var refAssembly in referencedAssemblySet)
+                {
+                    if (AssemblyLoadContext.GetLoadContext(refAssembly) is AssemblyLoadContext assemblyContext && assemblyContext.Equals(loadContext))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+        };
+
+        return newScope;
+    }
+#endif
+
+    private ILifetimeScope InternalBeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
+    {
         if (configurationAction == null)
         {
             throw new ArgumentNullException(nameof(configurationAction));
@@ -198,7 +245,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         CheckNotDisposed();
         CheckTagIsUnique(tag);
 
-        var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction);
+        var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction, isolatedScope);
         var scope = new LifetimeScope(localsBuilder.Build(), this, tag);
         scope.Disposer.AddInstanceForDisposal(localsBuilder);
 
@@ -223,25 +270,26 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
     /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
     /// that adds component registrations visible only in the child scope.</param>
+    /// <param name="isolatedScope">
+    /// Indicates whether the generated registry should be 'isolated'; an isolated registry does not hold on to
+    /// any type information for retrieved services that do not result in registrations.
+    /// </param>
     /// <returns>Registry to use for a child scope.</returns>
     /// <remarks>It is the responsibility of the caller to make sure that the registry is properly
     /// disposed of. This is generally done by adding the registry to the <see cref="Disposer"/>
     /// property of the child scope.</remarks>
-    private IComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction)
+    private IComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
     {
         var restrictedRootScopeLifetime = new MatchingScopeLifetime(tag);
         var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
 
         var fallbackProperties = new FallbackDictionary<string, object?>(ComponentRegistry.Properties);
-        var registryBuilder = new ComponentRegistryBuilder(tracker, fallbackProperties);
-
-        var builder = new ContainerBuilder(fallbackProperties, registryBuilder);
 
         foreach (var source in ComponentRegistry.Sources)
         {
-            if (source.IsAdapterForIndividualComponents)
+            if (source.IsAdapterForIndividualComponents || (source is IPerScopeRegistrationSource && isolatedScope))
             {
-                builder.RegisterSource(source);
+                tracker.AddRegistrationSource(source);
             }
         }
 
@@ -252,18 +300,21 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         {
             if (parent.ComponentRegistry.HasLocalComponents)
             {
-                var externalSource = new ExternalRegistrySource(parent.ComponentRegistry);
-                builder.RegisterSource(externalSource);
+                var externalSource = new ExternalRegistrySource(parent.ComponentRegistry, isolatedScope);
+                tracker.AddRegistrationSource(externalSource);
 
                 // Add a source for the service pipeline stages.
-                var externalServicePipelineSource = new ExternalRegistryServiceMiddlewareSource(parent.ComponentRegistry);
-                builder.RegisterServiceMiddlewareSource(externalServicePipelineSource);
+                var externalServicePipelineSource = new ExternalRegistryServiceMiddlewareSource(parent.ComponentRegistry, isolatedScope);
+                tracker.AddServiceMiddlewareSource(externalServicePipelineSource);
 
                 break;
             }
 
             parent = parent.ParentLifetimeScope;
         }
+
+        var registryBuilder = new ComponentRegistryBuilder(tracker, fallbackProperties);
+        var builder = new ContainerBuilder(fallbackProperties, registryBuilder);
 
         configurationAction(builder);
 

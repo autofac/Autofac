@@ -56,7 +56,7 @@ try {
 
     # Test
     Write-Message "Executing unit tests"
-    Get-DotNetProjectDirectory -RootPath $PSScriptRoot\test | Where-Object { $_ -inotlike "*Autofac.Test.Scenarios.ScannedAssembly" } | Invoke-Test
+    Get-DotNetProjectDirectory -RootPath $PSScriptRoot\test | Where-Object { $_ -inotlike "*Autofac.Test.Scenarios.*" } | Invoke-Test
 
     # Benchmark
     if ($Bench) {

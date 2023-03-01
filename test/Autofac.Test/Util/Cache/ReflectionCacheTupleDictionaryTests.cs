@@ -27,7 +27,7 @@ public class ReflectionCacheTupleDictionaryTests
 
         cacheDict[(typeof(string), typeof(ContainerBuilder))] = false;
 
-        cacheDict.Clear((assembly, member) =>
+        cacheDict.Clear((member, assembly) =>
         {
             return member == typeof(string);
         });
@@ -42,7 +42,7 @@ public class ReflectionCacheTupleDictionaryTests
 
         cacheDict[(typeof(string), typeof(int))] = false;
 
-        cacheDict.Clear((assembly, member) =>
+        cacheDict.Clear((member, assembly) =>
         {
             return member == typeof(int) || member == typeof(string);
         });
@@ -57,9 +57,9 @@ public class ReflectionCacheTupleDictionaryTests
 
         cacheDict[(typeof(string).GetMethod("IsNullOrEmpty"), typeof(int).GetMethod("GetHashCode"))] = false;
 
-        cacheDict.Clear((assembly, member) =>
+        cacheDict.Clear((member, assemblies) =>
         {
-            Assert.Equal(typeof(string).Assembly, assembly);
+            Assert.Collection(assemblies, a => Assert.Equal(typeof(string).Assembly, a));
 
             return true;
         });
@@ -74,9 +74,9 @@ public class ReflectionCacheTupleDictionaryTests
 
         cacheDict[(typeof(string), typeof(int))] = false;
 
-        cacheDict.Clear((assembly, member) =>
+        cacheDict.Clear((member, assemblies) =>
         {
-            Assert.Equal(typeof(string).Assembly, assembly);
+            Assert.Collection(assemblies, a => Assert.Equal(typeof(string).Assembly, a));
 
             return true;
         });

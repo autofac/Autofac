@@ -285,6 +285,15 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
     {
         var createdEphemeralSet = false;
+        var isScopeIsolatedService = false;
+
+        if (service is ScopeIsolatedService scopeIsolatedService)
+        {
+            // This is an isolated service query; use the wrapped service instead and
+            // remember that fact for later.
+            isScopeIsolatedService = true;
+            service = scopeIsolatedService.Service;
+        }
 
         var info = GetServiceInfo(service);
         if (info.IsInitialized)
@@ -325,6 +334,14 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
             while (info.HasSourcesToQuery)
             {
                 var next = info.DequeueNextSource();
+
+                // Do not query per-scope registration sources
+                // for isolated services.
+                if (isScopeIsolatedService && next is IPerScopeRegistrationSource)
+                {
+                    continue;
+                }
+
                 foreach (var provided in next.RegistrationsFor(service, _registrationAccessor))
                 {
                     // This ensures that multiple services provided by the same
@@ -366,9 +383,19 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         {
             info.InitializationDepth--;
 
-            if (info.InitializationDepth == 0 && succeeded)
+            if (info.InitializationDepth == 0)
             {
-                info.CompleteInitialization();
+                if (succeeded)
+                {
+                    info.CompleteInitialization();
+                }
+
+                if (isScopeIsolatedService && (!succeeded || (!info.IsRegistered && !info.HasCustomServiceMiddleware)))
+                {
+                    // No registrations or custom middleware was found for this service, and this service enquiry is marked as "isolated",
+                    // meaning that we shouldn't remember any info for it if it has no registrations.
+                    _serviceInfo.TryRemove(service, out _);
+                }
             }
 
             if (lockTaken)

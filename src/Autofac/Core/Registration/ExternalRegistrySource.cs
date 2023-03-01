@@ -12,13 +12,22 @@ namespace Autofac.Core.Registration;
 internal class ExternalRegistrySource : IRegistrationSource
 {
     private readonly IComponentRegistry _registry;
+    private readonly bool _isolatedScope;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExternalRegistrySource"/> class.
     /// </summary>
     /// <param name="registry">Component registry to pull registrations from.</param>
-    public ExternalRegistrySource(IComponentRegistry registry)
-        => _registry = registry ?? throw new ArgumentNullException(nameof(registry));
+    /// <param name="isolatedScope">
+    /// Indicates whether queries to the external registry and wrapped with
+    /// <see cref="ScopeIsolatedService"/>, to indicate that the destination
+    /// registry should not hold on to type information that does not result in a registration.
+    /// </param>
+    public ExternalRegistrySource(IComponentRegistry registry, bool isolatedScope)
+    {
+        _registry = registry ?? throw new ArgumentNullException(nameof(registry));
+        _isolatedScope = isolatedScope;
+    }
 
     /// <summary>
     /// Retrieve registrations for an unregistered service, to be used
@@ -32,10 +41,19 @@ internal class ExternalRegistrySource : IRegistrationSource
         // Issue #475: This method was refactored significantly to handle
         // registrations made on the fly in parent lifetime scopes to correctly
         // pass to child lifetime scopes.
+        var serviceForLookup = service;
+
+        if (_isolatedScope)
+        {
+            // If we need to isolate services to a particular scope,
+            // we wrap the service in ScopeIsolatedService to tell the parent
+            // registry not to hold on to any types that don't result in implementations.
+            serviceForLookup = new ScopeIsolatedService(service);
+        }
 
         // Issue #272: Taking from the registry the following registrations:
         //   - non-adapting own registrations: wrap them with ExternalComponentRegistration
-        foreach (var registration in _registry.RegistrationsFor(service))
+        foreach (var registration in _registry.RegistrationsFor(serviceForLookup))
         {
             if (registration is ExternalComponentRegistration || !registration.IsAdapting())
             {

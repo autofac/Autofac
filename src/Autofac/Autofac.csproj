@@ -21,6 +21,7 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CodeAnalysisRuleSet>../../build/Analyzers.ruleset</CodeAnalysisRuleSet>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <ImplicitUsings>enable</ImplicitUsings>
     <!-- Packaging -->
@@ -109,7 +110,7 @@
     <EmbeddedResource Update="Core\Activators\InstanceActivatorResources.resx">
       <StronglyTypedNamespace>Autofac.Core.Activators</StronglyTypedNamespace>
     </EmbeddedResource>
-    <EmbeddedResource Update="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx">      
+    <EmbeddedResource Update="Core\Activators\ProvidedInstance\ProvidedInstanceActivatorResources.resx">
       <StronglyTypedNamespace>Autofac.Core.Activators.ProvidedInstance</StronglyTypedNamespace>
     </EmbeddedResource>
     <EmbeddedResource Update="Core\Activators\Reflection\BoundConstructorResources.resx">

@@ -10,6 +10,7 @@ using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Autofac.Features.Decorators;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Features.Collections;
 
@@ -40,7 +41,7 @@ namespace Autofac.Features.Collections;
 /// for something you don't expect to resolve".
 /// </para>
 /// </remarks>
-internal class CollectionRegistrationSource : IRegistrationSource
+internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegistrationSource
 {
     /// <summary>
     /// Retrieve registrations for an unregistered service, to be used
@@ -71,29 +72,37 @@ internal class CollectionRegistrationSource : IRegistrationSource
         }
 
         var serviceType = swt.ServiceType;
-        Type? elementType = null;
-        Type? limitType = null;
-        Func<int, IList>? factory = null;
 
-        if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
+        var factoryCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheDictionary<Type, (Type? ElementType, Type? LimitType, Func<int, IList>? Factory)>>(nameof(CollectionRegistrationSource));
+
+        var (elementType, limitType, factory) = factoryCache.GetOrAdd(serviceType, static serviceType =>
         {
-            elementType = serviceType.GenericTypeArguments[0];
-            limitType = elementType.MakeArrayType();
-            factory = GenerateArrayFactory(elementType);
-        }
-        else if (serviceType.IsArray)
-        {
-            // GetElementType always non-null if IsArray is true.
-            elementType = serviceType.GetElementType()!;
-            limitType = serviceType;
-            factory = GenerateArrayFactory(elementType);
-        }
-        else if (serviceType.IsGenericListOrCollectionInterfaceType())
-        {
-            elementType = serviceType.GenericTypeArguments[0];
-            limitType = typeof(List<>).MakeGenericType(elementType);
-            factory = GenerateListFactory(elementType);
-        }
+            Type? elementType = null;
+            Type? limitType = null;
+            Func<int, IList>? factory = null;
+
+            if (serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)))
+            {
+                elementType = serviceType.GenericTypeArguments[0];
+                limitType = elementType.MakeArrayType();
+                factory = GenerateArrayFactory(elementType);
+            }
+            else if (serviceType.IsArray)
+            {
+                // GetElementType always non-null if IsArray is true.
+                elementType = serviceType.GetElementType()!;
+                limitType = serviceType;
+                factory = GenerateArrayFactory(elementType);
+            }
+            else if (serviceType.IsGenericListOrCollectionInterfaceType())
+            {
+                elementType = serviceType.GenericTypeArguments[0];
+                limitType = typeof(List<>).MakeGenericType(elementType);
+                factory = GenerateListFactory(elementType);
+            }
+
+            return (elementType, limitType, factory);
+        });
 
         if (elementType == null || factory == null || limitType == null)
         {
