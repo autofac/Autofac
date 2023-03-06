@@ -18,12 +18,20 @@ public class DefaultPropertySelectorTests
     [InlineData(true, "PublicPropertyNoSet", false)]
     [InlineData(true, "PublicPropertyThrowsOnGet", false)]
     [InlineData(false, "PublicPropertyThrowsOnGet", true)]
+#if NET7_0_OR_GREATER
+    [InlineData(false, "PublicRequiredProperty", false)]
+#endif
     [Theory]
     public void DefaultTests(bool preserveSetValue, string propertyName, bool expected)
     {
         var finder = new DefaultPropertySelector(preserveSetValue);
 
-        var instance = new HasProperties();
+        var instance = new HasProperties
+        {
+#if NET7_0_OR_GREATER
+            PublicRequiredProperty = new(),
+#endif
+        };
         var property = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
         Assert.Equal(expected, finder.InjectProperty(property, instance));
@@ -52,6 +60,10 @@ public class DefaultPropertySelectorTests
             {
             }
         }
+
+#if NET7_0_OR_GREATER
+        required public Test PublicRequiredProperty { get; set; }
+#endif
 
         public Test PublicPropertyWithDefault { get; set; } = new Test();
 

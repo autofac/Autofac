@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Autofac.Core;
 
@@ -54,6 +55,18 @@ public class DefaultPropertySelector : IPropertySelector
         {
             return false;
         }
+
+#if NET7_0_OR_GREATER
+        if (propertyInfo.GetCustomAttribute<RequiredMemberAttribute>() is not null)
+        {
+            // The default property selector should not inject required properties,
+            // to avoid duplication with the injection automatically applied inside the
+            // ReflectionActivator.
+            // Any other form of activator (lambda, instance) would generally already be required to
+            // set the required properties in order to create the instance.
+            return false;
+        }
+#endif
 
         if (PreserveSetValues && propertyInfo.CanRead)
         {
