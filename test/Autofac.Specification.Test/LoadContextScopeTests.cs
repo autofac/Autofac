@@ -154,6 +154,38 @@ public class LoadContextScopeTests
     }
 
     [Fact]
+    public void EnumerableCanContainItemsFromParentAndLoadedScope()
+    {
+        var builder = new ContainerBuilder();
+
+        builder.RegisterInstance("string").As<object>();
+
+        using var rootContainer = builder.Build();
+
+        LoadAssemblyAndTest(
+            rootContainer,
+            out var loadContextRef,
+            (builder, assembly) => builder.RegisterType(assembly.GetType("A.Service1")).As<object>(),
+            (scope, loadContext, assembly) =>
+            {
+                var resolved = scope.Resolve<IEnumerable<object>>();
+
+                Assert.Collection(
+                    resolved,
+                    firstItem =>
+                    {
+                        Assert.Equal("string", firstItem);
+                    },
+                    secondItem =>
+                    {
+                        Assert.IsType(assembly.GetType("A.Service1"), secondItem);
+                    });
+            });
+
+        WaitForUnload(loadContextRef);
+    }
+
+    [Fact]
     public void CannotUseDefaultLoadContextForNewLifetimeScope()
     {
         var container = new ContainerBuilder().Build();
