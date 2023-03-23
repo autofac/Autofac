@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Collections.Concurrent;
 using System.Globalization;
 using Autofac.Core;
 using Autofac.Util;
@@ -28,7 +29,7 @@ internal static class OpenGenericServiceBinder
         IEnumerable<Service> configuredOpenGenericServices,
         Type openGenericImplementationType,
         [NotNullWhen(returnValue: true)] out Type? constructedImplementationType,
-        [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
+        [NotNullWhen(returnValue: true)] out IReadOnlyList<Service>? constructedServices)
     {
         if (serviceWithType.ServiceType.IsGenericType && !serviceWithType.ServiceType.IsGenericTypeDefinition)
         {
@@ -68,6 +69,11 @@ internal static class OpenGenericServiceBinder
         return false;
     }
 
+    private static readonly ConcurrentDictionary<Type, Type> GenericTypeDefinitionByType = new();
+    private static readonly Func<Type, Type> GenericTypeDefinitionFactory = type => type.GetGenericTypeDefinition();
+
+    private static Type GetGenericTypeDefinition(Type type) => GenericTypeDefinitionByType.GetOrAdd(type, GenericTypeDefinitionFactory);
+
     /// <summary>
     /// Given a closed generic service (that is being requested), creates a regular delegate callback
     /// and associated services from the open generic delegate and services.
@@ -84,26 +90,35 @@ internal static class OpenGenericServiceBinder
         IEnumerable<Service> configuredOpenGenericServices,
         Func<IComponentContext, Type[], IEnumerable<Parameter>, object> openGenericFactory,
         [NotNullWhen(returnValue: true)] out Func<IComponentContext, IEnumerable<Parameter>, object>? constructedFactory,
-        [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
+        [NotNullWhen(returnValue: true)] out IReadOnlyList<Service>? constructedServices)
     {
-        if (serviceWithType.ServiceType.IsGenericType && !serviceWithType.ServiceType.IsGenericTypeDefinition)
+        var serviceWithTypeServiceType = serviceWithType.ServiceType;
+        if (serviceWithTypeServiceType.IsGenericType && !serviceWithTypeServiceType.IsGenericTypeDefinition)
         {
-            var definitionService = (IServiceWithType)serviceWithType.ChangeType(serviceWithType.ServiceType.GetGenericTypeDefinition());
-            var serviceGenericArguments = serviceWithType.ServiceType.GetGenericArguments();
+            var definitionService = (IServiceWithType)serviceWithType.ChangeType(GetGenericTypeDefinition(serviceWithTypeServiceType));
+            var serviceGenericArguments = serviceWithTypeServiceType.GetGenericArguments();
 
-            if (configuredOpenGenericServices.OfType<IServiceWithType>().Any(s => s.Equals(definitionService)))
+            foreach (var s in configuredOpenGenericServices.OfType<IServiceWithType>())
             {
-                constructedFactory = (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
+                if (s.Equals(definitionService))
+                {
+                    constructedFactory = (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
 
-                var implementedServices = configuredOpenGenericServices
-                    .OfType<IServiceWithType>()
-                    .Where(s => s.ServiceType.GetGenericArguments().Length == serviceGenericArguments.Length)
-                    .Select(s => new { ServiceWithType = s, GenericService = s.ServiceType.MakeGenericType(serviceGenericArguments) })
-                    .Select(p => p.ServiceWithType.ChangeType(p.GenericService))
-                    .ToArray();
+                    var serviceGenericArgumentsLength = serviceGenericArguments.Length;
+                    var implementedServices = new List<Service>();
+                    foreach (var service in configuredOpenGenericServices.OfType<IServiceWithType>())
+                    {
+                        var serviceType = service.ServiceType;
+                        if (serviceType.GetGenericArguments().Length == serviceGenericArgumentsLength)
+                        {
+                            var genericService = serviceType.MakeGenericType(serviceGenericArguments);
+                            implementedServices.Add(service.ChangeType(genericService));
+                        }
+                    }
 
-                constructedServices = implementedServices;
-                return true;
+                    constructedServices = implementedServices;
+                    return true;
+                }
             }
         }
 
