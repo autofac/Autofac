@@ -356,6 +356,11 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             throw new ArgumentNullException(nameof(creator));
         }
 
+        if (_sharedInstances.TryGetValue(id, out var tempResult))
+        {
+            return tempResult;
+        }
+
         lock (_synchRoot)
         {
             if (_sharedInstances.TryGetValue(id, out var result))
@@ -388,10 +393,15 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             return CreateSharedInstance(primaryId, creator);
         }
 
+        var instanceKey = (primaryId, qualifyingId.Value);
+
+        if (_sharedQualifiedInstances.TryGetValue(instanceKey, out var tempResult))
+        {
+            return tempResult;
+        }
+
         lock (_synchRoot)
         {
-            var instanceKey = (primaryId, qualifyingId.Value);
-
             if (_sharedQualifiedInstances.TryGetValue(instanceKey, out var result))
             {
                 return result;
