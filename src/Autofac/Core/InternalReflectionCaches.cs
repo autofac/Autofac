@@ -54,7 +54,7 @@ internal class InternalReflectionCaches
     /// </summary>
     public ReflectionCacheDictionary<Type, ConstructorInfo[]> DefaultPublicConstructors { get; }
 
-    public ReflectionCacheDictionary<Type, Type> GenericTypeDefinitionByType  { get; }
+    public ReflectionCacheDictionary<Type, Type> GenericTypeDefinitionByType { get; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InternalReflectionCaches"/> class.
