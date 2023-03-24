@@ -69,7 +69,7 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
             return Enumerable.Empty<IComponentRegistration>();
         }
 
-        if (OpenGenericServiceBinder.TryBindOpenGenericTypedService(swt, _registrationData.Services, _activatorData.ImplementationType, out Type? constructedImplementationType, out IReadOnlyList<Service>? services))
+        if (OpenGenericServiceBinder.TryBindOpenGenericTypedService(swt, _registrationData.Services, _activatorData.ImplementationType, out Type? constructedImplementationType, out Service[]? services))
         {
             var fromService = _activatorData.FromService.ChangeType(swt.ServiceType);
 

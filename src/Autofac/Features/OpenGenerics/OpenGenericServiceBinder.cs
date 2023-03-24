@@ -29,7 +29,7 @@ internal static class OpenGenericServiceBinder
         IEnumerable<Service> configuredOpenGenericServices,
         Type openGenericImplementationType,
         [NotNullWhen(returnValue: true)] out Type? constructedImplementationType,
-        [NotNullWhen(returnValue: true)] out IReadOnlyList<Service>? constructedServices)
+        [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
     {
         if (serviceWithType.ServiceType.IsGenericType && !serviceWithType.ServiceType.IsGenericTypeDefinition)
         {
@@ -90,7 +90,7 @@ internal static class OpenGenericServiceBinder
         IEnumerable<Service> configuredOpenGenericServices,
         Func<IComponentContext, Type[], IEnumerable<Parameter>, object> openGenericFactory,
         [NotNullWhen(returnValue: true)] out Func<IComponentContext, IEnumerable<Parameter>, object>? constructedFactory,
-        [NotNullWhen(returnValue: true)] out IReadOnlyList<Service>? constructedServices)
+        [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
     {
         var serviceWithTypeServiceType = serviceWithType.ServiceType;
         if (serviceWithTypeServiceType.IsGenericType && !serviceWithTypeServiceType.IsGenericTypeDefinition)
@@ -116,7 +116,7 @@ internal static class OpenGenericServiceBinder
                         }
                     }
 
-                    constructedServices = implementedServices;
+                    constructedServices = implementedServices.ToArray();
                     return true;
                 }
             }

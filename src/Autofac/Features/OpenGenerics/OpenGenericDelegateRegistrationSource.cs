@@ -52,7 +52,7 @@ internal class OpenGenericDelegateRegistrationSource : IRegistrationSource
             yield break;
         }
 
-        if (OpenGenericServiceBinder.TryBindOpenGenericDelegateService(swt, _registrationData.Services, _activatorData.Factory, out var constructedFactory, out IReadOnlyList<Service>? services))
+        if (OpenGenericServiceBinder.TryBindOpenGenericDelegateService(swt, _registrationData.Services, _activatorData.Factory, out var constructedFactory, out Service[]? services))
         {
             // Pass the pipeline builder from the original registration to the 'CreateRegistration'.
             // So the original registration will contain all of the pipeline stages originally added, plus anything we want to add.

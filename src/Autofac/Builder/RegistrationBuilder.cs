@@ -132,7 +132,7 @@ public static class RegistrationBuilder
         RegistrationData data,
         IInstanceActivator activator,
         IResolvePipelineBuilder pipelineBuilder,
-        IReadOnlyList<Service> services)
+        Service[] services)
     {
         return CreateRegistration(id, data, activator, pipelineBuilder, services, null);
     }
@@ -155,7 +155,7 @@ public static class RegistrationBuilder
         RegistrationData data,
         IInstanceActivator activator,
         IResolvePipelineBuilder pipelineBuilder,
-        IReadOnlyList<Service> services,
+        Service[] services,
         IComponentRegistration? target)
     {
         if (activator == null)
