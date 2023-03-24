@@ -356,6 +356,11 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             throw new ArgumentNullException(nameof(creator));
         }
 
+        if (_sharedInstances.TryGetValue(id, out var tempResult))
+        {
+            return tempResult;
+        }
+
         lock (_synchRoot)
         {
             if (_sharedInstances.TryGetValue(id, out var result))
@@ -364,12 +369,10 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             }
 
             result = creator();
-            if (_sharedInstances.ContainsKey(id))
+            if (!_sharedInstances.TryAdd(id, result))
             {
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
             }
-
-            _sharedInstances.TryAdd(id, result);
 
             return result;
         }
@@ -388,22 +391,25 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             return CreateSharedInstance(primaryId, creator);
         }
 
+        var instanceKey = (primaryId, qualifyingId.Value);
+
+        if (_sharedQualifiedInstances.TryGetValue(instanceKey, out var tempResult))
+        {
+            return tempResult;
+        }
+
         lock (_synchRoot)
         {
-            var instanceKey = (primaryId, qualifyingId.Value);
-
             if (_sharedQualifiedInstances.TryGetValue(instanceKey, out var result))
             {
                 return result;
             }
 
             result = creator();
-            if (_sharedQualifiedInstances.ContainsKey(instanceKey))
+            if (!_sharedQualifiedInstances.TryAdd(instanceKey, result))
             {
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
             }
-
-            _sharedQualifiedInstances.TryAdd(instanceKey, result);
 
             return result;
         }
