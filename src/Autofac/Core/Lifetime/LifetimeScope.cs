@@ -369,12 +369,10 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             }
 
             result = creator();
-            if (_sharedInstances.ContainsKey(id))
+            if (!_sharedInstances.TryAdd(id, result))
             {
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
             }
-
-            _sharedInstances.TryAdd(id, result);
 
             return result;
         }
@@ -408,12 +406,10 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             }
 
             result = creator();
-            if (_sharedQualifiedInstances.ContainsKey(instanceKey))
+            if (!_sharedQualifiedInstances.TryAdd(instanceKey, result))
             {
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
             }
-
-            _sharedQualifiedInstances.TryAdd(instanceKey, result);
 
             return result;
         }
