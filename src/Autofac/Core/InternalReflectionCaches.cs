@@ -55,7 +55,7 @@ internal class InternalReflectionCaches
     public ReflectionCacheDictionary<Type, ConstructorInfo[]> DefaultPublicConstructors { get; }
 
     /// <summary>
-    /// Memoized <see cref="System.Type.GetGenericTypeDefinition"/>.
+    /// Gets a cache of memoized <see cref="System.Type.GetGenericTypeDefinition"/>.
     /// </summary>
     public ReflectionCacheDictionary<Type, Type> GenericTypeDefinitionByType { get; }
 
