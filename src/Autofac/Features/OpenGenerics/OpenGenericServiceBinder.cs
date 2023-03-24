@@ -69,10 +69,7 @@ internal static class OpenGenericServiceBinder
         return false;
     }
 
-    private static readonly ConcurrentDictionary<Type, Type> GenericTypeDefinitionByType = new();
-    private static readonly Func<Type, Type> GenericTypeDefinitionFactory = type => type.GetGenericTypeDefinition();
-
-    private static Type GetGenericTypeDefinition(Type type) => GenericTypeDefinitionByType.GetOrAdd(type, GenericTypeDefinitionFactory);
+    private static Type GetGenericTypeDefinition(Type type) => ReflectionCacheSet.Shared.Internal.GenericTypeDefinitionByType.GetOrAdd(type, static t => t.GetGenericTypeDefinition());
 
     /// <summary>
     /// Given a closed generic service (that is being requested), creates a regular delegate callback

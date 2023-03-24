@@ -54,6 +54,8 @@ internal class InternalReflectionCaches
     /// </summary>
     public ReflectionCacheDictionary<Type, ConstructorInfo[]> DefaultPublicConstructors { get; }
 
+    public ReflectionCacheDictionary<Type, Type> GenericTypeDefinitionByType  { get; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="InternalReflectionCaches"/> class.
     /// </summary>
@@ -72,5 +74,6 @@ internal class InternalReflectionCaches
         AutowiringPropertySetters = set.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, Action<object, object?>>>(nameof(AutowiringPropertySetters));
         AutowiringInjectableProperties = set.GetOrCreateCache<ReflectionCacheDictionary<Type, IReadOnlyList<PropertyInfo>>>(nameof(AutowiringInjectableProperties));
         DefaultPublicConstructors = set.GetOrCreateCache<ReflectionCacheDictionary<Type, ConstructorInfo[]>>(nameof(DefaultPublicConstructors));
+        GenericTypeDefinitionByType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, Type>>(nameof(GenericTypeDefinitionByType));
     }
 }
