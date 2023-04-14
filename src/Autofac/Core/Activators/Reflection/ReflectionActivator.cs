@@ -164,15 +164,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     {
         if (singleConstructor.ParameterCount == 0)
         {
-            var constructorInvoker = singleConstructor.GetConstructorInvoker();
-
-            if (constructorInvoker is null)
-            {
-                // This is not going to happen, because there is only 1 constructor, that constructor has no parameters,
-                // so there are no conditions under which GetConstructorInvoker will return null in this path.
-                // Throw an error here just in case (and to satisfy nullability checks).
-                throw new NoConstructorsFoundException(_implementationType, ConstructorFinder);
-            }
+            var constructorInvoker = singleConstructor.GetConstructorInvoker() ?? throw new NoConstructorsFoundException(_implementationType, ConstructorFinder);
 
             // If there are no arguments to the constructor, bypass all argument binding and pre-bind the constructor.
             var boundConstructor = BoundConstructor.ForBindSuccess(

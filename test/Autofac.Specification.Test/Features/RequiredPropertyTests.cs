@@ -262,7 +262,7 @@ public class RequiredPropertyTests
 
     private class OpenGenericComponent<T>
     {
-        required public OpenGenericService<T> Service { get; set; }
+        public required OpenGenericService<T> Service { get; set; }
     }
 
     private class OpenGenericService<T>
@@ -276,9 +276,9 @@ public class RequiredPropertyTests
         {
         }
 
-        required public ServiceA ServiceA { get; set; }
+        public required ServiceA ServiceA { get; set; }
 
-        required public ServiceB ServiceB { get; set; }
+        public required ServiceB ServiceB { get; set; }
     }
 
     private class MixedConstructorAndPropertyComponent
@@ -290,7 +290,7 @@ public class RequiredPropertyTests
 
         public ServiceA ServiceA { get; set; }
 
-        required public ServiceB ServiceB { get; set; }
+        public required ServiceB ServiceB { get; set; }
     }
 
     private class MultiConstructorComponent
@@ -304,14 +304,14 @@ public class RequiredPropertyTests
         {
         }
 
-        required public ServiceA ServiceA { get; set; }
+        public required ServiceA ServiceA { get; set; }
     }
 
     private class Component
     {
-        required public ServiceA ServiceA { get; set; }
+        public required ServiceA ServiceA { get; set; }
 
-        required public ServiceB ServiceB { get; set; }
+        public required ServiceB ServiceB { get; set; }
     }
 
     private class DerivedComponentWithProp : Component
@@ -320,7 +320,7 @@ public class RequiredPropertyTests
         {
         }
 
-        required public ServiceC ServiceC { get; set; }
+        public required ServiceC ServiceC { get; set; }
     }
 
     private class DerivedComponent : Component

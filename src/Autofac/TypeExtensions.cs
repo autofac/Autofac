@@ -121,13 +121,7 @@ public static class TypeExtensions
             throw new ArgumentNullException(nameof(methodName));
         }
 
-        var foundMethod = @this.GetMethod(methodName, DeclaredMemberFlags);
-
-        if (foundMethod is null)
-        {
-            throw new ArgumentException(TypeExtensionsResources.MemberNotFound);
-        }
-
+        var foundMethod = @this.GetMethod(methodName, DeclaredMemberFlags) ?? throw new ArgumentException(TypeExtensionsResources.MemberNotFound);
         return foundMethod;
     }
 
@@ -150,13 +144,7 @@ public static class TypeExtensions
             throw new ArgumentNullException(nameof(propertyName));
         }
 
-        var foundProperty = @this.GetProperty(propertyName, DeclaredMemberFlags);
-
-        if (foundProperty is null)
-        {
-            throw new ArgumentException(TypeExtensionsResources.MemberNotFound);
-        }
-
+        var foundProperty = @this.GetProperty(propertyName, DeclaredMemberFlags) ?? throw new ArgumentException(TypeExtensionsResources.MemberNotFound);
         return foundProperty;
     }
 

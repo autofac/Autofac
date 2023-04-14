@@ -28,6 +28,8 @@
     <Rule Id="SA1203" Action="None" />
     <!-- Enforce order of static vs. non-static members -->
     <Rule Id="SA1204" Action="None" />
+    <!-- Modifiers are not ordered - .editorconfig handles this -->
+    <Rule Id="SA1206" Action="None" />
     <!-- Enforce order of readonly vs. non-readonly members -->
     <Rule Id="SA1214" Action="None" />
     <!-- Fields can't start with underscore -->

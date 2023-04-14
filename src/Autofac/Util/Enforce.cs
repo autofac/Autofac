@@ -91,13 +91,7 @@ internal static class Enforce
             throw new ArgumentNullException(nameof(delegateType));
         }
 
-        MethodInfo invoke = delegateType.GetDeclaredMethod("Invoke");
-
-        if (invoke == null)
-        {
-            throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.NotDelegate, delegateType));
-        }
-
+        MethodInfo invoke = delegateType.GetDeclaredMethod("Invoke") ?? throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.NotDelegate, delegateType));
         if (invoke.ReturnType == typeof(void))
         {
             throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.DelegateReturnsVoid, delegateType));

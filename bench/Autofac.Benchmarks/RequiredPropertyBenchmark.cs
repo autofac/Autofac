@@ -54,8 +54,8 @@ public class RequiredPropertyBenchmark
 
     public class RequiredPropertyComponent
     {
-        required public ServiceA ServiceA { get; set; }
+        public required ServiceA ServiceA { get; set; }
 
-        required public ServiceA ServiceB { get; set; }
+        public required ServiceA ServiceB { get; set; }
     }
 }

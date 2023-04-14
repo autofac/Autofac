@@ -15,7 +15,7 @@ public static class ModuleInitializer
         VerifierSettings.RegisterFileConverter<GeneratorDriverRunResult>(ConvertRunResult);
         VerifierSettings.RegisterFileConverter<GeneratorDriver>(ConvertDriver);
 
-        VerifySourceGenerators.Enable();
+        VerifySourceGenerators.Initialize();
     }
 
     private static ConversionResult ConvertRunResult(GeneratorDriverRunResult target, IReadOnlyDictionary<string, object> context)

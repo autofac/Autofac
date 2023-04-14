@@ -62,12 +62,7 @@ public class DelegateActivator : InstanceActivator, IInstanceActivator
 
         CheckNotDisposed();
 
-        var result = _activationFunction(context, parameters);
-        if (result == null)
-        {
-            throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, DelegateActivatorResources.NullFromActivationDelegateFor, LimitType));
-        }
-
+        var result = _activationFunction(context, parameters) ?? throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, DelegateActivatorResources.NullFromActivationDelegateFor, LimitType));
         return result;
     }
 }
