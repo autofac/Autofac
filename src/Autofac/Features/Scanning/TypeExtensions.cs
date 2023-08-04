@@ -38,29 +38,13 @@ internal static class TypeExtensions
     /// <returns>
     /// A filtered set of types that remove non-concrete types (interfaces, abstract classes, etc.).
     /// </returns>
-    internal static IEnumerable<Type> WhichCanBeRegistered(this IEnumerable<Type> types) => types.Where(t => t.IsRegisterableType());
-
-    /// <summary>
-    /// Determines if a type is a concrete type that is allowed to be registered during scanning.
-    /// </summary>
-    /// <param name="type">
-    /// The type to check.
-    /// </param>
-    /// <returns>
-    /// <see langword="true"/> if the type is allowed to be registered during scanning based on its reflection attributes; otherwise <see langword="false"/>.
-    /// </returns>
-    // Issue #897: For back compat reasons we can't filter out
-    // non-public types here. Folks use assembly scanning on their
-    // own stuff, so encapsulation is a tricky thing to manage.
-    // If people want only public types, a LINQ Where clause can be used.
-    //
-    // Run IsCompilerGenerated check last due to perf. See AssemblyScanningPerformanceTests.MeasurePerformance.
-    internal static bool IsRegisterableType(this Type? type) => type != null && type.IsClass && !type.IsAbstract && !type.IsDelegate() && !type.IsCompilerGenerated();
+    internal static IEnumerable<Type> WhichAreAllowedThroughScanning(this IEnumerable<Type> types) => types.Where(t => t.MayAllowReflectionActivation());
 
     /// <summary>
     /// Filters a list of types down to only those that are concrete
-    /// (<see cref="IsRegisterableType"/>), not open generic, and allowed by the
-    /// provided activator data. Registers those types into the provided
+    /// (<see cref="InternalTypeExtensions.MayAllowReflectionActivation"/>), not open generic,
+    /// and allowed by the provided activator data. Registers those types into
+    /// the provided
     /// registry.
     /// </summary>
     /// <param name="types">
@@ -75,7 +59,7 @@ internal static class TypeExtensions
     /// </param>
     internal static void FilterAndRegisterConcreteTypes(this IEnumerable<Type> types, IComponentRegistryBuilder cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
     {
-        var closedTypes = types.WhichCanBeRegistered()
+        var closedTypes = types.WhichAreAllowedThroughScanning()
             .Where(t => !t.IsGenericTypeDefinition)
             .AllowedByActivatorFilters(rb.ActivatorData);
 

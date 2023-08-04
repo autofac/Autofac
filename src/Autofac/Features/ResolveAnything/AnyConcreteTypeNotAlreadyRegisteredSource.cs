@@ -4,6 +4,7 @@
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
+using Autofac.Util;
 
 namespace Autofac.Features.ResolveAnything;
 
@@ -55,9 +56,7 @@ public class AnyConcreteTypeNotAlreadyRegisteredSource : IRegistrationSource, IP
         }
 
         var serviceType = ts.ServiceType;
-        if (!serviceType.IsClass ||
-            serviceType.IsSubclassOf(typeof(Delegate)) ||
-            serviceType.IsAbstract ||
+        if (!serviceType.MayAllowReflectionActivation(allowCompilerGenerated: true) ||
             serviceType.IsGenericTypeDefinition ||
             !_predicate(ts.ServiceType) ||
             registrationAccessor(service).Any())

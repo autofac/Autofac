@@ -24,7 +24,7 @@ internal static class AssemblyExtensions
         static IReadOnlyList<Type> Uncached(Assembly assembly)
         {
             return assembly.GetLoadableTypes()
-                           .WhichCanBeRegistered()
+                           .WhichAreAllowedThroughScanning()
                            .ToList();
         }
 
