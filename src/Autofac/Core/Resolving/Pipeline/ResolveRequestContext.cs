@@ -10,7 +10,7 @@ namespace Autofac.Core.Resolving.Pipeline;
 public abstract class ResolveRequestContext : IComponentContext
 {
     /// <summary>
-    /// Gets a reference to the owning resolve operation (which might emcompass multiple nested requests).
+    /// Gets a reference to the owning resolve operation (which might encompass multiple nested requests).
     /// </summary>
     public abstract IResolveOperation Operation { get; }
 
@@ -36,10 +36,12 @@ public abstract class ResolveRequestContext : IComponentContext
     public abstract IComponentRegistration? DecoratorTarget { get; }
 
     /// <summary>
-    /// Gets or sets the instance that will be returned as the result of the resolve request.
-    /// On the way back up the pipeline, after calling next(ctxt), this value will be populated
-    /// with the resolved instance. Check the <see cref="NewInstanceActivated"/> property to determine
-    /// whether the object here was a newly activated instance, or a shared instance previously activated.
+    /// Gets or sets the instance that will be returned as the result of the
+    /// resolve request. On the way back up the pipeline, after calling the next
+    /// middleware in the chain, this value will be populated with the resolved
+    /// instance. Check the <see cref="NewInstanceActivated"/> property to
+    /// determine whether the object here was a newly activated instance, or a
+    /// shared instance previously activated.
     /// </summary>
     [DisallowNull]
     public abstract object? Instance { get; set; }

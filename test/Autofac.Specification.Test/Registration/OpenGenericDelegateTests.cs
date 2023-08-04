@@ -33,7 +33,7 @@ public class OpenGenericDelegateTests
     {
         var builder = new ContainerBuilder();
 
-        builder.RegisterGeneric((ctxt, types) => Activator.CreateInstance(typeof(ImplementationA<>).MakeGenericType(types)))
+        builder.RegisterGeneric((context, types) => Activator.CreateInstance(typeof(ImplementationA<>).MakeGenericType(types)))
                .As(typeof(IInterfaceA<>));
 
         var container = builder.Build();
@@ -50,7 +50,7 @@ public class OpenGenericDelegateTests
     {
         var builder = new ContainerBuilder();
 
-        builder.RegisterGeneric((ctxt, types) => Activator.CreateInstance(typeof(ImplementationA<>).MakeGenericType(types)))
+        builder.RegisterGeneric((context, types) => Activator.CreateInstance(typeof(ImplementationA<>).MakeGenericType(types)))
                .As(typeof(IInterfaceA<>));
 
         var container = builder.Build();
@@ -63,7 +63,7 @@ public class OpenGenericDelegateTests
     {
         var builder = new ContainerBuilder();
 
-        builder.RegisterGeneric((ctxt, types) => Activator.CreateInstance(typeof(ImplementationMultiType<,>).MakeGenericType(types)))
+        builder.RegisterGeneric((context, types) => Activator.CreateInstance(typeof(ImplementationMultiType<,>).MakeGenericType(types)))
                .As(typeof(IInterfaceMultiType<,>));
 
         var container = builder.Build();
@@ -80,7 +80,7 @@ public class OpenGenericDelegateTests
     {
         var builder = new ContainerBuilder();
 
-        builder.RegisterGeneric((ctxt, types) =>
+        builder.RegisterGeneric((context, types) =>
         {
             var chosenType = types.Length == 2 ? typeof(ImplementationMultiType<,>) : typeof(ImplementationA<>);
 
@@ -107,7 +107,7 @@ public class OpenGenericDelegateTests
 
         List<Parameter> passedParameters = null;
 
-        builder.RegisterGeneric((ctxt, types, parameters) =>
+        builder.RegisterGeneric((context, types, parameters) =>
         {
             passedParameters = parameters.ToList();
 
@@ -129,7 +129,7 @@ public class OpenGenericDelegateTests
     {
         var builder = new ContainerBuilder();
 
-        builder.RegisterGeneric((ctxt, types) => "bad")
+        builder.RegisterGeneric((context, types) => "bad")
                .As(typeof(IInterfaceA<>));
 
         var container = builder.Build();
@@ -144,7 +144,7 @@ public class OpenGenericDelegateTests
     {
         var builder = new ContainerBuilder();
 
-        builder.RegisterGeneric((ctxt, types) => throw new DivideByZeroException())
+        builder.RegisterGeneric((context, types) => throw new DivideByZeroException())
                .As(typeof(IInterfaceA<>));
 
         var container = builder.Build();

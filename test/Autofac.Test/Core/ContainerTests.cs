@@ -32,7 +32,7 @@ public class ContainerTests
     }
 
     [Fact]
-    public void RegisterParameterisedWithDelegate()
+    public void RegisterParameterizedWithDelegate()
     {
         var cb = new ContainerBuilder();
         cb.Register((c, p) => new Parameterised(p.Named<string>("a"), p.Named<int>("b")));
@@ -48,7 +48,7 @@ public class ContainerTests
     }
 
     [Fact]
-    public void RegisterParameterisedWithReflection()
+    public void RegisterParameterizedWithReflection()
     {
         var cb = new ContainerBuilder();
         cb.RegisterType<Parameterised>();
@@ -205,9 +205,9 @@ public class ContainerTests
     {
         protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
         {
-            registration.ConfigurePipeline(builder => builder.Use(PipelinePhase.Activation, (ctxt, next) =>
+            registration.ConfigurePipeline(builder => builder.Use(PipelinePhase.Activation, (context, next) =>
             {
-                ctxt.Instance = new ReplaceableComponent { IsReplaced = true };
+                context.Instance = new ReplaceableComponent { IsReplaced = true };
             }));
         }
     }

@@ -47,7 +47,7 @@ public static partial class RegistrationExtensions
     }
 
     /// <summary>
-    /// Provide a handler to be called when the component is registred.
+    /// Provide a handler to be called when the component is registered.
     /// </summary>
     /// <typeparam name="TLimit">Registration limit type.</typeparam>
     /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
@@ -108,12 +108,12 @@ public static partial class RegistrationExtensions
         // have closed over the wrong thing.
         registration.ExternallyOwned();
 
-        var middleware = new CoreEventMiddleware(ResolveEventType.OnRelease, PipelinePhase.Activation, (ctxt, next) =>
+        var middleware = new CoreEventMiddleware(ResolveEventType.OnRelease, PipelinePhase.Activation, (context, next) =>
         {
             // Continue down the pipeline.
-            next(ctxt);
+            next(context);
 
-            ctxt.ActivationScope.Disposer.AddInstanceForAsyncDisposal(new ReleaseAction<TLimit>(releaseAction, () => (TLimit)ctxt.Instance!));
+            context.ActivationScope.Disposer.AddInstanceForAsyncDisposal(new ReleaseAction<TLimit>(releaseAction, () => (TLimit)context.Instance!));
         });
 
         registration.ResolvePipeline.Use(middleware, MiddlewareInsertionMode.StartOfPhase);
@@ -151,14 +151,14 @@ public static partial class RegistrationExtensions
 
         registration.ExternallyOwned();
 
-        var middleware = new CoreEventMiddleware(ResolveEventType.OnRelease, PipelinePhase.Activation, (ctxt, next) =>
+        var middleware = new CoreEventMiddleware(ResolveEventType.OnRelease, PipelinePhase.Activation, (context, next) =>
         {
             // Continue down the pipeline.
-            next(ctxt);
+            next(context);
 
             // Use an async release action that invokes the release callback in a proper async/await flow if someone
             // is using actual async disposal.
-            ctxt.ActivationScope.Disposer.AddInstanceForAsyncDisposal(new AsyncReleaseAction<TLimit>(releaseAction, () => (TLimit)ctxt.Instance!));
+            context.ActivationScope.Disposer.AddInstanceForAsyncDisposal(new AsyncReleaseAction<TLimit>(releaseAction, () => (TLimit)context.Instance!));
         });
 
         registration.ResolvePipeline.Use(middleware, MiddlewareInsertionMode.StartOfPhase);

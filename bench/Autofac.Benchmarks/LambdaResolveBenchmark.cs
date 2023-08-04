@@ -1,6 +1,4 @@
-﻿using Autofac.Core;
-
-namespace Autofac.Benchmarks;
+﻿namespace Autofac.Benchmarks;
 
 public class LambdaResolveBenchmark
 {
@@ -13,8 +11,8 @@ public class LambdaResolveBenchmark
 
         builder.RegisterType<MyDependency1>();
 
-        // The original componentcontext way.
-        builder.Register((ctxt) => new MyComponent(ctxt.Resolve<MyDependency1>(), "arg"))
+        // The original component context way.
+        builder.Register((context) => new MyComponent(context.Resolve<MyDependency1>(), "arg"))
                .As<IServiceExistingMethodCapturedArg>();
 
         // Capture the argument directly.

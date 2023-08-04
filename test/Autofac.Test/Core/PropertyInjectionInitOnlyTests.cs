@@ -17,7 +17,7 @@ public class PropertyInjectionInitOnlyTests
     {
         var builder = new ContainerBuilder();
         builder.RegisterType<HasInitOnlyProperties>().PropertiesAutowired();
-        builder.Register(ctxt => "hello world");
+        builder.Register(context => "hello world");
         var container = builder.Build();
 
         var instance = container.Resolve<HasInitOnlyProperties>();
