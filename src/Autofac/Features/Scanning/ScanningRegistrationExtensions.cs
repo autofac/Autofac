@@ -79,7 +79,7 @@ internal static partial class ScanningRegistrationExtensions
 
     private static void ScanTypes(IEnumerable<Type> types, IComponentRegistryBuilder cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
     {
-        var closedTypes = types.Where(t => !t.IsGenericTypeDefinition)
+        var closedTypes = types.Where(t => t != null && !t.IsGenericTypeDefinition)
             .CanBeRegistered(rb.ActivatorData);
 
         rb.ActivatorData.Filters.Add(t =>
