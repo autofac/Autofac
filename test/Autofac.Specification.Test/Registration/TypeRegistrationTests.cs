@@ -107,6 +107,26 @@ public class TypeRegistrationTests
     }
 
     [Fact]
+    public void RegisterTypeMustBeConcrete_Generic()
+    {
+        var builder = new ContainerBuilder();
+        Assert.Throws<ArgumentException>(() => builder.RegisterType<IMyService>());
+        Assert.Throws<ArgumentException>(() => builder.RegisterType<MyDelegate>());
+        Assert.Throws<ArgumentException>(() => builder.RegisterType<MyAbstractClass>());
+    }
+
+    [Theory]
+    [InlineData(typeof(MyDelegate))]
+    [InlineData(typeof(IMyService))]
+    [InlineData(typeof(MyAbstractClass))]
+    [InlineData(typeof(MyOpenGeneric<>))]
+    public void RegisterTypeMustBeConcrete_Parameter(Type type)
+    {
+        var builder = new ContainerBuilder();
+        Assert.Throws<ArgumentException>(() => builder.RegisterType(type));
+    }
+
+    [Fact]
     public void RegisterTypesCanBeFilteredByAssignableTo()
     {
         var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
