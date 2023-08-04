@@ -21,6 +21,16 @@ public class TypeRegistrationTests
     {
     }
 
+    public delegate void MyDelegate();
+
+    public abstract class MyAbstractClass
+    {
+    }
+
+    public class MyOpenGeneric<T>
+    {
+    }
+
     [Fact]
     public void AsImplementedInterfacesGeneric()
     {
@@ -106,6 +116,30 @@ public class TypeRegistrationTests
         Assert.Single(container.ComponentRegistry.Registrations);
         Assert.True(container.TryResolve(typeof(MyComponent), out object obj));
         Assert.False(container.TryResolve(typeof(MyComponent2), out obj));
+    }
+
+    [Fact]
+    public void RegisterTypesIgnoresNonRegisterableTypes()
+    {
+        var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
+            b.RegisterTypes(typeof(IMyService), typeof(MyDelegate), typeof(MyAbstractClass), typeof(MyOpenGeneric<>), typeof(MyOpenGeneric<int>), typeof(MyComponent)));
+
+        Assert.Equal(2, container.ComponentRegistry.Registrations.Count());
+        Assert.True(container.TryResolve(typeof(MyComponent), out object _));
+        Assert.True(container.TryResolve(typeof(MyOpenGeneric<int>), out object _));
+        Assert.False(container.TryResolve(typeof(IMyService), out _));
+        Assert.False(container.TryResolve(typeof(MyDelegate), out _));
+        Assert.False(container.TryResolve(typeof(MyAbstractClass), out _));
+    }
+
+    [Fact]
+    public void RegisterTypesIgnoresNullValues()
+    {
+        var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
+            b.RegisterTypes(null, typeof(MyComponent), null));
+
+        Assert.Single(container.ComponentRegistry.Registrations);
+        Assert.True(container.TryResolve(typeof(MyComponent), out object _));
     }
 
     [Fact]
