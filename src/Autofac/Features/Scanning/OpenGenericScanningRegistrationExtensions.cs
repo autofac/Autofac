@@ -94,7 +94,7 @@ internal static partial class ScanningRegistrationExtensions
 
         var types = assemblies.SelectMany(a => a.GetPermittedTypesForAssemblyScanning())
             .Where(t => t.IsGenericTypeDefinition)
-            .CanBeRegistered(rb.ActivatorData);
+            .AllowedByActivatorFilters(rb.ActivatorData);
 
         static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> TypeBuilderFactory(Type type) => new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
                 new TypedService(type),
@@ -130,16 +130,6 @@ internal static partial class ScanningRegistrationExtensions
         {
             postScanningCallback(cr);
         }
-    }
-
-    private static IEnumerable<Type> CanBeRegistered<TActivatorData, TStyle>(this IEnumerable<Type> types, BaseScanningActivatorData<TActivatorData, TStyle> activatorData)
-        where TActivatorData : ReflectionActivatorData
-    {
-        // Issue #897: For back compat reasons we can't filter out
-        // non-public types here. Folks use assembly scanning on their
-        // own stuff, so encapsulation is a tricky thing to manage.
-        // If people want only public types, a LINQ Where clause can be used.
-        return types.Where(t => activatorData.Filters.All(p => p(t)));
     }
 
     private static void ConfigureFrom<TActivatorData, TScanStyle, TRegistrationBuilderStyle>(

@@ -4,7 +4,7 @@
 using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving.Pipeline;
-using Autofac.Test.Scenarios.Parameterisation;
+using Autofac.Test.Scenarios.Parameterization;
 using Autofac.Test.Util;
 
 namespace Autofac.Test.Core;
@@ -35,11 +35,11 @@ public class ContainerTests
     public void RegisterParameterizedWithDelegate()
     {
         var cb = new ContainerBuilder();
-        cb.Register((c, p) => new Parameterised(p.Named<string>("a"), p.Named<int>("b")));
+        cb.Register((c, p) => new Parameterized(p.Named<string>("a"), p.Named<int>("b")));
         var container = cb.Build();
         var aVal = "Hello";
         var bVal = 42;
-        var result = container.Resolve<Parameterised>(
+        var result = container.Resolve<Parameterized>(
             new NamedParameter("a", aVal),
             new NamedParameter("b", bVal));
         Assert.NotNull(result);
@@ -51,11 +51,11 @@ public class ContainerTests
     public void RegisterParameterizedWithReflection()
     {
         var cb = new ContainerBuilder();
-        cb.RegisterType<Parameterised>();
+        cb.RegisterType<Parameterized>();
         var container = cb.Build();
         var aVal = "Hello";
         var bVal = 42;
-        var result = container.Resolve<Parameterised>(
+        var result = container.Resolve<Parameterized>(
             new NamedParameter("a", aVal),
             new NamedParameter("b", bVal));
         Assert.NotNull(result);

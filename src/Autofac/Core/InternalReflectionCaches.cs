@@ -15,7 +15,7 @@ namespace Autofac.Core;
 internal class InternalReflectionCaches
 {
     /// <summary>
-    /// Gets the cache used by <see cref="Util.AssemblyExtensions.GetPermittedTypesForAssemblyScanning"/>.
+    /// Gets the cache used by <see cref="Features.Scanning.AssemblyExtensions.GetPermittedTypesForAssemblyScanning"/>.
     /// </summary>
     public ReflectionCacheAssemblyDictionary<Assembly, IEnumerable<Type>> AssemblyScanAllowedTypes { get; }
 
@@ -55,7 +55,7 @@ internal class InternalReflectionCaches
     public ReflectionCacheDictionary<Type, ConstructorInfo[]> DefaultPublicConstructors { get; }
 
     /// <summary>
-    /// Gets a cache of memoized <see cref="System.Type.GetGenericTypeDefinition"/>.
+    /// Gets a cache of memoized <see cref="Type.GetGenericTypeDefinition"/>.
     /// </summary>
     public ReflectionCacheDictionary<Type, Type> GenericTypeDefinitionByType { get; }
 
