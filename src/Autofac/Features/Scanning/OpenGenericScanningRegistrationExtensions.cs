@@ -13,7 +13,7 @@ namespace Autofac.Features.Scanning;
 /// <summary>
 /// Helper methods to assist in scanning registration.
 /// </summary>
-internal static partial class ScanningRegistrationExtensions
+internal static class OpenGenericScanningRegistrationExtensions
 {
     /// <summary>
     /// Register open generic types from the specified assemblies.
@@ -22,7 +22,7 @@ internal static partial class ScanningRegistrationExtensions
     /// <param name="assemblies">The set of assemblies.</param>
     /// <returns>A registration builder.</returns>
     public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
-        RegisterOpenGenericAssemblyTypes(ContainerBuilder builder, params Assembly[] assemblies)
+        ScanAndRegisterOpenGenericAssemblyTypes(this ContainerBuilder builder, params Assembly[] assemblies)
     {
         if (builder == null)
         {
@@ -39,7 +39,7 @@ internal static partial class ScanningRegistrationExtensions
             new OpenGenericScanningActivatorData(),
             new DynamicRegistrationStyle());
 
-        rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => ScanAssemblies(assemblies, cr, rb));
+        rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => ScanAssembliesForOpenGenerics(assemblies, cr, rb));
 
         return rb;
     }
@@ -86,7 +86,7 @@ internal static partial class ScanningRegistrationExtensions
         return registration;
     }
 
-    private static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> rb)
+    private static void ScanAssembliesForOpenGenerics(IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> rb)
     {
         rb.ActivatorData.Filters.Add(t =>
             rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
@@ -103,56 +103,7 @@ internal static partial class ScanningRegistrationExtensions
 
         static void RegistrationSourceFactory(IComponentRegistryBuilder registry, IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> data) => registry.AddRegistrationSource(new OpenGenericRegistrationSource(data.RegistrationData, data.ResolvePipeline, data.ActivatorData));
 
-        ScanTypesTemplate(types, cr, rb, TypeBuilderFactory, RegistrationSourceFactory);
-    }
-
-    private static void ScanTypesTemplate<TActivatorData, TScanStyle, TRegistrationBuilderStyle>(
-        IEnumerable<Type> types,
-        IComponentRegistryBuilder cr,
-        IRegistrationBuilder<object, BaseScanningActivatorData<TActivatorData, TScanStyle>, TRegistrationBuilderStyle> rb,
-        Func<Type, IRegistrationBuilder<object, TActivatorData, TScanStyle>> scannedConstructorFunc,
-        Action<IComponentRegistryBuilder, IRegistrationBuilder<object, TActivatorData, TScanStyle>> register)
-        where TActivatorData : ReflectionActivatorData
-    {
-        foreach (var t in types)
-        {
-            var scanned = scannedConstructorFunc(t);
-
-            scanned.ConfigureFrom(rb, t);
-
-            if (scanned.RegistrationData.Services.Any())
-            {
-                register(cr, scanned);
-            }
-        }
-
-        foreach (var postScanningCallback in rb.ActivatorData.PostScanningCallbacks)
-        {
-            postScanningCallback(cr);
-        }
-    }
-
-    private static void ConfigureFrom<TActivatorData, TScanStyle, TRegistrationBuilderStyle>(
-        this IRegistrationBuilder<object, TActivatorData, TScanStyle> scanned,
-        IRegistrationBuilder<object, BaseScanningActivatorData<TActivatorData, TScanStyle>, TRegistrationBuilderStyle> rb,
-        Type type)
-        where TActivatorData : ReflectionActivatorData
-    {
-        scanned
-            .FindConstructorsWith(rb.ActivatorData.ConstructorFinder)
-            .UsingConstructor(rb.ActivatorData.ConstructorSelector)
-            .WithParameters(rb.ActivatorData.ConfiguredParameters)
-            .WithProperties(rb.ActivatorData.ConfiguredProperties);
-
-        // Copy middleware from the scanning registration.
-        scanned.ResolvePipeline.UseRange(rb.ResolvePipeline.Middleware);
-
-        scanned.RegistrationData.CopyFrom(rb.RegistrationData, false);
-
-        foreach (var action in rb.ActivatorData.ConfigurationActions)
-        {
-            action(type, scanned);
-        }
+        types.RegisterUsingTemplate(cr, rb, TypeBuilderFactory, RegistrationSourceFactory);
     }
 
     /// <summary>

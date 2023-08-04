@@ -2,7 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
+using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Util;
 
 namespace Autofac.Features.Scanning;
@@ -27,5 +29,25 @@ internal static class AssemblyExtensions
         }
 
         return ReflectionCacheSet.Shared.Internal.AssemblyScanAllowedTypes.GetOrAdd(assembly, Uncached);
+    }
+
+    /// <summary>
+    /// Given a set of assemblies, locates all the loadable, registerable types and adds them to the component registry.
+    /// </summary>
+    /// <param name="assemblies">
+    /// The set of assemblies to scan for types.
+    /// </param>
+    /// <param name="cr">
+    /// The registry into which registerable types should be added.
+    /// </param>
+    /// <param name="rb">
+    /// A "template" registration builder that is used to provide activator data
+    /// filters and serve as the basis for individual component registrations.
+    /// </param>
+    internal static void ScanAssemblies(this IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
+    {
+        assemblies
+            .SelectMany(a => a.GetPermittedTypesForAssemblyScanning())
+            .FilterAndRegisterConcreteTypes(cr, rb);
     }
 }
