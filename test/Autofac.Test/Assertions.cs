@@ -115,6 +115,6 @@ internal static class Assertions
     {
         return registrations
             .Select(registration => types.FirstOrDefault(type => registration.Activator.LimitType == type))
-            .Where(foundType => foundType != null);
+            .Where(foundType => foundType is not null);
     }
 }

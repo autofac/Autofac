@@ -33,7 +33,7 @@ internal class AutoActivateService : Service
     public override bool Equals(object? obj)
     {
         var that = obj as AutoActivateService;
-        return that != null;
+        return that is not null;
     }
 
     /// <summary>

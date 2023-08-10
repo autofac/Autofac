@@ -31,7 +31,7 @@ public class DecoratorTests
 
         public bool NestedServiceIsNotNull()
         {
-            return NestedService != null;
+            return NestedService is not null;
         }
     }
 

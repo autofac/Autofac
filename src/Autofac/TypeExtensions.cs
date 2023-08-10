@@ -37,7 +37,7 @@ public static class TypeExtensions
             throw new ArgumentNullException(nameof(@namespace));
         }
 
-        return @this.Namespace != null &&
+        return @this.Namespace is not null &&
             (@this.Namespace == @namespace || @this.Namespace.StartsWith(@namespace + ".", StringComparison.Ordinal));
     }
 

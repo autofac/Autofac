@@ -43,7 +43,7 @@ internal static class MetadataViewProvider
             return ps.Length == 1 && ps[0].ParameterType == typeof(IDictionary<string, object>);
         });
 
-        if (dictionaryConstructor != null)
+        if (dictionaryConstructor is not null)
         {
             var providerArg = Expression.Parameter(typeof(IDictionary<string, object?>), "metadata");
             return Expression.Lambda<Func<IDictionary<string, object?>, TMetadata>>(
@@ -53,7 +53,7 @@ internal static class MetadataViewProvider
         }
 
         var parameterlessConstructor = publicConstructors.SingleOrDefault(ci => ci.GetParameters().Length == 0);
-        if (parameterlessConstructor != null)
+        if (parameterlessConstructor is not null)
         {
             var providerArg = Expression.Parameter(typeof(IDictionary<string, object>), "metadata");
             var resultVar = Expression.Variable(typeof(TMetadata), "result");
@@ -63,8 +63,8 @@ internal static class MetadataViewProvider
 
             foreach (var prop in typeof(TMetadata).GetRuntimeProperties()
                 .Where(prop =>
-                    prop.GetMethod != null && !prop.GetMethod.IsStatic &&
-                    prop.SetMethod != null && !prop.SetMethod.IsStatic))
+                    prop.GetMethod is not null && !prop.GetMethod.IsStatic &&
+                    prop.SetMethod is not null && !prop.SetMethod.IsStatic))
             {
                 var dva = Expression.Constant(prop.GetCustomAttribute<DefaultValueAttribute>(false), typeof(DefaultValueAttribute));
                 var name = Expression.Constant(prop.Name, typeof(string));

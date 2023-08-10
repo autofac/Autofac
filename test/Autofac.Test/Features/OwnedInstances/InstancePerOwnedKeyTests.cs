@@ -20,7 +20,7 @@ public class InstancePerOwnedKeyTests
         var dependencyService = new TypedService(dependencyType);
         var instancePerOwnedKey = new InstancePerOwnedKey(dependencyService);
 
-        var ownedService = ownedKey != null
+        var ownedService = ownedKey is not null
             ? (IServiceWithType)new KeyedService(ownedKey, ownedType)
             : new TypedService(ownedType);
 

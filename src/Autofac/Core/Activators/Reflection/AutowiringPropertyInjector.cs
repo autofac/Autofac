@@ -74,7 +74,7 @@ internal static class AutowiringPropertyInjector
             var parameter = resolveParameters.FirstOrDefault(p =>
                 p.CanSupplyValue(setParameter, context, out valueProvider) &&
                 !(p is NamedParameter n && n.Name.Equals("value", StringComparison.Ordinal)));
-            if (parameter != null)
+            if (parameter is not null)
             {
                 var setter = ReflectionCacheSet.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
                 setter(instance, valueProvider!());

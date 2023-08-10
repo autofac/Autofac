@@ -276,7 +276,7 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
         for (int i = 0; i < services.Length; i++)
         {
             var service = services[i];
-            if (service.FullName != null)
+            if (service.FullName is not null)
             {
                 argArray[i] = new TypedService(service);
             }

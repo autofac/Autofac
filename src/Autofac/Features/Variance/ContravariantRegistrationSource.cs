@@ -115,7 +115,7 @@ public class ContravariantRegistrationSource : IRegistrationSource
 
     private static IEnumerable<Type> GetBagOfTypesAssignableFrom(Type type)
     {
-        if (type.BaseType != null)
+        if (type.BaseType is not null)
         {
             yield return type.BaseType;
             foreach (var fromBase in GetBagOfTypesAssignableFrom(type.BaseType))

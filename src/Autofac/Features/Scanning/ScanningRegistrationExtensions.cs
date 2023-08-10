@@ -217,7 +217,7 @@ internal static class ScanningRegistrationExtensions
                         return c.ServiceType.IsAssignableFrom(impl);
                     }
 
-                    return s != null;
+                    return s is not null;
                 });
             rb.As(applied.ToArray());
         });

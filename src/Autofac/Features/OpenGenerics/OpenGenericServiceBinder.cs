@@ -40,7 +40,7 @@ internal static class OpenGenericServiceBinder
                 var implementorGenericArguments = TryMapImplementationGenericArguments(
                     openGenericImplementationType, serviceWithType.ServiceType, definitionService.ServiceType, serviceGenericArguments);
 
-                if (implementorGenericArguments.All(a => a != null) &&
+                if (implementorGenericArguments.All(a => a is not null) &&
                     openGenericImplementationType.IsCompatibleWithGenericParameterConstraints(implementorGenericArguments!))
                 {
                     var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments!);
@@ -198,7 +198,7 @@ internal static class OpenGenericServiceBinder
     private static Type? GetGenericBaseType(Type implementationType, Type serviceTypeDefinition)
     {
         var baseType = implementationType.BaseType;
-        while (baseType != null)
+        while (baseType is not null)
         {
             if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == serviceTypeDefinition)
             {
@@ -224,7 +224,7 @@ internal static class OpenGenericServiceBinder
             .Select(argdef => argdef.Value)
             .FirstOrDefault();
 
-        if (matchingRegularType != null)
+        if (matchingRegularType is not null)
         {
             return matchingRegularType;
         }
@@ -234,7 +234,7 @@ internal static class OpenGenericServiceBinder
             .Select(argdef => TryFindServiceArgumentForImplementationArgumentDefinition(
                 implementationGenericArgumentDefinition, argdef.Key.GenericTypeArguments.Zip(
                     argdef.Value.GenericTypeArguments, (a, b) => new KeyValuePair<Type, Type>(a, b))))
-            .FirstOrDefault(x => x != null);
+            .FirstOrDefault(x => x is not null);
     }
 
     /// <summary>

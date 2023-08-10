@@ -78,7 +78,7 @@ internal static class OpenGenericScanningRegistrationExtensions
                     return impl.IsOpenGenericTypeOf(c.ServiceType);
                 }
 
-                return s != null;
+                return s is not null;
             });
             rb.As(applied.ToArray());
         });
