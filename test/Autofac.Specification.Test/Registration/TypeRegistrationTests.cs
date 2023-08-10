@@ -31,6 +31,16 @@ public class TypeRegistrationTests
     {
     }
 
+    public struct MyValueType
+    {
+        public MyValueType(IMyService service)
+        {
+            Service = service;
+        }
+
+        public IMyService Service { get; }
+    }
+
     [Fact]
     public void AsImplementedInterfacesGeneric()
     {
@@ -113,6 +123,7 @@ public class TypeRegistrationTests
         Assert.Throws<ArgumentException>(() => builder.RegisterType<IMyService>());
         Assert.Throws<ArgumentException>(() => builder.RegisterType<MyDelegate>());
         Assert.Throws<ArgumentException>(() => builder.RegisterType<MyAbstractClass>());
+        Assert.Throws<ArgumentException>(() => builder.RegisterType<MyValueType>());
     }
 
     [Theory]
@@ -120,6 +131,7 @@ public class TypeRegistrationTests
     [InlineData(typeof(IMyService))]
     [InlineData(typeof(MyAbstractClass))]
     [InlineData(typeof(MyOpenGeneric<>))]
+    [InlineData(typeof(MyValueType))]
     public void RegisterTypeMustBeConcrete_Parameter(Type type)
     {
         var builder = new ContainerBuilder();
@@ -142,7 +154,14 @@ public class TypeRegistrationTests
     public void RegisterTypesIgnoresNonRegisterableTypes()
     {
         var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
-            b.RegisterTypes(typeof(IMyService), typeof(MyDelegate), typeof(MyAbstractClass), typeof(MyOpenGeneric<>), typeof(MyOpenGeneric<int>), typeof(MyComponent)));
+            b.RegisterTypes(
+                typeof(IMyService),
+                typeof(MyDelegate),
+                typeof(MyAbstractClass),
+                typeof(MyOpenGeneric<>),
+                typeof(MyValueType),
+                typeof(MyOpenGeneric<int>),
+                typeof(MyComponent)));
 
         Assert.Equal(2, container.ComponentRegistry.Registrations.Count());
         Assert.True(container.TryResolve(typeof(MyComponent), out object _));
@@ -150,6 +169,7 @@ public class TypeRegistrationTests
         Assert.False(container.TryResolve(typeof(IMyService), out _));
         Assert.False(container.TryResolve(typeof(MyDelegate), out _));
         Assert.False(container.TryResolve(typeof(MyAbstractClass), out _));
+        Assert.False(container.TryResolve(typeof(MyValueType), out _));
     }
 
     [Fact]
