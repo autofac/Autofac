@@ -50,7 +50,7 @@ public class MatchingScopeLifetime : IComponentLifetime
         }
 
         ISharingLifetimeScope? next = mostNestedVisibleScope;
-        while (next != null)
+        while (next is not null)
         {
             if (_tagsToMatch.Contains(next.Tag))
             {

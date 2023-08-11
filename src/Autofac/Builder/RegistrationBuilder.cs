@@ -6,6 +6,7 @@ using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Util;
 
 namespace Autofac.Builder;
 
@@ -61,6 +62,12 @@ public static class RegistrationBuilder
     public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType<TImplementer>()
         where TImplementer : notnull
     {
+        // Open generics can't be generic type parameters so we don't have to check for that here.
+        if (!typeof(TImplementer).MayAllowReflectionActivation(allowCompilerGenerated: true))
+        {
+            throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationBuilderResources.OnlyRegisterableTypesAllowed, typeof(TImplementer)));
+        }
+
         return new RegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle>(
             new TypedService(typeof(TImplementer)),
             new ConcreteReflectionActivatorData(typeof(TImplementer)),
@@ -74,6 +81,16 @@ public static class RegistrationBuilder
     /// <returns>A registration builder.</returns>
     public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType(Type implementationType)
     {
+        if (implementationType is null)
+        {
+            throw new ArgumentNullException(nameof(implementationType));
+        }
+
+        if (!implementationType.MayAllowReflectionActivation(allowCompilerGenerated: true) || implementationType.IsGenericTypeDefinition)
+        {
+            throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, RegistrationBuilderResources.OnlyRegisterableTypesAllowed, implementationType));
+        }
+
         return new RegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>(
             new TypedService(implementationType),
             new ConcreteReflectionActivatorData(implementationType),

@@ -167,8 +167,8 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
 
     private bool Any =>
         _defaultImplementations.Count > 0 ||
-        _sourceImplementations != null ||
-        _preserveDefaultImplementations != null;
+        _sourceImplementations is not null ||
+        _preserveDefaultImplementations is not null;
 
     /// <summary>
     /// Add an implementation for the service.
@@ -252,13 +252,13 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
                                                   _sourceImplementations?.First() ??
                                                   _preserveDefaultImplementations?.First();
 
-        return registration != null;
+        return registration is not null;
     }
 
     /// <summary>
     /// Gets a value indicating whether this service info is initializing.
     /// </summary>
-    public bool IsInitializing => !IsInitialized && _sourcesToQuery != null;
+    public bool IsInitializing => !IsInitialized && _sourcesToQuery is not null;
 
     /// <summary>
     /// Gets a value indicating whether there are any sources left to query.

@@ -4,7 +4,7 @@
 namespace Autofac.Builder;
 
 /// <summary>
-/// Parameterises the construction of a container by a <see cref="ContainerBuilder"/>.
+/// Behaviors for the construction of a container by a <see cref="ContainerBuilder"/>.
 /// </summary>
 [Flags]
 public enum ContainerBuildOptions

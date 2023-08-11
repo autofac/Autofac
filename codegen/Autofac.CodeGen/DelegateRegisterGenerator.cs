@@ -29,11 +29,11 @@ public class DelegateRegisterGenerator : IIncrementalGenerator
         IncrementalValuesProvider<INamedTypeSymbol> classDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (s, _) => s is ClassDeclarationSyntax classSyn && classSyn.Modifiers.Any(static m => m.IsKind(SyntaxKind.PartialKeyword)),
-                transform: static (ctxt, cancelToken) =>
+                transform: static (context, cancelToken) =>
                 {
-                    var syntax = (ClassDeclarationSyntax)ctxt.Node;
+                    var syntax = (ClassDeclarationSyntax)context.Node;
 
-                    if (ctxt.SemanticModel.GetDeclaredSymbol(syntax, cancelToken) is INamedTypeSymbol symbol)
+                    if (context.SemanticModel.GetDeclaredSymbol(syntax, cancelToken) is INamedTypeSymbol symbol)
                     {
                         // Looking for the exact name of the class.
                         if (symbol.ToDisplayString() == "Autofac.RegistrationExtensions")

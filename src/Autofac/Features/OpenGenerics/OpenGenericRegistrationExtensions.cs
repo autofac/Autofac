@@ -13,7 +13,7 @@ namespace Autofac.Features.OpenGenerics;
 internal static class OpenGenericRegistrationExtensions
 {
     /// <summary>
-    /// Register an un-parameterised generic type, e.g. Repository&lt;&gt;.
+    /// Register an un-parameterized generic type, e.g. Repository&lt;&gt;.
     /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
     /// </summary>
     /// <param name="builder">Container builder.</param>
@@ -36,7 +36,7 @@ internal static class OpenGenericRegistrationExtensions
     }
 
     /// <summary>
-    /// Register an un-parameterised generic type, e.g. Repository&lt;&gt;.
+    /// Register an un-parameterized generic type, e.g. Repository&lt;&gt;.
     /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
     /// </summary>
     /// <param name="builder">Container builder.</param>
@@ -59,7 +59,7 @@ internal static class OpenGenericRegistrationExtensions
     }
 
     /// <summary>
-    /// Creates an un-parameterised generic type, e.g. Repository&lt;&gt;, without registering it.
+    /// Creates an un-parameterized generic type, e.g. Repository&lt;&gt;, without registering it.
     /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
     /// </summary>
     /// <param name="implementer">The open generic implementation type.</param>
@@ -86,7 +86,7 @@ internal static class OpenGenericRegistrationExtensions
     }
 
     /// <summary>
-    /// Creates a registration builder for an un-parameterised generic type, e.g. Repository&lt;&gt;, without registering it.
+    /// Creates a registration builder for an un-parameterized generic type, e.g. Repository&lt;&gt;, without registering it.
     /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
     /// </summary>
     /// <param name="factory">Delegate responsible for generating an instance of a closed generic based on the open generic type being registered.</param>

@@ -10,7 +10,6 @@ namespace Autofac.Core.Activators.Delegate;
 /// <summary>
 /// Activate instances using a delegate.
 /// </summary>
-[SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "There is nothing in the derived class to dispose so no override is necessary.")]
 public class DelegateActivator : InstanceActivator, IInstanceActivator
 {
     private readonly Func<IComponentContext, IEnumerable<Parameter>, object> _activationFunction;
@@ -34,11 +33,11 @@ public class DelegateActivator : InstanceActivator, IInstanceActivator
             throw new ArgumentNullException(nameof(pipelineBuilder));
         }
 
-        pipelineBuilder.Use(this.DisplayName(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
+        pipelineBuilder.Use(this.DisplayName(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (context, next) =>
         {
-            ctxt.Instance = ActivateInstance(ctxt, ctxt.Parameters);
+            context.Instance = ActivateInstance(context, context.Parameters);
 
-            next(ctxt);
+            next(context);
         });
     }
 

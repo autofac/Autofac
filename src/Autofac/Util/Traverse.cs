@@ -19,7 +19,7 @@ internal static class Traverse
         where T : class
     {
         var item = first;
-        while (item != null)
+        while (item is not null)
         {
             yield return item;
             item = next(item);

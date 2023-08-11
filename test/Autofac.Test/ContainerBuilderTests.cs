@@ -53,11 +53,11 @@ public class ContainerBuilderTests
         builder.RegisterCallback(x => x.Registered += (o, registration) =>
         {
             registration.ComponentRegistration.ConfigurePipeline(builder =>
-                builder.Use(PipelinePhase.Activation, (ctxt, next) =>
+                builder.Use(PipelinePhase.Activation, (context, next) =>
                 {
-                    next(ctxt);
+                    next(context);
 
-                    activatedInstances.Add(ctxt.Instance);
+                    activatedInstances.Add(context.Instance);
                 }));
         });
 

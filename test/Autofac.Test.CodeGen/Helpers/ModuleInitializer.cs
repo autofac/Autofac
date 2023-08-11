@@ -24,7 +24,7 @@ public static class ModuleInitializer
         var targets = new List<Target>();
         foreach (var result in target.Results)
         {
-            if (result.Exception != null)
+            if (result.Exception is not null)
             {
                 exceptions.Add(result.Exception);
             }

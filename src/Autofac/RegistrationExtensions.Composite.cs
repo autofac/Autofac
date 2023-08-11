@@ -103,11 +103,11 @@ public static partial class RegistrationExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        var rb = builder.Register((ctxt, p) =>
+        var rb = builder.Register((context, p) =>
         {
-            var concreteItems = ctxt.Resolve<IEnumerable<TService>>();
+            var concreteItems = context.Resolve<IEnumerable<TService>>();
 
-            return compositeDelegate(ctxt, p, concreteItems);
+            return compositeDelegate(context, p, concreteItems);
         });
 
         ApplyCompositeConfiguration(builder, rb);
@@ -134,12 +134,12 @@ public static partial class RegistrationExtensions
         Func<IComponentContext, IEnumerable<TService>, TService> compositeDelegate)
         where TService : notnull
     {
-        return builder.RegisterComposite<TService>((ctxt, p, concrete) => compositeDelegate(ctxt, concrete));
+        return builder.RegisterComposite<TService>((context, p, concrete) => compositeDelegate(context, concrete));
     }
 
     /// <summary>
     /// <para>
-    /// Register an un-parameterised generic type, e.g. Composite&lt;&gt; to function as a composite
+    /// Register an un-parameterized generic type, e.g. Composite&lt;&gt; to function as a composite
     /// for an open generic service, e.g. IRepository&lt;&gt;. Composites will be made as they are requested,
     /// e.g. with Resolve&lt;IRepository&lt;int&gt;&gt;().
     /// </para>

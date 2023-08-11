@@ -27,7 +27,7 @@ public static partial class RegistrationExtensions
     public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
         RegisterAssemblyTypes(this ContainerBuilder builder, params Assembly[] assemblies)
     {
-        return ScanningRegistrationExtensions.RegisterAssemblyTypes(builder, assemblies);
+        return builder.ScanAndRegisterAssemblyTypes(assemblies);
     }
 
     /// <summary>
@@ -273,7 +273,7 @@ public static partial class RegistrationExtensions
     public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
         RegisterTypes(this ContainerBuilder builder, params Type[] types)
     {
-        return ScanningRegistrationExtensions.RegisterTypes(builder, types);
+        return builder.ScanAndRegisterTypes(types);
     }
 
     /// <summary>

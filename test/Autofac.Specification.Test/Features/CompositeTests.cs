@@ -88,7 +88,7 @@ public class CompositeTests
         builder.Register(ctx => new S1()).As<I1>();
         builder.Register(ctx => new S2()).As<I1>();
 
-        builder.RegisterComposite<I1>((ctxt, concrete) => new MyComposite(concrete));
+        builder.RegisterComposite<I1>((context, concrete) => new MyComposite(concrete));
 
         var container = builder.Build();
 
@@ -417,7 +417,7 @@ public class CompositeTests
 
         var container = builder.Build();
 
-        var nested = container.BeginLifetimeScope(cfg => cfg.Register(ctxt => new S3()).As<I1>());
+        var nested = container.BeginLifetimeScope(cfg => cfg.Register(context => new S3()).As<I1>());
 
         var comp = (MyComposite)nested.Resolve<I1>();
 
@@ -444,7 +444,7 @@ public class CompositeTests
         builder.Register(ctx => new S2()).As<I1>();
         builder.RegisterDecorator<DecoratorForI1, I1>();
 
-        builder.RegisterComposite<I1>((ctxt, concrete) => new MyComposite(concrete));
+        builder.RegisterComposite<I1>((context, concrete) => new MyComposite(concrete));
 
         var container = builder.Build();
 

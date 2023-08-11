@@ -250,7 +250,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         scope.Disposer.AddInstanceForDisposal(localsBuilder);
 
         if (localsBuilder.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options)
-            && options != null
+            && options is not null
             && !((ContainerBuildOptions)options).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
         {
             StartableManager.StartStartableComponents(localsBuilder.Properties, scope);
@@ -296,7 +296,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         // Issue #272: Only the most nested parent registry with HasLocalComponents is registered as an external source
         // It provides all non-adapting registrations from itself and from it's parent registries
         ISharingLifetimeScope? parent = this;
-        while (parent != null)
+        while (parent is not null)
         {
             if (parent.ComponentRegistry.HasLocalComponents)
             {

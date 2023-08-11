@@ -32,7 +32,7 @@ internal static class ReflectionExtensions
     public static bool TryGetDeclaringProperty(this ParameterInfo pi, [NotNullWhen(returnValue: true)] out PropertyInfo? prop)
     {
         var mi = pi.Member as MethodInfo;
-        if (mi != null && mi.IsSpecialName && mi.Name.StartsWith("set_", StringComparison.Ordinal) && mi.DeclaringType != null)
+        if (mi is not null && mi.IsSpecialName && mi.Name.StartsWith("set_", StringComparison.Ordinal) && mi.DeclaringType is not null)
         {
             prop = mi.DeclaringType.GetDeclaredProperty(mi.Name.Substring(4));
             return true;

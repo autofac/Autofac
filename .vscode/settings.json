@@ -12,6 +12,7 @@
     "notnull",
     "paramref",
     "startable",
+    "subclassing",
     "typeparam",
     "xunit"
   ],

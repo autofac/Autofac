@@ -13,7 +13,7 @@ public class DefaultDiagnosticTracerTests
         var tracer = new DefaultDiagnosticTracer();
 
         var containerBuilder = new ContainerBuilder();
-        containerBuilder.Register(ctxt => "Hello");
+        containerBuilder.Register(context => "Hello");
 
         var container = containerBuilder.Build();
 
@@ -39,7 +39,7 @@ public class DefaultDiagnosticTracerTests
         var tracer = new DefaultDiagnosticTracer();
 
         var containerBuilder = new ContainerBuilder();
-        containerBuilder.Register<string>(ctxt => throw new InvalidOperationException());
+        containerBuilder.Register<string>(context => throw new InvalidOperationException());
 
         var container = containerBuilder.Build();
 

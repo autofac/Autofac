@@ -48,7 +48,7 @@ public static class RegistrationExtensions
             (p, c) =>
             {
                 var filter = p.GetCustomAttributes<ParameterFilterAttribute>(true).FirstOrDefault();
-                return filter != null && filter.CanResolveParameter(p, c);
+                return filter is not null && filter.CanResolveParameter(p, c);
             },
             (p, c) =>
             {

@@ -21,6 +21,26 @@ public class TypeRegistrationTests
     {
     }
 
+    public delegate void MyDelegate();
+
+    public abstract class MyAbstractClass
+    {
+    }
+
+    public class MyOpenGeneric<T>
+    {
+    }
+
+    public struct MyValueType
+    {
+        public MyValueType(IMyService service)
+        {
+            Service = service;
+        }
+
+        public IMyService Service { get; }
+    }
+
     [Fact]
     public void AsImplementedInterfacesGeneric()
     {
@@ -97,6 +117,28 @@ public class TypeRegistrationTests
     }
 
     [Fact]
+    public void RegisterTypeMustBeConcrete_Generic()
+    {
+        var builder = new ContainerBuilder();
+        Assert.Throws<ArgumentException>(() => builder.RegisterType<IMyService>());
+        Assert.Throws<ArgumentException>(() => builder.RegisterType<MyDelegate>());
+        Assert.Throws<ArgumentException>(() => builder.RegisterType<MyAbstractClass>());
+        Assert.Throws<ArgumentException>(() => builder.RegisterType<MyValueType>());
+    }
+
+    [Theory]
+    [InlineData(typeof(MyDelegate))]
+    [InlineData(typeof(IMyService))]
+    [InlineData(typeof(MyAbstractClass))]
+    [InlineData(typeof(MyOpenGeneric<>))]
+    [InlineData(typeof(MyValueType))]
+    public void RegisterTypeMustBeConcrete_Parameter(Type type)
+    {
+        var builder = new ContainerBuilder();
+        Assert.Throws<ArgumentException>(() => builder.RegisterType(type));
+    }
+
+    [Fact]
     public void RegisterTypesCanBeFilteredByAssignableTo()
     {
         var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
@@ -106,6 +148,38 @@ public class TypeRegistrationTests
         Assert.Single(container.ComponentRegistry.Registrations);
         Assert.True(container.TryResolve(typeof(MyComponent), out object obj));
         Assert.False(container.TryResolve(typeof(MyComponent2), out obj));
+    }
+
+    [Fact]
+    public void RegisterTypesIgnoresNonRegisterableTypes()
+    {
+        var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
+            b.RegisterTypes(
+                typeof(IMyService),
+                typeof(MyDelegate),
+                typeof(MyAbstractClass),
+                typeof(MyOpenGeneric<>),
+                typeof(MyValueType),
+                typeof(MyOpenGeneric<int>),
+                typeof(MyComponent)));
+
+        Assert.Equal(2, container.ComponentRegistry.Registrations.Count());
+        Assert.True(container.TryResolve(typeof(MyComponent), out object _));
+        Assert.True(container.TryResolve(typeof(MyOpenGeneric<int>), out object _));
+        Assert.False(container.TryResolve(typeof(IMyService), out _));
+        Assert.False(container.TryResolve(typeof(MyDelegate), out _));
+        Assert.False(container.TryResolve(typeof(MyAbstractClass), out _));
+        Assert.False(container.TryResolve(typeof(MyValueType), out _));
+    }
+
+    [Fact]
+    public void RegisterTypesIgnoresNullValues()
+    {
+        var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
+            b.RegisterTypes(null, typeof(MyComponent), null));
+
+        Assert.Single(container.ComponentRegistry.Registrations);
+        Assert.True(container.TryResolve(typeof(MyComponent), out object _));
     }
 
     [Fact]

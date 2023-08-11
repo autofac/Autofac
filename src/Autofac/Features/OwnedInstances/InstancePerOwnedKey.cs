@@ -21,7 +21,7 @@ internal class InstancePerOwnedKey : IEquatable<IServiceWithType>
 
     /// <inheritdoc/>
     public bool Equals(IServiceWithType? other)
-        => other != null && _serviceWithType.ServiceType == other.ServiceType;
+        => other is not null && _serviceWithType.ServiceType == other.ServiceType;
 
     /// <inheritdoc/>
     public override bool Equals(object? obj)

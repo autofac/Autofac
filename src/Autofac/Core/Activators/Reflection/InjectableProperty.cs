@@ -1,15 +1,8 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using System.Text;
-using Autofac.Core.Resolving;
-using Autofac.Core.Resolving.Pipeline;
-using Autofac.Util;
-using Autofac.Util.Cache;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -53,11 +46,11 @@ internal class InjectableProperty
     /// </summary>
     /// <param name="instance">The object instance.</param>
     /// <param name="p">The parameter that may provide the value.</param>
-    /// <param name="ctxt">The component context.</param>
+    /// <param name="context">The component context.</param>
     /// <returns>True if the parameter could provide a value, and the property was set. False otherwise.</returns>
-    public bool TrySupplyValue(object instance, Parameter p, IComponentContext ctxt)
+    public bool TrySupplyValue(object instance, Parameter p, IComponentContext context)
     {
-        if (p.CanSupplyValue(_setterParameter, ctxt, out var vp))
+        if (p.CanSupplyValue(_setterParameter, context, out var vp))
         {
             Property.SetValue(instance, vp(), null);
 

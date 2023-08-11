@@ -4,19 +4,14 @@
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
 using System.Text;
-using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
-using Autofac.Util;
-using Autofac.Util.Cache;
 
 namespace Autofac.Core.Activators.Reflection;
 
 /// <summary>
 /// Uses reflection to activate instances of a type.
 /// </summary>
-[SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "There is nothing in the derived class to dispose so no override is necessary.")]
 public class ReflectionActivator : InstanceActivator, IInstanceActivator
 {
     private readonly Type _implementationType;
@@ -152,11 +147,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         _constructorBinders = binders;
 
-        pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
+        pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (context, next) =>
         {
-            ctxt.Instance = ActivateInstance(ctxt, ctxt.Parameters);
+            context.Instance = ActivateInstance(context, context.Parameters);
 
-            next(ctxt);
+            next(context);
         });
     }
 
@@ -173,28 +168,28 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
                 Array.Empty<Func<object?>>());
 
             // Fast-path to just create an instance.
-            pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
+            pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (context, next) =>
             {
                 CheckNotDisposed();
 
                 var instance = boundConstructor.Instantiate();
 
-                InjectProperties(instance, ctxt, boundConstructor, GetAllParameters(ctxt.Parameters));
+                InjectProperties(instance, context, boundConstructor, GetAllParameters(context.Parameters));
 
-                ctxt.Instance = instance;
+                context.Instance = instance;
 
-                next(ctxt);
+                next(context);
             });
         }
         else
         {
-            pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
+            pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (context, next) =>
             {
                 CheckNotDisposed();
 
-                var prioritisedParameters = GetAllParameters(ctxt.Parameters);
+                var prioritizedParameters = GetAllParameters(context.Parameters);
 
-                var bound = singleConstructor.Bind(prioritisedParameters, ctxt);
+                var bound = singleConstructor.Bind(prioritizedParameters, context);
 
                 if (!bound.CanInstantiate)
                 {
@@ -203,11 +198,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
                 var instance = bound.Instantiate();
 
-                InjectProperties(instance, ctxt, bound, prioritisedParameters);
+                InjectProperties(instance, context, bound, prioritizedParameters);
 
-                ctxt.Instance = instance;
+                context.Instance = instance;
 
-                next(ctxt);
+                next(context);
             });
         }
     }
@@ -236,9 +231,9 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         CheckNotDisposed();
 
-        var prioritisedParameters = GetAllParameters(parameters);
+        var prioritizedParameters = GetAllParameters(parameters);
 
-        var allBindings = GetAllBindings(_constructorBinders!, context, prioritisedParameters);
+        var allBindings = GetAllBindings(_constructorBinders!, context, prioritizedParameters);
 
         var selectedBinding = ConstructorSelector.SelectConstructorBinding(allBindings, parameters);
 
@@ -252,7 +247,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         var instance = selectedBinding.Instantiate();
 
-        InjectProperties(instance, context, selectedBinding, prioritisedParameters);
+        InjectProperties(instance, context, selectedBinding, prioritizedParameters);
 
         return instance;
     }
