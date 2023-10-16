@@ -34,15 +34,6 @@ public class ResolveOperationTests
     }
 
     [Fact]
-    public void GetOrCreateInstanceThrowsArgumentNullExceptionWhenResolveRequestIsNull()
-    {
-        var lifetimeScope = Mock.Of<ISharingLifetimeScope>();
-        var resolveOperation = new ResolveOperation(lifetimeScope, new DiagnosticListener("SomeName"));
-
-        Assert.Throws<ArgumentNullException>(() => resolveOperation.GetOrCreateInstance(lifetimeScope, null!));
-    }
-
-    [Fact]
     public void AfterTheOperationIsFinished_ReusingTheTemporaryContextThrows()
     {
         IComponentContext ctx = null;

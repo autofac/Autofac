@@ -78,5 +78,5 @@ public sealed class DecoratorContext : IDecoratorContext
     }
 
     /// <inheritdoc />
-    public object ResolveComponent(ResolveRequest request) => _componentContext.ResolveComponent(request);
+    public object ResolveComponent(in ResolveRequest request) => _componentContext.ResolveComponent(request);
 }

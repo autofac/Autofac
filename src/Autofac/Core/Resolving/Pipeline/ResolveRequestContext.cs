@@ -95,5 +95,5 @@ public abstract class ResolveRequestContext : IComponentContext
     public abstract IComponentRegistry ComponentRegistry { get; }
 
     /// <inheritdoc/>
-    public abstract object ResolveComponent(ResolveRequest request);
+    public abstract object ResolveComponent(in ResolveRequest request);
 }

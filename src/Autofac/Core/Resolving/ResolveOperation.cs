@@ -42,7 +42,7 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     /// Execute the complete resolve operation.
     /// </summary>
     /// <param name="request">The resolution context.</param>
-    public object Execute(ResolveRequest request)
+    public object Execute(in ResolveRequest request)
     {
         return ExecuteOperation(request);
     }
@@ -93,13 +93,8 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     public SegmentedStack<ResolveRequestContext> RequestStack { get; } = new SegmentedStack<ResolveRequestContext>();
 
     /// <inheritdoc />
-    public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request)
+    public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, in ResolveRequest request)
     {
-        if (request is null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
-
         if (_ended)
         {
             throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
@@ -170,7 +165,7 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     /// </summary>
     /// <param name="request">The resolve request.</param>
     /// <returns>The resolved instance.</returns>
-    private object ExecuteOperation(ResolveRequest request)
+    private object ExecuteOperation(in ResolveRequest request)
     {
         object result;
 
@@ -233,7 +228,7 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     /// to enable it to be optionally surrounded with diagnostics.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void InvokePipeline(ResolveRequest request, DefaultResolveRequestContext requestContext)
+    private void InvokePipeline(in ResolveRequest request, DefaultResolveRequestContext requestContext)
     {
         request.ResolvePipeline.Invoke(requestContext);
         if (requestContext.Instance == null)

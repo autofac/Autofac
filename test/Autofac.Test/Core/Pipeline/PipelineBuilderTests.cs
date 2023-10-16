@@ -483,7 +483,7 @@ public class PipelineBuilderTests
 
         public override IComponentRegistry ComponentRegistry => ActivationScope.ComponentRegistry;
 
-        public override object ResolveComponent(ResolveRequest request) => throw new NotImplementedException();
+        public override object ResolveComponent(in ResolveRequest request) => throw new NotImplementedException();
     }
 
     private class LifetimeScopeStub : ISharingLifetimeScope
@@ -566,7 +566,7 @@ public class PipelineBuilderTests
             throw new NotImplementedException();
         }
 
-        public object ResolveComponent(ResolveRequest request)
+        public object ResolveComponent(in ResolveRequest request)
         {
             throw new NotImplementedException();
         }

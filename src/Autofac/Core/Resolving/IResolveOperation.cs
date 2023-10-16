@@ -59,5 +59,5 @@ public interface IResolveOperation
     /// <param name="currentOperationScope">The scope in the hierarchy in which the operation will begin.</param>
     /// <param name="request">The resolve request.</param>
     /// <returns>The component instance.</returns>
-    object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, ResolveRequest request);
+    object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, in ResolveRequest request);
 }

@@ -27,5 +27,5 @@ public interface IComponentContext
     /// </returns>
     /// <exception cref="ComponentNotRegisteredException"/>
     /// <exception cref="DependencyResolutionException"/>
-    object ResolveComponent(ResolveRequest request);
+    object ResolveComponent(in ResolveRequest request);
 }
