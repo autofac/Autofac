@@ -68,12 +68,15 @@ public class ResolveOperationTests
         var raisedEvents = new List<string>();
 
         var request = new ResolveRequest(new TypedService(typeof(string)), scope.ResolvableImplementationFor<string>(), Enumerable.Empty<Parameter>());
+        var request2 = new ResolveRequest(new TypedService(typeof(int)), scope.ResolvableImplementationFor<string>(), Enumerable.Empty<Parameter>());
 
         mockTracer.OperationStarting += (op, req) =>
         {
             raisedEvents.Add("op-start");
             Assert.Equal(resolveOp, op);
             Assert.Equal(request, req);
+            Assert.True(req != request2);
+            Assert.False(req == request2);
         };
 
         mockTracer.RequestStarting += (op, context) =>
