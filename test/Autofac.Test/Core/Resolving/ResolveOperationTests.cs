@@ -76,7 +76,6 @@ public class ResolveOperationTests
             Assert.Equal(resolveOp, op);
             Assert.Equal(request, req);
             Assert.True(req != request2);
-            Assert.False(req == request2);
         };
 
         mockTracer.RequestStarting += (op, context) =>
