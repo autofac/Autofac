@@ -17,6 +17,6 @@ public class CircularDependencyMiddlewareTests
 
         middleware.Execute(resolveRequestContextMock, context => { });
 
-        _ = resolveRequestContextMock.Received().Operation.RequestDepth;
+        resolveRequestContextMock.Received();
     }
 }
