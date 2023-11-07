@@ -14,7 +14,7 @@ internal static class Enforce
     /// <summary>
     /// Enforce that sequence does not contain null. Returns the
     /// value if valid so that it can be used inline in
-    /// base initialiser syntax.
+    /// base initializer syntax.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="name">The parameter name.</param>
@@ -55,7 +55,7 @@ internal static class Enforce
     /// <summary>
     /// Enforce that an argument is not null or empty. Returns the
     /// value if valid so that it can be used inline in
-    /// base initialiser syntax.
+    /// base initializer syntax.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="description">The description.</param>

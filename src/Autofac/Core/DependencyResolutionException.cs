@@ -17,8 +17,8 @@ public class DependencyResolutionException : Exception
     /// <summary>
     /// Initializes a new instance of the <see cref="DependencyResolutionException"/> class.
     /// </summary>
-    /// <param name="info">The serialisation info.</param>
-    /// <param name="context">The serialisation streaming context.</param>
+    /// <param name="info">The serialization info.</param>
+    /// <param name="context">The serialization streaming context.</param>
     protected DependencyResolutionException(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {

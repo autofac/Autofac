@@ -16,7 +16,7 @@ namespace Autofac.Builder;
 /// <remarks>This feature was suggested by OJ Reeves (@TheColonial).</remarks>
 public class MetadataConfiguration<TMetadata>
 {
-    private readonly IDictionary<string, object?> _properties = new Dictionary<string, object?>();
+    private readonly Dictionary<string, object?> _properties = new Dictionary<string, object?>();
 
     /// <summary>
     /// Gets the set of properties that have been provided.

@@ -24,7 +24,7 @@ namespace Autofac.Core.Lifetime;
 public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
 {
     /// <summary>
-    /// Protects shared instances from concurrent access. Other members and the base class are threadsafe.
+    /// Protects shared instances from concurrent access. Other members and the base class are thread-safe.
     /// </summary>
     private readonly object _synchRoot = new();
     private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new();
@@ -235,7 +235,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     }
 #endif
 
-    private ILifetimeScope InternalBeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
+    private LifetimeScope InternalBeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
     {
         if (configurationAction == null)
         {
@@ -278,7 +278,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// <remarks>It is the responsibility of the caller to make sure that the registry is properly
     /// disposed of. This is generally done by adding the registry to the <see cref="Disposer"/>
     /// property of the child scope.</remarks>
-    private IComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
+    private ComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
     {
         var restrictedRootScopeLifetime = new MatchingScopeLifetime(tag);
         var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
