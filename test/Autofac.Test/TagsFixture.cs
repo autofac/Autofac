@@ -52,7 +52,7 @@ public class TagsFixture
         var inner = outer.BeginLifetimeScope("tag");
 
         var coll = inner.Resolve<IList<object>>();
-        Assert.Equal(1, coll.Count);
+        Assert.Single(coll);
 
         Assert.Throws<DependencyResolutionException>(() => outer.Resolve<IList<object>>());
     }

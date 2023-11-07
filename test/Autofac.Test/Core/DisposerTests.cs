@@ -58,7 +58,7 @@ public class DisposerTests
     }
 
     [Fact]
-    public async ValueTask DisposerDisposesOfObjectsAsyncIfIAsyncDisposableDeclared()
+    public async Task DisposerDisposesOfObjectsAsyncIfIAsyncDisposableDeclared()
     {
         var instance = new AsyncDisposeTracker();
 
@@ -80,7 +80,7 @@ public class DisposerTests
     }
 
     [Fact]
-    public async ValueTask DisposerDisposesOfObjectsSyncIfIDisposableOnly()
+    public async Task DisposerDisposesOfObjectsSyncIfIDisposableOnly()
     {
         var instance = new DisposeTracker();
 
@@ -106,7 +106,7 @@ public class DisposerTests
     }
 
     [Fact]
-    public async ValueTask CannotAddObjectsToDisposerAfterAsyncDispose()
+    public async Task CannotAddObjectsToDisposerAfterAsyncDispose()
     {
         var instance = new AsyncDisposeTracker();
 
@@ -138,7 +138,7 @@ public class DisposerTests
     }
 
     [Fact]
-    public async ValueTask DisposerAsyncDisposesContainedInstances_InReverseOfOrderAdded()
+    public async Task DisposerAsyncDisposesContainedInstances_InReverseOfOrderAdded()
     {
         var disposeOrder = new List<object>();
 
