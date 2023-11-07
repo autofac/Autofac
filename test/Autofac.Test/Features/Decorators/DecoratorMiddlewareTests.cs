@@ -14,19 +14,19 @@ public class DecoratorMiddlewareTests
     public void ResolveOperationDoesNotImplementIDependencyTrackingResolveOperation_DecoratorMiddlewareStoppedEarly()
     {
         var decoratorService = new DecoratorService(typeof(object));
-        var middleware = new DecoratorMiddleware(decoratorService, Mock.Of<IComponentRegistration>());
-        var contextMock = new Mock<ResolveRequestContext>();
-        var registrationMock = new Mock<IComponentRegistration>();
-        contextMock.Setup(context => context.Instance).Returns(new object());
-        contextMock.Setup(context => context.Registration).Returns(registrationMock.Object);
-        registrationMock.Setup(registration => registration.Options).Returns(RegistrationOptions.None);
+        var middleware = new DecoratorMiddleware(decoratorService, Substitute.For<IComponentRegistration>());
+        var contextMock = Substitute.For<ResolveRequestContext>();
+        var registrationMock = Substitute.For<IComponentRegistration>();
+        contextMock.Instance.Returns(new object());
+        contextMock.Registration.Returns(registrationMock);
+        registrationMock.Options.Returns(RegistrationOptions.None);
 
-        middleware.Execute(contextMock.Object, context => { });
+        middleware.Execute(contextMock, context => { });
 
-        contextMock.Verify(context => context.Instance, Times.Once);
-        contextMock.Verify(context => context.Registration.Options, Times.Once);
+        contextMock.Received(1);
+        registrationMock.Received(1);
 
         // never got further because IResolveOperation is not of type IDependencyTrackingResolveOperation
-        contextMock.Verify(context => context.Service, Times.Never);
+        contextMock.DidNotReceive();
     }
 }

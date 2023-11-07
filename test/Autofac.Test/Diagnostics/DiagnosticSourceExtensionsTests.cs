@@ -20,7 +20,7 @@ public class DiagnosticSourceExtensionsTests
         source.Subscribe(subscriber, subscriber.IsEnabled);
 
         var context = MockResolveRequestContext();
-        source.MiddlewareFailure(context, Mock.Of<IResolveMiddleware>());
+        source.MiddlewareFailure(context, Substitute.For<IResolveMiddleware>());
         var e = Assert.Single(subscriber.Events);
         Assert.Equal(DiagnosticEventKeys.MiddlewareFailure, e.Key);
         Assert.IsType<MiddlewareDiagnosticData>(e.Value);
@@ -35,7 +35,7 @@ public class DiagnosticSourceExtensionsTests
         source.Subscribe(subscriber, subscriber.IsEnabled);
 
         var context = MockResolveRequestContext();
-        source.MiddlewareStart(context, Mock.Of<IResolveMiddleware>());
+        source.MiddlewareStart(context, Substitute.For<IResolveMiddleware>());
         var e = Assert.Single(subscriber.Events);
         Assert.Equal(DiagnosticEventKeys.MiddlewareStart, e.Key);
         Assert.IsType<MiddlewareDiagnosticData>(e.Value);
@@ -50,7 +50,7 @@ public class DiagnosticSourceExtensionsTests
         source.Subscribe(subscriber, subscriber.IsEnabled);
 
         var context = MockResolveRequestContext();
-        source.MiddlewareSuccess(context, Mock.Of<IResolveMiddleware>());
+        source.MiddlewareSuccess(context, Substitute.For<IResolveMiddleware>());
         var e = Assert.Single(subscriber.Events);
         Assert.Equal(DiagnosticEventKeys.MiddlewareSuccess, e.Key);
         Assert.IsType<MiddlewareDiagnosticData>(e.Value);
@@ -161,7 +161,7 @@ public class DiagnosticSourceExtensionsTests
     {
         return new ResolveRequest(
             new TypedService(typeof(string)),
-            new ServiceRegistration(Mock.Of<IResolvePipeline>(), Mock.Of<IComponentRegistration>()),
+            new ServiceRegistration(Substitute.For<IResolvePipeline>(), Substitute.For<IComponentRegistration>()),
             Enumerable.Empty<Parameter>());
     }
 
