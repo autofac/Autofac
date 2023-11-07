@@ -8,6 +8,7 @@
     "diagnoser",
     "inheritdoc",
     "langword",
+    "netcoreapp",
     "netstandard",
     "notnull",
     "paramref",
