@@ -23,10 +23,10 @@ public class DecoratorMiddlewareTests
 
         middleware.Execute(contextMock, context => { });
 
-        _ = contextMock.Received(1).Instance;
-        _ = contextMock.Received(1).Registration.Options;
+        contextMock.Received(1);
+        registrationMock.Received(1);
 
         // never got further because IResolveOperation is not of type IDependencyTrackingResolveOperation
-        _ = contextMock.DidNotReceive().Service;
+        contextMock.DidNotReceive();
     }
 }
