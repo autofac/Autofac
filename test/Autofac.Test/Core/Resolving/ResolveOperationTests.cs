@@ -19,18 +19,27 @@ public class ResolveOperationTests
     [Fact]
     public void NullDiagnosticSource_ThrowsArgumentNullException()
     {
-        var ex = Assert.Throws<ArgumentNullException>(() => new ResolveOperation(Mock.Of<ISharingLifetimeScope>(), null!));
+        var ex = Assert.Throws<ArgumentNullException>(() => new ResolveOperation(Substitute.For<ISharingLifetimeScope>(), null!));
         Assert.Contains("(Parameter 'diagnosticSource')", ex.Message);
     }
 
     [Fact]
     public void EmptyInProgressRequestWhenInitializing()
     {
-        var resolveOperation = new ResolveOperation(Mock.Of<ISharingLifetimeScope>(), new DiagnosticListener("SomeName"));
+        var resolveOperation = new ResolveOperation(Substitute.For<ISharingLifetimeScope>(), new DiagnosticListener("SomeName"));
 
         var inProgressStack = resolveOperation.InProgressRequests;
 
         Assert.Empty(inProgressStack);
+    }
+
+    [Fact]
+    public void GetOrCreateInstanceThrowsArgumentNullExceptionWhenResolveRequestIsNull()
+    {
+        var lifetimeScope = Substitute.For<ISharingLifetimeScope>();
+        var resolveOperation = new ResolveOperation(lifetimeScope, new DiagnosticListener("SomeName"));
+
+        Assert.Throws<ArgumentNullException>(() => resolveOperation.GetOrCreateInstance(lifetimeScope, null!));
     }
 
     [Fact]
