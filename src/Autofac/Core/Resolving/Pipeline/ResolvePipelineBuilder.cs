@@ -233,7 +233,7 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
         return BuildPipeline(_last);
     }
 
-    private static IResolvePipeline BuildPipeline(MiddlewareDeclaration? lastDecl)
+    private static ResolvePipeline BuildPipeline(MiddlewareDeclaration? lastDecl)
     {
         // When we build, we go through the set and construct a single call stack, starting from the end.
         var current = lastDecl;

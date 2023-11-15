@@ -182,7 +182,7 @@ public class ContainerTests
     }
 
     [Fact]
-    public async ValueTask AsyncContainerDisposeTriggersAsyncServiceDispose()
+    public async Task AsyncContainerDisposeTriggersAsyncServiceDispose()
     {
         var builder = new ContainerBuilder();
         builder.Register(c => new AsyncDisposeTracker()).SingleInstance();

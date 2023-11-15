@@ -202,7 +202,7 @@ public class FallbackDictionaryTests
     public void Keys_Empty()
     {
         var dict = new FallbackDictionary<string, object>();
-        Assert.Equal(0, dict.Keys.Count);
+        Assert.Empty(dict.Keys);
     }
 
     [Fact]

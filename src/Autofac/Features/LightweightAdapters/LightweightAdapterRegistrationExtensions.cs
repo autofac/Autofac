@@ -63,7 +63,7 @@ internal static class LightweightAdapterRegistrationExtensions
         return new KeyedService(key, typeof(TService));
     }
 
-    private static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
+    private static RegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
         RegisterAdapter<TFrom, TTo>(
             ContainerBuilder builder,
             Func<IComponentContext, IEnumerable<Parameter>, TFrom, TTo> adapter,

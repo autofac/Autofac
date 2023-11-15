@@ -39,7 +39,7 @@ public sealed class ContainerBuilder
     private static int _builderAlreadyAllocated;
 
     private readonly bool _clearRegistrationCaches;
-    private readonly IList<DeferredCallback> _configurationCallbacks = new List<DeferredCallback>();
+    private readonly List<DeferredCallback> _configurationCallbacks = new List<DeferredCallback>();
     private BuildCallbackService? _buildCallbacks;
     private bool _wasBuilt;
 
@@ -150,7 +150,7 @@ public sealed class ContainerBuilder
     /// <summary>
     /// Create a new container with the component registrations that have been made.
     /// </summary>
-    /// <param name="options">Options that influence the way the container is initialised.</param>
+    /// <param name="options">Options that influence the way the container is initialized.</param>
     /// <remarks>
     /// Build can only be called once per <see cref="ContainerBuilder"/>
     /// - this prevents ownership issues for provided instances.

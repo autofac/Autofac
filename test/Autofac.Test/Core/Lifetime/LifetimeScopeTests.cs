@@ -73,7 +73,7 @@ public class LifetimeScopeTests
     }
 
     [Fact]
-    public async ValueTask AsyncDisposeLifetimeScopeDisposesRegistrationsAsync()
+    public async Task AsyncDisposeLifetimeScopeDisposesRegistrationsAsync()
     {
         var cb = new ContainerBuilder();
 
