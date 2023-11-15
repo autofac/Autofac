@@ -86,7 +86,7 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
     /// <param name="ctx">A component context to resolve services.</param>
     /// <param name="request">A resolve request.</param>
     /// <returns>An implicit type instance.</returns>
-    protected abstract object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
+    protected abstract object ResolveInstance<T>(IComponentContext ctx, in ResolveRequest request)
         where T : notnull;
 
     /// <summary>

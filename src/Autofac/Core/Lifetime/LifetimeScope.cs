@@ -323,13 +323,8 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     }
 
     /// <inheritdoc />
-    public object ResolveComponent(ResolveRequest request)
+    public object ResolveComponent(in ResolveRequest request)
     {
-        if (request == null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
-
         CheckNotDisposed();
 
         var operation = new ResolveOperation(this, DiagnosticSource);

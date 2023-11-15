@@ -34,15 +34,6 @@ public class ResolveOperationTests
     }
 
     [Fact]
-    public void GetOrCreateInstanceThrowsArgumentNullExceptionWhenResolveRequestIsNull()
-    {
-        var lifetimeScope = Substitute.For<ISharingLifetimeScope>();
-        var resolveOperation = new ResolveOperation(lifetimeScope, new DiagnosticListener("SomeName"));
-
-        Assert.Throws<ArgumentNullException>(() => resolveOperation.GetOrCreateInstance(lifetimeScope, null!));
-    }
-
-    [Fact]
     public void AfterTheOperationIsFinished_ReusingTheTemporaryContextThrows()
     {
         IComponentContext ctx = null;
@@ -77,12 +68,14 @@ public class ResolveOperationTests
         var raisedEvents = new List<string>();
 
         var request = new ResolveRequest(new TypedService(typeof(string)), scope.ResolvableImplementationFor<string>(), Enumerable.Empty<Parameter>());
+        var request2 = new ResolveRequest(new TypedService(typeof(int)), scope.ResolvableImplementationFor<string>(), Enumerable.Empty<Parameter>());
 
         mockTracer.OperationStarting += (op, req) =>
         {
             raisedEvents.Add("op-start");
             Assert.Equal(resolveOp, op);
             Assert.Equal(request, req);
+            Assert.True(req != request2);
         };
 
         mockTracer.RequestStarting += (op, context) =>
