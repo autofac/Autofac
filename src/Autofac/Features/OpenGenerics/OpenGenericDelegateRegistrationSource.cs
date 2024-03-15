@@ -6,6 +6,7 @@ using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Util;
 
 namespace Autofac.Features.OpenGenerics;
 
@@ -57,7 +58,7 @@ internal class OpenGenericDelegateRegistrationSource : IRegistrationSource
             // Pass the pipeline builder from the original registration to the 'CreateRegistration'.
             // So the original registration will contain all of the pipeline stages originally added, plus anything we want to add.
             yield return RegistrationBuilder.CreateRegistration(
-                Guid.NewGuid(),
+                FastGuid.NewGuid(),
                 _registrationData,
                 new DelegateActivator(typeof(object), constructedFactory),
                 _existingPipelineBuilder,

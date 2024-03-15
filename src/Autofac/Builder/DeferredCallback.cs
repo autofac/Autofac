@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core.Registration;
+using Autofac.Util;
 
 namespace Autofac.Builder;
 
@@ -25,7 +26,7 @@ public class DeferredCallback
     /// </exception>
     public DeferredCallback(Action<IComponentRegistryBuilder> callback)
     {
-        Id = Guid.NewGuid();
+        Id = FastGuid.NewGuid();
         Callback = callback ?? throw new ArgumentNullException(nameof(callback));
     }
 

@@ -7,6 +7,7 @@ using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.OpenGenerics;
+using Autofac.Util;
 
 namespace Autofac.Features.Decorators;
 
@@ -46,7 +47,7 @@ internal class OpenGenericDecoratorMiddlewareSource : IServiceMiddlewareSource
             {
                 // Create a new closed-generic registration.
                 var registration = new ComponentRegistration(
-                    Guid.NewGuid(),
+                    FastGuid.NewGuid(),
                     new ReflectionActivator(constructedImplementationType, _activatorData.ConstructorFinder, _activatorData.ConstructorSelector, _activatorData.ConfiguredParameters, _activatorData.ConfiguredProperties),
                     _registrationData.Lifetime,
                     _registrationData.Sharing,

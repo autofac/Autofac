@@ -6,6 +6,7 @@ using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Util;
 
 namespace Autofac.Features.OpenGenerics;
 
@@ -75,7 +76,7 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
 
             return registrationAccessor(fromService)
                 .Select(cr => RegistrationBuilder.CreateRegistration(
-                        Guid.NewGuid(),
+                        FastGuid.NewGuid(),
                         _registrationData,
                         new ReflectionActivator(constructedImplementationType, _activatorData.ConstructorFinder, _activatorData.ConstructorSelector, AddDecoratedComponentParameter(fromService, swt.ServiceType, cr, _activatorData.ConfiguredParameters), _activatorData.ConfiguredProperties),
                         _existingPipeline,
