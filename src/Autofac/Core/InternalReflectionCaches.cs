@@ -65,7 +65,7 @@ internal class InternalReflectionCaches
     /// </summary>
     public ReflectionCacheDictionary<Type, bool> HasRequiredMemberAttribute { get; }
 #endif
-  
+
     /// <summary>
     /// Initializes a new instance of the <see cref="InternalReflectionCaches"/> class.
     /// </summary>
