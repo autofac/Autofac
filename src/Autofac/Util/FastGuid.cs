@@ -14,6 +14,6 @@ internal static class FastGuid
     public static Guid NewGuid()
     {
         var v = Interlocked.Increment(ref variablePart);
-        return new((int)(v & 0xFFFFFFFF), (short)(v >> 32), (short)(v >> 48), BasePart);
+        return new((int)v, (short)(v >> 32), (short)(v >> 48), BasePart);
     }
 }
