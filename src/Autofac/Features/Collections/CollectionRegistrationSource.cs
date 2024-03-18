@@ -143,7 +143,7 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
             });
 
         var registration = new ComponentRegistration(
-            Guid.NewGuid(),
+            FastGuid.NewGuid(),
             activator,
             CurrentScopeLifetime.Instance,
             InstanceSharing.None,

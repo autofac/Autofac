@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core;
+using Autofac.Util;
 
 namespace Autofac.Builder;
 
@@ -13,7 +14,7 @@ public class SingleRegistrationStyle
     /// <summary>
     /// Gets or sets the ID used for the registration.
     /// </summary>
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid Id { get; set; } = FastGuid.NewGuid();
 
     /// <summary>
     /// Gets the handlers to notify of the component registration event.
