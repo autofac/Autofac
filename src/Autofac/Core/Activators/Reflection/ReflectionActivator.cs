@@ -21,7 +21,7 @@ namespace Autofac.Core.Activators.Reflection;
 public class ReflectionActivator : InstanceActivator, IInstanceActivator
 {
 #if NET7_0_OR_GREATER
-    private static readonly ConcurrentDictionary<Type, bool> IsRequiredMemberByType = new();
+    private static readonly ConcurrentDictionary<string, bool> IsRequiredMemberByTypeName = new();
 #endif
 
     private readonly Type _implementationType;
@@ -91,18 +91,21 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 #if NET7_0_OR_GREATER
         // The RequiredMemberAttribute has Inherit = false on its AttributeUsage options,
         // so we can't use the expected GetCustomAttribute(inherit: true) option, and must walk the tree.
-        _anyRequiredMembers = IsRequiredMemberByType.GetOrAdd(_implementationType, static t =>
-        {
-            for (var currentType = t; currentType is not null && !currentType.Equals(typeof(object)); currentType = currentType.BaseType)
+        _anyRequiredMembers = IsRequiredMemberByTypeName.GetOrAdd(
+            _implementationType.FullName!,
+            static (_, t) =>
             {
-                if (currentType.GetCustomAttribute<RequiredMemberAttribute>() is not null)
+                for (var currentType = t; currentType is not null && !currentType.Equals(typeof(object)); currentType = currentType.BaseType)
                 {
-                    return true;
+                    if (currentType.GetCustomAttribute<RequiredMemberAttribute>() is not null)
+                    {
+                        return true;
+                    }
                 }
-            }
 
-            return false;
-        });
+                return false;
+            },
+            _implementationType);
 #else
         _anyRequiredMembers = false;
 #endif
