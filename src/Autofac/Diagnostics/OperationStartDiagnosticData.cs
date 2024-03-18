@@ -15,7 +15,7 @@ public class OperationStartDiagnosticData
     /// </summary>
     /// <param name="operation">The pipeline resolve operation that is about to run.</param>
     /// <param name="initiatingRequest">The request that is responsible for starting this operation.</param>
-    public OperationStartDiagnosticData(IResolveOperation operation, ResolveRequest initiatingRequest)
+    public OperationStartDiagnosticData(IResolveOperation operation, in ResolveRequest initiatingRequest)
     {
         Operation = operation;
         InitiatingRequest = initiatingRequest;

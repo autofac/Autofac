@@ -9,7 +9,7 @@ namespace Autofac;
 /// <summary>
 /// The details of an individual request to resolve a service.
 /// </summary>
-public class ResolveRequest
+public readonly struct ResolveRequest : IEquatable<ResolveRequest>
 {
     /// <summary>
     /// Shared constant value defining an empty set of parameters.
@@ -17,7 +17,7 @@ public class ResolveRequest
     internal static readonly IEnumerable<Parameter> NoParameters = Enumerable.Empty<Parameter>();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ResolveRequest"/> class.
+    /// Initializes a new instance of the <see cref="ResolveRequest"/> struct.
     /// </summary>
     /// <param name="service">The service being resolved.</param>
     /// <param name="serviceRegistration">The component registration for the service.</param>
@@ -56,4 +56,33 @@ public class ResolveRequest
     /// Gets the component registration for the decorator target if configured.
     /// </summary>
     public IComponentRegistration? DecoratorTarget { get; }
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) =>
+        obj is ResolveRequest other && Equals(other);
+
+    /// <inheritdoc/>
+    public bool Equals(ResolveRequest other) =>
+        Service == other.Service && Registration == other.Registration && ResolvePipeline == other.ResolvePipeline && Parameters == other.Parameters && DecoratorTarget == other.DecoratorTarget;
+
+    /// <summary>
+    /// Implements the operator ==.
+    /// </summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns>The result of the operator.</returns>
+    public static bool operator ==(ResolveRequest left, ResolveRequest right) => Equals(left, right);
+
+    /// <summary>
+    /// Implements the operator !=.
+    /// </summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns>The result of the operator.</returns>
+    public static bool operator !=(ResolveRequest left, ResolveRequest right) =>
+        !(left == right);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() =>
+        Service.GetHashCode() ^ Registration.GetHashCode() ^ ResolvePipeline.GetHashCode() ^ Parameters.GetHashCode() ^ (DecoratorTarget?.GetHashCode() ?? 0);
 }

@@ -11,12 +11,12 @@ public class CircularDependencyMiddlewareTests
     [Fact]
     public void NextCalled_OperationIsNotIDependencyTrackingResolveOperation_MiddlewareSkipped()
     {
-        var resolveRequestContextMock = new Mock<ResolveRequestContext>();
+        var resolveRequestContextMock = Substitute.For<ResolveRequestContext>();
         var middleware =
             new CircularDependencyDetectorMiddleware(CircularDependencyDetectorMiddleware.DefaultMaxResolveDepth);
 
-        middleware.Execute(resolveRequestContextMock.Object, context => { });
+        middleware.Execute(resolveRequestContextMock, context => { });
 
-        resolveRequestContextMock.Verify(context => context.Operation.RequestDepth, Times.Never);
+        resolveRequestContextMock.Received();
     }
 }

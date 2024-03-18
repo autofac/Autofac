@@ -17,7 +17,7 @@ public class TypeAssemblyReferenceProviderTests
     [InlineData(typeof(IEnumerable<ContainerBuilder[]>), new[] { typeof(IEnumerable<>), typeof(ContainerBuilder) })]
     [InlineData(typeof(IEnumerable<IIndex<int, Assert>>), new[] { typeof(IEnumerable<>), typeof(IIndex<,>), typeof(Assert) })]
     [InlineData(typeof(DerivedClass), new[] { typeof(DerivedClass), typeof(RegistrationBuilder<,,>), typeof(Assert) })]
-    [InlineData(typeof(GenericDerivedClass<Assert>), new[] { typeof(DerivedClass), typeof(RegistrationBuilder<,,>), typeof(Assert), typeof(Mock) })]
+    [InlineData(typeof(GenericDerivedClass<Assert>), new[] { typeof(DerivedClass), typeof(RegistrationBuilder<,,>), typeof(Assert), typeof(object) })]
     public void TypeReferencesCanBeDetermined(Type inputType, Type[] expandedTypeAssemblies)
     {
         var set = TypeAssemblyReferenceProvider.GetAllReferencedAssemblies(inputType);
@@ -59,7 +59,7 @@ public class TypeAssemblyReferenceProviderTests
     }
 
     private class GenericDerivedClass<T>
-        : RegistrationBuilder<IIndex<T, Mock>, SimpleActivatorData, SingleRegistrationStyle>
+        : RegistrationBuilder<IIndex<T, object>, SimpleActivatorData, SingleRegistrationStyle>
     {
         public GenericDerivedClass(Service defaultService, SimpleActivatorData activatorData, SingleRegistrationStyle style)
             : base(defaultService, activatorData, style)

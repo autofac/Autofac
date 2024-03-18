@@ -46,12 +46,7 @@ public static partial class RegistrationExtensions
             throw new ArgumentNullException(nameof(predicate));
         }
 
-        var c = registration.RegistrationData.DeferredCallback;
-        if (c == null)
-        {
-            throw new NotSupportedException(RegistrationExtensionsResources.OnlyIfRequiresCallbackContainer);
-        }
-
+        var c = registration.RegistrationData.DeferredCallback ?? throw new NotSupportedException(RegistrationExtensionsResources.OnlyIfRequiresCallbackContainer);
         var original = c.Callback;
         void Updated(IComponentRegistryBuilder registry)
         {

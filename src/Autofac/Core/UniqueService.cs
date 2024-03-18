@@ -44,7 +44,7 @@ public sealed class UniqueService : Service
     {
         var that = obj as UniqueService;
 
-        return that != null && _id == that._id;
+        return that is not null && _id == that._id;
     }
 
     /// <summary>

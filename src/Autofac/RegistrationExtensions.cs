@@ -689,12 +689,7 @@ public static partial class RegistrationExtensions
             throw new ArgumentNullException(nameof(propertyValue));
         }
 
-        var propertyInfo = (propertyExpression.Body as MemberExpression)?.Member as PropertyInfo;
-        if (propertyInfo == null)
-        {
-            throw new ArgumentOutOfRangeException(nameof(propertyExpression), RegistrationExtensionsResources.ExpressionDoesNotReferToProperty);
-        }
-
+        var propertyInfo = (propertyExpression.Body as MemberExpression)?.Member as PropertyInfo ?? throw new ArgumentOutOfRangeException(nameof(propertyExpression), RegistrationExtensionsResources.ExpressionDoesNotReferToProperty);
         return registration.WithProperty(new NamedPropertyParameter(propertyInfo.Name, propertyValue));
     }
 

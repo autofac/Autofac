@@ -24,7 +24,7 @@ namespace Autofac.Core.Lifetime;
 public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
 {
     /// <summary>
-    /// Protects shared instances from concurrent access. Other members and the base class are threadsafe.
+    /// Protects shared instances from concurrent access. Other members and the base class are thread-safe.
     /// </summary>
     private readonly object _synchRoot = new();
     private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new();
@@ -235,7 +235,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     }
 #endif
 
-    private ILifetimeScope InternalBeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
+    private LifetimeScope InternalBeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
     {
         if (configurationAction == null)
         {
@@ -250,7 +250,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         scope.Disposer.AddInstanceForDisposal(localsBuilder);
 
         if (localsBuilder.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options)
-            && options != null
+            && options is not null
             && !((ContainerBuildOptions)options).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
         {
             StartableManager.StartStartableComponents(localsBuilder.Properties, scope);
@@ -278,7 +278,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// <remarks>It is the responsibility of the caller to make sure that the registry is properly
     /// disposed of. This is generally done by adding the registry to the <see cref="Disposer"/>
     /// property of the child scope.</remarks>
-    private IComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
+    private ComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
     {
         var restrictedRootScopeLifetime = new MatchingScopeLifetime(tag);
         var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
@@ -296,7 +296,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         // Issue #272: Only the most nested parent registry with HasLocalComponents is registered as an external source
         // It provides all non-adapting registrations from itself and from it's parent registries
         ISharingLifetimeScope? parent = this;
-        while (parent != null)
+        while (parent is not null)
         {
             if (parent.ComponentRegistry.HasLocalComponents)
             {
@@ -323,13 +323,8 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     }
 
     /// <inheritdoc />
-    public object ResolveComponent(ResolveRequest request)
+    public object ResolveComponent(in ResolveRequest request)
     {
-        if (request == null)
-        {
-            throw new ArgumentNullException(nameof(request));
-        }
-
         CheckNotDisposed();
 
         var operation = new ResolveOperation(this, DiagnosticSource);
@@ -356,6 +351,11 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             throw new ArgumentNullException(nameof(creator));
         }
 
+        if (_sharedInstances.TryGetValue(id, out var tempResult))
+        {
+            return tempResult;
+        }
+
         lock (_synchRoot)
         {
             if (_sharedInstances.TryGetValue(id, out var result))
@@ -364,12 +364,10 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             }
 
             result = creator();
-            if (_sharedInstances.ContainsKey(id))
+            if (!_sharedInstances.TryAdd(id, result))
             {
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
             }
-
-            _sharedInstances.TryAdd(id, result);
 
             return result;
         }
@@ -388,22 +386,25 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             return CreateSharedInstance(primaryId, creator);
         }
 
+        var instanceKey = (primaryId, qualifyingId.Value);
+
+        if (_sharedQualifiedInstances.TryGetValue(instanceKey, out var tempResult))
+        {
+            return tempResult;
+        }
+
         lock (_synchRoot)
         {
-            var instanceKey = (primaryId, qualifyingId.Value);
-
             if (_sharedQualifiedInstances.TryGetValue(instanceKey, out var result))
             {
                 return result;
             }
 
             result = creator();
-            if (_sharedQualifiedInstances.ContainsKey(instanceKey))
+            if (!_sharedQualifiedInstances.TryAdd(instanceKey, result))
             {
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
             }
-
-            _sharedQualifiedInstances.TryAdd(instanceKey, result);
 
             return result;
         }

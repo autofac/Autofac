@@ -4,7 +4,7 @@
 using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving.Pipeline;
-using Autofac.Test.Scenarios.Parameterisation;
+using Autofac.Test.Scenarios.Parameterization;
 using Autofac.Test.Util;
 
 namespace Autofac.Test.Core;
@@ -32,14 +32,14 @@ public class ContainerTests
     }
 
     [Fact]
-    public void RegisterParameterisedWithDelegate()
+    public void RegisterParameterizedWithDelegate()
     {
         var cb = new ContainerBuilder();
-        cb.Register((c, p) => new Parameterised(p.Named<string>("a"), p.Named<int>("b")));
+        cb.Register((c, p) => new Parameterized(p.Named<string>("a"), p.Named<int>("b")));
         var container = cb.Build();
         var aVal = "Hello";
         var bVal = 42;
-        var result = container.Resolve<Parameterised>(
+        var result = container.Resolve<Parameterized>(
             new NamedParameter("a", aVal),
             new NamedParameter("b", bVal));
         Assert.NotNull(result);
@@ -48,14 +48,14 @@ public class ContainerTests
     }
 
     [Fact]
-    public void RegisterParameterisedWithReflection()
+    public void RegisterParameterizedWithReflection()
     {
         var cb = new ContainerBuilder();
-        cb.RegisterType<Parameterised>();
+        cb.RegisterType<Parameterized>();
         var container = cb.Build();
         var aVal = "Hello";
         var bVal = 42;
-        var result = container.Resolve<Parameterised>(
+        var result = container.Resolve<Parameterized>(
             new NamedParameter("a", aVal),
             new NamedParameter("b", bVal));
         Assert.NotNull(result);
@@ -182,7 +182,7 @@ public class ContainerTests
     }
 
     [Fact]
-    public async ValueTask AsyncContainerDisposeTriggersAsyncServiceDispose()
+    public async Task AsyncContainerDisposeTriggersAsyncServiceDispose()
     {
         var builder = new ContainerBuilder();
         builder.Register(c => new AsyncDisposeTracker()).SingleInstance();
@@ -205,9 +205,9 @@ public class ContainerTests
     {
         protected override void AttachToComponentRegistration(IComponentRegistryBuilder componentRegistry, IComponentRegistration registration)
         {
-            registration.ConfigurePipeline(builder => builder.Use(PipelinePhase.Activation, (ctxt, next) =>
+            registration.ConfigurePipeline(builder => builder.Use(PipelinePhase.Activation, (context, next) =>
             {
-                ctxt.Instance = new ReplaceableComponent { IsReplaced = true };
+                context.Instance = new ReplaceableComponent { IsReplaced = true };
             }));
         }
     }

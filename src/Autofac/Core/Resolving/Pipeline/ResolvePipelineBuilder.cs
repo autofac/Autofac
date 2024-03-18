@@ -32,7 +32,7 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
     /// <summary>
     /// Termination action for the end of pipelines.
     /// </summary>
-    private static readonly Action<ResolveRequestContext> TerminateAction = ctxt => { };
+    private static readonly Action<ResolveRequestContext> TerminateAction = context => { };
 
     private MiddlewareDeclaration? _first;
     private MiddlewareDeclaration? _last;
@@ -233,7 +233,7 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
         return BuildPipeline(_last);
     }
 
-    private static IResolvePipeline BuildPipeline(MiddlewareDeclaration? lastDecl)
+    private static ResolvePipeline BuildPipeline(MiddlewareDeclaration? lastDecl)
     {
         // When we build, we go through the set and construct a single call stack, starting from the end.
         var current = lastDecl;
@@ -243,37 +243,37 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
         {
             var stagePhase = stage.Phase;
 
-            return (ctxt) =>
+            return (context) =>
             {
                 // Same basic flow in if/else, but doing a one-time check for diagnostics
                 // and choosing the "diagnostics enabled" version vs. the more common
                 // "no diagnostics enabled" path: hot-path optimization.
-                if (ctxt.DiagnosticSource.IsEnabled())
+                if (context.DiagnosticSource.IsEnabled())
                 {
-                    ctxt.DiagnosticSource.MiddlewareStart(ctxt, stage);
+                    context.DiagnosticSource.MiddlewareStart(context, stage);
                     var succeeded = false;
                     try
                     {
-                        ctxt.PhaseReached = stagePhase;
-                        stage.Execute(ctxt, next);
+                        context.PhaseReached = stagePhase;
+                        stage.Execute(context, next);
                         succeeded = true;
                     }
                     finally
                     {
                         if (succeeded)
                         {
-                            ctxt.DiagnosticSource.MiddlewareSuccess(ctxt, stage);
+                            context.DiagnosticSource.MiddlewareSuccess(context, stage);
                         }
                         else
                         {
-                            ctxt.DiagnosticSource.MiddlewareFailure(ctxt, stage);
+                            context.DiagnosticSource.MiddlewareFailure(context, stage);
                         }
                     }
                 }
                 else
                 {
-                    ctxt.PhaseReached = stagePhase;
-                    stage.Execute(ctxt, next);
+                    context.PhaseReached = stagePhase;
+                    stage.Execute(context, next);
                 }
             };
         }

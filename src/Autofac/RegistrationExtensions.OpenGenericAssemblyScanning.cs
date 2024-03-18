@@ -26,7 +26,7 @@ public static partial class RegistrationExtensions
     public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
         RegisterAssemblyOpenGenericTypes(this ContainerBuilder builder, params Assembly[] assemblies)
     {
-        return ScanningRegistrationExtensions.RegisterOpenGenericAssemblyTypes(builder, assemblies);
+        return builder.ScanAndRegisterOpenGenericAssemblyTypes(assemblies);
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public static partial class RegistrationExtensions
             throw new ArgumentNullException(nameof(serviceMapping));
         }
 
-        return ScanningRegistrationExtensions.As(registration, serviceMapping);
+        return OpenGenericScanningRegistrationExtensions.As(registration, serviceMapping);
     }
 
     /// <summary>
@@ -212,7 +212,7 @@ public static partial class RegistrationExtensions
         AssignableTo<TLimit, TRegistrationStyle>(
             this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType)
     {
-        return ScanningRegistrationExtensions.AssignableTo(registration, openGenericServiceType);
+        return OpenGenericScanningRegistrationExtensions.AssignableTo(registration, openGenericServiceType);
     }
 
     /// <summary>
@@ -228,7 +228,7 @@ public static partial class RegistrationExtensions
         AssignableTo<TLimit, TRegistrationStyle>(
             this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType, object serviceKey)
     {
-        return ScanningRegistrationExtensions.AssignableTo(registration, openGenericServiceType, serviceKey);
+        return OpenGenericScanningRegistrationExtensions.AssignableTo(registration, openGenericServiceType, serviceKey);
     }
 
     /// <summary>
@@ -244,7 +244,7 @@ public static partial class RegistrationExtensions
         AssignableTo<TLimit, TRegistrationStyle>(
             this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration, Type openGenericServiceType, Func<Type, object> serviceKeyMapping)
     {
-        return ScanningRegistrationExtensions.AssignableTo(registration, openGenericServiceType, serviceKeyMapping);
+        return OpenGenericScanningRegistrationExtensions.AssignableTo(registration, openGenericServiceType, serviceKeyMapping);
     }
 
     /// <summary>

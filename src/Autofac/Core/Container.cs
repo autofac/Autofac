@@ -140,7 +140,7 @@ public class Container : Disposable, IContainer, IServiceProvider
     public IComponentRegistry ComponentRegistry { get; }
 
     /// <inheritdoc />
-    public object ResolveComponent(ResolveRequest request)
+    public object ResolveComponent(in ResolveRequest request)
     {
         return _rootLifetimeScope.ResolveComponent(request);
     }

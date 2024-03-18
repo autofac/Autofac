@@ -113,9 +113,9 @@ public class RegistrationOnlyIfTests
 
         builder.RegisterType<ServiceA>().As<IService>().IfNotRegistered(typeof(IService));
 
-        builder.RegisterServiceMiddleware<IService>(PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+        builder.RegisterServiceMiddleware<IService>(PipelinePhase.ResolveRequestStart, (context, next) =>
         {
-            next(ctxt);
+            next(context);
             middlewareInvoked = true;
         });
 

@@ -22,8 +22,8 @@ internal class ResolvePipeline : IResolvePipeline
     }
 
     /// <inheritdoc />
-    public void Invoke(ResolveRequestContext ctxt)
+    public void Invoke(ResolveRequestContext context)
     {
-        _entryPoint?.Invoke(ctxt);
+        _entryPoint?.Invoke(context);
     }
 }

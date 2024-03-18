@@ -25,14 +25,14 @@ internal sealed class DefaultResolveRequestContext : ResolveRequestContext
     /// </param>
     internal DefaultResolveRequestContext(
         IResolveOperation owningOperation,
-        ResolveRequest request,
+        in ResolveRequest request,
         ISharingLifetimeScope scope,
         DiagnosticListener diagnosticSource)
     {
         Operation = owningOperation;
         ActivationScope = scope;
         Parameters = request.Parameters;
-        _resolveRequest = request ?? throw new ArgumentNullException(nameof(request));
+        _resolveRequest = request;
         PhaseReached = PipelinePhase.ResolveRequestStart;
         DiagnosticSource = diagnosticSource;
     }
@@ -90,7 +90,7 @@ internal sealed class DefaultResolveRequestContext : ResolveRequestContext
         Parameters = newParameters ?? throw new ArgumentNullException(nameof(newParameters));
 
     /// <inheritdoc />
-    public override object ResolveComponent(ResolveRequest request) =>
+    public override object ResolveComponent(in ResolveRequest request) =>
         Operation.GetOrCreateInstance(ActivationScope, request);
 
     /// <summary>

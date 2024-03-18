@@ -40,22 +40,4 @@ public static class AssemblyExtensions
             return ex.Types.Where(t => t is not null)!;
         }
     }
-
-    /// <summary>
-    /// Get the set of types that Autofac will allow to be loaded from the given assembly.
-    /// </summary>
-    /// <param name="assembly">The assembly to load types from.</param>
-    /// <returns>The set of loadable types.</returns>
-    internal static IEnumerable<Type> GetPermittedTypesForAssemblyScanning(this Assembly assembly)
-    {
-        static IReadOnlyList<Type> Uncached(Assembly assembly)
-        {
-            // Run IsCompilerGenerated check last due to perf. See AssemblyScanningPerformanceTests.MeasurePerformance.
-            return assembly.GetLoadableTypes()
-                           .Where(t => t.IsClass && !t.IsAbstract && !t.IsDelegate() && !t.IsCompilerGenerated())
-                           .ToList();
-        }
-
-        return ReflectionCacheSet.Shared.Internal.AssemblyScanAllowedTypes.GetOrAdd(assembly, Uncached);
-    }
 }

@@ -34,11 +34,11 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
             throw new ArgumentNullException(nameof(pipelineBuilder));
         }
 
-        pipelineBuilder.Use(this.DisplayName(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (ctxt, next) =>
+        pipelineBuilder.Use(this.DisplayName(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (context, next) =>
         {
-            ctxt.Instance = GetInstance();
+            context.Instance = GetInstance();
 
-            next(ctxt);
+            next(context);
         });
     }
 
@@ -83,7 +83,7 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
 
                 // Type only implements IAsyncDisposable. We will need to do sync-over-async.
                 // We want to ensure we lose all context here, because if we don't we can deadlock.
-                // So we push this disposal onto the threadpool.
+                // So we push this disposal onto the thread pool.
                 Task.Run(async () => await asyncDisposable.DisposeAsync().ConfigureAwait(false))
                     .ConfigureAwait(false)
                     .GetAwaiter().GetResult();
@@ -122,7 +122,6 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
         // Do not call the base, otherwise the standard Dispose will fire.
     }
 
-    [SuppressMessage("CA2222", "CA2222", Justification = "False positive. GetType doesn't hide an inherited member.")]
     private static Type GetType(object instance)
     {
         if (instance == null)

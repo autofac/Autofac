@@ -8,7 +8,7 @@ namespace Autofac.Test.Features.Indexed;
 public class KeyedServiceIndexTests
 {
     [Fact]
-    public void IndexerRetrievesComoponentsFromContextByKey()
+    public void IndexerRetrievesComponentsFromContextByKey()
     {
         var key = 42;
         var cpt = "Hello";
@@ -19,7 +19,7 @@ public class KeyedServiceIndexTests
     }
 
     [Fact]
-    public void TryGetValueRetrievesComoponentsFromContextByKey()
+    public void TryGetValueRetrievesComponentsFromContextByKey()
     {
         var key = 42;
         var cpt = "Hello";

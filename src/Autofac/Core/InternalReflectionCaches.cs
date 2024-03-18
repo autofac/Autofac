@@ -15,7 +15,7 @@ namespace Autofac.Core;
 internal class InternalReflectionCaches
 {
     /// <summary>
-    /// Gets the cache used by <see cref="Util.AssemblyExtensions.GetPermittedTypesForAssemblyScanning"/>.
+    /// Gets the cache used by <see cref="Features.Scanning.AssemblyExtensions.GetPermittedTypesForAssemblyScanning"/>.
     /// </summary>
     public ReflectionCacheAssemblyDictionary<Assembly, IEnumerable<Type>> AssemblyScanAllowedTypes { get; }
 
@@ -54,13 +54,18 @@ internal class InternalReflectionCaches
     /// </summary>
     public ReflectionCacheDictionary<Type, ConstructorInfo[]> DefaultPublicConstructors { get; }
 
+    /// <summary>
+    /// Gets a cache of memoized <see cref="Type.GetGenericTypeDefinition"/>.
+    /// </summary>
+    public ReflectionCacheDictionary<Type, Type> GenericTypeDefinitionByType { get; }
+
 #if NET7_0_OR_GREATER
     /// <summary>
     /// Gets a cache used by <see cref="ReflectionActivator"/>.
     /// </summary>
     public ReflectionCacheDictionary<Type, bool> HasRequiredMemberAttribute { get; }
 #endif
-
+  
     /// <summary>
     /// Initializes a new instance of the <see cref="InternalReflectionCaches"/> class.
     /// </summary>
@@ -79,6 +84,7 @@ internal class InternalReflectionCaches
         AutowiringPropertySetters = set.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, Action<object, object?>>>(nameof(AutowiringPropertySetters));
         AutowiringInjectableProperties = set.GetOrCreateCache<ReflectionCacheDictionary<Type, IReadOnlyList<PropertyInfo>>>(nameof(AutowiringInjectableProperties));
         DefaultPublicConstructors = set.GetOrCreateCache<ReflectionCacheDictionary<Type, ConstructorInfo[]>>(nameof(DefaultPublicConstructors));
+        GenericTypeDefinitionByType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, Type>>(nameof(GenericTypeDefinitionByType));
 #if NET7_0_OR_GREATER
         HasRequiredMemberAttribute = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(HasRequiredMemberAttribute));
 #endif

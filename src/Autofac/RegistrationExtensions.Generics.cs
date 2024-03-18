@@ -14,7 +14,7 @@ namespace Autofac;
 public static partial class RegistrationExtensions
 {
     /// <summary>
-    /// Register an un-parameterised generic type, e.g. Repository&lt;&gt;.
+    /// Register an un-parameterized generic type, e.g. Repository&lt;&gt;.
     /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
     /// </summary>
     /// <param name="builder">Container builder.</param>
@@ -35,7 +35,7 @@ public static partial class RegistrationExtensions
     public static IRegistrationBuilder<object, OpenGenericDelegateActivatorData, DynamicRegistrationStyle>
         RegisterGeneric(this ContainerBuilder builder, Func<IComponentContext, Type[], object> factory)
     {
-        return builder.RegisterGeneric((ctxt, types, parameters) => factory(ctxt, types));
+        return builder.RegisterGeneric((context, types, parameters) => factory(context, types));
     }
 
     /// <summary>

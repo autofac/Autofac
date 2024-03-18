@@ -91,7 +91,7 @@ public class Owned<T> : Disposable
         if (disposing)
         {
             var lt = Interlocked.Exchange(ref _lifetime, null);
-            if (lt != null)
+            if (lt is not null)
             {
                 Value = default!;
                 lt.Dispose();
@@ -110,7 +110,7 @@ public class Owned<T> : Disposable
         if (disposing)
         {
             var lt = Interlocked.Exchange(ref _lifetime, null);
-            if (lt != null)
+            if (lt is not null)
             {
                 Value = default!;
                 if (lt is IAsyncDisposable asyncDisposable)

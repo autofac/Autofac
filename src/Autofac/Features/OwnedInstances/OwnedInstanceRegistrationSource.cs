@@ -21,7 +21,7 @@ internal class OwnedInstanceRegistrationSource : ImplicitRegistrationSource
     }
 
     /// <inheritdoc/>
-    protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
+    protected override object ResolveInstance<T>(IComponentContext ctx, in ResolveRequest request)
     {
         var lifetime = ctx.Resolve<ILifetimeScope>().BeginLifetimeScope(request.Service);
         try

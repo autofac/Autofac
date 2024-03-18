@@ -62,7 +62,7 @@ public class DefaultPropertySelectorTests
         }
 
 #if NET7_0_OR_GREATER
-        required public Test PublicRequiredProperty { get; set; }
+        public required Test PublicRequiredProperty { get; set; }
 #endif
 
         public Test PublicPropertyWithDefault { get; set; } = new Test();

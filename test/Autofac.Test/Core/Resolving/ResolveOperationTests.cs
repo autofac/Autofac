@@ -19,27 +19,18 @@ public class ResolveOperationTests
     [Fact]
     public void NullDiagnosticSource_ThrowsArgumentNullException()
     {
-        var ex = Assert.Throws<ArgumentNullException>(() => new ResolveOperation(Mock.Of<ISharingLifetimeScope>(), null!));
+        var ex = Assert.Throws<ArgumentNullException>(() => new ResolveOperation(Substitute.For<ISharingLifetimeScope>(), null!));
         Assert.Contains("(Parameter 'diagnosticSource')", ex.Message);
     }
 
     [Fact]
-    public void EmptyInProgessRequestWhenInitializing()
+    public void EmptyInProgressRequestWhenInitializing()
     {
-        var resolveOperation = new ResolveOperation(Mock.Of<ISharingLifetimeScope>(), new DiagnosticListener("SomeName"));
+        var resolveOperation = new ResolveOperation(Substitute.For<ISharingLifetimeScope>(), new DiagnosticListener("SomeName"));
 
         var inProgressStack = resolveOperation.InProgressRequests;
 
         Assert.Empty(inProgressStack);
-    }
-
-    [Fact]
-    public void GetOrCreateInstanceThrowsArgumentNullExceptionWhenResolveRequestIsNull()
-    {
-        var lifetimeScope = Mock.Of<ISharingLifetimeScope>();
-        var resolveOperation = new ResolveOperation(lifetimeScope, new DiagnosticListener("SomeName"));
-
-        Assert.Throws<ArgumentNullException>(() => resolveOperation.GetOrCreateInstance(lifetimeScope, null!));
     }
 
     [Fact]
@@ -77,36 +68,38 @@ public class ResolveOperationTests
         var raisedEvents = new List<string>();
 
         var request = new ResolveRequest(new TypedService(typeof(string)), scope.ResolvableImplementationFor<string>(), Enumerable.Empty<Parameter>());
+        var request2 = new ResolveRequest(new TypedService(typeof(int)), scope.ResolvableImplementationFor<string>(), Enumerable.Empty<Parameter>());
 
         mockTracer.OperationStarting += (op, req) =>
         {
-            raisedEvents.Add("opstart");
+            raisedEvents.Add("op-start");
             Assert.Equal(resolveOp, op);
             Assert.Equal(request, req);
+            Assert.True(req != request2);
         };
 
-        mockTracer.RequestStarting += (op, ctxt) =>
+        mockTracer.RequestStarting += (op, context) =>
         {
-            raisedEvents.Add("reqstart");
+            raisedEvents.Add("req-start");
             Assert.Equal(resolveOp, op);
-            Assert.Equal(request.Service, ctxt.Service);
+            Assert.Equal(request.Service, context.Service);
         };
 
-        mockTracer.RequestSucceeding += (op, ctxt) =>
+        mockTracer.RequestSucceeding += (op, context) =>
         {
-            raisedEvents.Add("reqsuccess");
+            raisedEvents.Add("req-success");
             Assert.Equal(resolveOp, op);
         };
 
         mockTracer.OperationSucceeding += (op, instance) =>
         {
-            raisedEvents.Add("opsuccess");
+            raisedEvents.Add("op-success");
             Assert.Equal("Hello", instance);
         };
 
         resolveOp.Execute(request);
 
-        Assert.Equal(new[] { "opstart", "reqstart", "reqsuccess", "opsuccess" }, raisedEvents);
+        Assert.Equal(new[] { "op-start", "req-start", "req-success", "op-success" }, raisedEvents);
     }
 
     [Fact]
@@ -114,7 +107,7 @@ public class ResolveOperationTests
     {
         var builder = new ContainerBuilder();
 
-        builder.Register<string>(ctxt => throw new InvalidOperationException());
+        builder.Register<string>(context => throw new InvalidOperationException());
 
         var container = builder.Build();
         var mockTracer = Mocks.GetTracer();
@@ -130,28 +123,28 @@ public class ResolveOperationTests
 
         mockTracer.OperationStarting += (op, req) =>
         {
-            raisedEvents.Add("opstart");
+            raisedEvents.Add("op-start");
             Assert.Equal(resolveOp, op);
             Assert.Equal(request, req);
         };
 
-        mockTracer.RequestStarting += (op, ctxt) =>
+        mockTracer.RequestStarting += (op, context) =>
         {
-            raisedEvents.Add("reqstart");
+            raisedEvents.Add("req-start");
             Assert.Equal(resolveOp, op);
-            Assert.Equal(request.Service, ctxt.Service);
+            Assert.Equal(request.Service, context.Service);
         };
 
-        mockTracer.RequestFailing += (op, ctxt, ex) =>
+        mockTracer.RequestFailing += (op, context, ex) =>
         {
-            raisedEvents.Add("reqfail");
+            raisedEvents.Add("req-fail");
             Assert.Equal(resolveOp, op);
             Assert.IsType<DependencyResolutionException>(ex);
         };
 
         mockTracer.OperationFailing += (op, ex) =>
         {
-            raisedEvents.Add("opfail");
+            raisedEvents.Add("op-fail");
             Assert.IsType<DependencyResolutionException>(ex);
         };
 
@@ -163,6 +156,6 @@ public class ResolveOperationTests
         {
         }
 
-        Assert.Equal(new[] { "opstart", "reqstart", "reqfail", "opfail" }, raisedEvents);
+        Assert.Equal(new[] { "op-start", "req-start", "req-fail", "op-fail" }, raisedEvents);
     }
 }

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Collections.Concurrent;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Autofac.Core;
@@ -149,7 +148,7 @@ internal static class InternalTypeExtensions
     }
 
     /// <summary>
-    /// Checks whether a given type is a generic list of colleciton interface type, e.g. <see cref="IList{T}"/>, <see cref="ICollection{T}"/> and the read-only variants.
+    /// Checks whether a given type is a generic list of collection interface type, e.g. <see cref="IList{T}"/>, <see cref="ICollection{T}"/> and the read-only variants.
     /// </summary>
     /// <param name="type">The type to check.</param>
     /// <returns>True if the type is one of the supported list/collection types.</returns>
@@ -168,7 +167,7 @@ internal static class InternalTypeExtensions
     }
 
     /// <summary>
-    /// Checks whether a given type is a closed generic defined by the specifed open generic.
+    /// Checks whether a given type is a closed generic defined by the specified open generic.
     /// </summary>
     /// <param name="this">The type to check.</param>
     /// <param name="openGeneric">The open generic to check against.</param>
@@ -213,6 +212,33 @@ internal static class InternalTypeExtensions
         return @this.CheckBaseTypeIsOpenGenericTypeOf(type)
           || @this.CheckInterfacesAreOpenGenericTypeOf(type);
     }
+
+    /// <summary>
+    /// Filters off interfaces, abstract types, and generally non-registerable
+    /// types. Largely used during type/assembly scanning, but also can
+    /// determine if this is something we can activate by reflection.
+    /// Intentionally does NOT filter out open generic definitions because this
+    /// gets used in both concrete and open generic scanning.
+    /// </summary>
+    /// <param name="type">
+    /// The type to check.
+    /// </param>
+    /// <param name="allowCompilerGenerated">
+    /// <see langword="true"/> to allow compiler-generated types to be
+    /// considered registerable. Defaults to <see langword="false"/>.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if the type is allowed to be registered during
+    /// scanning based on its reflection attributes; otherwise <see
+    /// langword="false"/>.
+    /// </returns>
+    // Issue #897: For back compat reasons we can't filter out
+    // non-public types here. Folks use assembly scanning on their
+    // own stuff, so encapsulation is a tricky thing to manage.
+    // If people want only public types, a LINQ Where clause can be used.
+    //
+    // Run IsCompilerGenerated check last due to perf. See AssemblyScanningPerformanceTests.MeasurePerformance.
+    internal static bool MayAllowReflectionActivation(this Type? type, bool allowCompilerGenerated = false) => type is not null && type.IsClass && !type.IsAbstract && !type.IsDelegate() && (allowCompilerGenerated || !type.IsCompilerGenerated());
 
     private static bool CheckBaseTypeIsOpenGenericTypeOf(this Type @this, Type type)
     {
@@ -287,7 +313,9 @@ internal static class InternalTypeExtensions
                    .Any(p => ParameterEqualsConstraint(p, constraint));
     }
 
+#if NET6_0_OR_GREATER
     [SuppressMessage("Microsoft.Design", "CA1031", Justification = "Implementing a real TryMakeGenericType is not worth the effort.")]
+#endif
     private static bool ParameterEqualsConstraint(Type parameter, Type constraint)
     {
         var genericArguments = parameter.GenericTypeArguments;

@@ -147,7 +147,7 @@ public class CircularDependencyTests
         builder.Register(
             ctx => new[] { nameof(Plugin1), nameof(Plugin2) }
                 .Select(name => SafeResolvePlugin(name, ctx))
-                .Where(p => p != null)
+                .Where(p => p is not null)
                 .ToArray())
             .As<IEnumerable<IPlugin>>()
             .SingleInstance();

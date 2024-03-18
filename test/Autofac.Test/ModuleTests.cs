@@ -49,7 +49,7 @@ public class ModuleTests
     public void AttachesToRegistrations()
     {
         var attachingModule = new AttachingModule();
-        Assert.Equal(0, attachingModule.Registrations.Count);
+        Assert.Empty(attachingModule.Registrations);
 
         var builder = new ContainerBuilder();
         builder.RegisterType(typeof(Service1));
@@ -65,7 +65,7 @@ public class ModuleTests
     public void AttachesToRegistrationsInScope()
     {
         var attachingModule = new AttachingModule();
-        Assert.Equal(0, attachingModule.Registrations.Count);
+        Assert.Empty(attachingModule.Registrations);
 
         var builder = new ContainerBuilder();
         builder.RegisterModule(attachingModule);
@@ -82,7 +82,7 @@ public class ModuleTests
     public void AttachesToRegistrationsInNestedScope()
     {
         var attachingModule = new AttachingModule();
-        Assert.Equal(0, attachingModule.Registrations.Count);
+        Assert.Empty(attachingModule.Registrations);
 
         var builder = new ContainerBuilder();
         builder.RegisterModule(attachingModule);
@@ -101,7 +101,7 @@ public class ModuleTests
     public void ModifiedScopesHaveTheirOwnDelegate()
     {
         var attachingModule = new AttachingModule();
-        Assert.Equal(0, attachingModule.Registrations.Count);
+        Assert.Empty(attachingModule.Registrations);
 
         var builder = new ContainerBuilder();
         builder.RegisterModule(attachingModule);

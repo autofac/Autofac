@@ -4,7 +4,7 @@
 using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Registration;
-using Autofac.Test.Scenarios.Parameterisation;
+using Autofac.Test.Scenarios.Parameterization;
 using Autofac.Test.Scenarios.WithProperty;
 
 namespace Autofac.Test;
@@ -61,11 +61,11 @@ public class ResolutionExtensionsTests
     public void WhenParametersProvided_ResolveOptionalSuppliesThemToComponent()
     {
         var cb = new ContainerBuilder();
-        cb.RegisterType<Parameterised>();
+        cb.RegisterType<Parameterized>();
         var container = cb.Build();
         const string param1 = "Hello";
         const int param2 = 42;
-        var result = container.ResolveOptional<Parameterised>(
+        var result = container.ResolveOptional<Parameterized>(
             new NamedParameter("a", param1),
             new NamedParameter("b", param2));
         Assert.NotNull(result);
@@ -80,7 +80,7 @@ public class ResolutionExtensionsTests
         const int b = 42;
         var builder = new ContainerBuilder();
 
-        builder.RegisterType<Parameterised>()
+        builder.RegisterType<Parameterized>()
             .WithParameter(
                 (pi, c) => pi.Name == "a",
                 (pi, c) => a)
@@ -89,7 +89,7 @@ public class ResolutionExtensionsTests
                 (pi, c) => b);
 
         var container = builder.Build();
-        var result = container.Resolve<Parameterised>();
+        var result = container.Resolve<Parameterized>();
 
         Assert.Equal(a, result.A);
         Assert.Equal(b, result.B);

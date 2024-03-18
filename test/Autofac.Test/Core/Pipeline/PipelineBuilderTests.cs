@@ -19,10 +19,10 @@ public class PipelineBuilderTests
     {
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
         var order = new List<string>();
-        pipelineBuilder.Use(PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+        pipelineBuilder.Use(PipelinePhase.ResolveRequestStart, (context, next) =>
         {
             order.Add("1");
-            next(ctxt);
+            next(context);
         });
 
         var built = pipelineBuilder.Build();
@@ -39,20 +39,20 @@ public class PipelineBuilderTests
     {
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
         var order = new List<string>();
-        pipelineBuilder.Use("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+        pipelineBuilder.Use("1", PipelinePhase.ResolveRequestStart, (context, next) =>
         {
             order.Add("1");
-            next(ctxt);
+            next(context);
         });
-        pipelineBuilder.Use("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
+        pipelineBuilder.Use("2", PipelinePhase.ScopeSelection, (context, next) =>
         {
             order.Add("2");
-            next(ctxt);
+            next(context);
         });
-        pipelineBuilder.Use("3", PipelinePhase.Sharing, (ctxt, next) =>
+        pipelineBuilder.Use("3", PipelinePhase.Sharing, (context, next) =>
         {
             order.Add("3");
-            next(ctxt);
+            next(context);
         });
 
         var built = pipelineBuilder.Build();
@@ -72,20 +72,20 @@ public class PipelineBuilderTests
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
 
         var order = new List<string>();
-        pipelineBuilder.Use("3", PipelinePhase.Sharing, (ctxt, next) =>
+        pipelineBuilder.Use("3", PipelinePhase.Sharing, (context, next) =>
         {
             order.Add("3");
-            next(ctxt);
+            next(context);
         });
-        pipelineBuilder.Use("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
+        pipelineBuilder.Use("2", PipelinePhase.ScopeSelection, (context, next) =>
         {
             order.Add("2");
-            next(ctxt);
+            next(context);
         });
-        pipelineBuilder.Use("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+        pipelineBuilder.Use("1", PipelinePhase.ResolveRequestStart, (context, next) =>
         {
             order.Add("1");
-            next(ctxt);
+            next(context);
         });
 
         var built = pipelineBuilder.Build();
@@ -105,25 +105,25 @@ public class PipelineBuilderTests
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
 
         var order = new List<string>();
-        pipelineBuilder.Use("3", PipelinePhase.Decoration, (ctxt, next) =>
+        pipelineBuilder.Use("3", PipelinePhase.Decoration, (context, next) =>
         {
             order.Add("3");
-            next(ctxt);
+            next(context);
         });
-        pipelineBuilder.Use("4", PipelinePhase.Sharing, (ctxt, next) =>
+        pipelineBuilder.Use("4", PipelinePhase.Sharing, (context, next) =>
         {
             order.Add("4");
-            next(ctxt);
+            next(context);
         });
-        pipelineBuilder.Use("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+        pipelineBuilder.Use("1", PipelinePhase.ResolveRequestStart, (context, next) =>
         {
             order.Add("1");
-            next(ctxt);
+            next(context);
         });
-        pipelineBuilder.Use("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
+        pipelineBuilder.Use("2", PipelinePhase.ScopeSelection, (context, next) =>
         {
             order.Add("2");
-            next(ctxt);
+            next(context);
         });
 
         var built = pipelineBuilder.Build();
@@ -143,20 +143,20 @@ public class PipelineBuilderTests
     {
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
         var order = new List<string>();
-        pipelineBuilder.Use("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
+        pipelineBuilder.Use("2", PipelinePhase.ScopeSelection, (context, next) =>
         {
             order.Add("2");
-            next(ctxt);
+            next(context);
         });
-        pipelineBuilder.Use("1", PipelinePhase.ScopeSelection, MiddlewareInsertionMode.StartOfPhase, (ctxt, next) =>
+        pipelineBuilder.Use("1", PipelinePhase.ScopeSelection, MiddlewareInsertionMode.StartOfPhase, (context, next) =>
         {
             order.Add("1");
-            next(ctxt);
+            next(context);
         });
-        pipelineBuilder.Use("3", PipelinePhase.ScopeSelection, (ctxt, next) =>
+        pipelineBuilder.Use("3", PipelinePhase.ScopeSelection, (context, next) =>
         {
             order.Add("3");
-            next(ctxt);
+            next(context);
         });
 
         var built = pipelineBuilder.Build();
@@ -176,20 +176,20 @@ public class PipelineBuilderTests
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
 
         var order = new List<string>();
-        pipelineBuilder.Use("3", PipelinePhase.ScopeSelection, (ctxt, next) =>
+        pipelineBuilder.Use("3", PipelinePhase.ScopeSelection, (context, next) =>
         {
             order.Add("3");
-            next(ctxt);
+            next(context);
         });
-        pipelineBuilder.Use("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+        pipelineBuilder.Use("1", PipelinePhase.ResolveRequestStart, (context, next) =>
         {
             order.Add("1");
-            next(ctxt);
+            next(context);
         });
-        pipelineBuilder.Use("2", PipelinePhase.ScopeSelection, MiddlewareInsertionMode.StartOfPhase, (ctxt, next) =>
+        pipelineBuilder.Use("2", PipelinePhase.ScopeSelection, MiddlewareInsertionMode.StartOfPhase, (context, next) =>
         {
             order.Add("2");
-            next(ctxt);
+            next(context);
         });
 
         var built = pipelineBuilder.Build();
@@ -211,20 +211,20 @@ public class PipelineBuilderTests
 
         pipelineBuilder.UseRange(new[]
         {
-            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (context, next) =>
             {
                 order.Add("1");
-                next(ctxt);
+                next(context);
             }),
-            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
+            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (context, next) =>
             {
                 order.Add("2");
-                next(ctxt);
+                next(context);
             }),
-            new DelegateMiddleware("3", PipelinePhase.Sharing, (ctxt, next) =>
+            new DelegateMiddleware("3", PipelinePhase.Sharing, (context, next) =>
             {
                 order.Add("3");
-                next(ctxt);
+                next(context);
             }),
         });
 
@@ -247,39 +247,39 @@ public class PipelineBuilderTests
 
         pipelineBuilder.UseRange(new[]
         {
-            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (context, next) =>
             {
                 order.Add("1");
-                next(ctxt);
+                next(context);
             }),
-            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
+            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (context, next) =>
             {
                 order.Add("2");
-                next(ctxt);
+                next(context);
             }),
-            new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
+            new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (context, next) =>
             {
                 order.Add("3");
-                next(ctxt);
+                next(context);
             }),
         });
 
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
         {
-            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (context, next) =>
             {
                 order.Add("1");
-                next(ctxt);
+                next(context);
             }),
-            new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
+            new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (context, next) =>
             {
                 order.Add("4");
-                next(ctxt);
+                next(context);
             }),
-            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
+            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (context, next) =>
             {
                 order.Add("2");
-                next(ctxt);
+                next(context);
             }),
         }));
     }
@@ -292,20 +292,20 @@ public class PipelineBuilderTests
 
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
         {
-            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (context, next) =>
             {
                 order.Add("1");
-                next(ctxt);
+                next(context);
             }),
-            new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
+            new DelegateMiddleware("4", PipelinePhase.ServicePipelineEnd, (context, next) =>
             {
                 order.Add("4");
-                next(ctxt);
+                next(context);
             }),
-            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) =>
+            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (context, next) =>
             {
                 order.Add("2");
-                next(ctxt);
+                next(context);
             }),
         }));
     }
@@ -318,39 +318,39 @@ public class PipelineBuilderTests
 
         pipelineBuilder.UseRange(new[]
         {
-            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (context, next) =>
             {
                 order.Add("1");
-                next(ctxt);
+                next(context);
             }),
-            new DelegateMiddleware("3", PipelinePhase.ScopeSelection, (ctxt, next) =>
+            new DelegateMiddleware("3", PipelinePhase.ScopeSelection, (context, next) =>
             {
                 order.Add("3");
-                next(ctxt);
+                next(context);
             }),
-            new DelegateMiddleware("5", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
+            new DelegateMiddleware("5", PipelinePhase.ServicePipelineEnd, (context, next) =>
             {
                 order.Add("5");
-                next(ctxt);
+                next(context);
             }),
         });
 
         pipelineBuilder.UseRange(new[]
         {
-            new DelegateMiddleware("2", PipelinePhase.ResolveRequestStart, (ctxt, next) =>
+            new DelegateMiddleware("2", PipelinePhase.ResolveRequestStart, (context, next) =>
             {
                 order.Add("2");
-                next(ctxt);
+                next(context);
             }),
-            new DelegateMiddleware("4", PipelinePhase.ScopeSelection, (ctxt, next) =>
+            new DelegateMiddleware("4", PipelinePhase.ScopeSelection, (context, next) =>
             {
                 order.Add("4");
-                next(ctxt);
+                next(context);
             }),
-            new DelegateMiddleware("6", PipelinePhase.ServicePipelineEnd, (ctxt, next) =>
+            new DelegateMiddleware("6", PipelinePhase.ServicePipelineEnd, (context, next) =>
             {
                 order.Add("6");
-                next(ctxt);
+                next(context);
             }),
         });
 
@@ -373,7 +373,7 @@ public class PipelineBuilderTests
     {
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Registration);
         var order = new List<string>();
-        Assert.Throws<InvalidOperationException>(() => pipelineBuilder.Use(PipelinePhase.ResolveRequestStart, (ctxt, next) => { }));
+        Assert.Throws<InvalidOperationException>(() => pipelineBuilder.Use(PipelinePhase.ResolveRequestStart, (context, next) => { }));
     }
 
     [Fact]
@@ -381,7 +381,7 @@ public class PipelineBuilderTests
     {
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
         var order = new List<string>();
-        Assert.Throws<InvalidOperationException>(() => pipelineBuilder.Use(PipelinePhase.RegistrationPipelineStart, (ctxt, next) => { }));
+        Assert.Throws<InvalidOperationException>(() => pipelineBuilder.Use(PipelinePhase.RegistrationPipelineStart, (context, next) => { }));
     }
 
     [Fact]
@@ -391,9 +391,9 @@ public class PipelineBuilderTests
         var order = new List<string>();
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
         {
-            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) => { }),
-            new DelegateMiddleware("4", PipelinePhase.Activation, (ctxt, next) => { }),
-            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) => { }),
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (context, next) => { }),
+            new DelegateMiddleware("4", PipelinePhase.Activation, (context, next) => { }),
+            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (context, next) => { }),
         }));
     }
 
@@ -404,7 +404,7 @@ public class PipelineBuilderTests
         var order = new List<string>();
 
         var ex = Assert.Throws<InvalidOperationException>(() => pipelineBuilder.Use(
-                        new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) => { })));
+                        new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (context, next) => { })));
 
         // Confirm phase content.
         Assert.Contains("[RegistrationPipelineStart, ParameterSelection, Activation]", ex.Message);
@@ -418,16 +418,16 @@ public class PipelineBuilderTests
 
         pipelineBuilder.UseRange(new[]
         {
-            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart,  (ctxt, next) => { }),
-            new DelegateMiddleware("3", PipelinePhase.ScopeSelection,  (ctxt, next) => { }),
-            new DelegateMiddleware("5", PipelinePhase.ServicePipelineEnd,  (ctxt, next) => { }),
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart,  (context, next) => { }),
+            new DelegateMiddleware("3", PipelinePhase.ScopeSelection,  (context, next) => { }),
+            new DelegateMiddleware("5", PipelinePhase.ServicePipelineEnd,  (context, next) => { }),
         });
 
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
         {
-            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (ctxt, next) => { }),
-            new DelegateMiddleware("4", PipelinePhase.Activation, (ctxt, next) => { }),
-            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (ctxt, next) => { }),
+            new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (context, next) => { }),
+            new DelegateMiddleware("4", PipelinePhase.Activation, (context, next) => { }),
+            new DelegateMiddleware("2", PipelinePhase.ScopeSelection, (context, next) => { }),
         }));
     }
 
@@ -483,7 +483,7 @@ public class PipelineBuilderTests
 
         public override IComponentRegistry ComponentRegistry => ActivationScope.ComponentRegistry;
 
-        public override object ResolveComponent(ResolveRequest request) => throw new NotImplementedException();
+        public override object ResolveComponent(in ResolveRequest request) => throw new NotImplementedException();
     }
 
     private class LifetimeScopeStub : ISharingLifetimeScope
@@ -566,7 +566,7 @@ public class PipelineBuilderTests
             throw new NotImplementedException();
         }
 
-        public object ResolveComponent(ResolveRequest request)
+        public object ResolveComponent(in ResolveRequest request)
         {
             throw new NotImplementedException();
         }

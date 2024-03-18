@@ -25,9 +25,10 @@ internal class LazyRegistrationSource : ImplicitRegistrationSource
     public override string Description => LazyRegistrationSourceResources.LazyRegistrationSourceDescription;
 
     /// <inheritdoc/>
-    protected override object ResolveInstance<T>(IComponentContext context, ResolveRequest request)
+    protected override object ResolveInstance<T>(IComponentContext context, in ResolveRequest request)
     {
         var capturedContext = context.Resolve<IComponentContext>();
-        return new Lazy<T>(() => (T)capturedContext.ResolveComponent(request));
+        ResolveRequest requestCopy = request;
+        return new Lazy<T>(() => (T)capturedContext.ResolveComponent(requestCopy));
     }
 }

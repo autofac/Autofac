@@ -14,7 +14,7 @@ internal static class Enforce
     /// <summary>
     /// Enforce that sequence does not contain null. Returns the
     /// value if valid so that it can be used inline in
-    /// base initialiser syntax.
+    /// base initializer syntax.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="name">The parameter name.</param>
@@ -55,7 +55,7 @@ internal static class Enforce
     /// <summary>
     /// Enforce that an argument is not null or empty. Returns the
     /// value if valid so that it can be used inline in
-    /// base initialiser syntax.
+    /// base initializer syntax.
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="description">The description.</param>
@@ -91,13 +91,7 @@ internal static class Enforce
             throw new ArgumentNullException(nameof(delegateType));
         }
 
-        MethodInfo invoke = delegateType.GetDeclaredMethod("Invoke");
-
-        if (invoke == null)
-        {
-            throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.NotDelegate, delegateType));
-        }
-
+        MethodInfo invoke = delegateType.GetDeclaredMethod("Invoke") ?? throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.NotDelegate, delegateType));
         if (invoke.ReturnType == typeof(void))
         {
             throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, EnforceResources.DelegateReturnsVoid, delegateType));

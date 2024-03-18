@@ -258,13 +258,7 @@ public static partial class RegistrationExtensions
             TService? instance = (TService?)p
                 .OfType<TypedParameter>()
                 .FirstOrDefault(tp => tp.Type == typeof(TService))
-                ?.Value;
-
-            if (instance == null)
-            {
-                throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));
-            }
-
+                ?.Value ?? throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));
             return decorator(c, p, instance);
         }).As(service);
 

@@ -190,7 +190,7 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
             .FirstOrDefault();
     }
 
-    private static IEnumerable<T> FilterAll<T>(IComponentContext context, string metadataKey, object metadataValue)
+    private static T[] FilterAll<T>(IComponentContext context, string metadataKey, object metadataValue)
     {
         // Using Lazy<T> to ensure components that aren't actually used won't get activated.
         return context.Resolve<IEnumerable<Meta<Lazy<T>>>>()

@@ -276,7 +276,7 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
         for (int i = 0; i < services.Length; i++)
         {
             var service = services[i];
-            if (service.FullName != null)
+            if (service.FullName is not null)
             {
                 argArray[i] = new TypedService(service);
             }
@@ -413,16 +413,16 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
             throw new ArgumentNullException(nameof(handler));
         }
 
-        var middleware = new CoreEventMiddleware(ResolveEventType.OnPreparing, PipelinePhase.ParameterSelection, (ctxt, next) =>
+        var middleware = new CoreEventMiddleware(ResolveEventType.OnPreparing, PipelinePhase.ParameterSelection, (context, next) =>
         {
-            var args = new PreparingEventArgs(ctxt, ctxt.Service, ctxt.Registration, ctxt.Parameters);
+            var args = new PreparingEventArgs(context, context.Service, context.Registration, context.Parameters);
 
             handler(args);
 
-            ctxt.ChangeParameters(args.Parameters);
+            context.ChangeParameters(args.Parameters);
 
             // Go down the pipeline now.
-            next(ctxt);
+            next(context);
         });
 
         ResolvePipeline.Use(middleware);
@@ -461,14 +461,14 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
             throw new ArgumentNullException(nameof(handler));
         }
 
-        var middleware = new CoreEventMiddleware(ResolveEventType.OnActivating, PipelinePhase.Activation, (ctxt, next) =>
+        var middleware = new CoreEventMiddleware(ResolveEventType.OnActivating, PipelinePhase.Activation, (context, next) =>
         {
-            next(ctxt);
+            next(context);
 
-            var args = new ActivatingEventArgs<TLimit>(ctxt, ctxt.Service, ctxt.Registration, ctxt.Parameters, (TLimit)ctxt.Instance!);
+            var args = new ActivatingEventArgs<TLimit>(context, context.Service, context.Registration, context.Parameters, (TLimit)context.Instance!);
 
             handler(args);
-            ctxt.Instance = args.Instance;
+            context.Instance = args.Instance;
         });
 
         // Activation events have to run at the start of the phase, to make sure
@@ -509,28 +509,28 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
             throw new ArgumentNullException(nameof(handler));
         }
 
-        var middleware = new CoreEventMiddleware(ResolveEventType.OnActivated, PipelinePhase.Activation, (ctxt, next) =>
+        var middleware = new CoreEventMiddleware(ResolveEventType.OnActivated, PipelinePhase.Activation, (context, next) =>
         {
             // Go down the pipeline first.
-            next(ctxt);
+            next(context);
 
-            if (!ctxt.NewInstanceActivated)
+            if (!context.NewInstanceActivated)
             {
                 return;
             }
 
             // Make sure we use the instance at this point, before it is replaced by any decorators.
-            var newInstance = (TLimit)ctxt.Instance!;
+            var newInstance = (TLimit)context.Instance!;
 
             // In order to behave in the same manner as the original activation handler,
             // we need to attach to the RequestCompleting event so these run at the end after everything else.
-            ctxt.RequestCompleting += (sender, evArgs) =>
-        {
-            var ctxt = evArgs.RequestContext;
-            var args = new ActivatedEventArgs<TLimit>(ctxt, ctxt.Service, ctxt.Registration, ctxt.Parameters, newInstance);
+            context.RequestCompleting += (sender, evArgs) =>
+            {
+                var eventContext = evArgs.RequestContext;
+                var args = new ActivatedEventArgs<TLimit>(eventContext, eventContext.Service, eventContext.Registration, eventContext.Parameters, newInstance);
 
-            handler(args);
-        };
+                handler(args);
+            };
         });
 
         // Need to insert OnActivated at the start of the phase, to ensure we attach to RequestCompleting in the same order
@@ -568,30 +568,30 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
     /// <returns>A registration builder allowing further configuration of the component.</returns>
     public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(IPropertySelector propertySelector, bool allowCircularDependencies)
     {
-        ResolvePipeline.Use(nameof(PropertiesAutowired), PipelinePhase.Activation, (ctxt, next) =>
+        ResolvePipeline.Use(nameof(PropertiesAutowired), PipelinePhase.Activation, (context, next) =>
         {
             // Continue down the pipeline.
-            next(ctxt);
+            next(context);
 
-            if (!ctxt.NewInstanceActivated)
+            if (!context.NewInstanceActivated)
             {
                 return;
             }
 
             if (allowCircularDependencies)
             {
-                var capturedInstance = ctxt.Instance;
+                var capturedInstance = context.Instance;
 
                 // If we are allowing circular deps, then we need to run when all requests have completed (similar to Activated).
-                ctxt.RequestCompleting += (o, args) =>
-            {
-                var evCtxt = args.RequestContext;
-                AutowiringPropertyInjector.InjectProperties(evCtxt, capturedInstance!, propertySelector, evCtxt.Parameters);
-            };
+                context.RequestCompleting += (o, args) =>
+                {
+                    var eventContext = args.RequestContext;
+                    AutowiringPropertyInjector.InjectProperties(eventContext, capturedInstance!, propertySelector, eventContext.Parameters);
+                };
             }
             else
             {
-                AutowiringPropertyInjector.InjectProperties(ctxt, ctxt.Instance!, propertySelector, ctxt.Parameters);
+                AutowiringPropertyInjector.InjectProperties(context, context.Instance!, propertySelector, context.Parameters);
             }
         });
 

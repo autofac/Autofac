@@ -37,7 +37,7 @@ public class DefaultValueParameter : Parameter
             // Workaround for https://github.com/dotnet/corefx/issues/17943
             if (pi.Member.DeclaringType?.Assembly.IsDynamic ?? true)
             {
-                hasDefaultValue = pi.DefaultValue != null && pi.HasDefaultValue;
+                hasDefaultValue = pi.DefaultValue is not null && pi.HasDefaultValue;
             }
             else
             {

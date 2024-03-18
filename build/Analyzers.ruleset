@@ -4,8 +4,16 @@
   <Rules AnalyzerId="Microsoft.Usage" RuleNamespace="Microsoft.Usage">
     <!-- Implement standard exception constructors - not all of the exception constructors (e.g., parameterless) are desired in our system. -->
     <Rule Id="CA1032" Action="None" />
+    <!-- Use ArgumentNullException.ThrowIfNull - this isn't available until we stop targeting netstandard. -->
+    <Rule Id="CA1510" Action="None" />
+    <!-- Use ArgumentOutOfRangeException.ThrowIfNegative - this isn't available until we stop targeting anything below net8.0. -->
+    <Rule Id="CA1512" Action="None" />
+    <!-- Use ObjectDisposedException.ThrowIf - this isn't available until we stop targeting anything below net8.0. -->
+    <Rule Id="CA1513" Action="None" />
     <!-- Change names to avoid reserved word overlaps (e.g., Delegate, GetType, etc.) - too many of these in the public API, we'd break if we fixed it. -->
     <Rule Id="CA1716" Action="None" />
+    <!-- Cache a CompositeFormat object for use in String.Format - this isn't available until we stop targeting netstandard, and we only String.Format when throwing exceptions so the work/complexity isn't justified to increase perf just for those situations. -->
+    <Rule Id="CA1863" Action="None" />
     <!-- Implement serialization constructors - false positive when building .NET Core -->
     <Rule Id="CA2229" Action="None" />
     <!-- Mark ISerializable types with SerializableAttribute - false positive when building .NET Core -->
@@ -28,6 +36,8 @@
     <Rule Id="SA1203" Action="None" />
     <!-- Enforce order of static vs. non-static members -->
     <Rule Id="SA1204" Action="None" />
+    <!-- Modifiers are not ordered - .editorconfig handles this -->
+    <Rule Id="SA1206" Action="None" />
     <!-- Enforce order of readonly vs. non-readonly members -->
     <Rule Id="SA1214" Action="None" />
     <!-- Fields can't start with underscore -->

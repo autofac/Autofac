@@ -12,7 +12,7 @@ namespace Autofac.Features.Scanning;
 /// <summary>
 /// Helper methods to assist in scanning registration.
 /// </summary>
-internal static partial class ScanningRegistrationExtensions
+internal static class ScanningRegistrationExtensions
 {
     /// <summary>
     /// Register types from the specified assemblies.
@@ -21,7 +21,7 @@ internal static partial class ScanningRegistrationExtensions
     /// <param name="assemblies">The set of assemblies.</param>
     /// <returns>A registration builder.</returns>
     public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-        RegisterAssemblyTypes(ContainerBuilder builder, params Assembly[] assemblies)
+        ScanAndRegisterAssemblyTypes(this ContainerBuilder builder, params Assembly[] assemblies)
     {
         if (builder == null)
         {
@@ -38,7 +38,7 @@ internal static partial class ScanningRegistrationExtensions
             new ScanningActivatorData(),
             new DynamicRegistrationStyle());
 
-        rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => ScanAssemblies(assemblies, cr, rb));
+        rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => assemblies.ScanAssemblies(cr, rb));
 
         return rb;
     }
@@ -50,7 +50,7 @@ internal static partial class ScanningRegistrationExtensions
     /// <param name="types">The set of types.</param>
     /// <returns>A registration builder.</returns>
     public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-        RegisterTypes(ContainerBuilder builder, params Type[] types)
+        ScanAndRegisterTypes(this ContainerBuilder builder, params Type[] types)
     {
         if (builder == null)
         {
@@ -67,30 +67,9 @@ internal static partial class ScanningRegistrationExtensions
             new ScanningActivatorData(),
             new DynamicRegistrationStyle());
 
-        rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => ScanTypes(types, cr, rb));
+        rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr => TypeExtensions.FilterAndRegisterConcreteTypes(types, cr, rb));
 
         return rb;
-    }
-
-    private static void ScanAssemblies(IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
-    {
-        ScanTypes(assemblies.SelectMany(a => a.GetPermittedTypesForAssemblyScanning()), cr, rb);
-    }
-
-    private static void ScanTypes(IEnumerable<Type> types, IComponentRegistryBuilder cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
-    {
-        var closedTypes = types.Where(t => !t.IsGenericTypeDefinition)
-            .CanBeRegistered(rb.ActivatorData);
-
-        rb.ActivatorData.Filters.Add(t =>
-            rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
-                swt.ServiceType.IsAssignableFrom(t)));
-
-        static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> TypeBuilderFactory(Type type) => RegistrationBuilder.ForType(type);
-
-        static void SingleComponentRegistration(IComponentRegistryBuilder registry, IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> data) => RegistrationBuilder.RegisterSingleComponent(registry, data);
-
-        ScanTypesTemplate(closedTypes, cr, rb, TypeBuilderFactory, SingleComponentRegistration);
     }
 
     /// <summary>
@@ -238,7 +217,7 @@ internal static partial class ScanningRegistrationExtensions
                         return c.ServiceType.IsAssignableFrom(impl);
                     }
 
-                    return s != null;
+                    return s is not null;
                 });
             rb.As(applied.ToArray());
         });

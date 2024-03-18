@@ -45,7 +45,7 @@ public class ConcurrencyBenchmark
                 }
                 catch (Exception ex)
                 {
-                    Assert.True(false, ex.ToString());
+                    Assert.Fail(ex.ToString());
                 }
             });
             tasks.Add(task);

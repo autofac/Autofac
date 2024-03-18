@@ -109,7 +109,7 @@ public class ImplicitRegistrationSourceTests
         {
         }
 
-        protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request) => throw new NotImplementedException();
+        protected override object ResolveInstance<T>(IComponentContext ctx, in ResolveRequest request) => throw new NotImplementedException();
     }
 
     private class Mapped<T>
@@ -129,7 +129,7 @@ public class ImplicitRegistrationSourceTests
         {
         }
 
-        protected override object ResolveInstance<T>(IComponentContext ctx, ResolveRequest request)
+        protected override object ResolveInstance<T>(IComponentContext ctx, in ResolveRequest request)
         {
             return new Mapped<T>((T)ctx.ResolveComponent(request));
         }
