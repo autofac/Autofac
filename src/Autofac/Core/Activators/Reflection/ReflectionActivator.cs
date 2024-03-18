@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Collections.Concurrent;
 using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -20,10 +19,6 @@ namespace Autofac.Core.Activators.Reflection;
 [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "There is nothing in the derived class to dispose so no override is necessary.")]
 public class ReflectionActivator : InstanceActivator, IInstanceActivator
 {
-#if NET7_0_OR_GREATER
-    private static readonly ConcurrentDictionary<string, bool> IsRequiredMemberByTypeName = new();
-#endif
-
     private readonly Type _implementationType;
     private readonly Parameter[] _configuredProperties;
     private readonly Parameter[] _defaultParameters;
@@ -91,11 +86,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 #if NET7_0_OR_GREATER
         // The RequiredMemberAttribute has Inherit = false on its AttributeUsage options,
         // so we can't use the expected GetCustomAttribute(inherit: true) option, and must walk the tree.
-        _anyRequiredMembers = IsRequiredMemberByTypeName.GetOrAdd(
-            _implementationType.FullName!,
-            static (_, t) =>
+        _anyRequiredMembers = ReflectionCacheSet.Shared.Internal.HasRequiredMemberAttribute.GetOrAdd(
+            _implementationType,
+            static t =>
             {
-                for (var currentType = t; currentType is not null && !currentType.Equals(typeof(object)); currentType = currentType.BaseType)
+                for (var currentType = t; currentType is not null && currentType != typeof(object); currentType = currentType.BaseType)
                 {
                     if (currentType.GetCustomAttribute<RequiredMemberAttribute>() is not null)
                     {
@@ -104,8 +99,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
                 }
 
                 return false;
-            },
-            _implementationType);
+            });
 #else
         _anyRequiredMembers = false;
 #endif
