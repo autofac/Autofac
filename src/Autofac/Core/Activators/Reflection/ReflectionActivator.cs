@@ -81,17 +81,20 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 #if NET7_0_OR_GREATER
         // The RequiredMemberAttribute has Inherit = false on its AttributeUsage options,
         // so we can't use the expected GetCustomAttribute(inherit: true) option, and must walk the tree.
-        var currentType = _implementationType;
-        while (currentType is not null && !currentType.Equals(typeof(object)))
-        {
-            if (currentType.GetCustomAttribute<RequiredMemberAttribute>() is not null)
+        _anyRequiredMembers = ReflectionCacheSet.Shared.Internal.HasRequiredMemberAttribute.GetOrAdd(
+            _implementationType,
+            static t =>
             {
-                _anyRequiredMembers = true;
-                break;
-            }
+                for (var currentType = t; currentType is not null && currentType != typeof(object); currentType = currentType.BaseType)
+                {
+                    if (currentType.GetCustomAttribute<RequiredMemberAttribute>() is not null)
+                    {
+                        return true;
+                    }
+                }
 
-            currentType = currentType.BaseType;
-        }
+                return false;
+            });
 #else
         _anyRequiredMembers = false;
 #endif
