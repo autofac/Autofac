@@ -125,6 +125,25 @@ public class RegistrationOnlyIfTests
     }
 
     [Fact]
+    public void IfNotRegistered_EvaluatesServiceMiddleware()
+    {
+        var builder = new ContainerBuilder();
+        var middlewareInvoked = false;
+
+        builder.RegisterType<ServiceA>().As<IService>().IfNotRegistered(typeof(IService));
+
+        builder.RegisterServiceMiddleware(typeof(IService), PipelinePhase.ResolveRequestStart, (context, next) =>
+        {
+            next(context);
+            middlewareInvoked = true;
+        });
+
+        var container = builder.Build();
+        var result = container.Resolve<IService>();
+        Assert.True(middlewareInvoked);
+    }
+
+    [Fact]
     public void IfNotRegistered_CanBeDecoratedByModuleWhenModuleRegistered1st()
     {
         var builder = new ContainerBuilder();
