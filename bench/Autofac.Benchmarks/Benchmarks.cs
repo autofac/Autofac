@@ -29,5 +29,6 @@ public static class Benchmarks
         typeof(MultiConstructorBenchmark),
         typeof(LambdaResolveBenchmark),
         typeof(RequiredPropertyBenchmark),
+        typeof(RegistrationBenchmark),
     };
 }
