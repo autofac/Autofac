@@ -3,6 +3,7 @@
 
 namespace Autofac.Specification.Test.Features.CircularDependency;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("CA1040", "CA1040", Justification = "Simple interface for testing.")]
 public interface ID
 {
 }

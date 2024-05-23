@@ -11,7 +11,7 @@ public class AsyncDisposeProvidedInstanceTests
     public async Task ResolvedProvidedInstances_DisposedWithLifetimeScope()
     {
         var builder = new ContainerBuilder();
-        var disposable = new AsyncOnlyDisposeTracker();
+        await using var disposable = new AsyncOnlyDisposeTracker();
         builder.RegisterInstance(disposable);
         var container = builder.Build();
         container.Resolve<AsyncOnlyDisposeTracker>();
@@ -27,7 +27,7 @@ public class AsyncDisposeProvidedInstanceTests
         // Issue 383: Disposing a container should only dispose a provided instance one time.
         var builder = new ContainerBuilder();
         var count = 0;
-        var disposable = new AsyncOnlyDisposeTracker();
+        await using var disposable = new AsyncOnlyDisposeTracker();
         disposable.Disposing += (sender, e) => count++;
         builder.RegisterInstance(disposable);
         var container = builder.Build();
@@ -42,7 +42,7 @@ public class AsyncDisposeProvidedInstanceTests
     public async Task ResolvedProvidedInstances_DisposedWithNestedLifetimeScope()
     {
         var builder = new ContainerBuilder();
-        var disposable = new AsyncOnlyDisposeTracker();
+        await using var disposable = new AsyncOnlyDisposeTracker();
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
         scope.Resolve<AsyncOnlyDisposeTracker>();
@@ -58,7 +58,7 @@ public class AsyncDisposeProvidedInstanceTests
         // Issue 383: Disposing a container should only dispose a provided instance one time.
         var builder = new ContainerBuilder();
         var count = 0;
-        var disposable = new AsyncOnlyDisposeTracker();
+        await using var disposable = new AsyncOnlyDisposeTracker();
         disposable.Disposing += (sender, e) => count++;
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
@@ -75,7 +75,7 @@ public class AsyncDisposeProvidedInstanceTests
     public async Task ResolvedProvidedInstances_NotOwnedByLifetimeScope_NeverDisposed()
     {
         var builder = new ContainerBuilder();
-        var disposable = new AsyncOnlyDisposeTracker();
+        await using var disposable = new AsyncOnlyDisposeTracker();
         builder.RegisterInstance(disposable).ExternallyOwned();
         var container = builder.Build();
         container.Resolve<AsyncOnlyDisposeTracker>();
@@ -89,7 +89,7 @@ public class AsyncDisposeProvidedInstanceTests
     public async Task ResolvedProvidedInstances_NotOwnedByNestedLifetimeScope_NeverDisposed()
     {
         var builder = new ContainerBuilder();
-        var disposable = new AsyncOnlyDisposeTracker();
+        await using var disposable = new AsyncOnlyDisposeTracker();
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable).ExternallyOwned());
         scope.Resolve<AsyncOnlyDisposeTracker>();
@@ -105,7 +105,7 @@ public class AsyncDisposeProvidedInstanceTests
     public async Task UnresolvedProvidedInstances_DisposedWithLifetimeScope()
     {
         var builder = new ContainerBuilder();
-        var disposable = new AsyncOnlyDisposeTracker();
+        await using var disposable = new AsyncOnlyDisposeTracker();
         builder.RegisterInstance(disposable);
         var container = builder.Build();
 
@@ -119,7 +119,7 @@ public class AsyncDisposeProvidedInstanceTests
     {
         var builder = new ContainerBuilder();
         var count = 0;
-        var disposable = new AsyncOnlyDisposeTracker();
+        await using var disposable = new AsyncOnlyDisposeTracker();
         disposable.Disposing += (sender, e) => count++;
         builder.RegisterInstance(disposable);
         var container = builder.Build();
@@ -133,7 +133,7 @@ public class AsyncDisposeProvidedInstanceTests
     public async Task UnresolvedProvidedInstances_DisposedWithNestedLifetimeScope()
     {
         var builder = new ContainerBuilder();
-        var disposable = new AsyncOnlyDisposeTracker();
+        await using var disposable = new AsyncOnlyDisposeTracker();
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
 
@@ -146,7 +146,7 @@ public class AsyncDisposeProvidedInstanceTests
     public async Task UnresolvedProvidedInstances_ActualAsyncDisposable_CorrectlyDisposed()
     {
         var builder = new ContainerBuilder();
-        var disposable = new AsyncOnlyDisposeTracker(completeAsync: true);
+        await using var disposable = new AsyncOnlyDisposeTracker(completeAsync: true);
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
 
@@ -159,7 +159,7 @@ public class AsyncDisposeProvidedInstanceTests
     {
         var builder = new ContainerBuilder();
         var count = 0;
-        var disposable = new AsyncOnlyDisposeTracker();
+        await using var disposable = new AsyncOnlyDisposeTracker();
         disposable.Disposing += (sender, e) => count++;
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
@@ -175,7 +175,7 @@ public class AsyncDisposeProvidedInstanceTests
     public async Task UnresolvedProvidedInstances_NotOwnedByLifetimeScope_NeverDisposed()
     {
         var builder = new ContainerBuilder();
-        var disposable = new AsyncOnlyDisposeTracker();
+        await using var disposable = new AsyncOnlyDisposeTracker();
         builder.RegisterInstance(disposable).ExternallyOwned();
         var container = builder.Build();
 
@@ -188,7 +188,7 @@ public class AsyncDisposeProvidedInstanceTests
     public async Task UnresolvedProvidedInstances_NotOwnedByNestedLifetimeScope_NeverDisposed()
     {
         var builder = new ContainerBuilder();
-        var disposable = new AsyncOnlyDisposeTracker();
+        await using var disposable = new AsyncOnlyDisposeTracker();
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable).ExternallyOwned());
 

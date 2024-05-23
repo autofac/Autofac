@@ -4,6 +4,6 @@
 namespace Autofac.Specification.Test.Features.PropertyInjection;
 
 [AttributeUsage(AttributeTargets.Property, Inherited = true)]
-public class InjectAttribute : Attribute
+public sealed class InjectAttribute : Attribute
 {
 }

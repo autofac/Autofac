@@ -30,7 +30,7 @@ public class DefaultDiagnosticTracerTests
 
         container.Resolve<string>();
 
-        Assert.Contains("Hello", lastOpResult);
+        Assert.Contains("Hello", lastOpResult, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -54,15 +54,8 @@ public class DefaultDiagnosticTracerTests
             Assert.False(args.OperationSucceeded);
         };
 
-        try
-        {
-            container.Resolve<string>();
-        }
-        catch
-        {
-        }
-
-        Assert.Contains(nameof(InvalidOperationException), lastOpResult);
+        Assert.ThrowsAny<Exception>(() => container.Resolve<string>());
+        Assert.Contains(nameof(InvalidOperationException), lastOpResult, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -88,7 +81,7 @@ public class DefaultDiagnosticTracerTests
 
         container.Resolve<IService>();
 
-        Assert.Contains("Decorator", lastOpResult);
+        Assert.Contains("Decorator", lastOpResult, StringComparison.Ordinal);
     }
 
     [Fact]
