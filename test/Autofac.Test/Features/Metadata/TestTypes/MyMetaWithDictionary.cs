@@ -3,6 +3,7 @@
 
 namespace Autofac.Test.Features.Metadata.TestTypes;
 
+[SuppressMessage("CA1711", "CA1711", Justification = "Naming helps clarify the purpose of the object for test consumers.")]
 public class MyMetaWithDictionary
 {
     public MyMetaWithDictionary(IDictionary<string, object> metadata)

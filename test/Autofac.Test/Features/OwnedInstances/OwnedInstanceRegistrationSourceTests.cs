@@ -28,7 +28,7 @@ public class OwnedInstanceRegistrationSourceTests
     public void CallingDisposeOnGeneratedOwnedT_DoesNotDisposeCurrentLifetimeScope()
     {
         var cb = new ContainerBuilder();
-        var containerDisposeTracker = new DisposeTracker();
+        using var containerDisposeTracker = new DisposeTracker();
         cb.RegisterInstance(containerDisposeTracker).Named<DisposeTracker>("tracker");
         cb.RegisterType<DisposeTracker>();
         var c = cb.Build();

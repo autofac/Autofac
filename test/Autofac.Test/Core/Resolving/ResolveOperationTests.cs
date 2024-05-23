@@ -26,7 +26,8 @@ public class ResolveOperationTests
     [Fact]
     public void EmptyInProgressRequestWhenInitializing()
     {
-        var resolveOperation = new ResolveOperation(Substitute.For<ISharingLifetimeScope>(), new DiagnosticListener("SomeName"));
+        using var listener = new DiagnosticListener("SomeName");
+        var resolveOperation = new ResolveOperation(Substitute.For<ISharingLifetimeScope>(), listener);
 
         var inProgressStack = resolveOperation.InProgressRequests;
 

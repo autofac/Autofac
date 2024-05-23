@@ -272,7 +272,8 @@ public class ComponentRegistryTests
     public void AdaptingAnAdapterYieldsASingleAdapter()
     {
         using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
-        registryBuilder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
+        using var registration = RegistrationBuilder.ForType<object>().CreateRegistration();
+        registryBuilder.Register(registration);
         registryBuilder.AddRegistrationSource(new MetaRegistrationSource());
         registryBuilder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
         var registry = registryBuilder.Build();
@@ -286,7 +287,8 @@ public class ComponentRegistryTests
     public void AfterResolvingAdapterType_AddingAnAdapter_AddsAdaptingComponents()
     {
         using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
-        registryBuilder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
+        using var registration = RegistrationBuilder.ForType<object>().CreateRegistration();
+        registryBuilder.Register(registration);
         var adapterService = new TypedService(typeof(Func<object>));
 
         using (var container = new Container(registryBuilder.Build()))
@@ -309,7 +311,8 @@ public class ComponentRegistryTests
         using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
         registryBuilder.AddRegistrationSource(new MetaRegistrationSource());
-        registryBuilder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
+        using var registration = RegistrationBuilder.ForType<object>().CreateRegistration();
+        registryBuilder.Register(registration);
 
         var chainedService = new TypedService(typeof(Meta<Func<object>>));
 

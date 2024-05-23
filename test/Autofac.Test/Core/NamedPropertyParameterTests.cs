@@ -8,7 +8,7 @@ namespace Autofac.Test.Core;
 
 public class NamedPropertyParameterTests
 {
-    public class HasInjectionPoints
+    private class HasInjectionPoints
     {
         public const string PropertyName = "PropertyInjectionPoint";
 
@@ -24,6 +24,7 @@ public class NamedPropertyParameterTests
         {
         }
 
+        [SuppressMessage("CA1044", "CA1044", Justification = "Test scenario.")]
         public string PropertyInjectionPoint
         {
             set
@@ -31,6 +32,7 @@ public class NamedPropertyParameterTests
             }
         }
 
+        [SuppressMessage("CA1044", "CA1044", Justification = "Test scenario.")]
         public string WrongPropertyInjectionPoint
         {
             set

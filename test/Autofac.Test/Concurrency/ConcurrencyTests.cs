@@ -47,8 +47,8 @@ public sealed class ConcurrencyTests
     [Fact]
     public async Task ConcurrentResolveOperationsFromDifferentContainers_DoesNotThrow()
     {
-        var task1 = Task.Factory.StartNew(ResolveObjectInstanceLoop);
-        var task2 = Task.Factory.StartNew(ResolveObjectInstanceLoop);
+        var task1 = Task.Factory.StartNew(ResolveObjectInstanceLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        var task2 = Task.Factory.StartNew(ResolveObjectInstanceLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         await Task.WhenAll(task1, task2);
     }
 

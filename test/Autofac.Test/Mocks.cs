@@ -28,6 +28,7 @@ internal static class Mocks
         return new MockComponentRegistration();
     }
 
+    [SuppressMessage("CA2000", "CA2000", Justification = "The caller will be responsible for disposing of the mock component registration.")]
     public static ServiceRegistration GetResolvableImplementation()
     {
         return new ServiceRegistration(

@@ -183,6 +183,7 @@ public class LifetimeScopeTests
 
         private static bool IsTestType(Type serviceType) => typeof(ITest).IsAssignableFrom(serviceType);
 
+        [SuppressMessage("CA2000", "CA2000", Justification = "The registration disposes of the activator automatically.")]
         private static ComponentRegistration CreateRegistration(Service service, Type serviceType, Func<IComponentContext, IEnumerable<Parameter>, object> factory) =>
             new(
                 Guid.NewGuid(),

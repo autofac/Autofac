@@ -20,6 +20,7 @@ public class TypeAssemblyReferenceProviderTests
     [InlineData(typeof(GenericDerivedClass<Assert>), new[] { typeof(DerivedClass), typeof(RegistrationBuilder<,,>), typeof(Assert), typeof(object) })]
     public void TypeReferencesCanBeDetermined(Type inputType, Type[] expandedTypeAssemblies)
     {
+        Assert.NotNull(expandedTypeAssemblies);
         var set = TypeAssemblyReferenceProvider.GetAllReferencedAssemblies(inputType);
 
         Assert.Distinct(set);

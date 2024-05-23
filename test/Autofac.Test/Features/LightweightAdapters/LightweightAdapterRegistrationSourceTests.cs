@@ -7,8 +7,10 @@ using Autofac.Features.LightweightAdapters;
 
 namespace Autofac.Test.Features.LightweightAdapters;
 
+[SuppressMessage("CA1052", "CA1052", Justification = "Test containers may not be static.")]
 public class LightweightAdapterRegistrationSourceTests
 {
+    [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
     public class AdaptingFromOneServiceToAnother
     {
         private readonly Service _from = new TypedService(typeof(object));
@@ -53,6 +55,7 @@ public class LightweightAdapterRegistrationSourceTests
         }
     }
 
+    [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
     public class ConstructingAnAdapterRegistrationSource
     {
         [Fact]

@@ -431,11 +431,13 @@ public class PipelineBuilderTests
         }));
     }
 
+    [SuppressMessage("CA1001", "CA1001", Justification = "This is an expedient test stub; we don't really care if proper disposal for internal stubs happens.")]
     private class PipelineRequestContextStub : ResolveRequestContext
     {
         private readonly DiagnosticListener _diagnosticSource;
         private readonly ResolveRequest _resolveRequest;
 
+        [SuppressMessage("CA2000", "CA2000", Justification = "This is an expedient test stub; we don't really care if proper disposal for internal stubs happens.")]
         public PipelineRequestContextStub()
         {
             _diagnosticSource = new DiagnosticListener("Autofac");
