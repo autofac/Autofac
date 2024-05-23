@@ -365,44 +365,44 @@ public class WithAttributeFilterTestFixture
         Assert.Equal(15, instance.Parameter);
     }
 
-    public interface ILogger
+    private interface ILogger
     {
     }
 
-    public class ConsoleLogger : ILogger
+    private class ConsoleLogger : ILogger
     {
     }
 
-    public class FileLogger : ILogger
+    private class FileLogger : ILogger
     {
     }
 
-    public class SqlLogger : ILogger
+    private class SqlLogger : ILogger
     {
     }
 
-    public interface IAdapter
+    private interface IAdapter
     {
     }
 
-    public class MsBuildAdapter : IAdapter
+    private class MsBuildAdapter : IAdapter
     {
     }
 
-    public class DteAdapter : IAdapter
+    private class DteAdapter : IAdapter
     {
     }
 
-    public class ToolWindowAdapter : IAdapter
+    private class ToolWindowAdapter : IAdapter
     {
     }
 
-    public class IdentifiableObject
+    private class IdentifiableObject
     {
         public string Id { get; set; }
     }
 
-    public class ManagerWithManyIndividualConcrete
+    private class ManagerWithManyIndividualConcrete
     {
         public ManagerWithManyIndividualConcrete(
             ILogger logger,
@@ -425,7 +425,7 @@ public class WithAttributeFilterTestFixture
         public IdentifiableObject Third { get; set; }
     }
 
-    public class ManagerWithLazySingle
+    private class ManagerWithLazySingle
     {
         public ManagerWithLazySingle([KeyFilter("Manager")] Lazy<ILogger> logger)
         {
@@ -435,7 +435,7 @@ public class WithAttributeFilterTestFixture
         public Lazy<ILogger> Logger { get; set; }
     }
 
-    public class ManagerWithMetaSingle
+    private class ManagerWithMetaSingle
     {
         public ManagerWithMetaSingle([KeyFilter("Manager")] Meta<ILogger, EmptyMetadata> logger)
         {
@@ -445,7 +445,7 @@ public class WithAttributeFilterTestFixture
         public Meta<ILogger, EmptyMetadata> Logger { get; set; }
     }
 
-    public class ManagerWithOwnedSingle
+    private class ManagerWithOwnedSingle
     {
         public ManagerWithOwnedSingle([KeyFilter("Manager")] Owned<ILogger> logger)
         {
@@ -455,7 +455,7 @@ public class WithAttributeFilterTestFixture
         public Owned<ILogger> Logger { get; set; }
     }
 
-    public class ManagerWithLazyMany
+    private class ManagerWithLazyMany
     {
         public ManagerWithLazyMany([KeyFilter("Manager")] IEnumerable<Lazy<ILogger>> loggers)
         {
@@ -465,7 +465,7 @@ public class WithAttributeFilterTestFixture
         public IEnumerable<Lazy<ILogger>> Loggers { get; set; }
     }
 
-    public class ManagerWithMetaMany
+    private class ManagerWithMetaMany
     {
         public ManagerWithMetaMany([KeyFilter("Manager")] IEnumerable<Meta<ILogger, EmptyMetadata>> loggers)
         {
@@ -475,7 +475,7 @@ public class WithAttributeFilterTestFixture
         public IEnumerable<Meta<ILogger, EmptyMetadata>> Loggers { get; set; }
     }
 
-    public class ManagerWithOwnedMany
+    private class ManagerWithOwnedMany
     {
         public ManagerWithOwnedMany([KeyFilter("Manager")] IEnumerable<Owned<ILogger>> loggers)
         {
@@ -485,7 +485,7 @@ public class WithAttributeFilterTestFixture
         public IEnumerable<Owned<ILogger>> Loggers { get; set; }
     }
 
-    public class SolutionExplorerKeyed
+    private class SolutionExplorerKeyed
     {
         public SolutionExplorerKeyed(
         [KeyFilter("Solution")] IEnumerable<IAdapter> adapters,
@@ -500,7 +500,7 @@ public class WithAttributeFilterTestFixture
         public ILogger Logger { get; set; }
     }
 
-    public class SolutionExplorerMetadata
+    private class SolutionExplorerMetadata
     {
         public SolutionExplorerMetadata(
         [MetadataFilter("Target", "Solution")] IEnumerable<IAdapter> adapters,
@@ -515,7 +515,7 @@ public class WithAttributeFilterTestFixture
         public ILogger Logger { get; set; }
     }
 
-    public class SolutionExplorerMixed
+    private class SolutionExplorerMixed
     {
         public SolutionExplorerMixed(
         [MetadataFilter("Target", "Solution")] IEnumerable<IAdapter> adapters,
@@ -530,16 +530,16 @@ public class WithAttributeFilterTestFixture
         public ILogger Logger { get; set; }
     }
 
-    public class AdapterMetadata
+    private class AdapterMetadata
     {
         public string Target { get; set; }
     }
 
-    public class EmptyMetadata
+    private class EmptyMetadata
     {
     }
 
-    public class RequiredParameterWithKeyFilter
+    private class RequiredParameterWithKeyFilter
     {
         public int Parameter { get; set; }
 
@@ -549,7 +549,7 @@ public class WithAttributeFilterTestFixture
         }
     }
 
-    public class OptionalParameterWithKeyFilter
+    private class OptionalParameterWithKeyFilter
     {
         public int Parameter { get; set; }
 

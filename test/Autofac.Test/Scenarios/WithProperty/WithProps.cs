@@ -9,9 +9,6 @@ public class WithProps
 
     public bool B { get; set; }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "StyleCop.CSharp.MaintainabilityRules",
-        "SA1401:Fields should be private",
-        Justification = "Tests")]
+    [SuppressMessage("CA1051", "CA1051", Justification = "Public field handles a specific test case.")]
     public string _field;
 }

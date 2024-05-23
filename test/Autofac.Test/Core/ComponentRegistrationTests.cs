@@ -24,7 +24,8 @@ public class ComponentRegistrationTests
     {
         var services = new Service[] { new TypedService(typeof(object)) };
 
-        var registration = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
+        using var activator = Factory.CreateProvidedInstanceActivator(new object());
+        using var registration = Factory.CreateSingletonRegistration(services, activator);
 
         Assert.Contains(MetadataKeys.RegistrationOrderMetadataKey, registration.Metadata.Keys);
     }
@@ -34,9 +35,9 @@ public class ComponentRegistrationTests
     {
         var services = new Service[] { new TypedService(typeof(object)) };
 
-        var disposable = new AsyncDisposeTracker();
+        await using var disposable = new AsyncDisposeTracker();
 
-        var activator = Factory.CreateProvidedInstanceActivator(disposable);
+        using var activator = Factory.CreateProvidedInstanceActivator(disposable);
         activator.DisposeInstance = true;
 
         var registration = Factory.CreateSingletonRegistration(services, activator);
@@ -51,7 +52,8 @@ public class ComponentRegistrationTests
     {
         var services = new Service[] { new TypedService(typeof(object)) };
 
-        var registration = Factory.CreateSingletonRegistration(services, Factory.CreateReflectionActivator(typeof(object)));
+        using var activator = Factory.CreateProvidedInstanceActivator(new object());
+        var registration = Factory.CreateSingletonRegistration(services, activator);
 
         await registration.DisposeAsync();
     }
@@ -60,9 +62,13 @@ public class ComponentRegistrationTests
     public void ShouldHaveAscendingRegistrationOrderMetadataValue()
     {
         var services = new Service[] { new TypedService(typeof(string)) };
-        var registration1 = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator("s1"));
-        var registration2 = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator("s2"));
-        var registration3 = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator("s3"));
+        using var activator1 = Factory.CreateProvidedInstanceActivator("s1");
+        using var activator2 = Factory.CreateProvidedInstanceActivator("s2");
+        using var activator3 = Factory.CreateProvidedInstanceActivator("s3");
+
+        var registration1 = Factory.CreateSingletonRegistration(services, activator1);
+        var registration2 = Factory.CreateSingletonRegistration(services, activator2);
+        var registration3 = Factory.CreateSingletonRegistration(services, activator3);
         var registrations = new List<IComponentRegistration> { registration2, registration3, registration1 };
 
         var orderedRegistrations = registrations.OrderBy(cr => cr.GetRegistrationOrder()).ToArray();
@@ -77,9 +83,10 @@ public class ComponentRegistrationTests
     {
         var services = new Service[] { new TypedService(typeof(object)) };
 
-        var registration = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
+        using var activator = Factory.CreateProvidedInstanceActivator(new object());
+        using var registration = Factory.CreateSingletonRegistration(services, activator);
 
-        var builder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var builder = Factory.CreateEmptyComponentRegistryBuilder();
         builder.Register(registration);
 
         builder.Build();

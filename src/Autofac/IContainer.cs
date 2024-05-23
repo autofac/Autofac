@@ -31,7 +31,7 @@ namespace Autofac;
 public interface IContainer : ILifetimeScope
 {
     /// <summary>
-    /// Gets the <see cref="System.Diagnostics.DiagnosticListener"/> to which
+    /// Gets the <see cref="DiagnosticListener"/> to which
     /// trace events should be written.
     /// </summary>
     DiagnosticListener DiagnosticSource { get; }

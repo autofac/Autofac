@@ -34,7 +34,7 @@ public class LifetimeScopeTests
     {
         var builder = new ContainerBuilder();
         var container = builder.Build();
-        var nestedRegistration = Mocks.GetComponentRegistration();
+        using var nestedRegistration = Mocks.GetComponentRegistration();
         var child = container.BeginLifetimeScope(b => b.RegisterComponent(nestedRegistration));
         child.Dispose();
         Assert.True(nestedRegistration.IsDisposed);
@@ -45,7 +45,7 @@ public class LifetimeScopeTests
     {
         var builder = new ContainerBuilder();
         var container = builder.Build();
-        var nestedRegistration = Mocks.GetComponentRegistration();
+        using var nestedRegistration = Mocks.GetComponentRegistration();
         var child = container.BeginLifetimeScope(x => x.ComponentRegistryBuilder.Register(nestedRegistration));
         child.Dispose();
         Assert.True(nestedRegistration.IsDisposed);
@@ -163,7 +163,7 @@ public class LifetimeScopeTests
     {
         private readonly ITest _instance;
 
-        public bool IsAdapterForIndividualComponents { get; } = false;
+        public bool IsAdapterForIndividualComponents { get; }
 
         public SimplifiedRegistrationSource(ITest instance) => _instance = instance;
 
@@ -204,11 +204,7 @@ public class LifetimeScopeTests
         internal object Instance { get; set; }
     }
 
-    public class HandlerException : Exception
-    {
-    }
-
-    public class Person
+    private class Person
     {
     }
 }

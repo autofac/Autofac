@@ -47,6 +47,6 @@ public class OperationDiagnosticTracerBaseTests
         {
         }
 
-        public override int OperationsInProgress => throw new System.NotImplementedException();
+        public override int OperationsInProgress => throw new NotImplementedException();
     }
 }

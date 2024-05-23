@@ -21,7 +21,7 @@ internal sealed class DefaultResolveRequestContext : ResolveRequestContext
     /// <param name="request">The initiating resolve request.</param>
     /// <param name="scope">The lifetime scope.</param>
     /// <param name="diagnosticSource">
-    /// The <see cref="System.Diagnostics.DiagnosticListener" /> to which trace events should be written.
+    /// The <see cref="DiagnosticListener" /> to which trace events should be written.
     /// </param>
     internal DefaultResolveRequestContext(
         IResolveOperation owningOperation,

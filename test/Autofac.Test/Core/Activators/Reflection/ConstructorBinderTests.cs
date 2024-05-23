@@ -9,7 +9,7 @@ namespace Autofac.Test.Core.Activators.Reflection;
 
 public class ConstructorBinderTests
 {
-    public class ThrowsInCtor
+    private class ThrowsInCtor
     {
         public const string Message = "Message";
 
@@ -19,14 +19,14 @@ public class ConstructorBinderTests
         }
     }
 
-    public class ServiceWithInParameter
+    private class ServiceWithInParameter
     {
         public ServiceWithInParameter(in int input)
         {
         }
     }
 
-    public class CtorWithDoubleParam
+    private class CtorWithDoubleParam
     {
         public double Value { get; }
 
@@ -42,7 +42,7 @@ public class ConstructorBinderTests
         B,
     }
 
-    public class CtorWithInt
+    private class CtorWithInt
     {
         public int Value { get; }
 
@@ -60,7 +60,7 @@ public class ConstructorBinderTests
         var dx = Assert.Throws<DependencyResolutionException>(() =>
             cpb.Instantiate());
 
-        Assert.Contains(nameof(ThrowsInCtor), dx.Message);
+        Assert.Contains(nameof(ThrowsInCtor), dx.Message, StringComparison.Ordinal);
         Assert.NotNull(dx.InnerException);
         Assert.Equal(ThrowsInCtor.Message, dx.InnerException.Message);
     }

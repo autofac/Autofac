@@ -9,7 +9,7 @@ namespace Autofac.Test.Core.Activators.Reflection;
 
 public class DefaultValueParameterTests
 {
-    public class HasDefaultValues
+    private class HasDefaultValues
     {
         public HasDefaultValues(string s, string t = "Hello", DateTime dt = default, Guid guid = default)
         {

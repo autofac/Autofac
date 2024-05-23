@@ -11,7 +11,7 @@ public class ComponentRegistrationLifetimeDecoratorTests
     [Fact]
     public void DecoratorCallsDisposeOnInnerInstance()
     {
-        var inner = Mocks.GetComponentRegistration();
+        using var inner = Mocks.GetComponentRegistration();
         var decorator = new ComponentRegistrationLifetimeDecorator(inner, CurrentScopeLifetime.Instance);
 
         decorator.Dispose();

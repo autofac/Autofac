@@ -1087,7 +1087,7 @@ public static class ResolutionExtensions
     /// True if a component providing the service is available.
     /// </returns>
     /// <exception cref="DependencyResolutionException"/>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="context" /> is <see langword="null" />.
     /// </exception>
     [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]

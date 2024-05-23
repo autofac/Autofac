@@ -7,15 +7,15 @@ namespace Autofac.Test;
 
 public class TypedParameterTests
 {
-    public class A
+    private class A
     {
     }
 
-    public class B : A
+    private class B : A
     {
     }
 
-    public class C
+    private class C
     {
         public C(A a)
         {
@@ -29,10 +29,12 @@ public class TypedParameterTests
 
         var typedParam = new TypedParameter(typeof(A), new A());
 
-        Assert.True(typedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
+        using var container = Factory.CreateEmptyContainer();
+
+        Assert.True(typedParam.CanSupplyValue(param, container, out Func<object> vp));
     }
 
-    private static System.Reflection.ParameterInfo AParamOfCConstructor()
+    private static ParameterInfo AParamOfCConstructor()
     {
         var param = typeof(C)
             .GetTypeInfo()
@@ -50,7 +52,8 @@ public class TypedParameterTests
 
         var typedParam = new TypedParameter(typeof(B), new B());
 
-        Assert.False(typedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
+        using var container = Factory.CreateEmptyContainer();
+        Assert.False(typedParam.CanSupplyValue(param, container, out Func<object> vp));
     }
 
     [Fact]
@@ -60,7 +63,8 @@ public class TypedParameterTests
 
         var typedParam = new TypedParameter(typeof(string), "Yo!");
 
-        Assert.False(typedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
+        using var container = Factory.CreateEmptyContainer();
+        Assert.False(typedParam.CanSupplyValue(param, container, out Func<object> vp));
     }
 
     [Fact]

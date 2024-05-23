@@ -11,7 +11,7 @@ public sealed class ConcurrencyTests
     [Fact]
     public void ConcurrentResolveOperationsForNonSharedInstancesFromDifferentLifetimes_DoNotBlock()
     {
-        var evt = new ManualResetEvent(false);
+        using var evt = new ManualResetEvent(false);
 
         var builder = new ContainerBuilder();
         builder.Register((c, p) =>

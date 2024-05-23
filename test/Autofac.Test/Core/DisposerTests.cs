@@ -13,9 +13,9 @@ public class DisposerTests
     {
         DisposeTracker lastDisposed = null;
 
-        var instance1 = new DisposeTracker();
+        using var instance1 = new DisposeTracker();
         instance1.Disposing += (s, e) => lastDisposed = instance1;
-        var instance2 = new DisposeTracker();
+        using var instance2 = new DisposeTracker();
         instance2.Disposing += (s, e) => lastDisposed = instance2;
 
         var disposer = new Disposer();
@@ -31,7 +31,7 @@ public class DisposerTests
     [Fact]
     public void OnDispose_DisposerDisposesContainedInstances()
     {
-        var instance = new DisposeTracker();
+        using var instance = new DisposeTracker();
         var disposer = new Disposer();
         disposer.AddInstanceForDisposal(instance);
         Assert.False(instance.IsDisposed);
@@ -42,7 +42,7 @@ public class DisposerTests
     [Fact]
     public void CannotAddObjectsToDisposerAfterSyncDispose()
     {
-        var instance = new DisposeTracker();
+        using var instance = new DisposeTracker();
 
         var disposer = new Disposer();
         disposer.AddInstanceForDisposal(instance);
@@ -60,7 +60,7 @@ public class DisposerTests
     [Fact]
     public async Task DisposerDisposesOfObjectsAsyncIfIAsyncDisposableDeclared()
     {
-        var instance = new AsyncDisposeTracker();
+        await using var instance = new AsyncDisposeTracker();
 
         var disposer = new Disposer();
         disposer.AddInstanceForDisposal(instance);
@@ -82,7 +82,7 @@ public class DisposerTests
     [Fact]
     public async Task DisposerDisposesOfObjectsSyncIfIDisposableOnly()
     {
-        var instance = new DisposeTracker();
+        using var instance = new DisposeTracker();
 
         var disposer = new Disposer();
         disposer.AddInstanceForDisposal(instance);
@@ -94,7 +94,7 @@ public class DisposerTests
     [Fact]
     public void DisposerDisposesOfObjectsSyncIfIAsyncDisposableDeclaredButSyncDisposeCalled()
     {
-        var instance = new AsyncDisposeTracker();
+        using var instance = new AsyncDisposeTracker();
 
         var disposer = new Disposer();
         disposer.AddInstanceForDisposal(instance);
@@ -108,7 +108,7 @@ public class DisposerTests
     [Fact]
     public async Task CannotAddObjectsToDisposerAfterAsyncDispose()
     {
-        var instance = new AsyncDisposeTracker();
+        await using var instance = new AsyncDisposeTracker();
 
         var disposer = new Disposer();
         disposer.AddInstanceForDisposal(instance);
@@ -125,6 +125,7 @@ public class DisposerTests
     }
 
     [Fact]
+    [SuppressMessage("CA2000", "CA2000", Justification = "Handles specific test case for async disposal over sync.")]
     public void SyncDisposalOnObjectWithNoIDisposableCanDispose()
     {
         var instance = new AsyncOnlyDisposeTracker();
@@ -142,13 +143,13 @@ public class DisposerTests
     {
         var disposeOrder = new List<object>();
 
-        var asyncInstance1 = new AsyncDisposeTracker();
+        await using var asyncInstance1 = new AsyncDisposeTracker();
         asyncInstance1.Disposing += (s, e) => disposeOrder.Add(asyncInstance1);
-        var asyncOnlyInstance2 = new AsyncOnlyDisposeTracker();
+        await using var asyncOnlyInstance2 = new AsyncOnlyDisposeTracker();
         asyncOnlyInstance2.Disposing += (s, e) => disposeOrder.Add(asyncOnlyInstance2);
-        var syncInstance3 = new DisposeTracker();
+        using var syncInstance3 = new DisposeTracker();
         syncInstance3.Disposing += (s, e) => disposeOrder.Add(syncInstance3);
-        var syncInstance4 = new DisposeTracker();
+        using var syncInstance4 = new DisposeTracker();
         syncInstance4.Disposing += (s, e) => disposeOrder.Add(syncInstance4);
 
         var disposer = new Disposer();

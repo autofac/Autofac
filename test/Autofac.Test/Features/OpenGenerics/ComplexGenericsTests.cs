@@ -8,73 +8,73 @@ namespace Autofac.Test.Features.OpenGenerics;
 
 public class ComplexGenericsTests
 {
-    public interface I1<T>
+    private interface I1<T>
     {
     }
 
-    public interface I2<T>
+    private interface I2<T>
     {
     }
 
-    public interface IConstrainedConstraint<T>
+    private interface IConstrainedConstraint<T>
         where T : IEquatable<int>
     {
     }
 
-    public interface IConstrainedConstraintWithAddedArgument<T1, T2> : IConstrainedConstraint<T2>
+    private interface IConstrainedConstraintWithAddedArgument<T1, T2> : IConstrainedConstraint<T2>
         where T2 : IEquatable<int>
     {
     }
 
-    public interface IConstrainedConstraintWithOnlyAddedArgument<T1> : IConstrainedConstraintWithAddedArgument<T1, int>
+    private interface IConstrainedConstraintWithOnlyAddedArgument<T1> : IConstrainedConstraintWithAddedArgument<T1, int>
     {
     }
 
-    public interface IConstraint<T>
+    private interface IConstraint<T>
     {
     }
 
-    public interface IConstraintWithAddedArgument<T2, T1> : IConstraint<T1>
+    private interface IConstraintWithAddedArgument<T2, T1> : IConstraint<T1>
     {
     }
 
-    public interface IDouble<T2, T3>
+    private interface IDouble<T2, T3>
     {
     }
 
-    public interface IDoubleGenericWithInModifier<in T1, T2>
+    private interface IDoubleGenericWithInModifier<in T1, T2>
     {
     }
 
-    public interface INested<T>
+    private interface INested<T>
     {
     }
 
-    public interface INested<T, TD>
+    private interface INested<T, TD>
     {
     }
 
-    public interface IOtherSimpleInterface
+    private interface IOtherSimpleInterface
     {
     }
 
-    public interface ISimpleInterface
+    private interface ISimpleInterface
     {
     }
 
-    public interface ISingle<T> : IDouble<T, int>
+    private interface ISingle<T> : IDouble<T, int>
     {
     }
 
-    public interface ISingleGeneric<T>
+    private interface ISingleGeneric<T>
     {
     }
 
-    public interface ISingleGenericWithInModifier<in T>
+    private interface ISingleGenericWithInModifier<in T>
     {
     }
 
-    public interface ISingleGenericWithOutModifier<out T>
+    private interface ISingleGenericWithOutModifier<out T>
     {
     }
 
@@ -96,10 +96,10 @@ public class ComplexGenericsTests
     {
         var builder = new ContainerBuilder();
 
-        builder.RegisterGeneric(typeof(CNestedConstrainted<,>))
+        builder.RegisterGeneric(typeof(CNestedConstrained<,>))
             .As(typeof(IDoubleGenericWithInModifier<,>));
 
-        builder.RegisterGeneric(typeof(COtherNestedConstrainted<,>))
+        builder.RegisterGeneric(typeof(COtherNestedConstrained<,>))
             .As(typeof(IDoubleGenericWithInModifier<,>));
 
         var container = builder.Build();
@@ -362,112 +362,112 @@ public class ComplexGenericsTests
     {
     }
 
-    public class C<T> : I1<T>, I2<T>
+    private class C<T> : I1<T>, I2<T>
     {
     }
 
-    public class CDerivedSingle<T> : ISingle<T>
+    private class CDerivedSingle<T> : ISingle<T>
     {
     }
 
-    public class CDoubleInheritGeneric<T> : ISingleGenericWithInModifier<ISingleGeneric<T>>, ISingleGenericWithInModifier<CGeneric<T>>
+    private class CDoubleInheritGeneric<T> : ISingleGenericWithInModifier<ISingleGeneric<T>>, ISingleGenericWithInModifier<CGeneric<T>>
     {
     }
 
-    public class CGeneric<T> : ISingleGeneric<T>
+    private class CGeneric<T> : ISingleGeneric<T>
     {
     }
 
-    public class CNested<T> : INested<Wrapper<T>>
+    private class CNested<T> : INested<Wrapper<T>>
     {
     }
 
-    public class CNestedConstrainted<T1, T2> : IDoubleGenericWithInModifier<T1, T2>
+    private class CNestedConstrained<T1, T2> : IDoubleGenericWithInModifier<T1, T2>
         where T2 : ISingleGenericWithOutModifier<ISimpleInterface>
     {
     }
 
-    public class CNestedDerived<T> : CNested<T>
+    private class CNestedDerived<T> : CNested<T>
     {
     }
 
-    public class CNestedDerivedReversed<TX, TY> : IDouble<TY, INested<Wrapper<TX>>>
+    private class CNestedDerivedReversed<TX, TY> : IDouble<TY, INested<Wrapper<TX>>>
     {
     }
 
-    public class CollectionConstrainedByClass<TInput, TCollection>
+    private class CollectionConstrainedByClass<TInput, TCollection>
         where TCollection : ConstraintClass<IEnumerable<TInput>>
     {
     }
 
-    public class CollectionOfStrings : ConstraintClass<IEnumerable<string>>
+    private class CollectionOfStrings : ConstraintClass<IEnumerable<string>>
     {
     }
 
-    public class Constrained<T1, T2>
+    private class Constrained<T1, T2>
         where T2 : IConstraint<T1>
     {
     }
 
-    public class ConstrainedWithGenericParameter<T1, T2>
+    private class ConstrainedWithGenericParameter<T1, T2>
         where T1 : T2
     {
     }
 
-    public class ConstraintClass<T>
+    private class ConstraintClass<T>
     {
     }
 
-    public class COther : IOtherSimpleInterface
+    private class COther : IOtherSimpleInterface
     {
     }
 
-    public class COtherNestedConstrainted<T1, T2> : IDoubleGenericWithInModifier<T1, T2>
+    private class COtherNestedConstrained<T1, T2> : IDoubleGenericWithInModifier<T1, T2>
         where T2 : ISingleGenericWithOutModifier<IOtherSimpleInterface>
     {
     }
 
-    public class CReversed<T2, T1> : IDouble<T1, T2>
+    private class CReversed<T2, T1> : IDouble<T1, T2>
     {
     }
 
-    public class CSimple : ISimpleInterface
+    private class CSimple : ISimpleInterface
     {
     }
 
-    public class MultiConstrained<T1, T2>
+    private class MultiConstrained<T1, T2>
         where T1 : IEquatable<int>
         where T2 : IConstrainedConstraint<T1>
     {
     }
 
-    public class SameTypes<TA, TB> : IDouble<TA, INested<IDouble<TB, TA>>>
+    private class SameTypes<TA, TB> : IDouble<TA, INested<IDouble<TB, TA>>>
     {
     }
 
-    public class SameTypes<TA, TB, TC> : IDouble<INested<TA>, INested<IDouble<TB, TC>>>
+    private class SameTypes<TA, TB, TC> : IDouble<INested<TA>, INested<IDouble<TB, TC>>>
     {
     }
 
-    public class Wrapper<T>
+    private class Wrapper<T>
     {
     }
 
-    public interface IBaseGeneric<TDerived>
+    private interface IBaseGeneric<TDerived>
         where TDerived : BaseGenericImplementation<TDerived>, new()
     {
     }
 
-    public class SelfReferenceConsumer<TSource> : IBaseGeneric<TSource>
+    private class SelfReferenceConsumer<TSource> : IBaseGeneric<TSource>
         where TSource : BaseGenericImplementation<TSource>, new()
     {
     }
 
-    public abstract class BaseGenericImplementation<TDerived>
+    private abstract class BaseGenericImplementation<TDerived>
     {
     }
 
-    public class DerivedSelfReferencing : BaseGenericImplementation<DerivedSelfReferencing>
+    private class DerivedSelfReferencing : BaseGenericImplementation<DerivedSelfReferencing>
     {
     }
 }

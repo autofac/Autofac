@@ -14,7 +14,7 @@ public class DiagnosticSourceExtensionsTests
     [Fact]
     public void MiddlewareFailure_CorrectEventContent()
     {
-        var source = new DiagnosticListener("Autofac");
+        using var source = new DiagnosticListener("Autofac");
         var subscriber = new MockSubscriber();
         subscriber.Enable(DiagnosticEventKeys.MiddlewareFailure);
         source.Subscribe(subscriber, subscriber.IsEnabled);
@@ -29,7 +29,7 @@ public class DiagnosticSourceExtensionsTests
     [Fact]
     public void MiddlewareStart_CorrectEventContent()
     {
-        var source = new DiagnosticListener("Autofac");
+        using var source = new DiagnosticListener("Autofac");
         var subscriber = new MockSubscriber();
         subscriber.Enable(DiagnosticEventKeys.MiddlewareStart);
         source.Subscribe(subscriber, subscriber.IsEnabled);
@@ -44,7 +44,7 @@ public class DiagnosticSourceExtensionsTests
     [Fact]
     public void MiddlewareSuccess_CorrectEventContent()
     {
-        var source = new DiagnosticListener("Autofac");
+        using var source = new DiagnosticListener("Autofac");
         var subscriber = new MockSubscriber();
         subscriber.Enable(DiagnosticEventKeys.MiddlewareSuccess);
         source.Subscribe(subscriber, subscriber.IsEnabled);
@@ -59,7 +59,7 @@ public class DiagnosticSourceExtensionsTests
     [Fact]
     public void OperationFailure_CorrectEventContent()
     {
-        var source = new DiagnosticListener("Autofac");
+        using var source = new DiagnosticListener("Autofac");
         var subscriber = new MockSubscriber();
         subscriber.Enable(DiagnosticEventKeys.OperationFailure);
         source.Subscribe(subscriber, subscriber.IsEnabled);
@@ -74,7 +74,7 @@ public class DiagnosticSourceExtensionsTests
     [Fact]
     public void OperationStart_CorrectEventContent()
     {
-        var source = new DiagnosticListener("Autofac");
+        using var source = new DiagnosticListener("Autofac");
         var subscriber = new MockSubscriber();
         subscriber.Enable(DiagnosticEventKeys.OperationStart);
         source.Subscribe(subscriber, subscriber.IsEnabled);
@@ -90,7 +90,7 @@ public class DiagnosticSourceExtensionsTests
     [Fact]
     public void OperationSuccess_CorrectEventContent()
     {
-        var source = new DiagnosticListener("Autofac");
+        using var source = new DiagnosticListener("Autofac");
         var subscriber = new MockSubscriber();
         subscriber.Enable(DiagnosticEventKeys.OperationSuccess);
         source.Subscribe(subscriber, subscriber.IsEnabled);
@@ -105,7 +105,7 @@ public class DiagnosticSourceExtensionsTests
     [Fact]
     public void RequestFailure_CorrectEventContent()
     {
-        var source = new DiagnosticListener("Autofac");
+        using var source = new DiagnosticListener("Autofac");
         var subscriber = new MockSubscriber();
         subscriber.Enable(DiagnosticEventKeys.RequestFailure);
         source.Subscribe(subscriber, subscriber.IsEnabled);
@@ -121,7 +121,7 @@ public class DiagnosticSourceExtensionsTests
     [Fact]
     public void RequestStart_CorrectEventContent()
     {
-        var source = new DiagnosticListener("Autofac");
+        using var source = new DiagnosticListener("Autofac");
         var subscriber = new MockSubscriber();
         subscriber.Enable(DiagnosticEventKeys.RequestStart);
         source.Subscribe(subscriber, subscriber.IsEnabled);
@@ -137,7 +137,7 @@ public class DiagnosticSourceExtensionsTests
     [Fact]
     public void RequestSuccess_CorrectEventContent()
     {
-        var source = new DiagnosticListener("Autofac");
+        using var source = new DiagnosticListener("Autofac");
         var subscriber = new MockSubscriber();
         subscriber.Enable(DiagnosticEventKeys.RequestSuccess);
         source.Subscribe(subscriber, subscriber.IsEnabled);

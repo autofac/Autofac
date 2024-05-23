@@ -137,6 +137,7 @@ public class TypeExtensionsTests
 
         private readonly Guid _instanceValue;
 
+        [SuppressMessage("CA1810", "CA1810", Justification = "Static constructor for test purposes.")]
         static DeclaredConstructorType()
         {
             StaticValue = Guid.NewGuid();

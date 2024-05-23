@@ -9,7 +9,7 @@ namespace Autofac.Test.Core;
 public class DelegatePropertySelectorTests
 {
     [AttributeUsage(AttributeTargets.Property)]
-    private class InjectPropertyAttribute : Attribute
+    private sealed class InjectPropertyAttribute : Attribute
     {
     }
 

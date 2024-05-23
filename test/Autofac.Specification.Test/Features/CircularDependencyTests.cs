@@ -30,7 +30,7 @@ public class CircularDependencyTests
     }
 
     [Fact]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("CA1031", "CA1031", Justification = "Handles a specific test case for #929.")]
+    [SuppressMessage("CA1031", "CA1031", Justification = "Handles a specific test case for #929.")]
     public void ActivationStackResetsOnFailedLambdaResolve()
     {
         // Issue #929

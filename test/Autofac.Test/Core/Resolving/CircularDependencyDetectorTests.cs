@@ -15,7 +15,7 @@ public class CircularDependencyDetectorTests
 
         var target = builder.Build();
         var de = Assert.Throws<DependencyResolutionException>(() => target.Resolve<object>());
-        Assert.Contains("λ:System.Object -> λ:System.Object", de.ToString());
-        Assert.DoesNotContain("λ:System.Object -> λ:System.Object -> λ:System.Object", de.Message);
+        Assert.Contains("λ:System.Object -> λ:System.Object", de.ToString(), StringComparison.Ordinal);
+        Assert.DoesNotContain("λ:System.Object -> λ:System.Object -> λ:System.Object", de.Message, StringComparison.Ordinal);
     }
 }

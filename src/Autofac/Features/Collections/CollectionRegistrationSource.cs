@@ -50,7 +50,7 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
     /// <param name="service">The service that was requested.</param>
     /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
     /// <returns>Registrations providing the service.</returns>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+    [SuppressMessage(
         "Reliability",
         "CA2000:Dispose objects before losing scope",
         Justification = "Activator lifetime controlled by registry.")]

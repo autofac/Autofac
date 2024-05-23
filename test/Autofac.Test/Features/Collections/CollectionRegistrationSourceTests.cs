@@ -9,7 +9,7 @@ namespace Autofac.Test.Features.Collections;
 
 public class CollectionRegistrationSourceTests
 {
-    public interface IFoo
+    private interface IFoo
     {
     }
 
@@ -252,15 +252,15 @@ public class CollectionRegistrationSourceTests
         Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<ReadOnlyCollection<string>>());
     }
 
-    public class Foo1 : IFoo
+    private class Foo1 : IFoo
     {
     }
 
-    public class Foo2 : IFoo
+    private class Foo2 : IFoo
     {
     }
 
-    public class Foo3 : IFoo
+    private class Foo3 : IFoo
     {
     }
 }

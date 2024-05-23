@@ -105,17 +105,18 @@ public class PropertyInjectionTests
         Assert.Equal(expected, instance.ByteList);
     }
 
-    public class HasNullableValueTypeArray
+    private class HasNullableValueTypeArray
     {
         public HasNullableValueTypeArray()
         {
             DoubleArray = new double?[] { null, 0.1, null };
         }
 
+        [SuppressMessage("CA1819", "CA1819", Justification = "Handles specific test case of an array property.")]
         public double?[] DoubleArray { get; set; }
     }
 
-    public class HasNullableValueTypeCollection
+    private class HasNullableValueTypeCollection
     {
         public HasNullableValueTypeCollection()
         {
@@ -128,7 +129,7 @@ public class PropertyInjectionTests
         public IReadOnlyCollection<double?> DoubleCollectionInterface { get; set; }
     }
 
-    public class HasNullableValueTypeList
+    private class HasNullableValueTypeList
     {
         public HasNullableValueTypeList()
         {
@@ -141,7 +142,7 @@ public class PropertyInjectionTests
         public IList<double?> DoubleListInterface { get; set; }
     }
 
-    public class HasValueTypeArray
+    private class HasValueTypeArray
     {
         public HasValueTypeArray()
         {
@@ -151,7 +152,7 @@ public class PropertyInjectionTests
         public byte[] ByteArray { get; set; }
     }
 
-    public class HasValueTypeCollection
+    private class HasValueTypeCollection
     {
         public HasValueTypeCollection()
         {
@@ -164,7 +165,7 @@ public class PropertyInjectionTests
         public ICollection<byte> ByteCollectionInterface { get; set; }
     }
 
-    public class HasValueTypeList
+    private class HasValueTypeList
     {
         public HasValueTypeList()
         {

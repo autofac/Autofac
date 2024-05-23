@@ -73,8 +73,8 @@ public class ScanningRegistrationTests
     {
         var cb = new ContainerBuilder();
         cb.RegisterAssemblyTypes(typeof(AComponent).GetTypeInfo().Assembly)
-            .Where(t => t.Name.StartsWith("A"))
-            .Where(t => t.Name.StartsWith("AC"));
+            .Where(t => t.Name.StartsWith('A'))
+            .Where(t => t.Name.StartsWith("AC", StringComparison.Ordinal));
         var c = cb.Build();
 
         c.AssertRegistered<AComponent>();
@@ -402,7 +402,7 @@ public class ScanningRegistrationTests
     }
 
     /// <summary>
-    /// Test class used in the <see cref="ScanningRegistrationTests.PreserveExistingDefaults"/> test case.
+    /// Test class used in the <see cref="PreserveExistingDefaults"/> test case.
     /// </summary>
     private class AnExistingComponent : IAService
     {

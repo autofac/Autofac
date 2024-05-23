@@ -20,7 +20,7 @@ public class DeferredCallback
     /// An <see cref="Action{T}"/> that executes a registration action
     /// against an <see cref="IComponentRegistryBuilder"/>.
     /// </param>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="callback" /> is <see langword="null" />.
     /// </exception>
     public DeferredCallback(Action<IComponentRegistryBuilder> callback)
@@ -36,7 +36,7 @@ public class DeferredCallback
     /// An <see cref="Action{T}"/> that executes a registration action
     /// against an <see cref="IComponentRegistryBuilder"/>.
     /// </value>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     public Action<IComponentRegistryBuilder> Callback

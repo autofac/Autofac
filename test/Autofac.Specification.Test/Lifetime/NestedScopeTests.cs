@@ -5,8 +5,8 @@ namespace Autofac.Specification.Test.Lifetime;
 
 /// <summary>
 /// Tests involving the lifetime of a nested scope. Tests for registering objects in a nested scope are
-/// in <see cref="Autofac.Specification.Test.Registration.NestedScopeRegistrationTests"/>. Tests for specifics
-/// around disposal are in <see cref="Autofac.Specification.Test.Lifetime.DisposalTests"/> or in the fixture
+/// in <see cref="Registration.NestedScopeRegistrationTests"/>. Tests for specifics
+/// around disposal are in <see cref="DisposalTests"/> or in the fixture
 /// for the specific lifetime model being tested (singleton, provided instance, etc.).
 /// </summary>
 public class NestedScopeTests

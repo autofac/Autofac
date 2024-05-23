@@ -407,7 +407,7 @@ public class PipelineBuilderTests
                         new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (context, next) => { })));
 
         // Confirm phase content.
-        Assert.Contains("[RegistrationPipelineStart, ParameterSelection, Activation]", ex.Message);
+        Assert.Contains("[RegistrationPipelineStart, ParameterSelection, Activation]", ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]

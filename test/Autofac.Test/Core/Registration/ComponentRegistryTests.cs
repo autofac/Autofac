@@ -15,14 +15,14 @@ public class ComponentRegistryTests
     [Fact]
     public void Register_DoesNotAcceptNull()
     {
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         Assert.Throws<ArgumentNullException>(() => registryBuilder.Register(null));
     }
 
     [Fact]
     public void WhenNoImplementationsRegistered_RegistrationsForServiceIncludeDynamicSources()
     {
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.AddRegistrationSource(new ObjectRegistrationSource());
         var registry = registryBuilder.Build();
 
@@ -38,7 +38,7 @@ public class ComponentRegistryTests
         ComponentRegisteredEventArgs args = null;
         var eventCount = 0;
 
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.Registered += (sender, e) =>
         {
             eventSender = sender;
@@ -46,7 +46,7 @@ public class ComponentRegistryTests
             ++eventCount;
         };
 
-        var registration = Factory.CreateSingletonObjectRegistration();
+        using var registration = Factory.CreateSingletonObjectRegistration();
         registryBuilder.Register(registration);
 
         Assert.Equal(1, eventCount);
@@ -60,10 +60,10 @@ public class ComponentRegistryTests
     [Fact]
     public void WhenMultipleProvidersOfServiceExist_DefaultRegistrationIsMostRecent()
     {
-        var r1 = Factory.CreateSingletonObjectRegistration();
-        var r2 = Factory.CreateSingletonObjectRegistration();
+        using var r1 = Factory.CreateSingletonObjectRegistration();
+        using var r2 = Factory.CreateSingletonObjectRegistration();
 
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
 
         registryBuilder.Register(r1);
         registryBuilder.Register(r2);
@@ -77,7 +77,7 @@ public class ComponentRegistryTests
     [Fact]
     public void WhenNoImplementers_TryGetRegistrationReturnsFalse()
     {
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         var registry = registryBuilder.Build();
         Assert.False(registry.TryGetRegistration(new TypedService(typeof(object)), out _));
     }
@@ -85,7 +85,7 @@ public class ComponentRegistryTests
     [Fact]
     public void WhenNoImplementerIsDirectlyRegistered_RegistrationCanBeProvidedDynamically()
     {
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.AddRegistrationSource(new ObjectRegistrationSource());
         var registry = registryBuilder.Build();
         Assert.True(registry.TryGetRegistration(new TypedService(typeof(object)), out _));
@@ -94,9 +94,9 @@ public class ComponentRegistryTests
     [Fact]
     public void WhenRegistrationProvidedExplicitlyAndThroughRegistrationSource_ExplicitRegistrationIsDefault()
     {
-        var r = Factory.CreateSingletonObjectRegistration();
+        using var r = Factory.CreateSingletonObjectRegistration();
 
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.Register(r);
         registryBuilder.AddRegistrationSource(new ObjectRegistrationSource());
         var registry = registryBuilder.Build();
@@ -109,9 +109,9 @@ public class ComponentRegistryTests
     [Fact]
     public void WhenRegistrationProvidedExplicitlyAndThroughRegistrationSource_BothAreReturnedFromRegistrationsFor()
     {
-        var r = Factory.CreateSingletonObjectRegistration();
+        using var r = Factory.CreateSingletonObjectRegistration();
 
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.Register(r);
         registryBuilder.AddRegistrationSource(new ObjectRegistrationSource());
         var registry = registryBuilder.Build();
@@ -129,9 +129,9 @@ public class ComponentRegistryTests
     [Fact]
     public void WhenRegistrationProvidedExplicitlyAndThroughRegistrationSource_Reordered_BothAreReturnedFromRegistrationsFor()
     {
-        var r = Factory.CreateSingletonObjectRegistration();
+        using var r = Factory.CreateSingletonObjectRegistration();
 
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.AddRegistrationSource(new ObjectRegistrationSource());
         registryBuilder.Register(r);
         var registry = registryBuilder.Build();
@@ -185,7 +185,7 @@ public class ComponentRegistryTests
     [Fact]
     public void WhenARegistrationSourceQueriesForTheSameService_ItIsNotRecursivelyQueried()
     {
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.AddRegistrationSource(new RecursiveRegistrationSource());
         var registry = registryBuilder.Build();
 
@@ -195,10 +195,10 @@ public class ComponentRegistryTests
     [Fact]
     public void WhenRegistrationsAddedBeforeAndAfterSource_BothAreSeenBySource()
     {
-        var r1 = Factory.CreateSingletonObjectRegistration();
-        var r2 = Factory.CreateSingletonObjectRegistration();
+        using var r1 = Factory.CreateSingletonObjectRegistration();
+        using var r2 = Factory.CreateSingletonObjectRegistration();
 
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.Register(r1);
         registryBuilder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
         registryBuilder.Register(r2);
@@ -214,7 +214,7 @@ public class ComponentRegistryTests
     {
         var first = new object();
         var second = new object();
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
 
         registryBuilder.AddRegistrationSource(new ObjectRegistrationSource(first));
         registryBuilder.AddRegistrationSource(new ObjectRegistrationSource(second));
@@ -232,11 +232,11 @@ public class ComponentRegistryTests
     [Fact]
     public void AfterResolvingAdapter_AddingMoreAdaptees_AddsMoreAdapters()
     {
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.AddRegistrationSource(new MetaRegistrationSource());
         var metaService = new TypedService(typeof(Meta<object>));
 
-        var first = RegistrationBuilder.ForType<object>().CreateRegistration();
+        using var first = RegistrationBuilder.ForType<object>().CreateRegistration();
         registryBuilder.Register(first);
 
         using (var container = new Container(registryBuilder.Build()))
@@ -244,7 +244,7 @@ public class ComponentRegistryTests
             var meta1 = container.ComponentRegistry.RegistrationsFor(metaService);
             Assert.Single(meta1);
 
-            var second = RegistrationBuilder.ForType<object>().CreateRegistration();
+            using var second = RegistrationBuilder.ForType<object>().CreateRegistration();
 
             using (var lifetimeScope = container.BeginLifetimeScope(builder => builder.ComponentRegistryBuilder.Register(second)))
             {
@@ -258,7 +258,7 @@ public class ComponentRegistryTests
     [Fact]
     public void AdaptingAGeneratedServiceYieldsASingleAdapter()
     {
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.AddRegistrationSource(new MetaRegistrationSource());
         registryBuilder.AddRegistrationSource(new CollectionRegistrationSource());
         var registry = registryBuilder.Build();
@@ -271,7 +271,7 @@ public class ComponentRegistryTests
     [Fact]
     public void AdaptingAnAdapterYieldsASingleAdapter()
     {
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
         registryBuilder.AddRegistrationSource(new MetaRegistrationSource());
         registryBuilder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
@@ -285,7 +285,7 @@ public class ComponentRegistryTests
     [Fact]
     public void AfterResolvingAdapterType_AddingAnAdapter_AddsAdaptingComponents()
     {
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
         var adapterService = new TypedService(typeof(Func<object>));
 
@@ -306,7 +306,7 @@ public class ComponentRegistryTests
     [Fact]
     public void AddingConcreteImplementationWhenAdapterImplementationsExist_AddsChainedAdapters()
     {
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
         registryBuilder.AddRegistrationSource(new MetaRegistrationSource());
         registryBuilder.Register(RegistrationBuilder.ForType<object>().CreateRegistration());
@@ -331,7 +331,7 @@ public class ComponentRegistryTests
     [Fact]
     public void WhenAdaptersAreAppliedButNoRegistrationsCreated_AddingAdapteesAddsAdapters()
     {
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
         registryBuilder.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
         var adapterService = new TypedService(typeof(Func<object>));
 
@@ -351,7 +351,7 @@ public class ComponentRegistryTests
     [Fact]
     public void WhenASourceIsAddedToTheRegistry_TheSourceAddedEventIsRaised()
     {
-        var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
 
         object sender = null;
         RegistrationSourceAddedEventArgs args = null;

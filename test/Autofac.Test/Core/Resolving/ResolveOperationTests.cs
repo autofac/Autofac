@@ -13,14 +13,14 @@ public class ResolveOperationTests
     public void NullLifetimeScope_ThrowsArgumentNullException()
     {
         var ex = Assert.Throws<ArgumentNullException>(() => new ResolveOperation(null!, new DiagnosticListener("SomeListener")));
-        Assert.Contains("(Parameter 'mostNestedLifetimeScope')", ex.Message);
+        Assert.Contains("(Parameter 'mostNestedLifetimeScope')", ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]
     public void NullDiagnosticSource_ThrowsArgumentNullException()
     {
         var ex = Assert.Throws<ArgumentNullException>(() => new ResolveOperation(Substitute.For<ISharingLifetimeScope>(), null!));
-        Assert.Contains("(Parameter 'diagnosticSource')", ex.Message);
+        Assert.Contains("(Parameter 'diagnosticSource')", ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]

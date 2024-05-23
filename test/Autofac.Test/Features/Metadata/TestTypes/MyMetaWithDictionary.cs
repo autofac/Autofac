@@ -7,6 +7,7 @@ public class MyMetaWithDictionary
 {
     public MyMetaWithDictionary(IDictionary<string, object> metadata)
     {
+        ArgumentNullException.ThrowIfNull(metadata);
         TheName = (string)metadata["Name"];
     }
 

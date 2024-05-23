@@ -143,7 +143,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     }
 
     /// <summary>
-    /// Gets the <see cref="System.Diagnostics.DiagnosticListener"/> to which
+    /// Gets the <see cref="DiagnosticListener"/> to which
     /// trace events should be written.
     /// </summary>
     internal DiagnosticListener DiagnosticSource { get; }

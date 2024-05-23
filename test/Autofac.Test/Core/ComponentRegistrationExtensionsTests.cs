@@ -63,7 +63,8 @@ public class ComponentRegistrationExtensionsTests
     {
         var services = new Service[] { new TypedService(typeof(object)) };
 
-        var registration = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
+        using var activator = Factory.CreateProvidedInstanceActivator(new object());
+        using var registration = Factory.CreateSingletonRegistration(services, activator);
 
         Assert.Throws<ArgumentNullException>(() => registration.ConfigurePipeline(null));
     }
@@ -73,9 +74,10 @@ public class ComponentRegistrationExtensionsTests
     {
         var services = new Service[] { new TypedService(typeof(object)) };
 
-        var registration = Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
+        using var activator = Factory.CreateProvidedInstanceActivator(new object());
+        using var registration = Factory.CreateSingletonRegistration(services, activator);
 
-        var builder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var builder = Factory.CreateEmptyComponentRegistryBuilder();
         builder.Register(registration);
 
         builder.Build();

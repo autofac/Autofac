@@ -2,6 +2,8 @@
 <RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac assemblies." ToolsVersion="16.0">
   <IncludeAll Action="Warning" />
   <Rules AnalyzerId="Microsoft.Usage" RuleNamespace="Microsoft.Usage">
+    <!-- Don't catch general exceptions - test scenarios sometimes require general exception handling. -->
+    <Rule Id="CA1031" Action="None" />
     <!-- Implement standard exception constructors - not all of the exception constructors (e.g., parameterless) are desired in our system. -->
     <Rule Id="CA1032" Action="None" />
     <!-- Avoid empty interfaces - in unit tests for service resolution, this happens a lot. -->
@@ -22,10 +24,14 @@
     <Rule Id="CA1852" Action="None" />
     <!-- Prefer static readonly fields over constant array arguments - constant array arguments happen a lot in unit tests for assertions and test setup. -->
     <Rule Id="CA1861" Action="None" />
+    <!-- Cache a CompositeFormat object for use in String.Format - this makes unit tests harder to read, and performance isn't an issue. -->
+    <Rule Id="CA1863" Action="None" />
     <!-- Call ConfigureAwait on tasks - you shouldn't do this in unit test libraries; XUnit has an opposite analyzer. -->
     <Rule Id="CA2007" Action="None" />
     <!-- Implement serialization constructors - false positive when building .NET Core. -->
     <Rule Id="CA2229" Action="None" />
+    <!-- Use Uri instead of string parameters - strings are easier for testing. -->
+    <Rule Id="CA2234" Action="None" />
     <!-- Mark ISerializable types with SerializableAttribute - false positive when building .NET Core. -->
     <Rule Id="CA2237" Action="None" />
   </Rules>

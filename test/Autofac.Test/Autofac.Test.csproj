@@ -16,6 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="NSubstitute" />
     <Using Include="Xunit" />
   </ItemGroup>

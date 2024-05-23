@@ -66,7 +66,7 @@ public class MostParametersConstructorSelectorTests
             .ToArray();
     }
 
-    public class ThreeConstructors
+    private class ThreeConstructors
     {
         public ThreeConstructors()
         {
@@ -81,7 +81,7 @@ public class MostParametersConstructorSelectorTests
         }
     }
 
-    public class OneValidConstructorOneInvalid
+    private class OneValidConstructorOneInvalid
     {
         public OneValidConstructorOneInvalid(int i)
         {

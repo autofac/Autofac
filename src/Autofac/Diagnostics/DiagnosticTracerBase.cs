@@ -43,7 +43,7 @@ namespace Autofac.Diagnostics;
 /// </para>
 /// <para>
 /// Finally, if you want to use this as a base but to listen for your custom events,
-/// you can derive from this and override the <see cref="DiagnosticTracerBase.Write(string, object)"/>
+/// you can derive from this and override the <see cref="Write(string, object)"/>
 /// method. Handle your custom events, or if it's not one of your custom events, call
 /// the base to handle the Autofac events.
 /// </para>

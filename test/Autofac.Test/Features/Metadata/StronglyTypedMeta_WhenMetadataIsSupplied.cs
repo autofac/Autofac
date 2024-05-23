@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Globalization;
 using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Features.Metadata;
@@ -74,7 +75,7 @@ public class StronglyTypedMeta_WhenMetadataIsSupplied
             () => _container.Resolve<Meta<object, MyMetaWithInvalidConstructor>>());
 
         var typeName = typeof(MyMetaWithInvalidConstructor).Name;
-        var message = string.Format(MetadataViewProviderResources.InvalidViewImplementation, typeName);
+        var message = string.Format(CultureInfo.InvariantCulture, MetadataViewProviderResources.InvalidViewImplementation, typeName);
 
         Assert.Equal(message, exception.Message);
     }

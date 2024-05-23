@@ -116,7 +116,7 @@ public static class RegistrationExtensions
     /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
     /// <param name="registration">Registration to change parameter mapping mode of.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="registration" /> is <see langword="null" />.
     /// </exception>
     [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
@@ -144,7 +144,7 @@ public static class RegistrationExtensions
     /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
     /// <param name="registration">Registration to change parameter mapping mode of.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="registration" /> is <see langword="null" />.
     /// </exception>
     [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
@@ -172,7 +172,7 @@ public static class RegistrationExtensions
     /// <typeparam name="TSingleRegistrationStyle">Registration style.</typeparam>
     /// <param name="registration">Registration to change parameter mapping mode of.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="registration" /> is <see langword="null" />.
     /// </exception>
     [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]

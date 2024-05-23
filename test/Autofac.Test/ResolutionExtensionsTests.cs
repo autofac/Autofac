@@ -14,19 +14,20 @@ public class ResolutionExtensionsTests
     [Fact]
     public void ResolvingUnregisteredService_ProvidesDescriptionInException()
     {
-        var target = Factory.CreateEmptyContainer();
+        using var target = Factory.CreateEmptyContainer();
         var ex = Assert.Throws<ComponentNotRegisteredException>(() => target.Resolve<object>());
-        Assert.Contains("System.Object", ex.Message);
+        Assert.Contains("System.Object", ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]
     public void WhenComponentIsRegistered_IsRegisteredReturnsTrueForAllServices()
     {
-        var registration = Factory.CreateSingletonRegistration(
+        using var activator = Factory.CreateProvidedInstanceActivator("Hello");
+        using var registration = Factory.CreateSingletonRegistration(
             new[] { new TypedService(typeof(object)), new TypedService(typeof(string)) },
-            Factory.CreateProvidedInstanceActivator("Hello"));
+            activator);
 
-        var builder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var builder = Factory.CreateEmptyComponentRegistryBuilder();
         builder.Register(registration);
         var target = new ContainerBuilder(builder).Build();
 
@@ -37,10 +38,12 @@ public class ResolutionExtensionsTests
     [Fact]
     public void WhenServiceIsRegistered_ResolveOptionalReturnsAnInstance()
     {
-        var builder = Factory.CreateEmptyComponentRegistryBuilder();
-        builder.Register(Factory.CreateSingletonRegistration(
+        using var activator = new ProvidedInstanceActivator("Hello");
+        using var builder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var registration = Factory.CreateSingletonRegistration(
             new[] { new TypedService(typeof(string)) },
-            new ProvidedInstanceActivator("Hello")));
+            activator);
+        builder.Register(registration);
 
         var target = new ContainerBuilder(builder).Build();
 
@@ -52,7 +55,7 @@ public class ResolutionExtensionsTests
     [Fact]
     public void WhenServiceNotRegistered_ResolveOptionalReturnsNull()
     {
-        var target = Factory.CreateEmptyContainer();
+        using var target = Factory.CreateEmptyContainer();
         var inst = target.ResolveOptional<string>();
         Assert.Null(inst);
     }
@@ -140,7 +143,7 @@ public class ResolutionExtensionsTests
     [Fact]
     public void WhenServiceIsNotRegistered_TryResolveNamedReturnsFalse()
     {
-        var container = Factory.CreateEmptyContainer();
+        using var container = Factory.CreateEmptyContainer();
 
         Assert.False(container.TryResolveNamed<object>("name", out var o));
         Assert.Null(o);
@@ -163,7 +166,7 @@ public class ResolutionExtensionsTests
     [Fact]
     public void WhenServiceIsNotRegistered_TryResolveKeyedReturnsFalse()
     {
-        var container = Factory.CreateEmptyContainer();
+        using var container = Factory.CreateEmptyContainer();
 
         Assert.False(container.TryResolveKeyed<object>("name", out var o));
         Assert.Null(o);

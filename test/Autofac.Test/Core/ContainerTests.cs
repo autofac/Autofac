@@ -16,11 +16,12 @@ public class ContainerTests
     {
         string name = "name";
 
-        var r = Factory.CreateSingletonRegistration(
+        using var activator = Factory.CreateProvidedInstanceActivator(new object());
+        using var r = Factory.CreateSingletonRegistration(
             new Service[] { new KeyedService(name, typeof(string)) },
-            Factory.CreateReflectionActivator(typeof(object)));
+            activator);
 
-        var builder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var builder = Factory.CreateEmptyComponentRegistryBuilder();
         builder.Register(r);
 
         var c = new ContainerBuilder(builder).Build();
@@ -118,7 +119,7 @@ public class ContainerTests
     [Fact]
     public void ContainerProvidesILifetimeScopeAndIContext()
     {
-        var container = Factory.CreateEmptyContainer();
+        using var container = Factory.CreateEmptyContainer();
         Assert.True(container.IsRegistered<ILifetimeScope>());
         Assert.True(container.IsRegistered<IComponentContext>());
     }
@@ -126,7 +127,7 @@ public class ContainerTests
     [Fact]
     public void ResolvingLifetimeScopeProvidesCurrentScope()
     {
-        var c = Factory.CreateEmptyContainer();
+        using var c = Factory.CreateEmptyContainer();
         var l = c.BeginLifetimeScope();
         Assert.Same(l, l.Resolve<ILifetimeScope>());
     }
@@ -134,7 +135,7 @@ public class ContainerTests
     [Fact]
     public void ResolvingComponentContextProvidesCurrentScope()
     {
-        var c = Factory.CreateEmptyContainer();
+        using var c = Factory.CreateEmptyContainer();
         var l = c.BeginLifetimeScope();
         Assert.Same(l, l.Resolve<IComponentContext>());
     }

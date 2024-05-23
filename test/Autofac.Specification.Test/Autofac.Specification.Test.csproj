@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="Xunit" />
   </ItemGroup>
 

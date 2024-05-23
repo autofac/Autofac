@@ -34,6 +34,7 @@ public static class ActivatorPipelineExtensions
     /// <returns>A func to call that invokes the pipeline.</returns>
     public static Func<ILifetimeScope, IEnumerable<Parameter>, T> GetPipelineInvoker<T>(this IInstanceActivator activator, IComponentRegistry registry)
     {
+        ArgumentNullException.ThrowIfNull(activator);
         var services = new RegistryServices(registry);
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Registration);
 

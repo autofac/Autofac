@@ -13,9 +13,6 @@
         "kind": "build"
       },
       "label": "build",
-      "presentation": {
-        "reveal": "silent"
-      },
       "problemMatcher": "$msCompile",
       "type": "shell"
     },

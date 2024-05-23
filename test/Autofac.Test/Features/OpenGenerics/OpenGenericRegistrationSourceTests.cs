@@ -12,11 +12,11 @@ namespace Autofac.Test.Features.OpenGenerics;
 
 public class OpenGenericRegistrationSourceTests
 {
-    public interface I<T>
+    private interface I<T>
     {
     }
 
-    public class A1<T> : DisposeTracker, I<T>
+    private class A1<T> : DisposeTracker, I<T>
     {
     }
 
@@ -40,7 +40,7 @@ public class OpenGenericRegistrationSourceTests
         Assert.IsType<A1<int>>(activatedInstance);
     }
 
-    public class AWithNew<T> : I<T>
+    private class AWithNew<T> : I<T>
         where T : new()
     {
     }
@@ -51,7 +51,7 @@ public class OpenGenericRegistrationSourceTests
         Assert.False(CanGenerateActivatorForI<string>(typeof(AWithNew<>)));
     }
 
-    public class PWithNew
+    private class PWithNew
     {
     }
 
@@ -61,7 +61,7 @@ public class OpenGenericRegistrationSourceTests
         Assert.True(CanGenerateActivatorForI<PWithNew>(typeof(AWithNew<>)));
     }
 
-    public class AWithDisposable<T> : I<T>
+    private class AWithDisposable<T> : I<T>
         where T : IDisposable
     {
     }
@@ -78,7 +78,7 @@ public class OpenGenericRegistrationSourceTests
         Assert.True(CanGenerateActivatorForI<DisposeTracker>(typeof(AWithDisposable<>)));
     }
 
-    public class AWithClass<T> : I<T>
+    private class AWithClass<T> : I<T>
         where T : class
     {
     }
@@ -95,7 +95,7 @@ public class OpenGenericRegistrationSourceTests
         Assert.True(CanGenerateActivatorForI<string>(typeof(AWithClass<>)));
     }
 
-    public class AWithValue<T> : I<T>
+    private class AWithValue<T> : I<T>
         where T : struct
     {
     }
@@ -121,11 +121,11 @@ public class OpenGenericRegistrationSourceTests
         return rs.Count() == 1;
     }
 
-    public interface ITwoParams<T, TU>
+    private interface ITwoParams<T, TU>
     {
     }
 
-    public class TwoParams<T, TU> : ITwoParams<T, TU>
+    private class TwoParams<T, TU> : ITwoParams<T, TU>
     {
     }
 
@@ -149,15 +149,15 @@ public class OpenGenericRegistrationSourceTests
         Assert.Single(rs);
     }
 
-    public interface IEntity<TId>
+    private interface IEntity<TId>
     {
     }
 
-    public class EntityOfInt : IEntity<int>
+    private class EntityOfInt : IEntity<int>
     {
     }
 
-    public class Repository<T, TId>
+    private class Repository<T, TId>
         where T : IEntity<TId>
     {
     }
@@ -172,27 +172,27 @@ public class OpenGenericRegistrationSourceTests
         Assert.Single(rs);
     }
 
-    public interface IHaveNoParameters
+    private interface IHaveNoParameters
     {
     }
 
-    public interface IHaveOneParameter<T>
+    private interface IHaveOneParameter<T>
     {
     }
 
-    public interface IHaveTwoParameters<T, TU>
+    private interface IHaveTwoParameters<T, TU>
     {
     }
 
-    public interface IHaveThreeParameters<T, TU, TV>
+    private interface IHaveThreeParameters<T, TU, TV>
     {
     }
 
-    public class HaveTwoParameters<T, TU> : IHaveThreeParameters<T, TU, TU>, IHaveTwoParameters<T, T>, IHaveOneParameter<T>, IHaveNoParameters
+    private class HaveTwoParameters<T, TU> : IHaveThreeParameters<T, TU, TU>, IHaveTwoParameters<T, T>, IHaveOneParameter<T>, IHaveNoParameters
     {
     }
 
-    public interface IUnrelated
+    private interface IUnrelated
     {
     }
 
@@ -238,8 +238,8 @@ public class OpenGenericRegistrationSourceTests
         var source = ConstructSource(component, service);
 
         var closedServiceType = typeof(TClosedService);
-        var registrations = source.RegistrationsFor(new TypedService(closedServiceType), s => Enumerable.Empty<ServiceRegistration>());
-        if (registrations.Count() != 1)
+        var registrations = source.RegistrationsFor(new TypedService(closedServiceType), s => Enumerable.Empty<ServiceRegistration>()).ToList();
+        if (registrations.Count != 1)
         {
             return false;
         }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Globalization;
 using Autofac.Core;
 using Autofac.Features.Metadata;
 using Autofac.Test.Features.Metadata.TestTypes;
@@ -26,7 +27,7 @@ public class StronglyTypedMeta_WhenNoMatchingMetadataIsSupplied
             () => _container.Resolve<Meta<object, MyMeta>>());
 
         var propertyName = ReflectionExtensions.GetProperty<MyMeta, int>(x => x.TheInt).Name;
-        var message = string.Format(MetadataViewProviderResources.MissingMetadata, propertyName);
+        var message = string.Format(CultureInfo.InvariantCulture, MetadataViewProviderResources.MissingMetadata, propertyName);
 
         Assert.Equal(message, exception.InnerException.Message);
     }
