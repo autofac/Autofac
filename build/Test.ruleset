@@ -4,6 +4,10 @@
   <Rules AnalyzerId="Microsoft.Usage" RuleNamespace="Microsoft.Usage">
     <!-- Implement standard exception constructors - not all of the exception constructors (e.g., parameterless) are desired in our system. -->
     <Rule Id="CA1032" Action="None" />
+    <!-- Avoid empty interfaces - in unit tests for service resolution, this happens a lot. -->
+    <Rule Id="CA1040" Action="None" />
+    <!-- Use ArgumentNullException.ThrowIfNull - this isn't available until we stop targeting netstandard. -->
+    <Rule Id="CA1510" Action="None" />
     <!-- Remove the underscores from member name - unit test scenarios may use underscores. -->
     <Rule Id="CA1707" Action="None" />
     <!-- Change names to avoid reserved word overlaps (e.g., Delegate, GetType, etc.) - too many of these in the public API, we'd break if we fixed it. -->

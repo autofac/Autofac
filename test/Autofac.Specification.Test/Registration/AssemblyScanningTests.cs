@@ -7,7 +7,7 @@ namespace Autofac.Specification.Test.Registration;
 
 public class AssemblyScanningTests
 {
-    public interface IMyService
+    private interface IMyService
     {
     }
 
@@ -23,11 +23,11 @@ public class AssemblyScanningTests
         Assert.False(container.TryResolve(typeof(MyComponent2), out obj));
     }
 
-    public sealed class MyComponent : IMyService
+    private sealed class MyComponent : IMyService
     {
     }
 
-    public sealed class MyComponent2
+    private sealed class MyComponent2
     {
     }
 }

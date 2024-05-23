@@ -11,7 +11,7 @@ public class ProvidedInstanceTests
     public void ResolvedProvidedInstances_DisposedWithLifetimeScope()
     {
         var builder = new ContainerBuilder();
-        var disposable = new DisposeTracker();
+        using var disposable = new DisposeTracker();
         builder.RegisterInstance(disposable);
         var container = builder.Build();
         container.Resolve<DisposeTracker>();
@@ -27,7 +27,7 @@ public class ProvidedInstanceTests
         // Issue 383: Disposing a container should only dispose a provided instance one time.
         var builder = new ContainerBuilder();
         var count = 0;
-        var disposable = new DisposeTracker();
+        using var disposable = new DisposeTracker();
         disposable.Disposing += (sender, e) => count++;
         builder.RegisterInstance(disposable);
         var container = builder.Build();
@@ -42,7 +42,7 @@ public class ProvidedInstanceTests
     public void ResolvedProvidedInstances_DisposedWithNestedLifetimeScope()
     {
         var builder = new ContainerBuilder();
-        var disposable = new DisposeTracker();
+        using var disposable = new DisposeTracker();
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
         scope.Resolve<DisposeTracker>();
@@ -58,7 +58,7 @@ public class ProvidedInstanceTests
         // Issue 383: Disposing a container should only dispose a provided instance one time.
         var builder = new ContainerBuilder();
         var count = 0;
-        var disposable = new DisposeTracker();
+        using var disposable = new DisposeTracker();
         disposable.Disposing += (sender, e) => count++;
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
@@ -75,7 +75,7 @@ public class ProvidedInstanceTests
     public void ResolvedProvidedInstances_NotOwnedByLifetimeScope_NeverDisposed()
     {
         var builder = new ContainerBuilder();
-        var disposable = new DisposeTracker();
+        using var disposable = new DisposeTracker();
         builder.RegisterInstance(disposable).ExternallyOwned();
         var container = builder.Build();
         container.Resolve<DisposeTracker>();
@@ -89,7 +89,7 @@ public class ProvidedInstanceTests
     public void ResolvedProvidedInstances_NotOwnedByNestedLifetimeScope_NeverDisposed()
     {
         var builder = new ContainerBuilder();
-        var disposable = new DisposeTracker();
+        using var disposable = new DisposeTracker();
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable).ExternallyOwned());
         scope.Resolve<DisposeTracker>();
@@ -105,7 +105,7 @@ public class ProvidedInstanceTests
     public void UnresolvedProvidedInstances_DisposedWithLifetimeScope()
     {
         var builder = new ContainerBuilder();
-        var disposable = new DisposeTracker();
+        using var disposable = new DisposeTracker();
         builder.RegisterInstance(disposable);
         var container = builder.Build();
 
@@ -119,7 +119,7 @@ public class ProvidedInstanceTests
     {
         var builder = new ContainerBuilder();
         var count = 0;
-        var disposable = new DisposeTracker();
+        using var disposable = new DisposeTracker();
         disposable.Disposing += (sender, e) => count++;
         builder.RegisterInstance(disposable);
         var container = builder.Build();
@@ -133,7 +133,7 @@ public class ProvidedInstanceTests
     public void UnresolvedProvidedInstances_DisposedWithNestedLifetimeScope()
     {
         var builder = new ContainerBuilder();
-        var disposable = new DisposeTracker();
+        using var disposable = new DisposeTracker();
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
 
@@ -147,7 +147,7 @@ public class ProvidedInstanceTests
     {
         var builder = new ContainerBuilder();
         var count = 0;
-        var disposable = new DisposeTracker();
+        using var disposable = new DisposeTracker();
         disposable.Disposing += (sender, e) => count++;
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable));
@@ -163,7 +163,7 @@ public class ProvidedInstanceTests
     public void UnresolvedProvidedInstances_NotOwnedByLifetimeScope_NeverDisposed()
     {
         var builder = new ContainerBuilder();
-        var disposable = new DisposeTracker();
+        using var disposable = new DisposeTracker();
         builder.RegisterInstance(disposable).ExternallyOwned();
         var container = builder.Build();
 
@@ -176,7 +176,7 @@ public class ProvidedInstanceTests
     public void UnresolvedProvidedInstances_NotOwnedByNestedLifetimeScope_NeverDisposed()
     {
         var builder = new ContainerBuilder();
-        var disposable = new DisposeTracker();
+        using var disposable = new DisposeTracker();
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance(disposable).ExternallyOwned());
 

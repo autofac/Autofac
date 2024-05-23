@@ -195,7 +195,7 @@ public class LoadContextScopeTests
 
     private void WaitForUnload(WeakReference loadContextRef)
     {
-        var timeoutSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        using var timeoutSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
         // Monitor the generated reference to the assembly load context to make sure it finishes cleanup.
         while (loadContextRef.IsAlive)

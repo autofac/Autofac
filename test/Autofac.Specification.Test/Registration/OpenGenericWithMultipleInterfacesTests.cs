@@ -43,7 +43,7 @@ public class OpenGenericWithMultipleInterfacesTests
         Type resolvedType,
         bool registerAsImplementedInterfaces = false)
     {
-        var container = CreateContainerWithOpenGeneric(openGenericType, registerAsImplementedInterfaces);
+        using var container = CreateContainerWithOpenGeneric(openGenericType, registerAsImplementedInterfaces);
 
         var instance = container.Resolve(serviceType);
 

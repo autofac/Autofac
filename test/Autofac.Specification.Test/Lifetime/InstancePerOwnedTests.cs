@@ -154,16 +154,16 @@ public class InstancePerOwnedTests
         public ILifetimeScope LifetimeScope { get; set; }
     }
 
-    public class Service
+    private class Service
     {
     }
 
-    public interface IRoot
+    private interface IRoot
     {
         Service Dependency { get; }
     }
 
-    public class RootA : IRoot
+    private class RootA : IRoot
     {
         public RootA(Service dependency)
         {
@@ -173,7 +173,7 @@ public class InstancePerOwnedTests
         public Service Dependency { get; }
     }
 
-    public class RootB : IRoot
+    private class RootB : IRoot
     {
         public RootB(Service dependency)
         {

@@ -17,21 +17,21 @@ public class TypeRegistrationTests
     {
     }
 
-    public interface IMyService
+    private interface IMyService
     {
     }
 
-    public delegate void MyDelegate();
+    public delegate void MyDelegateType();
 
-    public abstract class MyAbstractClass
+    private abstract class MyAbstractClass
     {
     }
 
-    public class MyOpenGeneric<T>
+    private class MyOpenGeneric<T>
     {
     }
 
-    public struct MyValueType
+    private struct MyValueType
     {
         public MyValueType(IMyService service)
         {
@@ -121,13 +121,13 @@ public class TypeRegistrationTests
     {
         var builder = new ContainerBuilder();
         Assert.Throws<ArgumentException>(() => builder.RegisterType<IMyService>());
-        Assert.Throws<ArgumentException>(() => builder.RegisterType<MyDelegate>());
+        Assert.Throws<ArgumentException>(() => builder.RegisterType<MyDelegateType>());
         Assert.Throws<ArgumentException>(() => builder.RegisterType<MyAbstractClass>());
         Assert.Throws<ArgumentException>(() => builder.RegisterType<MyValueType>());
     }
 
     [Theory]
-    [InlineData(typeof(MyDelegate))]
+    [InlineData(typeof(MyDelegateType))]
     [InlineData(typeof(IMyService))]
     [InlineData(typeof(MyAbstractClass))]
     [InlineData(typeof(MyOpenGeneric<>))]
@@ -156,7 +156,7 @@ public class TypeRegistrationTests
         var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
             b.RegisterTypes(
                 typeof(IMyService),
-                typeof(MyDelegate),
+                typeof(MyDelegateType),
                 typeof(MyAbstractClass),
                 typeof(MyOpenGeneric<>),
                 typeof(MyValueType),
@@ -167,7 +167,7 @@ public class TypeRegistrationTests
         Assert.True(container.TryResolve(typeof(MyComponent), out object _));
         Assert.True(container.TryResolve(typeof(MyOpenGeneric<int>), out object _));
         Assert.False(container.TryResolve(typeof(IMyService), out _));
-        Assert.False(container.TryResolve(typeof(MyDelegate), out _));
+        Assert.False(container.TryResolve(typeof(MyDelegateType), out _));
         Assert.False(container.TryResolve(typeof(MyAbstractClass), out _));
         Assert.False(container.TryResolve(typeof(MyValueType), out _));
     }
@@ -237,11 +237,11 @@ public class TypeRegistrationTests
     {
     }
 
-    public sealed class MyComponent : IMyService
+    private sealed class MyComponent : IMyService
     {
     }
 
-    public sealed class MyComponent2
+    private sealed class MyComponent2
     {
     }
 }
