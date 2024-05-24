@@ -28,7 +28,7 @@ public interface IResolveOperation
     IEnumerable<ResolveRequestContext> InProgressRequests { get; }
 
     /// <summary>
-    /// Gets the <see cref="System.Diagnostics.DiagnosticListener" /> for the operation.
+    /// Gets the <see cref="DiagnosticListener" /> for the operation.
     /// </summary>
     DiagnosticListener DiagnosticSource { get; }
 

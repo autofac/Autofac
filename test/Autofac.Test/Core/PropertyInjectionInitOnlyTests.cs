@@ -7,7 +7,7 @@ namespace Autofac.Test.Core;
 
 public class PropertyInjectionInitOnlyTests
 {
-    public class HasInitOnlyProperties
+    private class HasInitOnlyProperties
     {
         public string InjectedString { get; init; }
     }

@@ -28,7 +28,7 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     /// can move upward to less nested scopes as components with wider sharing scopes are activated.
     /// </param>
     /// <param name="diagnosticSource">
-    /// The <see cref="System.Diagnostics.DiagnosticListener" /> to which trace events should be written.
+    /// The <see cref="DiagnosticListener" /> to which trace events should be written.
     /// </param>
     public ResolveOperation(
         ISharingLifetimeScope mostNestedLifetimeScope,
@@ -61,7 +61,7 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     public IEnumerable<ResolveRequestContext> InProgressRequests => RequestStack;
 
     /// <summary>
-    /// Gets the <see cref="System.Diagnostics.DiagnosticListener" /> for the operation.
+    /// Gets the <see cref="DiagnosticListener" /> for the operation.
     /// </summary>
     public DiagnosticListener DiagnosticSource { get; }
 

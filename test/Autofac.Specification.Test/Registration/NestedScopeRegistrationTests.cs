@@ -70,7 +70,7 @@ public class NestedScopeRegistrationTests
     public void InstancesRegisteredInNestedScopeAreSingletonsInThatScope()
     {
         var rootScope = new ContainerBuilder().Build();
-        var dt = new DisposeTracker();
+        using var dt = new DisposeTracker();
         var nestedScope = rootScope.BeginLifetimeScope(cb => cb.RegisterInstance(dt));
         var dt1 = nestedScope.Resolve<DisposeTracker>();
         Assert.Same(dt, dt1);
@@ -236,7 +236,7 @@ public class NestedScopeRegistrationTests
         Assert.Single(child2.Resolve<IEnumerable<string>>());
     }
 
-    public class AddressBook
+    private class AddressBook
     {
         private readonly Func<Person> _partyFactory;
 
@@ -255,7 +255,7 @@ public class NestedScopeRegistrationTests
     {
     }
 
-    public class Person
+    private class Person
     {
     }
 

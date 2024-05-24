@@ -14,11 +14,11 @@ public class RegistrationOnlyIfTests
 {
     public delegate object SimpleFactory();
 
-    public interface IService
+    private interface IService
     {
     }
 
-    public interface IService<T>
+    private interface IService<T>
     {
     }
 
@@ -272,7 +272,7 @@ public class RegistrationOnlyIfTests
         Assert.Throws<NotSupportedException>(() => rb.OnlyIf(reg => true));
     }
 
-    public class Decorator<T> : IService<T>
+    private class Decorator<T> : IService<T>
     {
         public Decorator(IService<T> decorated)
         {
@@ -282,7 +282,7 @@ public class RegistrationOnlyIfTests
         public IService<T> Decorated { get; }
     }
 
-    public class Decorator : IService
+    private class Decorator : IService
     {
         public Decorator(IService decorated)
         {
@@ -292,43 +292,43 @@ public class RegistrationOnlyIfTests
         public IService Decorated { get; }
     }
 
-    public class ServiceA : IService
+    private class ServiceA : IService
     {
     }
 
-    public class ServiceB : IService
+    private class ServiceB : IService
     {
     }
 
-    public class ServiceC : IService
+    private class ServiceC : IService
     {
     }
 
-    public interface IService2
+    private interface IService2
     {
     }
 
-    public class ServiceMulti : IService, IService2
+    private class ServiceMulti : IService, IService2
     {
     }
 
-    public class SimpleGeneric<T>
+    private class SimpleGeneric<T>
     {
     }
 
-    public interface IService2<T>
+    private interface IService2<T>
     {
     }
 
-    public class MultiServiceGeneric<T> : IService<T>, IService2<T>
+    private class MultiServiceGeneric<T> : IService<T>, IService2<T>
     {
     }
 
-    public class MultiServiceGeneric2<T> : IService<T>, IService2<T>
+    private class MultiServiceGeneric2<T> : IService<T>, IService2<T>
     {
     }
 
-    public class MyModule : Module
+    private class MyModule : Module
     {
         private readonly Action<ContainerBuilder> _callback;
 

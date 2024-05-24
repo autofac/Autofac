@@ -29,7 +29,7 @@ public static class ModuleInitializer
                 exceptions.Add(result.Exception);
             }
 
-            targets.AddRange(result.GeneratedSources.Where(x => x.HintName.EndsWith(".g.cs")).Select(SourceToTarget));
+            targets.AddRange(result.GeneratedSources.Where(x => x.HintName.EndsWith(".g.cs", StringComparison.Ordinal)).Select(SourceToTarget));
         }
 
         if (exceptions.Count == 1)

@@ -8,6 +8,7 @@
     <SignAssembly>true</SignAssembly>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <CodeAnalysisRuleSet>../../build/Test.ruleset</CodeAnalysisRuleSet>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <IsPackable>false</IsPackable>
     <LangVersion>latest</LangVersion>
@@ -15,6 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Using Include="System.Diagnostics.CodeAnalysis" />
     <Using Include="NSubstitute" />
     <Using Include="Xunit" />
   </ItemGroup>

@@ -5,12 +5,12 @@ namespace Autofac.Test.Features.OpenGenerics;
 
 public class OpenGenericDecoratorTests
 {
-    public interface IService<T>
+    private interface IService<T>
     {
         IService<T> Decorated { get; }
     }
 
-    public class ImplementorA<T> : IService<T>
+    private class ImplementorA<T> : IService<T>
     {
         public IService<T> Decorated
         {
@@ -18,7 +18,7 @@ public class OpenGenericDecoratorTests
         }
     }
 
-    public class ImplementorB<T> : IService<T>
+    private class ImplementorB<T> : IService<T>
     {
         public IService<T> Decorated
         {
@@ -26,7 +26,7 @@ public class OpenGenericDecoratorTests
         }
     }
 
-    public class StringImplementor : IService<string>
+    private class StringImplementor : IService<string>
     {
         public IService<string> Decorated
         {
@@ -34,7 +34,7 @@ public class OpenGenericDecoratorTests
         }
     }
 
-    public abstract class Decorator<T> : IService<T>
+    private abstract class Decorator<T> : IService<T>
     {
         protected Decorator(IService<T> decorated)
         {
@@ -44,7 +44,7 @@ public class OpenGenericDecoratorTests
         public IService<T> Decorated { get; }
     }
 
-    public class DecoratorA<T> : Decorator<T>
+    private class DecoratorA<T> : Decorator<T>
     {
         public DecoratorA(IService<T> decorated)
             : base(decorated)
@@ -52,7 +52,7 @@ public class OpenGenericDecoratorTests
         }
     }
 
-    public class DecoratorB<T> : Decorator<T>
+    private class DecoratorB<T> : Decorator<T>
     {
         public DecoratorB(IService<T> decorated, string parameter)
             : base(decorated)

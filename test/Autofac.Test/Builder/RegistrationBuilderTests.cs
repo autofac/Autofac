@@ -23,7 +23,7 @@ public class RegistrationBuilderTests
             .For(p => p.A, 42)
             .For(p => p.B, "hello"));
 
-        var reg = builder.CreateRegistration();
+        using var reg = builder.CreateRegistration();
 
         Assert.Equal(42, reg.Metadata["A"]);
         Assert.Equal("hello", reg.Metadata["B"]);
@@ -40,7 +40,7 @@ public class RegistrationBuilderTests
     [Fact]
     public void AsEmptyList_CreatesRegistrationWithNoServices()
     {
-        var registration = RegistrationBuilder.ForType<object>()
+        using var registration = RegistrationBuilder.ForType<object>()
             .As(Array.Empty<Service>())
             .CreateRegistration();
 

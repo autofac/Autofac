@@ -121,7 +121,7 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
     /// <returns>
     /// The instance of the object that should be used for the parameter value.
     /// </returns>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="parameter" /> or <paramref name="context" /> is <see langword="null" />.
     /// </exception>
     public override object? ResolveParameter(ParameterInfo parameter, IComponentContext context)

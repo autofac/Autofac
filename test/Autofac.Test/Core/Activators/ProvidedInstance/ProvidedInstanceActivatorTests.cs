@@ -19,9 +19,9 @@ public class ProvidedInstanceActivatorTests
     {
         var instance = new object();
 
-        var target = new ProvidedInstanceActivator(instance);
+        using var target = new ProvidedInstanceActivator(instance);
 
-        var container = Factory.CreateEmptyContainer();
+        using var container = Factory.CreateEmptyContainer();
 
         var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
 
@@ -35,9 +35,9 @@ public class ProvidedInstanceActivatorTests
     {
         var instance = new object();
 
-        var target = new ProvidedInstanceActivator(instance);
+        using var target = new ProvidedInstanceActivator(instance);
 
-        var container = Factory.CreateEmptyContainer();
+        using var container = Factory.CreateEmptyContainer();
 
         var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
 
@@ -48,9 +48,10 @@ public class ProvidedInstanceActivatorTests
     }
 
     [Fact]
-    public void SyncDisposeAsyncDisposable_DisposesAsExpected()
+    [SuppressMessage("CA1849", "CA1849", Justification = "Handles specific test case of sync over async.")]
+    public async Task SyncDisposeAsyncDisposable_DisposesAsExpected()
     {
-        var asyncDisposable = new AsyncOnlyDisposeTracker();
+        await using var asyncDisposable = new AsyncOnlyDisposeTracker();
 
         var target = new ProvidedInstanceActivator(asyncDisposable)
         {
@@ -65,7 +66,7 @@ public class ProvidedInstanceActivatorTests
     [Fact]
     public async Task AsyncDisposeAsyncDisposable_DisposesAsExpected()
     {
-        var asyncDisposable = new AsyncOnlyDisposeTracker();
+        await using var asyncDisposable = new AsyncOnlyDisposeTracker();
 
         var target = new ProvidedInstanceActivator(asyncDisposable)
         {
@@ -80,7 +81,7 @@ public class ProvidedInstanceActivatorTests
     [Fact]
     public async Task AsyncDisposeSyncDisposable_DisposesAsExpected()
     {
-        var asyncDisposable = new DisposeTracker();
+        using var asyncDisposable = new DisposeTracker();
 
         var target = new ProvidedInstanceActivator(asyncDisposable)
         {

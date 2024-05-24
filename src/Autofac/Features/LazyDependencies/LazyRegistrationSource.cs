@@ -6,7 +6,7 @@ using Autofac.Core;
 namespace Autofac.Features.LazyDependencies;
 
 /// <summary>
-/// Support the <see cref="System.Lazy{T}"/>
+/// Support the <see cref="Lazy{T}"/>
 /// type automatically whenever type T is registered with the container.
 /// When a dependency of a lazy type is used, the instantiation of the underlying
 /// component will be delayed until the Value property is first accessed.

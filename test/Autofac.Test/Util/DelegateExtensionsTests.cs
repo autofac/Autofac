@@ -7,7 +7,7 @@ namespace Autofac.Test.Util;
 
 public class DelegateExtensionsTests
 {
-    public class WithTwoInvokes
+    private class WithTwoInvokes
     {
         public void Invoke()
         {

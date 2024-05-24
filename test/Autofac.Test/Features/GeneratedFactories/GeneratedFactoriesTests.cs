@@ -10,7 +10,7 @@ namespace Autofac.Test.Features.GeneratedFactories;
 
 public class GeneratedFactoriesTests
 {
-    public class A<T>
+    private class A<T>
     {
         public T P { get; private set; }
 
@@ -60,7 +60,7 @@ public class GeneratedFactoriesTests
         Assert.Equal(s, a.P);
     }
 
-    public class QuoteService
+    private class QuoteService
     {
         public decimal GetQuote(string symbol)
         {
@@ -68,7 +68,7 @@ public class GeneratedFactoriesTests
         }
     }
 
-    public class Shareholding
+    private class Shareholding
     {
         public delegate Shareholding Factory(string symbol, uint holding);
 
@@ -137,7 +137,7 @@ public class GeneratedFactoriesTests
         Assert.Equal(1234m * 2, shareholding.Quote());
     }
 
-    public class StringHolder
+    private class StringHolder
     {
         public delegate StringHolder Factory();
 
@@ -172,7 +172,7 @@ public class GeneratedFactoriesTests
 
         int i0 = 32, i0Actual = 0, i1 = 67, i1Actual = 0;
 
-        builder.Register<object>((c, p) =>
+        builder.Register((c, p) =>
         {
             i0Actual = p.Positional<int>(0);
             i1Actual = p.Positional<int>(1);
@@ -208,7 +208,7 @@ public class GeneratedFactoriesTests
 
     // This became necessary because by default the char[] constructor of string
     // is chosen in the presence of implicit collection support.
-    public class HasCharIntCtor
+    private class HasCharIntCtor
     {
         public string Str { get; private set; }
 

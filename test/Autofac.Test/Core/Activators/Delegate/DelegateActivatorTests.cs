@@ -25,10 +25,10 @@ public class DelegateActivatorTests
     {
         var instance = new object();
 
-        var target =
+        using var target =
             new DelegateActivator(typeof(object), (c, p) => instance);
 
-        var container = Factory.CreateEmptyContainer();
+        using var container = Factory.CreateEmptyContainer();
         var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
 
         Assert.Same(instance, invoker(container, Factory.NoParameters));
@@ -37,14 +37,14 @@ public class DelegateActivatorTests
     [Fact]
     public void WhenActivationDelegateReturnsNull_ExceptionDescribesLimitType()
     {
-        var target = new DelegateActivator(typeof(string), (c, p) => null);
+        using var target = new DelegateActivator(typeof(string), (c, p) => null);
 
-        var container = Factory.CreateEmptyContainer();
+        using var container = Factory.CreateEmptyContainer();
         var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
 
         var ex = Assert.Throws<DependencyResolutionException>(
             () => invoker(container, Factory.NoParameters));
 
-        Assert.Contains(typeof(string).ToString(), ex.Message);
+        Assert.Contains(typeof(string).ToString(), ex.Message, StringComparison.Ordinal);
     }
 }

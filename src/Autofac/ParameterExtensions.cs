@@ -8,7 +8,7 @@ namespace Autofac;
 
 /// <summary>
 /// Extension methods that simplify extraction of parameter values from
-/// an <see cref="IEnumerable{T}"/> where T is <see cref="Autofac.Core.Parameter"/>.
+/// an <see cref="IEnumerable{T}"/> where T is <see cref="Parameter"/>.
 /// Each method returns the first matching parameter value, or throws an exception if
 /// none is provided.
 /// </summary>

@@ -195,7 +195,7 @@ public class LoadContextScopeTests
 
     private void WaitForUnload(WeakReference loadContextRef)
     {
-        var timeoutSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        using var timeoutSource = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
         // Monitor the generated reference to the assembly load context to make sure it finishes cleanup.
         while (loadContextRef.IsAlive)
@@ -218,7 +218,7 @@ public class LoadContextScopeTests
 
         // Replace the project/assembly name in the path; this makes sure we use the same dotnet sdk and configuration
         // as this assembly.
-        var newAssemblyPath = thisAssemblyPath.Replace(currentAssembly.GetName().Name, "Autofac.Test.Scenarios.LoadContext");
+        var newAssemblyPath = thisAssemblyPath.Replace(currentAssembly.GetName().Name, "Autofac.Test.Scenarios.LoadContext", StringComparison.Ordinal);
 
         var loadContext = new AssemblyLoadContext("test", isCollectible: true);
         loadContextRef = new WeakReference(loadContext);

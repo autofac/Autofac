@@ -18,31 +18,31 @@ public class OpenGenericDecoratorTests
     }
 
     // ReSharper disable once UnusedTypeParameter
-    public interface IService<T>
+    private interface IService<T>
     {
     }
 
     // ReSharper disable once UnusedTypeParameter
-    public interface ISomeOtherService<T>
+    private interface ISomeOtherService<T>
     {
     }
 
-    public interface IDecoratedService<T> : IService<T>
+    private interface IDecoratedService<T> : IService<T>
     {
         IDecoratedService<T> Decorated { get; }
     }
 
-    public class ImplementorA<T> : IDecoratedService<T>
+    private class ImplementorA<T> : IDecoratedService<T>
     {
         public IDecoratedService<T> Decorated => this;
     }
 
-    public class ImplementorB<T> : IDecoratedService<T>
+    private class ImplementorB<T> : IDecoratedService<T>
     {
         public IDecoratedService<T> Decorated => this;
     }
 
-    public class ImplementorWithParameters<T> : IDecoratedService<T>
+    private class ImplementorWithParameters<T> : IDecoratedService<T>
     {
         public IDecoratedService<T> Decorated => this;
 
@@ -54,12 +54,12 @@ public class OpenGenericDecoratorTests
         }
     }
 
-    public class ImplementorWithSomeOtherService<T> : IDecoratedService<T>, ISomeOtherService<T>
+    private class ImplementorWithSomeOtherService<T> : IDecoratedService<T>, ISomeOtherService<T>
     {
         public IDecoratedService<T> Decorated => this;
     }
 
-    public abstract class Decorator<T> : IDecoratedService<T>
+    private abstract class Decorator<T> : IDecoratedService<T>
     {
         protected Decorator(IDecoratedService<T> decorated)
         {
@@ -69,7 +69,7 @@ public class OpenGenericDecoratorTests
         public IDecoratedService<T> Decorated { get; }
     }
 
-    public class DecoratorA<T> : Decorator<T>
+    private class DecoratorA<T> : Decorator<T>
     {
         public DecoratorA(IDecoratedService<T> decorated)
             : base(decorated)
@@ -77,7 +77,7 @@ public class OpenGenericDecoratorTests
         }
     }
 
-    public class DecoratorB<T> : Decorator<T>
+    private class DecoratorB<T> : Decorator<T>
     {
         public DecoratorB(IDecoratedService<T> decorated)
             : base(decorated)
@@ -85,7 +85,7 @@ public class OpenGenericDecoratorTests
         }
     }
 
-    public class StringImplementor : Decorator<string>
+    private class StringImplementor : Decorator<string>
     {
         public StringImplementor(IDecoratedService<string> decorated)
             : base(decorated)
@@ -93,12 +93,12 @@ public class OpenGenericDecoratorTests
         }
     }
 
-    public interface IDecoratorWithParameter
+    private interface IDecoratorWithParameter
     {
         string Parameter { get; }
     }
 
-    public class DecoratorWithParameter<T> : Decorator<T>, IDecoratorWithParameter
+    private class DecoratorWithParameter<T> : Decorator<T>, IDecoratorWithParameter
     {
         public DecoratorWithParameter(IDecoratedService<T> decorated, string parameter)
             : base(decorated)
@@ -109,12 +109,12 @@ public class OpenGenericDecoratorTests
         public string Parameter { get; }
     }
 
-    public interface IDecoratorWithContext
+    private interface IDecoratorWithContext
     {
         IDecoratorContext Context { get; }
     }
 
-    public class DecoratorWithContextA<T> : Decorator<T>, IDecoratorWithContext
+    private class DecoratorWithContextA<T> : Decorator<T>, IDecoratorWithContext
     {
         public DecoratorWithContextA(IDecoratedService<T> decorated, IDecoratorContext context)
             : base(decorated)
@@ -125,7 +125,7 @@ public class OpenGenericDecoratorTests
         public IDecoratorContext Context { get; }
     }
 
-    public class DecoratorWithContextB<T> : Decorator<T>, IDecoratorWithContext
+    private class DecoratorWithContextB<T> : Decorator<T>, IDecoratorWithContext
     {
         public DecoratorWithContextB(IDecoratedService<T> decorated, IDecoratorContext context)
             : base(decorated)
@@ -136,7 +136,7 @@ public class OpenGenericDecoratorTests
         public IDecoratorContext Context { get; }
     }
 
-    public class DisposableImplementor<T> : IDecoratedService<T>, IDisposable
+    private class DisposableImplementor<T> : IDecoratedService<T>, IDisposable
     {
         public int DisposeCallCount { get; private set; }
 
@@ -148,7 +148,7 @@ public class OpenGenericDecoratorTests
         }
     }
 
-    public class DisposableDecorator<T> : Decorator<T>, IDisposable
+    private class DisposableDecorator<T> : Decorator<T>, IDisposable
     {
         public int DisposeCallCount { get; private set; }
 
@@ -864,12 +864,12 @@ public class OpenGenericDecoratorTests
         Assert.IsType<TransactionalCommandHandlerDecorator<CreateLocation>>(instance);
     }
 
-    public interface ICommandHandler<T>
+    private interface ICommandHandler<T>
     {
         void Handle(T command);
     }
 
-    public class TransactionalCommandHandlerDecorator<T> : ICommandHandler<T>
+    private class TransactionalCommandHandlerDecorator<T> : ICommandHandler<T>
     {
         public ICommandHandler<T> Handler { get; }
 
@@ -883,15 +883,15 @@ public class OpenGenericDecoratorTests
         }
     }
 
-    public class ModifyLocation
+    private class ModifyLocation
     {
     }
 
-    public class CreateLocation
+    private class CreateLocation
     {
     }
 
-    public class Handler : ICommandHandler<CreateLocation>, ICommandHandler<ModifyLocation>
+    private class Handler : ICommandHandler<CreateLocation>, ICommandHandler<ModifyLocation>
     {
         public void Handle(CreateLocation command)
         {

@@ -411,12 +411,12 @@ public class PropertyInjectionTests
         public string Name { get; set; }
     }
 
-    public class EnumProperty
+    private class EnumProperty
     {
         public SimpleEnumeration Value { get; set; }
     }
 
-    public class SplitAccess
+    private class SplitAccess
     {
         public bool GetterCalled { get; set; }
 
@@ -450,7 +450,7 @@ public class PropertyInjectionTests
         {
             if (Prop is null)
             {
-                throw new NullReferenceException();
+                throw new InvalidOperationException();
             }
         }
     }

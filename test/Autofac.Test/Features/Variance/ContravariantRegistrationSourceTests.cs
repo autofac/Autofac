@@ -6,6 +6,7 @@ using Autofac.Features.Variance;
 
 namespace Autofac.Test.Features.Variance;
 
+[SuppressMessage("CA1052", "CA1052", Justification = "Test containers may not be static.")]
 public class ContravariantRegistrationSourceTests
 {
     internal interface IHandler<in TCommand>
@@ -102,6 +103,7 @@ public class ContravariantRegistrationSourceTests
         }
     }
 
+    [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
     public class WhenAHandlerForAConcreteTypeIsRegistered
     {
         private readonly IContainer _container;
@@ -145,6 +147,7 @@ public class ContravariantRegistrationSourceTests
         }
     }
 
+    [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
     public class WhenAHandlerForAnInterfaceTypeIsRegistered
     {
         private readonly IContainer _container;
@@ -200,6 +203,7 @@ public class ContravariantRegistrationSourceTests
         }
     }
 
+    [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
     public class WhenAHandlerForObjectIsRegistered
     {
         private readonly IContainer _container;
@@ -231,6 +235,7 @@ public class ContravariantRegistrationSourceTests
         }
     }
 
+    [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
     public class WhenBaseTypesDoNotSatisfyConstraints
     {
         [Fact]
@@ -243,6 +248,7 @@ public class ContravariantRegistrationSourceTests
         }
     }
 
+    [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
     public class WhenAValueTypeIsRequested
     {
         [Fact]

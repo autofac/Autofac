@@ -72,15 +72,15 @@ public class ContainerBuilderTests
         Assert.Contains(activatedInstances, instance => instance is IRepository<object>);
     }
 
-    public interface IRepository<T>
+    private interface IRepository<T>
     {
     }
 
-    public class Repository<T> : IRepository<T>
+    private class Repository<T> : IRepository<T>
     {
     }
 
-    public class Controller
+    private class Controller
     {
         public Lazy<IRepository<object>> TheRepository { get; set; }
 

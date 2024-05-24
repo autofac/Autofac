@@ -138,7 +138,7 @@ public class RegistrationData
     /// <param name="that">The data to copy.</param>
     /// <param name="includeDefaultService">When true, the default service
     /// will be changed to that of the other.</param>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="that" /> is <see langword="null" />.
     /// </exception>
     public void CopyFrom(RegistrationData that, bool includeDefaultService)

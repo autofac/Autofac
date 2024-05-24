@@ -50,19 +50,19 @@ public class DecoratorTests
         }
     }
 
-    public class Foo
+    private class Foo
     {
     }
 
-    public class Bar : IBar
+    private class Bar : IBar
     {
     }
 
-    public interface IBar
+    private interface IBar
     {
     }
 
-    public class BarDecorator : IBar
+    private class BarDecorator : IBar
     {
         public BarDecorator(IBar bar)
         {

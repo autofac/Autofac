@@ -71,7 +71,7 @@ public sealed class ReflectionCacheSet
     /// <returns>An instance of <typeparamref name="TCacheStore"/>.</returns>
     public TCacheStore GetOrCreateCache<TCacheStore>(string cacheName)
         where TCacheStore : IReflectionCache, new()
-        => GetOrCreateCache<TCacheStore>(cacheName, CacheFactory<TCacheStore>.Factory);
+        => GetOrCreateCache(cacheName, CacheFactory<TCacheStore>.Factory);
 
     /// <summary>
     /// Get a typed cache store with a given name, that is held in this instance. An instance will be created if it does not already exist.

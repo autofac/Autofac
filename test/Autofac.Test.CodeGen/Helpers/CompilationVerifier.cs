@@ -28,7 +28,7 @@ internal static class CompilationVerifier
                        .UseDirectory(Path.Combine(AttributeReader.GetProjectDirectory(), "Snapshots"));
     }
 
-    private static Compilation Create(string source)
+    private static CSharpCompilation Create(string source)
         => CSharpCompilation.Create(
             "compilation",
             new[] { CSharpSyntaxTree.ParseText(source) },

@@ -71,8 +71,8 @@ public class PreserveExistingDefaultsTests
         builder.RegisterInstance("s2").PreserveExistingDefaults();
         builder.RegisterInstance("s3").PreserveExistingDefaults();
         var container = builder.Build();
-        var resolved = container.Resolve<IEnumerable<string>>();
-        Assert.Equal(3, resolved.Count());
+        var resolved = container.Resolve<IEnumerable<string>>().ToList();
+        Assert.Equal(3, resolved.Count);
         Assert.True(resolved.Any(s => s == "s1"), "The first service wasn't present.");
         Assert.True(resolved.Any(s => s == "s2"), "The second service wasn't present.");
         Assert.True(resolved.Any(s => s == "s3"), "The third service wasn't present.");
@@ -189,8 +189,8 @@ public class PreserveExistingDefaultsTests
         builder.RegisterInstance("s3").PreserveExistingDefaults();
         var container = builder.Build();
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance("s4").PreserveExistingDefaults());
-        var resolved = scope.Resolve<IEnumerable<string>>();
-        Assert.Equal(4, resolved.Count());
+        var resolved = scope.Resolve<IEnumerable<string>>().ToList();
+        Assert.Equal(4, resolved.Count);
         Assert.True(resolved.Any(s => s == "s1"), "The first service wasn't present.");
         Assert.True(resolved.Any(s => s == "s2"), "The second service wasn't present.");
         Assert.True(resolved.Any(s => s == "s3"), "The third service wasn't present.");

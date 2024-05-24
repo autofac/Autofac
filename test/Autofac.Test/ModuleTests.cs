@@ -21,7 +21,7 @@ public class ModuleTests
     [Fact]
     public void LoadsRegistrations()
     {
-        IComponentRegistryBuilder builder = Factory.CreateEmptyComponentRegistryBuilder();
+        using var builder = Factory.CreateEmptyComponentRegistryBuilder();
         new ObjectModule().Configure(builder);
         var registry = builder.Build();
 

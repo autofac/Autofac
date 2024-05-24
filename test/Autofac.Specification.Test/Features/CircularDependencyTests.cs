@@ -30,6 +30,7 @@ public class CircularDependencyTests
     }
 
     [Fact]
+    [SuppressMessage("CA1031", "CA1031", Justification = "Handles a specific test case for #929.")]
     public void ActivationStackResetsOnFailedLambdaResolve()
     {
         // Issue #929
@@ -72,7 +73,7 @@ public class CircularDependencyTests
         var ex = Assert.Throws<DependencyResolutionException>(() => container.Resolve<ID>());
 
         // Make sure we're getting the detected exception, not the depth one.
-        Assert.Contains("component dependency", ex.ToString());
+        Assert.Contains("component dependency", ex.ToString(), StringComparison.Ordinal);
     }
 
     [Fact]

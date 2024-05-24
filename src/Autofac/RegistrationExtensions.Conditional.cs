@@ -24,10 +24,10 @@ public static partial class RegistrationExtensions
     /// <param name="registration">The registration to configure.</param>
     /// <param name="predicate">The predicate to run to determine if the registration should be made.</param>
     /// <returns>A registration builder allowing further configuration of the component.</returns>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="registration" /> or <paramref name="predicate" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="System.NotSupportedException">
+    /// <exception cref="NotSupportedException">
     /// Thrown if <paramref name="registration" /> has no reference to the original callback
     /// with which it was associated (e.g., it wasn't made with a standard registration method
     /// as part of a <see cref="ContainerBuilder"/>).
@@ -75,10 +75,10 @@ public static partial class RegistrationExtensions
     /// Note this is the *service type* - the <c>As&lt;T&gt;</c> part.
     /// </param>
     /// <returns>A registration builder allowing further configuration of the component.</returns>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="registration" /> or <paramref name="serviceType" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="System.NotSupportedException">
+    /// <exception cref="NotSupportedException">
     /// Thrown if <paramref name="registration" /> has no reference to the original callback
     /// with which it was associated (e.g., it wasn't made with a standard registration method
     /// as part of a <see cref="ContainerBuilder"/>).

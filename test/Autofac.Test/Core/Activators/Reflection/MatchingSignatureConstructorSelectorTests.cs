@@ -9,7 +9,7 @@ namespace Autofac.Test.Core.Activators.Reflection;
 
 public class MatchingSignatureConstructorSelectorTests
 {
-    public class FourConstructors
+    private class FourConstructors
     {
         public FourConstructors()
         {
@@ -59,8 +59,8 @@ public class MatchingSignatureConstructorSelectorTests
         var dx = Assert.Throws<DependencyResolutionException>(() =>
             target.SelectConstructorBinding(GetConstructors(), Enumerable.Empty<Parameter>()));
 
-        Assert.Contains(typeof(FourConstructors).Name, dx.Message);
-        Assert.Contains(typeof(string).Name, dx.Message);
+        Assert.Contains(typeof(FourConstructors).Name, dx.Message, StringComparison.Ordinal);
+        Assert.Contains(typeof(string).Name, dx.Message, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -87,8 +87,8 @@ public class MatchingSignatureConstructorSelectorTests
         var dx = Assert.Throws<DependencyResolutionException>(() =>
             target.SelectConstructorBinder(GetConstructorBinders()));
 
-        Assert.Contains(typeof(FourConstructors).Name, dx.Message);
-        Assert.Contains(typeof(string).Name, dx.Message);
+        Assert.Contains(typeof(FourConstructors).Name, dx.Message, StringComparison.Ordinal);
+        Assert.Contains(typeof(string).Name, dx.Message, StringComparison.Ordinal);
     }
 
     private static BoundConstructor[] GetConstructors()

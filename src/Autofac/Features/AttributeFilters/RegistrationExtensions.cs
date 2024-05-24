@@ -20,7 +20,7 @@ public static class RegistrationExtensions
     /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
     /// <param name="builder">The registration builder containing registration data.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="builder" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>

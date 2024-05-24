@@ -53,7 +53,7 @@ public abstract class ResolveRequestContext : IComponentContext
     public abstract bool NewInstanceActivated { get; }
 
     /// <summary>
-    /// Gets the <see cref="System.Diagnostics.DiagnosticListener"/> to which trace events should be written.
+    /// Gets the <see cref="DiagnosticListener"/> to which trace events should be written.
     /// </summary>
     public abstract DiagnosticListener DiagnosticSource { get; }
 

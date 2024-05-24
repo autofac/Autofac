@@ -737,7 +737,7 @@ public static partial class RegistrationExtensions
     /// <returns>
     /// Registration builder allowing the registration to be configured.
     /// </returns>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="registration" /> or <paramref name="target" /> is <see langword="null" />.
     /// </exception>
     public static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle>
@@ -762,7 +762,7 @@ public static partial class RegistrationExtensions
     }
 
     /// <summary>
-    /// Wraps a registration in an implicit <see cref="Autofac.IStartable"/> and automatically
+    /// Wraps a registration in an implicit <see cref="IStartable"/> and automatically
     /// activates the registration after the container is built.
     /// </summary>
     /// <param name="registration">Registration to set release action for.</param>
@@ -772,7 +772,7 @@ public static partial class RegistrationExtensions
     /// <returns>A registration builder allowing further configuration of the component.</returns>
     /// <remarks>
     /// <para>
-    /// While you can implement an <see cref="Autofac.IStartable"/> to perform some logic at
+    /// While you can implement an <see cref="IStartable"/> to perform some logic at
     /// container build time, sometimes you need to just activate a registered component and
     /// that's it. This extension allows you to automatically activate a registration on
     /// container build. No additional logic is executed and the resolved instance is not held
@@ -809,7 +809,7 @@ public static partial class RegistrationExtensions
     /// <param name="registration">The registration to configure.</param>
     /// <param name="lifetimeScopeTags">Additional tags applied for matching lifetime scopes.</param>
     /// <returns>A registration builder allowing further configuration of the component.</returns>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="registration" /> is <see langword="null" />.
     /// </exception>
     public static IRegistrationBuilder<TLimit, TActivatorData, TStyle>

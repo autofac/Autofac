@@ -11,7 +11,7 @@ public class OwnedTests
     [Fact]
     public void DisposingOwned_CallsDisposeOnLifetimeToken()
     {
-        var lifetime = new DisposeTracker();
+        using var lifetime = new DisposeTracker();
         var owned = new Owned<string>("unused", lifetime);
         owned.Dispose();
         Assert.True(lifetime.IsDisposed);
@@ -20,7 +20,7 @@ public class OwnedTests
     [Fact]
     public async Task DisposingOwnedAsynchronously_CallsDisposeOnLifetimeTokenIfAsyncDisposableNotDeclared()
     {
-        var lifetime = new DisposeTracker();
+        using var lifetime = new DisposeTracker();
         var owned = new Owned<string>("unused", lifetime);
         await owned.DisposeAsync();
         Assert.True(lifetime.IsDisposed);
@@ -29,7 +29,7 @@ public class OwnedTests
     [Fact]
     public async Task DisposingOwnedAsynchronously_CallsDisposeAsyncOnLifetimeTokenIfAsyncDisposableDeclared()
     {
-        var lifetime = new AsyncDisposeTracker();
+        await using var lifetime = new AsyncDisposeTracker();
         var owned = new Owned<string>("unused", lifetime);
         await owned.DisposeAsync();
         Assert.True(lifetime.IsAsyncDisposed);
@@ -40,7 +40,8 @@ public class OwnedTests
     public void WhenInitialisedWithValue_ReturnsSameFromValueProperty()
     {
         var value = "Hello";
-        var owned = new Owned<string>(value, new DisposeTracker());
+        using var instance = new DisposeTracker();
+        using var owned = new Owned<string>(value, instance);
         Assert.Same(value, owned.Value);
     }
 }

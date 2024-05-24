@@ -10,7 +10,7 @@ namespace Autofac.Test.Core;
 
 public class DependencyResolutionExceptionTests
 {
-    public class A
+    private class A
     {
         public const string Message = "This is the original exception.";
 
@@ -20,14 +20,14 @@ public class DependencyResolutionExceptionTests
         }
     }
 
-    public class B
+    private class B
     {
         public B(A a)
         {
         }
     }
 
-    public class C
+    private class C
     {
         public C(B b)
         {

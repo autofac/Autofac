@@ -16,7 +16,7 @@ namespace Autofac.Features.OwnedInstances;
 /// service <typeparamref name="T"/> is registered.
 /// </para>
 /// <para>
-/// It is not necessary for <typeparamref name="T"/>, or the underlying component, to implement <see cref="System.IDisposable"/>.
+/// It is not necessary for <typeparamref name="T"/>, or the underlying component, to implement <see cref="IDisposable"/>.
 /// Disposing of the <see cref="Owned{T}"/> object is the correct way to handle cleanup of the dependency,
 /// as this will dispose of any other components created indirectly as well.
 /// </para>

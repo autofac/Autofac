@@ -16,6 +16,11 @@ public class LifetimeScopeEndingModule : Module
 
     protected override void Load(ContainerBuilder builder)
     {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
         builder.RegisterType<Service1>();
 
         builder.RegisterBuildCallback(scope => scope.CurrentScopeEnding += (sender, ev) =>

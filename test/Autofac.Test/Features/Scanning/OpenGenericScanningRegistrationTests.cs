@@ -49,7 +49,7 @@ public class OpenGenericScanningRegistrationTests
     {
         var cb = new ContainerBuilder();
         cb.RegisterAssemblyOpenGenericTypes(typeof(AComponent).GetTypeInfo().Assembly)
-            .Where(t => t.Name.StartsWith("Redo"));
+            .Where(t => t.Name.StartsWith("Redo", StringComparison.Ordinal));
         var c = cb.Build();
 
         Assert.NotNull(c.Resolve<RedoOpenGenericCommand<int>>());

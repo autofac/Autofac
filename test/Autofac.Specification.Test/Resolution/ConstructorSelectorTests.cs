@@ -72,14 +72,17 @@ public class ConstructorSelectorTests
         Assert.Equal(expectedConstructor, result.CalledCtor);
     }
 
+    [SuppressMessage("CA1034", "CA1034", Justification = "Test type must be public since it's part of a test constructor parameter and tests are public.")]
     public class A1
     {
     }
 
+    [SuppressMessage("CA1034", "CA1034", Justification = "Test type must be public since it's part of a test constructor parameter and tests are public.")]
     public class A2
     {
     }
 
+    [SuppressMessage("CA1034", "CA1034", Justification = "Test type must be public since it's part of a test constructor parameter and tests are public.")]
     public class MultipleConstructors
     {
         public MultipleConstructors(A1 a1)

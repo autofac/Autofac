@@ -5,11 +5,11 @@ namespace Autofac.Test.Features.OpenGenerics;
 
 public class GenericsForNullableScenarioTests
 {
-    public interface IItemProducer<T>
+    private interface IItemProducer<T>
     {
     }
 
-    public class NullableProducer<T> : IItemProducer<T?>
+    private class NullableProducer<T> : IItemProducer<T?>
         where T : struct
     {
     }

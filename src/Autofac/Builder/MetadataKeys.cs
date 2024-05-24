@@ -29,12 +29,12 @@ internal static class MetadataKeys
     internal const string ContainerBuildOptions = "__ContainerBuildOptions";
 
     /// <summary>
-    /// Event handler for <see cref="Autofac.Core.Registration.ComponentRegistryBuilder.Registered"/>.
+    /// Event handler for <see cref="Core.Registration.ComponentRegistryBuilder.Registered"/>.
     /// </summary>
     internal const string RegisteredPropertyKey = "__RegisteredKey";
 
     /// <summary>
-    /// Event handler for <see cref="Autofac.Core.Registration.ComponentRegistryBuilder.RegistrationSourceAdded"/>.
+    /// Event handler for <see cref="Core.Registration.ComponentRegistryBuilder.RegistrationSourceAdded"/>.
     /// </summary>
     internal const string RegistrationSourceAddedPropertyKey = "__RegistrationSourceAddedKey";
 }

@@ -11,22 +11,22 @@ namespace Autofac.Core.Resolving.Middleware;
 public enum ResolveEventType
 {
     /// <summary>
-    /// Event type for the OnPreparing event registered by <see cref="IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}.OnPreparing(System.Action{PreparingEventArgs})"/>.
+    /// Event type for the OnPreparing event registered by <see cref="IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}.OnPreparing(Action{PreparingEventArgs})"/>.
     /// </summary>
     OnPreparing,
 
     /// <summary>
-    /// Event type for the OnActivating event registered by <see cref="IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}.OnActivating(System.Action{IActivatingEventArgs{TLimit}})"/>.
+    /// Event type for the OnActivating event registered by <see cref="IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}.OnActivating(Action{IActivatingEventArgs{TLimit}})"/>.
     /// </summary>
     OnActivating,
 
     /// <summary>
-    /// Event type for the OnActivated event registered by <see cref="IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}.OnActivated(System.Action{IActivatedEventArgs{TLimit}})"/>.
+    /// Event type for the OnActivated event registered by <see cref="IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}.OnActivated(Action{IActivatedEventArgs{TLimit}})"/>.
     /// </summary>
     OnActivated,
 
     /// <summary>
-    /// Event type for the OnRelease event registered by <see cref="RegistrationExtensions.OnRelease{TLimit, TActivatorData, TRegistrationStyle}(IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}, System.Action{TLimit})"/>.
+    /// Event type for the OnRelease event registered by <see cref="RegistrationExtensions.OnRelease{TLimit, TActivatorData, TRegistrationStyle}(IRegistrationBuilder{TLimit, TActivatorData, TRegistrationStyle}, Action{TLimit})"/>.
     /// </summary>
     OnRelease,
 }

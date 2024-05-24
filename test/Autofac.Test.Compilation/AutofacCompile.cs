@@ -3,6 +3,7 @@
 
 #nullable enable
 
+using System.Globalization;
 using System.Reflection;
 using System.Runtime;
 using Microsoft.CodeAnalysis;
@@ -36,8 +37,9 @@ public class AutofacCompile
 
     public AutofacCompile AssertWarningContainsKeywords(params string[] expectedKeyWords)
     {
+        expectedKeyWords ??= Array.Empty<string>();
         var messages = GetMessages();
-        var warnings = messages.Where(x => x.Severity == DiagnosticSeverity.Warning).Select(x => x.GetMessage()).ToList();
+        var warnings = messages.Where(x => x.Severity == DiagnosticSeverity.Warning).Select(x => x.GetMessage(CultureInfo.InvariantCulture)).ToList();
 
         Assert.True(warnings.Count > 0);
 
@@ -45,7 +47,7 @@ public class AutofacCompile
 
         foreach (var expected in expectedKeyWords)
         {
-            Assert.Contains(expected, firstWarning);
+            Assert.Contains(expected, firstWarning, StringComparison.Ordinal);
         }
 
         return this;

@@ -176,12 +176,13 @@ public class ContainerBuilderTests
         Assert.Throws<InvalidOperationException>(() => target.Build());
     }
 
-    public class BuildCallbackModule : Module
+    private class BuildCallbackModule : Module
     {
         public int Called { get; private set; }
 
         protected override void Load(ContainerBuilder builder)
         {
+            ArgumentNullException.ThrowIfNull(builder);
             void BuildCallback(ILifetimeScope c)
             {
                 Called++;

@@ -24,15 +24,15 @@ public class ResolvedParameterTests
         Assert.Equal("aaaaa", s);
     }
 
-    public interface ISomething<T>
+    private interface ISomething<T>
     {
     }
 
-    public class ConcreteSomething<T> : ISomething<T>
+    private class ConcreteSomething<T> : ISomething<T>
     {
     }
 
-    public class SomethingDecorator<T> : ISomething<T>
+    private class SomethingDecorator<T> : ISomething<T>
     {
         public ISomething<T> Decorated { get; private set; }
 
@@ -93,7 +93,7 @@ public class ResolvedParameterTests
     }
 
     [Fact]
-    public void AResolvedParameterForAKeyedServiceDoesNotMatcheParametersOfTheServiceTypeWhenTheKeyedServiceIsUnavailable()
+    public void AResolvedParameterForAKeyedServiceDoesNotMatchParametersOfTheServiceTypeWhenTheKeyedServiceIsUnavailable()
     {
         var rp = ResolvedParameter.ForKeyed<char>(new object());
         var cp = GetCharParameter();

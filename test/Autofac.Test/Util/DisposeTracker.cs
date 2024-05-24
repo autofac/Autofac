@@ -9,10 +9,19 @@ public class DisposeTracker : IDisposable
 
     public bool IsDisposed { get; set; }
 
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            Disposing?.Invoke(this, EventArgs.Empty);
+        }
+
+        IsDisposed = true;
+    }
+
     public void Dispose()
     {
-        IsDisposed = true;
-
-        Disposing?.Invoke(this, EventArgs.Empty);
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 }

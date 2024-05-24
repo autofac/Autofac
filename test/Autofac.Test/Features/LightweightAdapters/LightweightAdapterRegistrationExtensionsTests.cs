@@ -8,8 +8,10 @@ using Autofac.Test.Scenarios.Adapters;
 
 namespace Autofac.Test.Features.LightweightAdapters;
 
+[SuppressMessage("CA1052", "CA1052", Justification = "Test containers may not be static.")]
 public class LightweightAdapterRegistrationExtensionsTests
 {
+    [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
     public class AdaptingTypeToType
     {
         private readonly IEnumerable<Command> _commands = new[]
@@ -61,6 +63,7 @@ public class LightweightAdapterRegistrationExtensionsTests
         }
     }
 
+    [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
     public class OnTopOfAnotherAdapter
     {
         private readonly Command _from = new();
@@ -85,19 +88,19 @@ public class LightweightAdapterRegistrationExtensionsTests
         }
     }
 
-    public interface IService
+    private interface IService
     {
     }
 
-    public class Implementer1 : IService
+    private class Implementer1 : IService
     {
     }
 
-    public class Implementer2 : IService
+    private class Implementer2 : IService
     {
     }
 
-    public class Decorator : IService
+    private class Decorator : IService
     {
         public Decorator(IService decorated)
         {
@@ -107,6 +110,7 @@ public class LightweightAdapterRegistrationExtensionsTests
         public IService Decorated { get; }
     }
 
+    [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
     public class DecoratorParameterization
     {
         private readonly IContainer _container;
@@ -174,6 +178,7 @@ public class LightweightAdapterRegistrationExtensionsTests
         }
     }
 
+    [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
     public class DecoratingANamedService
     {
         private readonly IContainer _container;

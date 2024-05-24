@@ -183,7 +183,7 @@ public class TagsFixture
         Assert.NotNull(s);
     }
 
-    public class HomeController
+    private class HomeController
     {
     }
 }

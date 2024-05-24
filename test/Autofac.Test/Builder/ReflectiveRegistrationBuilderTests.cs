@@ -76,15 +76,15 @@ public class ReflectiveRegistrationBuilderTests
         Assert.Throws<ArgumentException>(() => registration.UsingConstructor(typeof(A2)));
     }
 
-    public class A1
+    private class A1
     {
     }
 
-    public class A2
+    private class A2
     {
     }
 
-    public class MultipleConstructors
+    private class MultipleConstructors
     {
         public MultipleConstructors(A1 a1)
         {

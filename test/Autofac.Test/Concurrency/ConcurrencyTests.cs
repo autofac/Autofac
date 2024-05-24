@@ -11,7 +11,7 @@ public sealed class ConcurrencyTests
     [Fact]
     public void ConcurrentResolveOperationsForNonSharedInstancesFromDifferentLifetimes_DoNotBlock()
     {
-        var evt = new ManualResetEvent(false);
+        using var evt = new ManualResetEvent(false);
 
         var builder = new ContainerBuilder();
         builder.Register((c, p) =>
@@ -47,8 +47,8 @@ public sealed class ConcurrencyTests
     [Fact]
     public async Task ConcurrentResolveOperationsFromDifferentContainers_DoesNotThrow()
     {
-        var task1 = Task.Factory.StartNew(ResolveObjectInstanceLoop);
-        var task2 = Task.Factory.StartNew(ResolveObjectInstanceLoop);
+        var task1 = Task.Factory.StartNew(ResolveObjectInstanceLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+        var task2 = Task.Factory.StartNew(ResolveObjectInstanceLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         await Task.WhenAll(task1, task2);
     }
 

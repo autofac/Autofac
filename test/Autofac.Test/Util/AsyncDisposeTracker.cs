@@ -3,7 +3,7 @@
 
 namespace Autofac.Test.Util;
 
-public class AsyncDisposeTracker : IDisposable, IAsyncDisposable
+public sealed class AsyncDisposeTracker : IDisposable, IAsyncDisposable
 {
     public event EventHandler<EventArgs> Disposing;
 

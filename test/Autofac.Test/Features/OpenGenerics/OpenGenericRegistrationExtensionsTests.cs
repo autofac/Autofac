@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Globalization;
 using Autofac.Core;
 using Autofac.Features.OpenGenerics;
 
@@ -8,11 +9,11 @@ namespace Autofac.Test.Features.OpenGenerics;
 
 public class OpenGenericRegistrationExtensionsTests
 {
-    public interface IG<T>
+    private interface IG<T>
     {
     }
 
-    public class G<T> : IG<T>
+    private class G<T> : IG<T>
     {
         public G()
         {
@@ -109,11 +110,11 @@ public class OpenGenericRegistrationExtensionsTests
         Assert.Throws<ArgumentException>(() => cb.RegisterGeneric(typeof(List<int>)));
     }
 
-    public interface ITwoParams<T, TU>
+    private interface ITwoParams<T, TU>
     {
     }
 
-    public class TwoParams<T, TU> : ITwoParams<T, TU>
+    private class TwoParams<T, TU> : ITwoParams<T, TU>
     {
     }
 
@@ -164,7 +165,7 @@ public class OpenGenericRegistrationExtensionsTests
         Assert.Single(c.Resolve<IEnumerable<IG<int>>>());
     }
 
-    public class FG<T>
+    private class FG<T>
     {
     }
 
@@ -176,7 +177,7 @@ public class OpenGenericRegistrationExtensionsTests
 
         var exception = Assert.Throws<InvalidOperationException>(() => cb.Build());
 
-        var message = string.Format(OpenGenericServiceBinderResources.ImplementorDoesntImplementService, typeof(FG<>).FullName, typeof(IG<>).FullName);
+        var message = string.Format(CultureInfo.InvariantCulture, OpenGenericServiceBinderResources.ImplementorDoesntImplementService, typeof(FG<>).FullName, typeof(IG<>).FullName);
         Assert.Equal(message, exception.Message);
     }
 }

@@ -170,7 +170,7 @@ internal class FallbackDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     /// Changes made to this dictionary do not affect the parent.
     /// </para>
     /// </remarks>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="key" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
@@ -230,11 +230,11 @@ internal class FallbackDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Copies the elements of the dictionary to an <see cref="System.Array" />, starting at a particular <see cref="System.Array" /> index.
+    /// Copies the elements of the dictionary to an <see cref="Array" />, starting at a particular <see cref="Array" /> index.
     /// </summary>
     /// <param name="array">
-    /// The one-dimensional <see cref="System.Array" /> that is the destination of the elements copied from
-    /// the dictionary. The <see cref="System.Array" /> must have zero-based indexing.
+    /// The one-dimensional <see cref="Array" /> that is the destination of the elements copied from
+    /// the dictionary. The <see cref="Array" /> must have zero-based indexing.
     /// </param>
     /// <param name="arrayIndex">
     /// The zero-based index in <paramref name="array" /> at which copying begins.
@@ -319,7 +319,7 @@ internal class FallbackDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     /// Returns an enumerator that iterates through a collection.
     /// </summary>
     /// <returns>
-    /// An <see cref="System.Collections.IEnumerator" /> object that can be used to iterate through the collection.
+    /// An <see cref="IEnumerator" /> object that can be used to iterate through the collection.
     /// </returns>
     IEnumerator IEnumerable.GetEnumerator()
     {

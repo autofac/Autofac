@@ -7,15 +7,15 @@ namespace Autofac.Test;
 
 public class NamedParameterTests
 {
-    public class A
+    private class A
     {
     }
 
-    public class B : A
+    private class B : A
     {
     }
 
-    public class C
+    private class C
     {
         public C(A a)
         {
@@ -29,10 +29,11 @@ public class NamedParameterTests
 
         var namedParam = new NamedParameter("a", new A());
 
-        Assert.True(namedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
+        using var container = Factory.CreateEmptyContainer();
+        Assert.True(namedParam.CanSupplyValue(param, container, out Func<object> vp));
     }
 
-    private static System.Reflection.ParameterInfo AParamOfCConstructor()
+    private static ParameterInfo AParamOfCConstructor()
     {
         var param = typeof(C)
             .GetTypeInfo()
@@ -50,6 +51,7 @@ public class NamedParameterTests
 
         var namedParam = new NamedParameter("b", new B());
 
-        Assert.False(namedParam.CanSupplyValue(param, Factory.CreateEmptyContainer(), out Func<object> vp));
+        using var container = Factory.CreateEmptyContainer();
+        Assert.False(namedParam.CanSupplyValue(param, container, out Func<object> vp));
     }
 }

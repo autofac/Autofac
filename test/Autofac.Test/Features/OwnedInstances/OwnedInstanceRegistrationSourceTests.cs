@@ -28,7 +28,7 @@ public class OwnedInstanceRegistrationSourceTests
     public void CallingDisposeOnGeneratedOwnedT_DoesNotDisposeCurrentLifetimeScope()
     {
         var cb = new ContainerBuilder();
-        var containerDisposeTracker = new DisposeTracker();
+        using var containerDisposeTracker = new DisposeTracker();
         cb.RegisterInstance(containerDisposeTracker).Named<DisposeTracker>("tracker");
         cb.RegisterType<DisposeTracker>();
         var c = cb.Build();
@@ -100,7 +100,7 @@ public class OwnedInstanceRegistrationSourceTests
         Assert.NotNull(owned.Value);
     }
 
-    public class ClassWithFactory
+    private class ClassWithFactory
     {
         public ClassWithFactory(string name)
         {
@@ -112,7 +112,7 @@ public class OwnedInstanceRegistrationSourceTests
         public string Name { get; set; }
     }
 
-    public class ExposesScopeTag
+    private class ExposesScopeTag
     {
         private readonly ILifetimeScope _myScope;
 

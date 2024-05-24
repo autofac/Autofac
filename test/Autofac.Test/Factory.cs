@@ -18,6 +18,7 @@ internal static class Factory
         return CreateRegistration(services, activator, RootScopeLifetime.Instance, InstanceSharing.Shared);
     }
 
+    [SuppressMessage("CA2000", "CA2000", Justification = "Disposing the registration will dispose the activator.")]
     public static IComponentRegistration CreateSingletonRegistration(Type implementation)
     {
         return CreateSingletonRegistration(
@@ -50,6 +51,7 @@ internal static class Factory
         return CreateSingletonRegistration(instance);
     }
 
+    [SuppressMessage("CA2000", "CA2000", Justification = "Disposing the registration will dispose the activator.")]
     public static IComponentRegistration CreateSingletonObjectRegistration()
     {
         return CreateSingletonRegistration(
@@ -107,7 +109,7 @@ internal static class Factory
         return new ProvidedInstanceActivator(instance);
     }
 
-    private static IDictionary<string, object> GetDefaultMetadata()
+    private static Dictionary<string, object> GetDefaultMetadata()
     {
         return new Dictionary<string, object>
             {
@@ -115,13 +117,22 @@ internal static class Factory
             };
     }
 
+    [SuppressMessage("CA2000", "CA2000", Justification = "The component registry builder handles disposal of the services tracker.")]
     public static IComponentRegistryBuilder CreateEmptyComponentRegistryBuilder()
     {
         return new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
     }
 
+    [SuppressMessage("CA2000", "CA2000", Justification = "Shortcut for testing.")]
     public static IComponentRegistry CreateEmptyComponentRegistry()
     {
+        // Re: disposal - technically speaking, this is an odd situation.
+        // Normally what happens is a lifetime scope will take the builder, run
+        // build, and then add the builder to the list of things that get
+        // disposed at the end of the lifetime scope along with the built
+        // registry. In this test situation, there really isn't a scope, but if
+        // we dispose the builder we'll also end up disposing things inside the
+        // registry that got built, like the registered services tracker.
         return CreateEmptyComponentRegistryBuilder().Build();
     }
 

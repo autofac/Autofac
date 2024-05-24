@@ -11,14 +11,14 @@ namespace Autofac.Test.Features.ResolveAnything;
 
 public class ResolveAnythingTests
 {
-    public interface IInterfaceType
+    private interface IInterfaceType
     {
     }
 
     [Fact]
     public void AConcreteTypeNotRegisteredWithTheContainerWillBeProvided()
     {
-        var container = CreateResolveAnythingContainer();
+        using var container = CreateResolveAnythingContainer();
         Assert.True(container.IsRegistered<NotRegisteredType>());
     }
 
@@ -136,7 +136,7 @@ public class ResolveAnythingTests
     [Fact]
     public void TypesFromTheRegistrationSourceAreProvidedToOtherSources()
     {
-        var container = CreateResolveAnythingContainer();
+        using var container = CreateResolveAnythingContainer();
 
         // The RS for Func<> is getting the NotRegisteredType from the resolve-anything source
         Assert.True(container.IsRegistered<Func<NotRegisteredType>>());
@@ -154,7 +154,7 @@ public class ResolveAnythingTests
     public void IgnoredTypesFromTheRegistrationSourceAreNotProvidedToOtherSources(Type serviceType)
     {
         // Issue #495: Meta<T> not correctly handled with ACTNARS.
-        var container = CreateResolveAnythingContainer();
+        using var container = CreateResolveAnythingContainer();
         Assert.False(container.IsRegistered(serviceType), $"Failed: {serviceType}");
     }
 
@@ -183,7 +183,7 @@ public class ResolveAnythingTests
     [Fact]
     public void ConstructableClosedGenericsCanBeResolved()
     {
-        var container = CreateResolveAnythingContainer();
+        using var container = CreateResolveAnythingContainer();
         Assert.True(container.IsRegistered<Tuple<Exception>>());
         Assert.NotNull(container.Resolve<Tuple<Exception>>());
     }
@@ -191,7 +191,7 @@ public class ResolveAnythingTests
     [Fact]
     public void ConstructableOpenGenericsCanBeResolved()
     {
-        var container = CreateResolveAnythingContainer();
+        using var container = CreateResolveAnythingContainer();
         Assert.True(container.IsRegistered<Progress<Exception>>());
         Assert.NotNull(container.Resolve<Progress<Exception>>());
     }
@@ -199,7 +199,7 @@ public class ResolveAnythingTests
     [Fact]
     public void ConstructableOpenGenericsWithUnresolvableTypeParametersCanBeResolved()
     {
-        var container = CreateResolveAnythingContainer();
+        using var container = CreateResolveAnythingContainer();
         Assert.True(container.IsRegistered<Progress<IComparable>>());
         Assert.NotNull(container.Resolve<Progress<IComparable>>());
         Assert.True(container.IsRegistered<Progress<AbstractType>>());
@@ -210,7 +210,7 @@ public class ResolveAnythingTests
     public void ConstructableOpenGenericsWithGenericTypeArgumentNotMatchingFilterCanBeResolved()
     {
         var cb = new ContainerBuilder();
-        cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(t => t.Name.StartsWith("Progress")));
+        cb.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource(t => t.Name.StartsWith("Progress", StringComparison.Ordinal)));
         var container = cb.Build();
         Assert.True(container.IsRegistered<Progress<Exception>>());
         Assert.NotNull(container.Resolve<Progress<Exception>>());
@@ -255,19 +255,19 @@ public class ResolveAnythingTests
         return cb.Build();
     }
 
-    public abstract class AbstractType
+    private abstract class AbstractType
     {
     }
 
-    public class NotRegisteredType
+    private class NotRegisteredType
     {
     }
 
-    public class RegisteredType
+    private class RegisteredType
     {
     }
 
-    public class RegisterTypeWithCtorParam
+    private class RegisterTypeWithCtorParam
     {
         public RegisterTypeWithCtorParam(string stringParam = "MyString")
         {

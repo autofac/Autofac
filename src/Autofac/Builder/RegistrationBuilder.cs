@@ -113,7 +113,7 @@ public static class RegistrationBuilder
     /// </example>
     /// <param name="builder">The registration builder.</param>
     /// <returns>An IComponentRegistration.</returns>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="builder" /> is <see langword="null" />.
     /// </exception>
     public static IComponentRegistration CreateRegistration<TLimit, TActivatorData, TSingleRegistrationStyle>(
@@ -164,7 +164,7 @@ public static class RegistrationBuilder
     /// <param name="services">Services provided by the registration.</param>
     /// <param name="target">Optional; target registration.</param>
     /// <returns>An IComponentRegistration.</returns>
-    /// <exception cref="System.ArgumentNullException">
+    /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="activator" /> or <paramref name="data" /> is <see langword="null" />.
     /// </exception>
     public static IComponentRegistration CreateRegistration(

@@ -10,12 +10,12 @@ namespace Autofac;
 
 /// <summary>
 /// Base class for user-defined modules. Modules can add a set of related components
-/// to a container (<see cref="Module.Load"/>) or attach cross-cutting functionality
-/// to other components (<see cref="Module.AttachToComponentRegistration"/>.
+/// to a container (<see cref="Load"/>) or attach cross-cutting functionality
+/// to other components (<see cref="AttachToComponentRegistration"/>.
 /// Modules are given special support in the XML configuration feature - see
 /// https://autofac.readthedocs.io/en/latest/configuration/modules.html.
 /// </summary>
-/// <remarks>Provides a user-friendly way to implement <see cref="Autofac.Core.IModule"/>
+/// <remarks>Provides a user-friendly way to implement <see cref="IModule"/>
 /// via <see cref="ContainerBuilder"/>.</remarks>
 /// <example>
 /// Defining a module:

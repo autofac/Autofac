@@ -180,11 +180,11 @@ public class StartableTests
         }
     }
 
-    public sealed class MyComponent : IMyService
+    private sealed class MyComponent : IMyService
     {
     }
 
-    public sealed class MyComponent2
+    private sealed class MyComponent2
     {
     }
 
@@ -235,7 +235,7 @@ public class StartableTests
             Count++;
         }
 
-        public static int Count { get; set; } = 0;
+        public static int Count { get; set; }
     }
 
     private class StartableTakesDependency : IStartable

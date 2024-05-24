@@ -24,7 +24,7 @@ internal class ExternalRegistryServiceMiddlewareSource : IServiceMiddlewareSourc
     /// </param>
     public ExternalRegistryServiceMiddlewareSource(IComponentRegistry componentRegistry, bool isolatedScope)
     {
-        _componentRegistry = componentRegistry ?? throw new System.ArgumentNullException(nameof(componentRegistry));
+        _componentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
         _isolatedScope = isolatedScope;
     }
 

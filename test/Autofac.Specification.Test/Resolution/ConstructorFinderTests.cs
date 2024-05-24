@@ -107,15 +107,15 @@ public class ConstructorFinderTests
         Assert.True(finderCalled);
     }
 
-    public class A1
+    private class A1
     {
     }
 
-    public class A2
+    private class A2
     {
     }
 
-    public class CustomConstructorFinder : IConstructorFinder
+    private class CustomConstructorFinder : IConstructorFinder
     {
         public bool FindConstructorsCalled { get; private set; }
 
@@ -126,7 +126,7 @@ public class ConstructorFinderTests
         }
     }
 
-    public class MultipleConstructors
+    private class MultipleConstructors
     {
         public MultipleConstructors(A1 a1)
         {
@@ -146,7 +146,7 @@ public class ConstructorFinderTests
         public int CalledCtor { get; private set; }
     }
 
-    public class PrivateConstructor
+    private class PrivateConstructor
     {
         private PrivateConstructor(A1 a1)
         {

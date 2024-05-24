@@ -54,7 +54,7 @@ public abstract class Service
     /// <returns>
     /// true if the specified <see cref="object"/> is equal to the current <see cref="object"/>; otherwise, false.
     /// </returns>
-    /// <exception cref="System.NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
+    /// <exception cref="NullReferenceException">The <paramref name="obj"/> parameter is null.</exception>
     [SuppressMessage("Microsoft.Design", "CA1065:DoNotRaiseExceptionsInUnexpectedLocations", Justification = "This is an attempt to make Equals 'abstract' when it normally isn't.")]
     public override bool Equals(object? obj)
     {
