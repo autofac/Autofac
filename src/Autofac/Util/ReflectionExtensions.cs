@@ -173,7 +173,4 @@ internal static class ReflectionExtensions
         return constructorInfo.CustomAttributes.Any(
             cad => cad.AttributeType.FullName == "System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute");
     }
-
-
-    
 }
