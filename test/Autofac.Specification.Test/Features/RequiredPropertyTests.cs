@@ -6,8 +6,6 @@ using Autofac.Core;
 
 namespace Autofac.Specification.Test.Features;
 
-#if NET7_0_OR_GREATER
-
 public class RequiredPropertyTests
 {
     [Fact]
@@ -351,5 +349,3 @@ public class RequiredPropertyTests
     {
     }
 }
-
-#endif

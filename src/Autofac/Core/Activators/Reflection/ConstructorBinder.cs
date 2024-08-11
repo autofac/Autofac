@@ -4,6 +4,8 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
+using Autofac.Util;
+
 namespace Autofac.Core.Activators.Reflection;
 
 /// <summary>
@@ -26,9 +28,7 @@ public class ConstructorBinder
         Constructor = constructorInfo ?? throw new ArgumentNullException(nameof(constructorInfo));
         _constructorArgs = constructorInfo.GetParameters();
 
-#if NET7_0_OR_GREATER
-        SetsRequiredMembers = constructorInfo.GetCustomAttribute<SetsRequiredMembersAttribute>() is not null;
-#endif
+        SetsRequiredMembers = constructorInfo.HasSetsRequiredMembersAttribute();
 
         // If any of the parameters are unsafe, do not create an invoker, and store the parameter
         // that broke the rule.

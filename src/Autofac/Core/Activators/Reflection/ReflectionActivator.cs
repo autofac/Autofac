@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -78,16 +79,16 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             throw new ArgumentNullException(nameof(pipelineBuilder));
         }
 
-#if NET7_0_OR_GREATER
-        // The RequiredMemberAttribute has Inherit = false on its AttributeUsage options,
-        // so we can't use the expected GetCustomAttribute(inherit: true) option, and must walk the tree.
+        // The RequiredMemberAttribute (may)* have Inherit = false on its AttributeUsage options,
+        // so walk the tree.
+        // (*): see `HasRequiredMemberAttribute` doc for why we dont really know much about the concrete attribute.
         _anyRequiredMembers = ReflectionCacheSet.Shared.Internal.HasRequiredMemberAttribute.GetOrAdd(
             _implementationType,
             static t =>
             {
                 for (var currentType = t; currentType is not null && currentType != typeof(object); currentType = currentType.BaseType)
                 {
-                    if (currentType.GetCustomAttribute<RequiredMemberAttribute>() is not null)
+                    if (currentType.HasRequiredMemberAttribute())
                     {
                         return true;
                     }
@@ -95,9 +96,6 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
                 return false;
             });
-#else
-        _anyRequiredMembers = false;
-#endif
 
         if (_anyRequiredMembers || _configuredProperties.Length > 0)
         {

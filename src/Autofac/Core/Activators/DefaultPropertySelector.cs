@@ -4,6 +4,8 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
+using Autofac.Util;
+
 namespace Autofac.Core;
 
 /// <summary>
@@ -56,8 +58,7 @@ public class DefaultPropertySelector : IPropertySelector
             return false;
         }
 
-#if NET7_0_OR_GREATER
-        if (propertyInfo.GetCustomAttribute<RequiredMemberAttribute>() is not null)
+        if (propertyInfo.HasRequiredMemberAttribute())
         {
             // The default property selector should not inject required properties,
             // to avoid duplication with the injection automatically applied inside the
@@ -66,7 +67,6 @@ public class DefaultPropertySelector : IPropertySelector
             // set the required properties in order to create the instance.
             return false;
         }
-#endif
 
         if (PreserveSetValues && propertyInfo.CanRead)
         {

@@ -121,4 +121,59 @@ internal static class ReflectionExtensions
 
         return callExpression.Constructor!;
     }
+
+    /// <summary>
+    /// Checks if <paramref name="memberInfo"/> has a <c>RequiredMemberAttribute</c>.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// On NET7+ this would <em>typically</em> be the framework supplied <c>RequiredMemberAttribute</c>, <em>but</em> internally the compiler
+    /// <em>only</em> requires an attribute with that specific type <em>name</em>, not that specific type <em>reference</em>.
+    /// </para>
+    /// <para>
+    /// This could very well be an internally defined custom polyfill attribute using that type name (for example
+    /// using <see href="https://www.nuget.org/packages/Required"/>), so this check is done <em>only</em> via type
+    /// <em>name</em>, not reference.
+    /// </para>
+    /// </remarks>
+    /// <param name="memberInfo">Member to check.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="memberInfo"/> carries a <see cref="MemberInfo.CustomAttributes">CustomAttributeData</see> with
+    /// a type <em>name</em> of <c>System.Runtime.CompilerServices.RequiredAttribute</c>; <see langword="false" /> otherwise.
+    /// </returns>
+    public static bool HasRequiredMemberAttribute(
+        this MemberInfo memberInfo)
+    {
+        return memberInfo.CustomAttributes.Any(
+            cad => cad.AttributeType.FullName == "System.Runtime.CompilerServices.RequiredMemberAttribute");
+    }
+
+    /// <summary>
+    /// Checks if <paramref name="constructorInfo"/> has a <c>SetsRequiredMembersAttribute</c>.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// On NET7+ this would <em>typically</em> be the framework supplied <c>SetsRequiredMembersAttribute</c>, <em>but</em> internally the compiler
+    /// <em>only</em> requires an attribute with that specific type <em>name</em>, not that specific type <em>reference</em>.
+    /// </para>
+    /// <para>
+    /// This could very well be an internally defined custom polyfill attribute using that type name (for example
+    /// using <see href="https://www.nuget.org/packages/Required"/>), so this check is done <em>only</em> via type
+    /// <em>name</em>, not reference.
+    /// </para>
+    /// </remarks>
+    /// <param name="constructorInfo">Constructor to check.</param>
+    /// <returns>
+    /// <see langword="true" /> if <paramref name="constructorInfo"/> carries a <see cref="MemberInfo.CustomAttributes">CustomAttributeData</see> with
+    /// a type <em>name</em> of <c>System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute</c>; <see langword="false" /> otherwise.
+    /// </returns>
+    public static bool HasSetsRequiredMembersAttribute(
+        this ConstructorInfo constructorInfo)
+    {
+        return constructorInfo.CustomAttributes.Any(
+            cad => cad.AttributeType.FullName == "System.Diagnostics.CodeAnalysis.SetsRequiredMembersAttribute");
+    }
+
+
+    
 }

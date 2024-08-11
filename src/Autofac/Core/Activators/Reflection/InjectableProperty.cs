@@ -4,6 +4,8 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
+using Autofac.Util;
+
 namespace Autofac.Core.Activators.Reflection;
 
 /// <summary>
@@ -26,9 +28,7 @@ internal class InjectableProperty
 
         _setterParameter = _setter.GetParameters()[0];
 
-#if NET7_0_OR_GREATER
-        IsRequired = prop.GetCustomAttribute<RequiredMemberAttribute>() is not null;
-#endif
+        IsRequired = prop.HasRequiredMemberAttribute();
     }
 
     /// <summary>

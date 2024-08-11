@@ -59,12 +59,10 @@ internal class InternalReflectionCaches
     /// </summary>
     public ReflectionCacheDictionary<Type, Type> GenericTypeDefinitionByType { get; }
 
-#if NET7_0_OR_GREATER
     /// <summary>
     /// Gets a cache used by <see cref="ReflectionActivator"/>.
     /// </summary>
     public ReflectionCacheDictionary<Type, bool> HasRequiredMemberAttribute { get; }
-#endif
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InternalReflectionCaches"/> class.
@@ -85,8 +83,6 @@ internal class InternalReflectionCaches
         AutowiringInjectableProperties = set.GetOrCreateCache<ReflectionCacheDictionary<Type, IReadOnlyList<PropertyInfo>>>(nameof(AutowiringInjectableProperties));
         DefaultPublicConstructors = set.GetOrCreateCache<ReflectionCacheDictionary<Type, ConstructorInfo[]>>(nameof(DefaultPublicConstructors));
         GenericTypeDefinitionByType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, Type>>(nameof(GenericTypeDefinitionByType));
-#if NET7_0_OR_GREATER
         HasRequiredMemberAttribute = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(HasRequiredMemberAttribute));
-#endif
     }
 }
