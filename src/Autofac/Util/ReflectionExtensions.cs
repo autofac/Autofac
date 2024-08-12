@@ -123,7 +123,7 @@ internal static class ReflectionExtensions
     }
 
     /// <summary>
-    /// Checks if <paramref name="memberInfo"/> has a <c>RequiredMemberAttribute</c>.
+    /// Checks if a provided member has a <c>RequiredMemberAttribute</c>.
     /// </summary>
     /// <remarks>
     /// <para>
