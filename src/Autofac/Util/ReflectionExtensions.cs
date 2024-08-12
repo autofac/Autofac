@@ -131,9 +131,8 @@ internal static class ReflectionExtensions
     /// <em>only</em> requires an attribute with that specific type <em>name</em>, not that specific type <em>reference</em>.
     /// </para>
     /// <para>
-    /// This could very well be an internally defined custom polyfill attribute using that type name (for example
-    /// using <see href="https://www.nuget.org/packages/Required"/>), so this check is done <em>only</em> via type
-    /// <em>name</em>, not reference.
+    /// This could very well be an internally defined custom polyfill attribute using that type name, so this
+    /// check is done <em>only</em> via type <em>name</em>, not reference.
     /// </para>
     /// </remarks>
     /// <param name="memberInfo">Member to check.</param>
@@ -157,9 +156,8 @@ internal static class ReflectionExtensions
     /// <em>only</em> requires an attribute with that specific type <em>name</em>, not that specific type <em>reference</em>.
     /// </para>
     /// <para>
-    /// This could very well be an internally defined custom polyfill attribute using that type name (for example
-    /// using <see href="https://www.nuget.org/packages/Required"/>), so this check is done <em>only</em> via type
-    /// <em>name</em>, not reference.
+    /// This could very well be an internally defined custom polyfill attribute using that type name, so this
+    /// check is done <em>only</em> via type <em>name</em>, not reference.
     /// </para>
     /// </remarks>
     /// <param name="constructorInfo">Constructor to check.</param>
