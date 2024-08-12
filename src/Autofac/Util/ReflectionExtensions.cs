@@ -149,7 +149,7 @@ internal static class ReflectionExtensions
     }
 
     /// <summary>
-    /// Checks if <paramref name="constructorInfo"/> has a <c>SetsRequiredMembersAttribute</c>.
+    /// Checks if a constructor has a <c>SetsRequiredMembersAttribute</c>.
     /// </summary>
     /// <remarks>
     /// <para>
