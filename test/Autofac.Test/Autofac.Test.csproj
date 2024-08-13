@@ -37,7 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\RequiredPolyfill.cs" Link="Util\RequiredPolyfill.cs" />
+    <Compile Include="..\Shims\required\*.cs" Link="Util\shims\required\%(FileName).cs" />
+    <None Include="..\Shims\required\README.md" Link="Util\shims\required\README.md" />
   </ItemGroup>
 
   <ItemGroup>
