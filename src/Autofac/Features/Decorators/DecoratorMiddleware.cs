@@ -77,7 +77,15 @@ internal class DecoratorMiddleware : IResolveMiddleware
             return;
         }
 
-        var serviceParameter = new TypedParameter(serviceType, context.DecoratorContext.CurrentInstance);
+        // Issue 1330: A component registered with multiple services may need to
+        // be decorated when resolved in a different context. Lambda registered
+        // decorators assume an exact typed parameter but the multi-service
+        // registered decorators need the resolved version that can determine
+        // compatibility by casting.
+        var typedServiceParameter = new TypedParameter(serviceType, context.DecoratorContext.CurrentInstance);
+        var compatibleServiceParameter = new ResolvedParameter(
+            (pi, ctx) => serviceType.IsAssignableFrom(pi.ParameterType),
+            (pi, ctx) => context.DecoratorContext.CurrentInstance);
         var contextParameter = new TypedParameter(typeof(IDecoratorContext), context.DecoratorContext);
 
         Parameter[] resolveParameters;
@@ -86,11 +94,11 @@ internal class DecoratorMiddleware : IResolveMiddleware
 
         if (parameterCount == 0)
         {
-            resolveParameters = new Parameter[] { serviceParameter, contextParameter };
+            resolveParameters = new Parameter[] { typedServiceParameter, compatibleServiceParameter, contextParameter };
         }
         else
         {
-            resolveParameters = new Parameter[parameterCount + 2];
+            resolveParameters = new Parameter[parameterCount + 3];
             var idx = 0;
 
             foreach (var existing in context.Parameters)
@@ -99,7 +107,8 @@ internal class DecoratorMiddleware : IResolveMiddleware
                 idx++;
             }
 
-            resolveParameters[idx++] = serviceParameter;
+            resolveParameters[idx++] = typedServiceParameter;
+            resolveParameters[idx++] = compatibleServiceParameter;
             resolveParameters[idx++] = contextParameter;
         }
 

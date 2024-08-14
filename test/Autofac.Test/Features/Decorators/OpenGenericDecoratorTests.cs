@@ -864,6 +864,35 @@ public class OpenGenericDecoratorTests
         Assert.IsType<TransactionalCommandHandlerDecorator<CreateLocation>>(instance);
     }
 
+    [Fact]
+    public void ResolvesMultipleDecoratedServicesWhenResolvedByOtherServices()
+    {
+        // Issue 1330: A component registered with multiple services may need to
+        // be decorated when resolved in a different context.
+        var builder = new ContainerBuilder();
+        builder.RegisterGeneric(typeof(ImplementorA<>)).As(typeof(IDecoratedService<>)).As(typeof(IService<>));
+        builder.RegisterGeneric(typeof(ImplementorB<>)).As(typeof(IDecoratedService<>)).As(typeof(IService<>));
+        builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IService<>));
+        var container = builder.Build();
+
+        var services = container.Resolve<IEnumerable<IService<int>>>();
+
+        Assert.Collection(
+            services,
+            s =>
+            {
+                var ds = s as IDecoratedService<int>;
+                Assert.IsType<DecoratorA<int>>(ds);
+                Assert.IsType<ImplementorA<int>>(ds.Decorated);
+            },
+            s =>
+            {
+                var ds = s as IDecoratedService<int>;
+                Assert.IsType<DecoratorA<int>>(ds);
+                Assert.IsType<ImplementorB<int>>(ds.Decorated);
+            });
+    }
+
     private interface ICommandHandler<T>
     {
         void Handle(T command);
