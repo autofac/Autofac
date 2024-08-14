@@ -37,6 +37,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\Shims\required\*.cs" Link="Util\shims\required\%(FileName).cs" />
+    <None Include="..\Shims\required\README.md" Link="Util\shims\required\README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

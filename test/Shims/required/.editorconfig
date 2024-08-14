@@ -1,0 +1,7 @@
+[*.cs]
+# dont complain about .NET Foundation license header
+dotnet_diagnostic.SA1636.severity = none
+# dont enforce documentation styles for imported shims
+dotnet_diagnostic.SA1623.severity = none
+# dont enforce coding styles for imported shims
+dotnet_diagnostic.SA1502.severity = none
