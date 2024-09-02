@@ -5,7 +5,6 @@ using Autofac.Test.CodeGen.Helpers;
 
 namespace Autofac.Test.CodeGen;
 
-[UsesVerify]
 public class DelegateRegisterGeneratorTests
 {
     [Fact]
