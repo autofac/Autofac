@@ -398,6 +398,39 @@ public class PropertyInjectionTests
         instance.AssertProp();
     }
 
+    [Fact]
+    public void WithPropertyDelegateAllowsNullValue()
+    {
+        // Issue 1427: WithProperty should consistently allow null values.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<HasPublicSetter>().WithProperty(t => t.Val, null);
+        var container = builder.Build();
+        var instance = container.Resolve<HasPublicSetter>();
+        Assert.Null(instance.Val);
+    }
+
+    [Fact]
+    public void WithPropertyNamedAllowsNullValue()
+    {
+        // Issue 1427: WithProperty should consistently allow null values.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<HasPublicSetter>().WithProperty(nameof(HasPublicSetter.Val), null);
+        var container = builder.Build();
+        var instance = container.Resolve<HasPublicSetter>();
+        Assert.Null(instance.Val);
+    }
+
+    [Fact]
+    public void WithPropertyTypedAllowsNullValue()
+    {
+        // Issue 1427: WithProperty should consistently allow null values.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<HasPublicSetter>().WithProperty(TypedParameter.From<string>(null));
+        var container = builder.Build();
+        var instance = container.Resolve<HasPublicSetter>();
+        Assert.Null(instance.Val);
+    }
+
     private class ConstructorParamNotAttachedToProperty
     {
         [SuppressMessage("SA1401", "SA1401")]
