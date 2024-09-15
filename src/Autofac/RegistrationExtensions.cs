@@ -621,7 +621,7 @@ public static partial class RegistrationExtensions
         WithProperty<TLimit, TReflectionActivatorData, TStyle>(
             this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,
             string propertyName,
-            object propertyValue)
+            object? propertyValue)
         where TReflectionActivatorData : ReflectionActivatorData
     {
         return registration.WithProperty(new NamedPropertyParameter(propertyName, propertyValue));
@@ -682,11 +682,6 @@ public static partial class RegistrationExtensions
         if (propertyExpression == null)
         {
             throw new ArgumentNullException(nameof(propertyExpression));
-        }
-
-        if (propertyValue == null)
-        {
-            throw new ArgumentNullException(nameof(propertyValue));
         }
 
         var propertyInfo = (propertyExpression.Body as MemberExpression)?.Member as PropertyInfo ?? throw new ArgumentOutOfRangeException(nameof(propertyExpression), RegistrationExtensionsResources.ExpressionDoesNotReferToProperty);
