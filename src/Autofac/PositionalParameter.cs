@@ -46,7 +46,7 @@ public class PositionalParameter : ConstantParameter
     /// </summary>
     /// <param name="position">The zero-based position of the parameter.</param>
     /// <param name="value">The parameter value.</param>
-    public PositionalParameter(int position, object value)
+    public PositionalParameter(int position, object? value)
         : base(value, pi => pi.Position == position && (pi.Member is ConstructorInfo))
     {
         if (position < 0)
