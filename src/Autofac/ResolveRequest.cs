@@ -71,7 +71,7 @@ public readonly struct ResolveRequest : IEquatable<ResolveRequest>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the operator.</returns>
-    public static bool operator ==(ResolveRequest left, ResolveRequest right) => Equals(left, right);
+    public static bool operator ==(ResolveRequest left, ResolveRequest right) => left.Equals(right);
 
     /// <summary>
     /// Implements the operator !=.
