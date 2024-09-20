@@ -194,6 +194,10 @@ public static class ResolutionExtensions
     /// <returns>True if the service is registered.</returns>
     public static bool IsRegisteredService(this IComponentContext context, Service service)
     {
+#if NET7_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(service);
+#else
         if (context == null)
         {
             throw new ArgumentNullException(nameof(context));
@@ -203,6 +207,7 @@ public static class ResolutionExtensions
         {
             throw new ArgumentNullException(nameof(service));
         }
+#endif
 
         return context.ComponentRegistry.IsRegistered(service);
     }
@@ -852,11 +857,10 @@ public static class ResolutionExtensions
     /// <exception cref="DependencyResolutionException"/>
     public static object ResolveService(this IComponentContext context, Service service, IEnumerable<Parameter> parameters)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
+#if NET7_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(service);
+        ArgumentNullException.ThrowIfNull(parameters);
+#else
         if (service == null)
         {
             throw new ArgumentNullException(nameof(service));
@@ -866,6 +870,7 @@ public static class ResolutionExtensions
         {
             throw new ArgumentNullException(nameof(parameters));
         }
+#endif
 
         if (!context.TryResolveService(service, parameters, out var instance))
         {
@@ -904,11 +909,6 @@ public static class ResolutionExtensions
     public static bool TryResolve<T>(this IComponentContext context, [NotNullWhen(returnValue: true)] out T? instance)
         where T : class
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
         // Null annotation attributes only work if placed directly in an if statement.
         if (context.TryResolve(typeof(T), out object? component))
         {
@@ -937,11 +937,6 @@ public static class ResolutionExtensions
     [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
     public static bool TryResolve(this IComponentContext context, Type serviceType, [NotNullWhen(returnValue: true)] out object? instance)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
         return context.TryResolveService(new TypedService(serviceType), ResolveRequest.NoParameters, out instance);
     }
 
@@ -959,11 +954,6 @@ public static class ResolutionExtensions
     public static bool TryResolveKeyed<T>(this IComponentContext context, object serviceKey, [NotNullWhen(returnValue: true)] out T? instance)
         where T : class
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
         if (context.TryResolveKeyed(serviceKey, typeof(T), out object? component))
         {
             instance = CastInstance<T>(component);
@@ -992,11 +982,6 @@ public static class ResolutionExtensions
     [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
     public static bool TryResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, [NotNullWhen(returnValue: true)] out object? instance)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
         return context.TryResolveService(new KeyedService(serviceKey, serviceType), ResolveRequest.NoParameters, out instance);
     }
 
@@ -1014,11 +999,6 @@ public static class ResolutionExtensions
     public static bool TryResolveNamed<T>(this IComponentContext context, string serviceName, [NotNullWhen(returnValue: true)] out T? instance)
         where T : class
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
         if (context.TryResolveNamed(serviceName, typeof(T), out object? component))
         {
             instance = CastInstance<T>(component);
@@ -1047,11 +1027,6 @@ public static class ResolutionExtensions
     [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
     public static bool TryResolveNamed(this IComponentContext context, string serviceName, Type serviceType, [NotNullWhen(returnValue: true)] out object? instance)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
         return context.TryResolveService(new KeyedService(serviceName, serviceType), ResolveRequest.NoParameters, out instance);
     }
 
@@ -1068,11 +1043,6 @@ public static class ResolutionExtensions
     [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
     public static bool TryResolveService(this IComponentContext context, Service service, [NotNullWhen(returnValue: true)] out object? instance)
     {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
         return context.TryResolveService(service, ResolveRequest.NoParameters, out instance);
     }
 
@@ -1093,10 +1063,14 @@ public static class ResolutionExtensions
     [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
     public static bool TryResolveService(this IComponentContext context, Service service, IEnumerable<Parameter> parameters, [NotNullWhen(returnValue: true)] out object? instance)
     {
+#if NET7_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(context);
+#else
         if (context == null)
         {
             throw new ArgumentNullException(nameof(context));
         }
+#endif
 
         if (!context.ComponentRegistry.TryGetServiceRegistration(service, out var serviceRegistration))
         {
