@@ -198,11 +198,6 @@ public sealed class ContainerBuilder
     /// <param name="componentRegistry">An existing registry to make the registrations in.</param>
     internal void UpdateRegistry(IComponentRegistryBuilder componentRegistry)
     {
-        if (componentRegistry == null)
-        {
-            throw new ArgumentNullException(nameof(componentRegistry));
-        }
-
         Build(componentRegistry, true);
     }
 

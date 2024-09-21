@@ -60,11 +60,6 @@ public static partial class RegistrationExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        if (instance == null)
-        {
-            throw new ArgumentNullException(nameof(instance));
-        }
-
         var activator = new ProvidedInstanceActivator(instance);
 
         var rb = new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
@@ -139,11 +134,6 @@ public static partial class RegistrationExtensions
         if (builder == null)
         {
             throw new ArgumentNullException(nameof(builder));
-        }
-
-        if (implementationType == null)
-        {
-            throw new ArgumentNullException(nameof(implementationType));
         }
 
         var rb = RegistrationBuilder.ForType(implementationType);
@@ -353,11 +343,6 @@ public static partial class RegistrationExtensions
             Func<Type, ConstructorInfo[]> finder)
         where TReflectionActivatorData : ReflectionActivatorData
     {
-        if (registration == null)
-        {
-            throw new ArgumentNullException(nameof(registration));
-        }
-
         if (finder == null)
         {
             throw new ArgumentNullException(nameof(finder));
@@ -484,11 +469,6 @@ public static partial class RegistrationExtensions
             Expression<Func<TLimit>> constructorSelector)
         where TReflectionActivatorData : ReflectionActivatorData
     {
-        if (registration == null)
-        {
-            throw new ArgumentNullException(nameof(registration));
-        }
-
         if (constructorSelector == null)
         {
             throw new ArgumentNullException(nameof(constructorSelector));
@@ -565,16 +545,6 @@ public static partial class RegistrationExtensions
             Func<ParameterInfo, IComponentContext, object?> valueProvider)
         where TReflectionActivatorData : ReflectionActivatorData
     {
-        if (parameterSelector == null)
-        {
-            throw new ArgumentNullException(nameof(parameterSelector));
-        }
-
-        if (valueProvider == null)
-        {
-            throw new ArgumentNullException(nameof(valueProvider));
-        }
-
         return registration.WithParameter(
             new ResolvedParameter(parameterSelector, valueProvider));
     }
