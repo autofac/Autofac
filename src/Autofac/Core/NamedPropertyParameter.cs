@@ -22,7 +22,7 @@ public class NamedPropertyParameter : ConstantParameter
     /// </summary>
     /// <param name="name">The name of the property.</param>
     /// <param name="value">The property value.</param>
-    public NamedPropertyParameter(string name, object value)
+    public NamedPropertyParameter(string name, object? value)
         : base(value, pi =>
         {
             return pi.TryGetDeclaringProperty(out PropertyInfo? prop) &&
