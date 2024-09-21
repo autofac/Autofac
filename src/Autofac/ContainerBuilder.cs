@@ -107,11 +107,6 @@ public sealed class ContainerBuilder
     /// <param name="configurationCallback">Callback to execute.</param>
     public DeferredCallback RegisterCallback(Action<IComponentRegistryBuilder> configurationCallback)
     {
-        if (configurationCallback == null)
-        {
-            throw new ArgumentNullException(nameof(configurationCallback));
-        }
-
         var c = new DeferredCallback(configurationCallback);
         _configurationCallbacks.Add(c);
         return c;
