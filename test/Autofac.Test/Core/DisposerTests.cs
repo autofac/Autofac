@@ -61,7 +61,9 @@ public class DisposerTests
     [Fact]
     public async Task DisposerDisposesOfObjectsAsyncIfIAsyncDisposableDeclared()
     {
-        var instance = new AsyncDisposeTracker();
+        var semaphore = new SemaphoreSlim(1);
+        var instance = new AsyncDisposeTracker(semaphore);
+        await semaphore.WaitAsync();
 
         var disposer = new Disposer();
         disposer.AddInstanceForDisposal(instance);
@@ -74,6 +76,7 @@ public class DisposerTests
         Assert.False(instance.IsAsyncDisposed);
 
         // Now we wait.
+        semaphore.Release();
         await result;
 
         Assert.False(instance.IsSyncDisposed);

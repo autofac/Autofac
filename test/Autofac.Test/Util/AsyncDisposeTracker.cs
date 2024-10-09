@@ -5,11 +5,23 @@ namespace Autofac.Test.Util;
 
 public sealed class AsyncDisposeTracker : IDisposable, IAsyncDisposable
 {
+    private readonly SemaphoreSlim _semaphore;
+
     public event EventHandler<EventArgs> Disposing;
 
     public bool IsSyncDisposed { get; set; }
 
     public bool IsAsyncDisposed { get; set; }
+
+    public AsyncDisposeTracker()
+        : this(null)
+    {
+    }
+
+    public AsyncDisposeTracker(SemaphoreSlim semaphore)
+    {
+        _semaphore = semaphore;
+    }
 
     public void Dispose()
     {
@@ -20,10 +32,20 @@ public sealed class AsyncDisposeTracker : IDisposable, IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await Task.Delay(1);
+        if (_semaphore != null)
+        {
+            await _semaphore.WaitAsync();
+        }
 
-        IsAsyncDisposed = true;
+        try
+        {
+            IsAsyncDisposed = true;
 
-        Disposing?.Invoke(this, EventArgs.Empty);
+            Disposing?.Invoke(this, EventArgs.Empty);
+        }
+        finally
+        {
+            _semaphore?.Release();
+        }
     }
 }
