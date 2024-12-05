@@ -51,14 +51,13 @@ public class TypeAssemblyReferenceProviderTests
         }
     }
 
-    private abstract class GenericAbstractClass<T> where T : class
+    private abstract class GenericAbstractClass<T>
+        where T : class
     {
-
     }
 
     private class DerivedClassFromGenericAbstract : GenericAbstractClass<DerivedClassFromGenericAbstract>
     {
-
     }
 
     private class DerivedClass
