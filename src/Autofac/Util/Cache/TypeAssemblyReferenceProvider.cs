@@ -68,6 +68,11 @@ internal static class TypeAssemblyReferenceProvider
 
         foreach (var genericArgumentType in genericArguments)
         {
+            if (holdingSet.Any(a => a.DefinedTypes.Contains(genericArgumentType)))
+            {
+                continue;
+            }
+
             PopulateAllReferencedAssemblies(genericArgumentType, holdingSet);
         }
 
