@@ -39,14 +39,15 @@ internal static class TypeAssemblyReferenceProvider
     public static IEnumerable<Assembly> GetAllReferencedAssemblies(MemberInfo memberInfo, HashSet<Assembly> holdingSet)
     {
         holdingSet.Clear();
+        var activeWorkingSet = new HashSet<Type>();
 
         if (memberInfo is Type keyType)
         {
-            PopulateAllReferencedAssemblies(keyType, holdingSet);
+            PopulateAllReferencedAssemblies(keyType, activeWorkingSet, holdingSet);
         }
         else if (memberInfo.DeclaringType is Type declaredType)
         {
-            PopulateAllReferencedAssemblies(declaredType, holdingSet);
+            PopulateAllReferencedAssemblies(declaredType, activeWorkingSet, holdingSet);
         }
 
         return holdingSet;
@@ -56,31 +57,33 @@ internal static class TypeAssemblyReferenceProvider
     /// Add to a provided <see cref="HashSet{T}"/> all assemblies referenced by a given type.
     /// </summary>
     /// <param name="inputType">The type to retrieve references for.</param>
+    /// <param name="activeWorkingSet">A set to track types which have been processed.</param>
     /// <param name="holdingSet">A set to add any assemblies to.</param>
-    private static void PopulateAllReferencedAssemblies(Type inputType, HashSet<Assembly> holdingSet)
+    private static void PopulateAllReferencedAssemblies(Type inputType, HashSet<Type> activeWorkingSet, HashSet<Assembly> holdingSet)
     {
         if (inputType.IsArray && inputType.GetElementType() is Type elementType)
         {
-            PopulateAllReferencedAssemblies(elementType, holdingSet);
+            PopulateAllReferencedAssemblies(elementType, activeWorkingSet, holdingSet);
         }
 
         var genericArguments = inputType.GenericTypeArguments;
 
         foreach (var genericArgumentType in genericArguments)
         {
-            if (holdingSet.Any(a => a.DefinedTypes.Contains(genericArgumentType)))
+            if (activeWorkingSet.Contains(genericArgumentType))
             {
                 continue;
             }
 
-            PopulateAllReferencedAssemblies(genericArgumentType, holdingSet);
+            PopulateAllReferencedAssemblies(genericArgumentType, activeWorkingSet, holdingSet);
         }
 
         holdingSet.Add(inputType.Assembly);
+        activeWorkingSet.Add(inputType);
 
         if (inputType.BaseType is not null && inputType.BaseType != typeof(object))
         {
-            PopulateAllReferencedAssemblies(inputType.BaseType, holdingSet);
+            PopulateAllReferencedAssemblies(inputType.BaseType, activeWorkingSet, holdingSet);
         }
     }
 }
