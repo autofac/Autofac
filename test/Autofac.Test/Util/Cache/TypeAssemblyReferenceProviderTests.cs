@@ -18,6 +18,7 @@ public class TypeAssemblyReferenceProviderTests
     [InlineData(typeof(IEnumerable<IIndex<int, Assert>>), new[] { typeof(IEnumerable<>), typeof(IIndex<,>), typeof(Assert) })]
     [InlineData(typeof(DerivedClass), new[] { typeof(DerivedClass), typeof(RegistrationBuilder<,,>), typeof(Assert) })]
     [InlineData(typeof(GenericDerivedClass<Assert>), new[] { typeof(DerivedClass), typeof(RegistrationBuilder<,,>), typeof(Assert), typeof(object) })]
+    [InlineData(typeof(DerivedClassFromGenericAbstract), new[] { typeof(DerivedClassFromGenericAbstract) })]
     public void TypeReferencesCanBeDetermined(Type inputType, Type[] expandedTypeAssemblies)
     {
         Assert.NotNull(expandedTypeAssemblies);
@@ -48,6 +49,15 @@ public class TypeAssemblyReferenceProviderTests
         {
             Assert.Contains(item, expectedResults);
         }
+    }
+
+    private abstract class GenericAbstractClass<T>
+        where T : class
+    {
+    }
+
+    private class DerivedClassFromGenericAbstract : GenericAbstractClass<DerivedClassFromGenericAbstract>
+    {
     }
 
     private class DerivedClass
