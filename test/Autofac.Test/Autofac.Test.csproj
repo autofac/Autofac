@@ -36,6 +36,10 @@
     <None Remove="TestResults\**" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(OS)' != 'Windows_NT'">
+    <Compile Remove="ComObjectRegistrationTest.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <Compile Include="..\Shims\required\*.cs" Link="Util\shims\required\%(FileName).cs" />
     <None Include="..\Shims\required\README.md" Link="Util\shims\required\README.md" />
