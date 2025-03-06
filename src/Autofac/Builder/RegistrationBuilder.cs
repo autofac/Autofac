@@ -196,7 +196,7 @@ public static class RegistrationBuilder
         }
 
         var limitType = activator.LimitType;
-        if (limitType != typeof(object))
+        if (limitType != typeof(object) && !limitType.IsCOMObject)
         {
             foreach (var ts in services)
             {
