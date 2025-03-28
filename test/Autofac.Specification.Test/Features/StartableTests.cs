@@ -168,6 +168,15 @@ public class StartableTests
         Assert.Equal(expectedStartCount, StartableDependency.Count);
     }
 
+    [Fact]
+    public void AutoActivate_DoesNotHideDefaultSelfService()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<MyComponent2>().AutoActivate();
+        using var container = builder.Build();
+        Assert.True(container.IsRegistered<MyComponent2>());
+    }
+
     private class ComponentTakesStartableDependency : IStartable
     {
         public ComponentTakesStartableDependency(StartableTakesDependency dependency, bool expectStarted)
