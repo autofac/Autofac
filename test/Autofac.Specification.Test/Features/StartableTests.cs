@@ -177,6 +177,17 @@ public class StartableTests
         Assert.True(container.IsRegistered<MyComponent2>());
     }
 
+    [Fact]
+    public void AutoActivate_RegisterInstanceActivationWorksWhenDefaultServiceOverloaded()
+    {
+        var instanceCount = 0;
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance(new MyComponent2()).As<object>().OnActivated(_ => instanceCount++);
+        builder.RegisterType<object>();
+        builder.Build();
+        Assert.Equal(1, instanceCount);
+    }
+
     private class ComponentTakesStartableDependency : IStartable
     {
         public ComponentTakesStartableDependency(StartableTakesDependency dependency, bool expectStarted)
