@@ -17,7 +17,7 @@ public class RegistrationData
     private bool _defaultServiceOverridden;
     private Service _defaultService;
 
-    private readonly ICollection<Service> _services = new HashSet<Service>();
+    private readonly HashSet<Service> _services = [];
 
     private IComponentLifetime _lifetime = CurrentScopeLifetime.Instance;
 
@@ -43,12 +43,15 @@ public class RegistrationData
     {
         get
         {
-            if (_defaultServiceOverridden)
+            if (!_defaultServiceOverridden && !_services.Contains(_defaultService))
             {
-                return _services;
+                yield return _defaultService;
             }
 
-            return _services.DefaultIfEmpty(_defaultService);
+            foreach (var service in _services)
+            {
+                yield return service;
+            }
         }
     }
 
@@ -65,11 +68,15 @@ public class RegistrationData
             throw new ArgumentNullException(nameof(services));
         }
 
-        _defaultServiceOverridden = true; // important even when services is empty
+        var empty = true;
         foreach (var service in services)
         {
+            empty = false;
             AddService(service);
         }
+
+        // `As([])` clears the default service.
+        _defaultServiceOverridden = _defaultServiceOverridden || empty;
     }
 
     /// <summary>
@@ -83,7 +90,9 @@ public class RegistrationData
             throw new ArgumentNullException(nameof(service));
         }
 
-        _defaultServiceOverridden = true;
+        // `AutoActivateService` is internal plumbing; `AutoActivate()` isn't expected to modify user-visible
+        // services.
+        _defaultServiceOverridden = _defaultServiceOverridden || service is not AutoActivateService;
         _services.Add(service);
     }
 
