@@ -6,7 +6,11 @@ on:
       - master
   push:
 jobs:
-  build:
-    uses: ./.github/workflows/build.yml
+  # Linting
+  dotnet-format:
+    uses: ./.github/workflows/dotnet-format.yml
   pre-commit:
     uses: ./.github/workflows/pre-commit.yml
+  # Build and test
+  build:
+    uses: ./.github/workflows/build.yml
