@@ -9,7 +9,9 @@ namespace Autofac.Features.Indexed;
 /// <typeparam name="TKey">The type of the index.</typeparam>
 /// <typeparam name="TValue">The service provided by the indexed components.</typeparam>
 /// <example>
+/// <para>
 /// Retrieving a value given a key:
+/// </para>
 /// <code>
 /// IIndex&lt;AccountType, IRenderer&gt; accountRenderers = // ...
 /// var renderer = accountRenderers[AccountType.User];
@@ -30,5 +32,5 @@ public interface IIndex<in TKey, TValue>
     /// <param name="key">The key to look up.</param>
     /// <param name="value">The retrieved value.</param>
     /// <returns>True if a value associated with the key exists.</returns>
-    bool TryGetValue(TKey key, out TValue value);
+    bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value);
 }
