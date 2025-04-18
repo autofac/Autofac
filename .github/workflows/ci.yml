@@ -5,6 +5,11 @@ on:
       - develop
       - master
   push:
+# If multiple pushes happen quickly in succession, cancel the running build and
+# start a new one.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   # Linting
   dotnet-format:
