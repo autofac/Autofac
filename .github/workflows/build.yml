@@ -1,14 +1,10 @@
 name: Build and Test
 on:
-  push:
-    branches:
-      - develop
-      - master
-      - feature/**
   pull_request:
     branches:
       - develop
       - master
+  push:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,8 +25,7 @@ jobs:
     - name: Build and test
       run: dotnet msbuild ./default.proj
 
-# TODO: Add pre-commit to the repo.
-# TODO: Add execution of pre-commit to the workflow as a linting step.
-# TODO: Try to add dotnet format to pre-commit.
+# TODO: Can we parse the build output logs to provide better warning/error feedback?
+# TODO: Add dotnet format as a lint step in the build.
 # TODO: Upload to CodeCov should be part of the GitHub actions.
 # TODO: Upload to GitHub packages instead of MyGet in GitHub actions for master and develop.
