@@ -14,7 +14,7 @@ public class NullableReferenceTests
             .Body(
             @"
                    var containerBuilder = new ContainerBuilder();
-                
+
                    containerBuilder.Register<SimpleReferenceType?>(c => new SimpleReferenceType());
                 ")
             .AssertWarningContainsKeywords("Autofac.Test.Compilation.SimpleReferenceType?", "notnull");
@@ -27,7 +27,7 @@ public class NullableReferenceTests
             .Body(
             @"
                    var containerBuilder = new ContainerBuilder();
-                
+
                    containerBuilder.Register(c => new DerivedClass()).As<BaseClass?>();
                 ")
             .AssertWarningContainsKeywords("Autofac.Test.Compilation.BaseClass?", "notnull");
@@ -40,7 +40,7 @@ public class NullableReferenceTests
             .Body(
             @"
                    var containerBuilder = new ContainerBuilder();
-                
+
                    containerBuilder.Register(c => new DerivedClass()).Named<BaseClass?>(""name"");
                 ")
             .AssertWarningContainsKeywords("Autofac.Test.Compilation.BaseClass?", "notnull");
@@ -53,7 +53,7 @@ public class NullableReferenceTests
             .Body(
             @"
                    var containerBuilder = new ContainerBuilder();
-                
+
                    containerBuilder.Register(c => new DerivedClass()).Keyed<BaseClass?>(""name"");
                 ")
             .AssertWarningContainsKeywords("Autofac.Test.Compilation.BaseClass?", "notnull");
@@ -66,7 +66,7 @@ public class NullableReferenceTests
             .Body(
             @"
                    var containerBuilder = new ContainerBuilder();
-                
+
                    containerBuilder.Register<int?>(c => 1);
                 ")
             .AssertWarningContainsKeywords("int?", "notnull");
@@ -79,7 +79,7 @@ public class NullableReferenceTests
             .Body(
             @"
                    var containerBuilder = new ContainerBuilder();
-                
+
                    containerBuilder.Register(c => new SimpleReferenceType());
                 ")
             .AssertNoWarnings();
