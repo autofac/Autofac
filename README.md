@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD041 -->
 ![Autofac character](https://raw.githubusercontent.com/autofac/autofac.github.com/8737b1213a85ad8157ab7958aeb560c7af5eb494/img/autofac_web-banner_character_fixed_width.svg)
 ![Autofac logo](https://raw.githubusercontent.com/autofac/autofac.github.com/8737b1213a85ad8157ab7958aeb560c7af5eb494/img/autofac_logo-type_fixed_height.svg)
 
