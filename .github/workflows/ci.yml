@@ -1,0 +1,12 @@
+name: Continuous Integration
+on:
+  pull_request:
+    branches:
+      - develop
+      - master
+  push:
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+  pre-commit:
+    uses: ./.github/workflows/pre-commit.yml
