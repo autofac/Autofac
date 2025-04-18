@@ -13,13 +13,13 @@ public class OpenGenericBenchmark
     }
 
     [Benchmark]
-    public IService<string> ResolveOpenGeneric() => _container.Resolve<IService<string>>();
+    public void ResolveOpenGeneric() => _container.Resolve<IService<string>>();
 
-    public interface IService<T>
+    private interface IService<T>
     {
     }
 
-    public class Service<T> : IService<T>
+    private class Service<T> : IService<T>
     {
     }
 }

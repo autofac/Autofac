@@ -22,31 +22,31 @@ public class MultiConstructorBenchmark
     }
 
     [Benchmark(Baseline = true)]
-    public void Single()
+    public void OneCtor()
     {
         _container.Resolve<OneConstructor>();
     }
 
     [Benchmark]
-    public void Two()
+    public void TwoCtors()
     {
         _container.Resolve<TwoConstructors>();
     }
 
     [Benchmark]
-    public void TwoValidOneInvalid()
+    public void TwoValidCtorsOneInvalid()
     {
         _container.Resolve<TwoValidConstructorsOneInvalid>();
     }
 
     [Benchmark]
-    public void Three()
+    public void ThreeCtors()
     {
         _container.Resolve<ThreeConstructors>();
     }
 
     [Benchmark]
-    public void Four()
+    public void FourCtors()
     {
         _container.Resolve<FourConstructors>();
     }
