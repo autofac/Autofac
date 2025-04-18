@@ -8,26 +8,27 @@
     <PackageDirectory>$([System.IO.Path]::Combine($(ArtifactDirectory),"packages"))</PackageDirectory>
     <LogDirectory>$([System.IO.Path]::Combine($(ArtifactDirectory),"logs"))</LogDirectory>
     <CoverageRunSettings>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),'build/Coverage.runsettings'))</CoverageRunSettings>
+    <BuildDateTime>$([System.DateTimeOffset]::UtcNow.ToString('yyyyMMddTHHmmssZ'))</BuildDateTime>
   </PropertyGroup>
   <Choose>
-    <When Condition="'$(APPVEYOR_REPO_BRANCH)'==''">
+    <When Condition="'$(GITHUB_REF_NAME)'==''">
       <PropertyGroup>
         <Version>$(Version)-local</Version>
       </PropertyGroup>
     </When>
-    <When Condition="'$(APPVEYOR_REPO_BRANCH)'=='master'">
+    <When Condition="'$(GITHUB_REF_NAME)'=='master'">
       <PropertyGroup>
         <Version>$(Version)</Version>
       </PropertyGroup>
     </When>
-    <When Condition="'$(APPVEYOR_REPO_BRANCH)'=='develop'">
+    <When Condition="'$(GITHUB_REF_NAME)'=='develop'">
       <PropertyGroup>
-        <Version>$(Version)-beta$(APPVEYOR_BUILD_ID)</Version>
+        <Version>$(Version)-beta$(BuildDateTime)</Version>
       </PropertyGroup>
     </When>
     <Otherwise>
       <PropertyGroup>
-        <Version>$(Version)-beta$(APPVEYOR_BUILD_ID)</Version>
+        <Version>$(Version)-alpha$(BuildDateTime)</Version>
       </PropertyGroup>
     </Otherwise>
   </Choose>
@@ -41,6 +42,7 @@
     <Message Text="****************************************" Importance="high" />
     <Message Text="Autofac v$(Version)" Importance="high" />
     <Message Text="$(Configuration) Configuration" Importance="high" />
+    <Message Text="$(BuildDateTime)" Importance="high" />
     <Message Text="****************************************" Importance="high" />
     <CallTarget Targets="Clean;Compile;Test;Package" />
   </Target>
