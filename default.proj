@@ -36,7 +36,6 @@
     <TestProject Include="$(MSBuildProjectDirectory)/test/**/*.csproj" />
     <SolutionFile Include="*.sln" />
   </ItemGroup>
-  <!-- TODO: Add execution of benchmarks as an option. -->
   <!-- TODO: Install the versions of .NET SDK as part of the GitHub actions. -->
   <!-- TODO: Upload to CodeCov should be part of the GitHub actions. -->
   <!-- TODO: Upload to GitHub packages instead of MyGet in GitHub actions for master and develop. -->
@@ -46,6 +45,12 @@
     <Message Text="$(Configuration) Configuration" Importance="high" />
     <Message Text="****************************************" Importance="high" />
     <CallTarget Targets="Clean;Compile;Test;Package" />
+  </Target>
+  <Target Name="Benchmarks" DependsOnTargets="Compile">
+    <Message Text="****************************************" Importance="high" />
+    <Message Text="Running Benchmarks" Importance="high" />
+    <Message Text="****************************************" Importance="high" />
+    <Exec Command="dotnet run --project &quot;$([System.IO.Path]::Combine($(MSBuildProjectDirectory),'bench/Autofac.Benchmarks'))&quot; -c $(Configuration) --no-launch-profile --no-restore --no-build -- --filter Autofac.Benchmarks.*" />
   </Target>
   <Target Name="Clean">
     <RemoveDir Directories="@(CleanDirectory)" />
