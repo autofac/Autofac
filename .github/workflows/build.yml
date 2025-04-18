@@ -28,3 +28,9 @@ jobs:
         dotnet-version: 8.0.x
     - name: Build and test
       run: dotnet msbuild ./default.proj
+
+# TODO: Add pre-commit to the repo.
+# TODO: Add execution of pre-commit to the workflow as a linting step.
+# TODO: Try to add dotnet format to pre-commit.
+# TODO: Upload to CodeCov should be part of the GitHub actions.
+# TODO: Upload to GitHub packages instead of MyGet in GitHub actions for master and develop.

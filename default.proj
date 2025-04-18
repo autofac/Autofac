@@ -37,9 +37,6 @@
     <TestProject Include="$(MSBuildProjectDirectory)/test/**/*.csproj" />
     <SolutionFile Include="*.sln" />
   </ItemGroup>
-  <!-- TODO: Install the versions of .NET SDK as part of the GitHub actions. -->
-  <!-- TODO: Upload to CodeCov should be part of the GitHub actions. -->
-  <!-- TODO: Upload to GitHub packages instead of MyGet in GitHub actions for master and develop. -->
   <Target Name="All">
     <Message Text="****************************************" Importance="high" />
     <Message Text="Autofac v$(Version)" Importance="high" />
