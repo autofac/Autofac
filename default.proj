@@ -7,6 +7,7 @@
     <ArtifactDirectory>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),"artifacts"))</ArtifactDirectory>
     <PackageDirectory>$([System.IO.Path]::Combine($(ArtifactDirectory),"packages"))</PackageDirectory>
     <LogDirectory>$([System.IO.Path]::Combine($(ArtifactDirectory),"logs"))</LogDirectory>
+    <CoverageRunSettings>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),'build/Coverage.runsettings'))</CoverageRunSettings>
   </PropertyGroup>
   <Choose>
     <When Condition="'$(APPVEYOR_REPO_BRANCH)'==''">
@@ -67,6 +68,6 @@
   </Target>
   <Target Name="Test">
     <MakeDir Directories="$(LogDirectory)" />
-    <Exec Command="dotnet test &quot;%(SolutionFile.FullPath)&quot; -c $(Configuration) --results-directory &quot;$(LogDirectory)&quot; --logger:trx /p:Version=$(Version) --collect:&quot;XPlat Code Coverage&quot; --settings &quot;$([System.IO.Path]::Combine($(MSBuildProjectDirectory),'build/Coverage.runsettings'))&quot;" />
+    <Exec Command="dotnet test &quot;%(SolutionFile.FullPath)&quot; -c $(Configuration) --results-directory &quot;$(LogDirectory)&quot; --logger:trx /p:Version=$(Version) --collect:&quot;XPlat Code Coverage&quot; --settings &quot;$(CoverageRunSettings)&quot;" />
   </Target>
 </Project>
