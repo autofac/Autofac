@@ -1,8 +1,6 @@
 name: pre-commit
-
 on:
   workflow_call:
-
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
