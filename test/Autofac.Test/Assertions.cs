@@ -13,7 +13,7 @@ internal static class Assertions
 {
     public static void AssertRegistered<TService>(this IComponentContext context)
     {
-        Assert.True(context.IsRegistered<TService>());
+        Assert.True(context.IsRegistered<TService>())
     }
 
     public static void AssertNotRegistered<TService>(this IComponentContext context)
