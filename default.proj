@@ -36,7 +36,7 @@
     <CleanDirectory Include="$(ArtifactDirectory)" />
     <SourceProject Include="$(MSBuildProjectDirectory)/src/**/*.csproj" />
     <TestProject Include="$(MSBuildProjectDirectory)/test/**/*.csproj" />
-    <SolutionFile Include="*.sln" />
+    <SolutionFile Include="Autofac.sln" />
   </ItemGroup>
   <Target Name="All">
     <Message Text="****************************************" Importance="high" />
@@ -59,7 +59,7 @@
   </Target>
   <Target Name="Compile">
     <Exec Command="dotnet --info" />
-    <Exec Command="dotnet build &quot;%(SolutionFile.FullPath)&quot; -c $(Configuration) /p:Version=$(Version) -flp:v=q -flp:logfile=$(LogDirectory)/dotnet-buildissues.log" />
+    <Exec Command="dotnet build &quot;%(SolutionFile.FullPath)&quot; -c $(Configuration) /p:Version=$(Version) -flp:v=q -flp:logfile=$(LogDirectory)/dotnet-build-issues.log" />
   </Target>
   <Target Name="Package">
     <MakeDir Directories="$([System.IO.Path]::Combine($(PackageDirectory),%(PublishProject.Filename)))" />

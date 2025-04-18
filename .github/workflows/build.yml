@@ -19,8 +19,10 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Build and test
-      run: dotnet msbuild ./default.proj
-
+      shell: pwsh
+      run: |
+        dotnet msbuild ./default.proj
+        ./build/ConvertTo-GitHubActionsOutput.ps1 -Path ./artifacts/logs/dotnet-build-issues.log
 # TODO: Can we parse the build output logs to provide better warning/error feedback?
 # TODO: Upload to CodeCov should be part of the GitHub actions.
 # TODO: Upload to GitHub packages instead of MyGet in GitHub actions for master and develop.
