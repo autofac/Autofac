@@ -1,6 +1,6 @@
 codecov:
   branch: develop
-  require_ci_to_pass: yes
+  require_ci_to_pass: true
 coverage:
   status:
     project:
