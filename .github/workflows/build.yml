@@ -23,5 +23,5 @@ jobs:
     - uses: codecov/codecov-action@v5
       with:
         fail_ci_if_error: true
-        files: artifacts/logs/*/coverage*.info
+        files: artifacts/logs/*/coverage.cobertura.xml
 # TODO: Upload to GitHub packages instead of MyGet in GitHub actions for master and develop.

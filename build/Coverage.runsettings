@@ -4,7 +4,7 @@
     <DataCollectors>
       <DataCollector friendlyName="XPlat Code Coverage">
         <Configuration>
-          <Format>json,cobertura,lcov</Format>
+          <Format>cobertura</Format>
           <Exclude>[System.*]*</Exclude>
           <ExcludeByFile>**/LoggerMessage.g.cs</ExcludeByFile>
           <ExcludeByAttribute>GeneratedCodeAttribute</ExcludeByAttribute>
