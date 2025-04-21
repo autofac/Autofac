@@ -20,5 +20,8 @@ jobs:
         dotnet-version: 8.0.x
     - name: Build and test
       run: dotnet msbuild ./default.proj
-# TODO: Upload to CodeCov should be part of the GitHub actions.
+    - uses: codecov/codecov-action@v5
+      with:
+        fail_ci_if_error: true
+        files: artifacts/coverage/*/coverage*.info
 # TODO: Upload to GitHub packages instead of MyGet in GitHub actions for master and develop.
