@@ -24,6 +24,6 @@ jobs:
       with:
         fail_ci_if_error: true
         files: artifacts/logs/*/coverage.cobertura.xml
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        token: ${{ secrets.CODECOV_TOKEN }}
+        verbose: true
 # TODO: Upload to GitHub packages instead of MyGet in GitHub actions for master and develop.
