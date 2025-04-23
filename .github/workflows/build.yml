@@ -5,11 +5,15 @@ on:
       CODECOV_TOKEN:
         description: Token for uploading code coverage metrics to CodeCov.io.
         required: true
+      NUGET_API_KEY:
+        description: Token for publishing packages to NuGet.
+        required: true
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Setup .NET 6
         uses: actions/setup-dotnet@v4
         with:
@@ -24,9 +28,22 @@ jobs:
           dotnet-version: 8.0.x
       - name: Build and test
         run: dotnet msbuild ./default.proj
-      - uses: codecov/codecov-action@v5
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: true
           files: artifacts/logs/*/coverage.cobertura.xml
           token: ${{ secrets.CODECOV_TOKEN }}
-# TODO: Upload to GitHub packages instead of MyGet in GitHub actions for master and develop.
+      - name: Publish to GitHub Packages
+        if: ${{ github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/v') }}
+        run: |
+          dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/autofac/index.json"
+          dotnet nuget push ./artifacts/packages/*.nupkg --source github --api-key ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish to NuGet
+        if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+        run: |
+          # Ensure the tag is on the master branch.
+          git branch --remote --contains | grep origin/master
+
+          # Push to NuGet.
+          dotnet nuget push ./artifacts/packages/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}

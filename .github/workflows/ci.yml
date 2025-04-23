@@ -5,6 +5,12 @@ on:
       - develop
       - master
   push:
+    branches:
+      - develop
+      - master
+      - feature/*
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
 # If multiple pushes happen quickly in succession, cancel the running build and
 # start a new one.
 concurrency:
@@ -21,3 +27,4 @@ jobs:
     uses: ./.github/workflows/build.yml
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
