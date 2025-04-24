@@ -5,9 +5,6 @@ on:
       CODECOV_TOKEN:
         description: Token for uploading code coverage metrics to CodeCov.io.
         required: true
-      NUGET_API_KEY:
-        description: Token for publishing packages to NuGet.
-        required: true
 jobs:
   build:
     runs-on: ubuntu-latest
