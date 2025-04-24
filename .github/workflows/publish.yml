@@ -6,7 +6,7 @@ on:
         description: Token for publishing packages to NuGet.
         required: true
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Setup .NET 8
