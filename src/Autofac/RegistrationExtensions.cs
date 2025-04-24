@@ -69,11 +69,6 @@ public static partial class RegistrationExtensions
 
         rb.SingleInstance();
 
-        // https://github.com/autofac/Autofac/issues/1102
-        // Single instance registrations with any custom activation phases (i.e. activation handlers) need to be auto-activated,
-        // so that other behavior (such as OnRelease) that expects 'normal' object lifetime behavior works as expected.
-        rb.RegistrationData.AddService(new AutoActivateService());
-
         rb.RegistrationData.DeferredCallback = builder.RegisterCallback(cr =>
         {
             if (rb.RegistrationData.Lifetime is not RootScopeLifetime ||
@@ -83,6 +78,27 @@ public static partial class RegistrationExtensions
             }
 
             activator.DisposeInstance = rb.RegistrationData.Ownership == InstanceOwnership.OwnedByLifetimeScope;
+
+            // https://github.com/autofac/Autofac/issues/1102
+            // Single instance registrations with any custom activation phases
+            // (i.e. activation handlers) need to be auto-activated, so that
+            // other behavior (such as OnRelease) that expects 'normal' object
+            // lifetime behavior works as expected.
+            // https://github.com/autofac/Autofac/pull/1451 and https://github.com/autofac/Autofac/issues/1456
+            // By trying to simplify this registration to simply adding an
+            // AutoActivateService, it causes problems in resolving the service
+            // from a component context.
+            if (rb.ResolvePipeline.Middleware.Any(s => s.Phase == PipelinePhase.Activation))
+            {
+                var autoStartService = rb.RegistrationData.Services.First();
+
+                var activationRegistration = new RegistrationBuilder<T, SimpleActivatorData, SingleRegistrationStyle>(
+                    new AutoActivateService(),
+                    new SimpleActivatorData(new DelegateActivator(typeof(T), (c, p) => c.ResolveService(autoStartService))),
+                    new SingleRegistrationStyle());
+
+                RegistrationBuilder.RegisterSingleComponent(cr, activationRegistration);
+            }
 
             RegistrationBuilder.RegisterSingleComponent(cr, rb);
         });

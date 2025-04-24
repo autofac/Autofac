@@ -188,6 +188,29 @@ public class StartableTests
         Assert.Equal(1, instanceCount);
     }
 
+    [Fact]
+    public void AutoActivate_DefaultServiceVisibilityDoesNotAffectComponentContext()
+    {
+        // Issue #1456
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance(new MyComponent()).As<IMyService>();
+        var container = builder.Build();
+
+        var componentContext = container.Resolve<IComponentContext>();
+        var registration = componentContext
+            .ComponentRegistry
+            .Registrations
+            .First(r => r.Services.OfType<TypedService>().Any(s => s.ServiceType == typeof(IMyService)));
+
+        var resolvedInstance = componentContext.ResolveComponent(
+            new ResolveRequest(
+                new TypedService(registration.GetType()),
+                new ServiceRegistration(
+                    registration.ResolvePipeline,
+                    registration),
+                []));
+    }
+
     private class ComponentTakesStartableDependency : IStartable
     {
         public ComponentTakesStartableDependency(StartableTakesDependency dependency, bool expectStarted)
