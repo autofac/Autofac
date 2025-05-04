@@ -87,6 +87,57 @@ public class CompositeTests
     }
 
     [Fact]
+    public void CanRegisterCompositeOfKeyedServicesMeta()
+    {
+        var builder = new ContainerBuilder();
+        builder.Register(ctx => new S1()).As<I1>().Keyed<I1>("1");
+        builder.Register(ctx => new S2()).As<I1>().Keyed<I1>("1");
+        builder.Register(ctx => new S3()).As<I1>().Keyed<I1>("2");
+        builder.Register(ctx => new S4()).As<I1>().Keyed<I1>("2");
+
+        builder.RegisterComposite<MyComplexComposite, I1>()
+            .Keyed<I1>("1")
+            .Keyed<I1>("2");
+
+        var container = builder.Build();
+
+        var comp = container.Resolve<I1>(); // gets all I1 non keyed
+
+        Assert.IsType<MyComplexComposite>(comp);
+
+        var actualComp = (MyComplexComposite)comp;
+
+        Assert.Collection(
+            actualComp.Implementations,
+            i => Assert.IsType<S1>(i),
+            i => Assert.IsType<S2>(i),
+            i => Assert.IsType<S3>(i),
+            i => Assert.IsType<S4>(i));
+
+        comp = container.ResolveKeyed<I1>("1"); // gets only I1 keyed to "1"
+
+        Assert.IsType<MyComplexComposite>(comp);
+
+        actualComp = (MyComplexComposite)comp;
+
+        Assert.Collection(
+            actualComp.Implementations,
+            i => Assert.IsType<S1>(i),
+            i => Assert.IsType<S2>(i));
+
+        comp = container.ResolveKeyed<I1>("2"); // gets only I1 keyed to "2"
+
+        Assert.IsType<MyComplexComposite>(comp);
+
+        actualComp = (MyComplexComposite)comp;
+
+        Assert.Collection(
+            actualComp.Implementations,
+            i => Assert.IsType<S3>(i),
+            i => Assert.IsType<S4>(i));
+    }
+
+    [Fact]
     public void CompositeRegistrationOrderIrrelevant()
     {
         var builder = new ContainerBuilder();
@@ -658,6 +709,14 @@ public class CompositeTests
     {
         public MyComposite(IEnumerable<I1> implementations)
             : base(implementations.ToList())
+        {
+        }
+    }
+
+    private class MyComplexComposite : MyComposite
+    {
+        public MyComplexComposite(IEnumerable<Lazy<Func<int, Owned<Meta<I1>>>>> implementations)
+            : base(implementations.Select(i => i.Value(5).Value.Value).ToList())
         {
         }
     }

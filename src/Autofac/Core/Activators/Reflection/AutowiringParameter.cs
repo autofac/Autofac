@@ -37,13 +37,20 @@ public class AutowiringParameter : Parameter
 
         Service service = new TypedService(pi.ParameterType);
 
+        static bool HasService(Type type, Type serviceType)
+        {
+            return type.IsGenericType && type.GenericTypeArguments.Any(genericType => genericType == serviceType || HasService(genericType, serviceType));
+        }
+
         if (context is DefaultResolveRequestContext ctx)
         {
             if ((ctx.Registration.Options & Registration.RegistrationOptions.Composite) == Registration.RegistrationOptions.Composite
                 && ctx.Service is KeyedService keyedService
                 && pi.ParameterType.IsGenericType
-                && pi.ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>)
-                && pi.ParameterType.GenericTypeArguments[0] == keyedService.ServiceType)
+                && (pi.ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>)
+                    || pi.ParameterType.GetGenericTypeDefinition() == typeof(IList<>)
+                    || pi.ParameterType.GetGenericTypeDefinition() == typeof(ICollection<>))
+                && HasService(pi.ParameterType, keyedService.ServiceType))
             {
                 service = new KeyedService(keyedService.ServiceKey, pi.ParameterType);
             }
