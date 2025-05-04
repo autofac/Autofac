@@ -50,7 +50,7 @@ public class CompositeTests
 
         var container = builder.Build();
 
-        var comp = container.Resolve<I1>(); // gets all I1
+        var comp = container.Resolve<I1>(); // gets all I1 non keyed
 
         Assert.IsType<MyComposite>(comp);
 
@@ -63,7 +63,7 @@ public class CompositeTests
             i => Assert.IsType<S3>(i),
             i => Assert.IsType<S4>(i));
 
-        comp = container.ResolveKeyed<I1>("1"); // gets only 11 keyed to "1"
+        comp = container.ResolveKeyed<I1>("1"); // gets only I1 keyed to "1"
 
         Assert.IsType<MyComposite>(comp);
 
@@ -74,7 +74,7 @@ public class CompositeTests
             i => Assert.IsType<S1>(i),
             i => Assert.IsType<S2>(i));
 
-        comp = container.ResolveKeyed<I1>("2"); // gets only 11 keyed to "2"
+        comp = container.ResolveKeyed<I1>("2"); // gets only I1 keyed to "2"
 
         Assert.IsType<MyComposite>(comp);
 
