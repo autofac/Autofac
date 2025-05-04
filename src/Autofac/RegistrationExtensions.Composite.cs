@@ -179,7 +179,7 @@ public static partial class RegistrationExtensions
         builder.RegisterCallback(crb =>
         {
             // Validate that we are only behaving as a composite for a single service.
-            if (registration.RegistrationData.Services.Count() > 1)
+            if (registration.RegistrationData.Services.Count(s => s is TypedService) > 1)
             {
                 // Cannot have a multi-service composite.
                 throw new InvalidOperationException(

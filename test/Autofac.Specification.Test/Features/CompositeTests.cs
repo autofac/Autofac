@@ -36,6 +36,57 @@ public class CompositeTests
     }
 
     [Fact]
+    public void CanRegisterCompositeOfKeyedServices()
+    {
+        var builder = new ContainerBuilder();
+        builder.Register(ctx => new S1()).As<I1>().Keyed<I1>("1");
+        builder.Register(ctx => new S2()).As<I1>().Keyed<I1>("1");
+        builder.Register(ctx => new S3()).As<I1>().Keyed<I1>("2");
+        builder.Register(ctx => new S4()).As<I1>().Keyed<I1>("2");
+
+        builder.RegisterComposite<MyComposite, I1>()
+            .Keyed<I1>("1")
+            .Keyed<I1>("2");
+
+        var container = builder.Build();
+
+        var comp = container.Resolve<I1>(); // gets all I1
+
+        Assert.IsType<MyComposite>(comp);
+
+        var actualComp = (MyComposite)comp;
+
+        Assert.Collection(
+            actualComp.Implementations,
+            i => Assert.IsType<S1>(i),
+            i => Assert.IsType<S2>(i),
+            i => Assert.IsType<S3>(i),
+            i => Assert.IsType<S4>(i));
+
+        comp = container.ResolveKeyed<I1>("1"); // gets only 11 keyed to "1"
+
+        Assert.IsType<MyComposite>(comp);
+
+        actualComp = (MyComposite)comp;
+
+        Assert.Collection(
+            actualComp.Implementations,
+            i => Assert.IsType<S1>(i),
+            i => Assert.IsType<S2>(i));
+
+        comp = container.ResolveKeyed<I1>("2"); // gets only 11 keyed to "2"
+
+        Assert.IsType<MyComposite>(comp);
+
+        actualComp = (MyComposite)comp;
+
+        Assert.Collection(
+            actualComp.Implementations,
+            i => Assert.IsType<S3>(i),
+            i => Assert.IsType<S4>(i));
+    }
+
+    [Fact]
     public void CompositeRegistrationOrderIrrelevant()
     {
         var builder = new ContainerBuilder();

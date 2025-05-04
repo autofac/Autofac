@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
+using Autofac.Core.Resolving.Pipeline;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -34,7 +35,20 @@ public class AutowiringParameter : Parameter
             throw new ArgumentNullException(nameof(context));
         }
 
-        var service = new TypedService(pi.ParameterType);
+        Service service = new TypedService(pi.ParameterType);
+
+        if (context is DefaultResolveRequestContext ctx)
+        {
+            if ((ctx.Registration.Options & Registration.RegistrationOptions.Composite) == Registration.RegistrationOptions.Composite
+                && ctx.Service is KeyedService keyedService
+                && pi.ParameterType.IsGenericType
+                && pi.ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>)
+                && pi.ParameterType.GenericTypeArguments[0] == keyedService.ServiceType)
+            {
+                service = new KeyedService(keyedService.ServiceKey, pi.ParameterType);
+            }
+        }
+
         if (context.ComponentRegistry.TryGetServiceRegistration(service, out var implementation))
         {
             valueProvider = () => context.ResolveComponent(new ResolveRequest(service, implementation, Enumerable.Empty<Parameter>()));
