@@ -87,7 +87,7 @@ public class CompositeTests
     }
 
     [Fact]
-    public void CanRegisterCompositeOfKeyedServicesMeta()
+    public void CanRegisterCompositeOfKeyedServicesComplexList()
     {
         var builder = new ContainerBuilder();
         builder.Register(ctx => new S1()).As<I1>().Keyed<I1>("1");
