@@ -42,7 +42,7 @@ public class AutowiringParameter : Parameter
             return type.IsGenericType && type.GenericTypeArguments.Any(genericType => genericType == serviceType || HasService(genericType, serviceType));
         }
 
-        if (context is DefaultResolveRequestContext ctx)
+        if (context is ResolveRequestContext ctx)
         {
             if ((ctx.Registration.Options & Registration.RegistrationOptions.Composite) == Registration.RegistrationOptions.Composite
                 && ctx.Service is KeyedService keyedService
