@@ -187,6 +187,25 @@ internal static class InternalTypeExtensions
     }
 
     /// <summary>
+    /// Checks whether this type is a generic containing the given type.
+    /// </summary>
+    /// <param name="this">The type to check.</param>
+    /// <param name="type">The type to validate against.</param>
+    /// <returns>True if the <paramref name="this"/> is a generic containing <paramref name="type"/>; false otherwise.</returns>
+    /// <remarks>Recursively moves through generic type arguments looking for <paramref name="type"/>.</remarks>
+    public static bool IsGenericTypeContainingType(this Type @this, Type type)
+    {
+        static bool Uncached(Type @this, Type type)
+        {
+            return @this.IsGenericType && @this.GenericTypeArguments.Any(genericType => genericType == type || genericType.IsGenericTypeContainingType(type));
+        }
+
+        return ReflectionCacheSet.Shared.Internal.IsGenericTypeContainingType.GetOrAdd(
+            (@this, type),
+            key => Uncached(key.Item1, key.Item2));
+    }
+
+    /// <summary>
     /// Checks whether this type is an open generic type of a given type.
     /// </summary>
     /// <param name="this">The type we are checking.</param>

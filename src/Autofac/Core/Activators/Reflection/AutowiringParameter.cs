@@ -3,6 +3,7 @@
 
 using System.Reflection;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection;
 
@@ -35,25 +36,19 @@ public class AutowiringParameter : Parameter
             throw new ArgumentNullException(nameof(context));
         }
 
-        Service service = new TypedService(pi.ParameterType);
+        Service service;
 
-        static bool HasService(Type type, Type serviceType)
+        if (context is ResolveRequestContext ctx
+            && (ctx.Registration.Options & Registration.RegistrationOptions.Composite) == Registration.RegistrationOptions.Composite
+            && ctx.Service is KeyedService keyedService
+            && pi.ParameterType.IsGenericEnumerableInterfaceType()
+            && pi.ParameterType.IsGenericTypeContainingType(keyedService.ServiceType))
         {
-            return type.IsGenericType && type.GenericTypeArguments.Any(genericType => genericType == serviceType || HasService(genericType, serviceType));
+            service = new KeyedService(keyedService.ServiceKey, pi.ParameterType);
         }
-
-        if (context is ResolveRequestContext ctx)
+        else
         {
-            if ((ctx.Registration.Options & Registration.RegistrationOptions.Composite) == Registration.RegistrationOptions.Composite
-                && ctx.Service is KeyedService keyedService
-                && pi.ParameterType.IsGenericType
-                && (pi.ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>)
-                    || pi.ParameterType.GetGenericTypeDefinition() == typeof(IList<>)
-                    || pi.ParameterType.GetGenericTypeDefinition() == typeof(ICollection<>))
-                && HasService(pi.ParameterType, keyedService.ServiceType))
-            {
-                service = new KeyedService(keyedService.ServiceKey, pi.ParameterType);
-            }
+            service = new TypedService(pi.ParameterType);
         }
 
         if (context.ComponentRegistry.TryGetServiceRegistration(service, out var implementation))
