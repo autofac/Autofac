@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="All" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
+  <PropertyGroup>
+    <!-- Increment the overall semantic version here. -->
+    <Version>8.2.1</Version>
+    <Configuration Condition="'$(Configuration)'==''">Release</Configuration>
+    <ArtifactDirectory>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),"artifacts"))</ArtifactDirectory>
+    <PackageDirectory>$([System.IO.Path]::Combine($(ArtifactDirectory),"packages"))</PackageDirectory>
+    <LogDirectory>$([System.IO.Path]::Combine($(ArtifactDirectory),"logs"))</LogDirectory>
+    <CoverageRunSettings>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),'build/Coverage.runsettings'))</CoverageRunSettings>
+    <BuildDateTime>$([System.DateTimeOffset]::UtcNow.ToString('yyyyMMddTHHmmssZ'))</BuildDateTime>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(GITHUB_REF_NAME)'==''">
+      <PropertyGroup>
+        <Version>$(Version)-local</Version>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(GITHUB_REF_NAME)'=='master'">
+      <PropertyGroup>
+        <Version>$(Version)</Version>
+      </PropertyGroup>
+    </When>
+    <When Condition="'$(GITHUB_REF_NAME)'=='develop'">
+      <PropertyGroup>
+        <Version>$(Version)-beta$(BuildDateTime)</Version>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+        <Version>$(Version)-alpha$(BuildDateTime)</Version>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <CleanDirectory Include="$(ArtifactDirectory)" />
+    <SourceProject Include="$(MSBuildProjectDirectory)/src/**/*.csproj" />
+    <TestProject Include="$(MSBuildProjectDirectory)/test/**/*.csproj" />
+    <SolutionFile Include="Autofac.sln" />
+  </ItemGroup>
+  <Target Name="All">
+    <Message Text="****************************************" Importance="high" />
+    <Message Text="Autofac v$(Version)" Importance="high" />
+    <Message Text="$(Configuration) Configuration" Importance="high" />
+    <Message Text="$(BuildDateTime)" Importance="high" />
+    <Message Text="****************************************" Importance="high" />
+    <CallTarget Targets="Clean;Compile;Test;Package" />
+  </Target>
+  <Target Name="Benchmarks" DependsOnTargets="Compile">
+    <Message Text="****************************************" Importance="high" />
+    <Message Text="Running Benchmarks" Importance="high" />
+    <Message Text="****************************************" Importance="high" />
+    <Exec Command="dotnet run --project &quot;$([System.IO.Path]::Combine($(MSBuildProjectDirectory),'bench/Autofac.Benchmarks'))&quot; -c $(Configuration) --no-launch-profile --no-restore --no-build -- --filter Autofac.Benchmarks.*" />
+  </Target>
+  <Target Name="Clean">
+    <RemoveDir Directories="@(CleanDirectory)" />
+    <RemoveDir Directories="%(SourceProject.RootDir)%(SourceProject.Directory)bin;%(SourceProject.RootDir)%(SourceProject.Directory)obj" />
+    <RemoveDir Directories="%(TestProject.RootDir)%(TestProject.Directory)bin;%(TestProject.RootDir)%(TestProject.Directory)obj" />
+  </Target>
+  <Target Name="Compile">
+    <Exec Command="dotnet --info" />
+    <Exec Command="dotnet build &quot;%(SolutionFile.FullPath)&quot; -c $(Configuration) /p:Version=$(Version)" />
+  </Target>
+  <Target Name="Package">
+    <MakeDir Directories="$([System.IO.Path]::Combine($(PackageDirectory),%(PublishProject.Filename)))" />
+    <Exec Command="dotnet pack &quot;%(SolutionFile.FullPath)&quot; -c $(Configuration) --output &quot;$(PackageDirectory)&quot; /p:Version=$(Version)" />
+  </Target>
+  <Target Name="Test">
+    <MakeDir Directories="$(LogDirectory)" />
+    <Exec Command="dotnet test &quot;%(SolutionFile.FullPath)&quot; -c $(Configuration) --results-directory &quot;$(LogDirectory)&quot; --logger:trx /p:Version=$(Version) --collect:&quot;XPlat Code Coverage&quot; --settings &quot;$(CoverageRunSettings)&quot;" />
+  </Target>
+</Project>

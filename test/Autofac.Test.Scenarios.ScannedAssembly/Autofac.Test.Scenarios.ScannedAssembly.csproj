@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
@@ -12,20 +11,17 @@
     <CodeAnalysisRuleSet>../../build/Test.ruleset</CodeAnalysisRuleSet>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup>
     <AdditionalFiles Include="..\..\build\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\Autofac\Autofac.csproj" />
   </ItemGroup>
-
 </Project>

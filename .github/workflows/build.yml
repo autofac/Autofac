@@ -1,0 +1,35 @@
+name: Build and Test
+on:
+  workflow_call:
+    secrets:
+      CODECOV_TOKEN:
+        description: Token for uploading code coverage metrics to CodeCov.io.
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
+            8.0.x
+      - name: Build and test
+        run: dotnet msbuild ./default.proj
+      - name: Upload coverage
+        uses: codecov/codecov-action@v5
+        with:
+          fail_ci_if_error: true
+          files: artifacts/logs/*/coverage.cobertura.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: packages
+          path: |
+            artifacts/packages/*.nupkg
+            artifacts/packages/*.snupkg

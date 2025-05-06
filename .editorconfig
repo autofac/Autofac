@@ -163,6 +163,7 @@ indent_size = 2
 
 ; .NET solution files - match defaults for VS
 [*.sln]
+end_of_line = crlf
 indent_style = tab
 
 ; Config - match XML and default nuget.config template
@@ -196,4 +197,8 @@ charset = utf-8-bom
 
 ; ReStructuredText - standard indentation format from examples
 [*.rst]
+indent_size = 2
+
+# YAML - match standard YAML like Kubernetes and GitHub Actions
+[*.{yaml,yml}]
 indent_size = 2

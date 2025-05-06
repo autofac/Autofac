@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <Exclude>[System.*]*</Exclude>
+          <ExcludeByFile>**/LoggerMessage.g.cs</ExcludeByFile>
+          <ExcludeByAttribute>GeneratedCodeAttribute</ExcludeByAttribute>
+          <UseSourceLink>false</UseSourceLink>
+          <SkipAutoProps>true</SkipAutoProps>
+          <DeterministicReport>false</DeterministicReport>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

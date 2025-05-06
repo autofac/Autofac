@@ -8,6 +8,8 @@
     <Rule Id="CA1032" Action="None" />
     <!-- Avoid empty interfaces - in unit tests for service resolution, this happens a lot. -->
     <Rule Id="CA1040" Action="None" />
+    <!-- Do not pass literals as localized parameters  - tests don't need to localize. -->
+    <Rule Id="CA1303" Action="None" />
     <!-- Use ArgumentNullException.ThrowIfNull - this isn't available until we stop targeting netstandard. -->
     <Rule Id="CA1510" Action="None" />
     <!-- Remove the underscores from member name - unit test scenarios may use underscores. -->

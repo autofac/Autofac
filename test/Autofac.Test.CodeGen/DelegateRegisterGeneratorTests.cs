@@ -10,7 +10,7 @@ public class DelegateRegisterGeneratorTests
     [Fact]
     public Task VerifyGeneratedCode()
     {
-       return CompilationVerifier.Verify(@"
+        return CompilationVerifier.Verify(@"
 namespace Autofac
 {
     public static partial class RegistrationExtensions

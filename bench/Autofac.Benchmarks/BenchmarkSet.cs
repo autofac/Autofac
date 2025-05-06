@@ -2,7 +2,7 @@
 
 namespace Autofac.Benchmarks;
 
-public static class Benchmarks
+public static class BenchmarkSet
 {
     public static readonly Type[] All =
     {

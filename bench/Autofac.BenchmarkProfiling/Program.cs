@@ -11,7 +11,7 @@ class Program
     static void Main(string[] args)
     {
         // Pick a benchmark.
-        var availableBenchmarks = Benchmarks.Benchmarks.All;
+        var availableBenchmarks = Benchmarks.BenchmarkSet.All;
 
         if (args.Length == 0)
         {
@@ -23,7 +23,7 @@ class Program
 
         var inputType = args[0];
 
-        var selectedBenchmark = availableBenchmarks.FirstOrDefault(x => x.Name.Equals(inputType, StringComparison.InvariantCultureIgnoreCase));
+        var selectedBenchmark = availableBenchmarks.FirstOrDefault(x => x.Name.Equals(inputType, StringComparison.OrdinalIgnoreCase));
 
         if (selectedBenchmark is null)
         {

@@ -31,15 +31,15 @@ public class RequiredPropertyBenchmark
         _container.Resolve<RequiredPropertyComponent>();
     }
 
-    public class ServiceA
+    private class ServiceA
     {
     }
 
-    public class ServiceB
+    private class ServiceB
     {
     }
 
-    public class ConstructorComponent
+    private class ConstructorComponent
     {
         public ConstructorComponent(ServiceA serviceA, ServiceB serviceB)
         {
@@ -52,7 +52,7 @@ public class RequiredPropertyBenchmark
         public ServiceB ServiceB { get; }
     }
 
-    public class RequiredPropertyComponent
+    private class RequiredPropertyComponent
     {
         public required ServiceA ServiceA { get; set; }
 

@@ -35,17 +35,13 @@ public class ConcurrencyBenchmark
         {
             var task = Task.Run(() =>
             {
-                try
+                for (var j = 0; j < ResolvesPerTask; j++)
                 {
-                    for (var j = 0; j < ResolvesPerTask; j++)
+                    var instance = _container.Resolve<A>();
+                    if (instance is null)
                     {
-                        var instance = _container.Resolve<A>();
-                        Assert.NotNull(instance);
+                        throw new InvalidOperationException("Instance is null");
                     }
-                }
-                catch (Exception ex)
-                {
-                    Assert.Fail(ex.ToString());
                 }
             });
             tasks.Add(task);

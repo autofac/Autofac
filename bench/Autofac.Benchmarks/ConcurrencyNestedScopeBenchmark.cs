@@ -33,29 +33,32 @@ public class ConcurrencyNestedScopeBenchmark
         {
             var task = Task.Run(() =>
             {
-                try
+                for (var j = 0; j < RepeatCount; j++)
                 {
-                    for (var j = 0; j < RepeatCount; j++)
+                    // Start request
+                    using (var requestScope = _container.BeginLifetimeScope("request"))
                     {
-                        // Start request
-                        using (var requestScope = _container.BeginLifetimeScope("request"))
+                        var service1 = requestScope.Resolve<MockRequestScopeService1>();
+                        if (service1 == null)
                         {
-                            var service1 = requestScope.Resolve<MockRequestScopeService1>();
-                            Assert.NotNull(service1);
+                            throw new InvalidOperationException("Service1 is null");
+                        }
 
-                            using (var unitOfWorkScope = requestScope.BeginLifetimeScope())
+                        using (var unitOfWorkScope = requestScope.BeginLifetimeScope())
+                        {
+                            var nestedRequestService2 = unitOfWorkScope.Resolve<MockRequestScopeService2>();
+                            if (nestedRequestService2 == null)
                             {
-                                var nestedRequestService2 = unitOfWorkScope.Resolve<MockRequestScopeService2>();
-                                Assert.NotNull(nestedRequestService2);
-                                var unitOfWork = unitOfWorkScope.Resolve<MockUnitOfWork>();
-                                Assert.NotNull(unitOfWork);
+                                throw new InvalidOperationException("Nested request service is null");
+                            }
+
+                            var unitOfWork = unitOfWorkScope.Resolve<MockUnitOfWork>();
+                            if (unitOfWork == null)
+                            {
+                                throw new InvalidOperationException("Unit of work is null");
                             }
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    Assert.Fail(ex.ToString());
                 }
             });
             tasks.Add(task);
