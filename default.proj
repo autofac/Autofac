@@ -39,8 +39,6 @@
     <SolutionFile Include="Autofac.sln" />
   </ItemGroup>
   <Target Name="All">
-    <Message Text="Match: $(Match)" Importance="high" />
-    <Error Text="Done." />
     <Message Text="****************************************" Importance="high" />
     <Message Text="Autofac v$(Version)" Importance="high" />
     <Message Text="$(Configuration) Configuration" Importance="high" />
