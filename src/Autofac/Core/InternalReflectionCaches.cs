@@ -35,6 +35,11 @@ internal class InternalReflectionCaches
     public ReflectionCacheTupleDictionary<Type, bool> IsGenericTypeDefinedBy { get; }
 
     /// <summary>
+    /// Gets the cache used by <see cref="InternalTypeExtensions.IsGenericTypeContainingType"/>.
+    /// </summary>
+    public ReflectionCacheTupleDictionary<Type, bool> IsGenericTypeContainingType { get; }
+
+    /// <summary>
     /// Gets the cache used by <see cref="ConstructorBinder"/>.
     /// </summary>
     public ReflectionCacheDictionary<ConstructorInfo, Func<object?[], object>> ConstructorBinderFactory { get; }
@@ -78,6 +83,7 @@ internal class InternalReflectionCaches
         IsGenericEnumerableInterface = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(IsGenericEnumerableInterface));
         IsGenericListOrCollectionInterfaceType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(IsGenericListOrCollectionInterfaceType));
         IsGenericTypeDefinedBy = set.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, bool>>(nameof(IsGenericTypeDefinedBy));
+        IsGenericTypeContainingType = set.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, bool>>(nameof(IsGenericTypeContainingType));
         ConstructorBinderFactory = set.GetOrCreateCache<ReflectionCacheDictionary<ConstructorInfo, Func<object?[], object>>>(nameof(ConstructorBinderFactory));
         AutowiringPropertySetters = set.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, Action<object, object?>>>(nameof(AutowiringPropertySetters));
         AutowiringInjectableProperties = set.GetOrCreateCache<ReflectionCacheDictionary<Type, IReadOnlyList<PropertyInfo>>>(nameof(AutowiringInjectableProperties));
