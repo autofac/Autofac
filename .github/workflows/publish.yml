@@ -9,7 +9,9 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup .NET 8
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
@@ -22,6 +24,7 @@ jobs:
         run: |
           dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/autofac/index.json"
           dotnet nuget push ./artifacts/packages/*.nupkg --source github --api-key ${{ secrets.GITHUB_TOKEN }}
+          dotnet nuget push ./artifacts/packages/*.snupkg --source github --api-key ${{ secrets.GITHUB_TOKEN }}
       - name: Publish to NuGet
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         run: |
@@ -30,3 +33,4 @@ jobs:
 
           # Push to NuGet.
           dotnet nuget push ./artifacts/packages/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+          dotnet nuget push ./artifacts/packages/*.snupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
