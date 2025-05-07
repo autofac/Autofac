@@ -9,8 +9,6 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -28,9 +26,5 @@ jobs:
       - name: Publish to NuGet
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         run: |
-          # Ensure the tag is on the master branch.
-          git branch --remote --contains | grep origin/master
-
-          # Push to NuGet.
           dotnet nuget push ./artifacts/packages/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
           dotnet nuget push ./artifacts/packages/*.snupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
