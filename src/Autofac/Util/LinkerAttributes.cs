@@ -113,7 +113,7 @@ internal sealed class DynamicallyAccessedMembersAttribute : Attribute
 /// code from an application.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor, Inherited = false)]
-public sealed class RequiresUnreferencedCodeAttribute : Attribute
+internal sealed class RequiresUnreferencedCodeAttribute : Attribute
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="RequiresUnreferencedCodeAttribute"/> class
