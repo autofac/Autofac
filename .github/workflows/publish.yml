@@ -27,4 +27,3 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/tags/v') }}
         run: |
           dotnet nuget push ./artifacts/packages/*.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
-          dotnet nuget push ./artifacts/packages/*.snupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
