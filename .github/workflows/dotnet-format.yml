@@ -11,4 +11,4 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: dotnet format
-        run: dotnet format Autofac.sln --no-restore --verify-no-changes
+        run: dotnet format Autofac.sln --verify-no-changes
