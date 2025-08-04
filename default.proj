@@ -2,7 +2,7 @@
 <Project DefaultTargets="All" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
   <PropertyGroup>
     <!-- Increment the overall semantic version here. -->
-    <Version>8.3.0</Version>
+    <Version>8.4.0</Version>
     <Configuration Condition="'$(Configuration)'==''">Release</Configuration>
     <ArtifactDirectory>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),"artifacts"))</ArtifactDirectory>
     <PackageDirectory>$([System.IO.Path]::Combine($(ArtifactDirectory),"packages"))</PackageDirectory>
