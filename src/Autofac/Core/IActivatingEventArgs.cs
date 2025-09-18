@@ -8,7 +8,7 @@ namespace Autofac.Core;
 /// is shared with any other or any members are invoked on it.
 /// </summary>
 /// <typeparam name="T">The type of instance being used to satisfy the request.</typeparam>
-[SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
+[SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix", Justification = "Event args naming here occurred before the rule was created.")]
 public interface IActivatingEventArgs<out T>
 {
     /// <summary>

@@ -924,7 +924,6 @@ public static class ResolutionExtensions
     /// True if a component providing the service is available.
     /// </returns>
     /// <exception cref="DependencyResolutionException"/>
-    [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
     public static bool TryResolve(this IComponentContext context, Type serviceType, [NotNullWhen(returnValue: true)] out object? instance)
     {
         return context.TryResolveService(new TypedService(serviceType), ResolveRequest.NoParameters, out instance);
@@ -969,7 +968,6 @@ public static class ResolutionExtensions
     /// True if a component providing the service is available.
     /// </returns>
     /// <exception cref="DependencyResolutionException"/>
-    [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
     public static bool TryResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, [NotNullWhen(returnValue: true)] out object? instance)
     {
         return context.TryResolveService(new KeyedService(serviceKey, serviceType), ResolveRequest.NoParameters, out instance);
@@ -1014,7 +1012,6 @@ public static class ResolutionExtensions
     /// True if a component providing the service is available.
     /// </returns>
     /// <exception cref="DependencyResolutionException"/>
-    [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
     public static bool TryResolveNamed(this IComponentContext context, string serviceName, Type serviceType, [NotNullWhen(returnValue: true)] out object? instance)
     {
         return context.TryResolveService(new KeyedService(serviceName, serviceType), ResolveRequest.NoParameters, out instance);
@@ -1030,7 +1027,6 @@ public static class ResolutionExtensions
     /// True if a component providing the service is available.
     /// </returns>
     /// <exception cref="DependencyResolutionException"/>
-    [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
     public static bool TryResolveService(this IComponentContext context, Service service, [NotNullWhen(returnValue: true)] out object? instance)
     {
         return context.TryResolveService(service, ResolveRequest.NoParameters, out instance);
@@ -1050,7 +1046,6 @@ public static class ResolutionExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="context" /> is <see langword="null" />.
     /// </exception>
-    [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
     public static bool TryResolveService(this IComponentContext context, Service service, IEnumerable<Parameter> parameters, [NotNullWhen(returnValue: true)] out object? instance)
     {
         if (context == null)

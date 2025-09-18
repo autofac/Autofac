@@ -38,7 +38,7 @@ public class TypedParameter : ConstantParameter
     /// <summary>
     /// Gets the type against which targets are matched.
     /// </summary>
-    [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods")]
+    [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "Property serves a different purpose than the default get method.")]
     public Type Type { get; private set; }
 
     /// <summary>

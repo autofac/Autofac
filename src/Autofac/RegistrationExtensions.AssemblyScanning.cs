@@ -12,7 +12,7 @@ namespace Autofac;
 /// <summary>
 /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
 /// </summary>
-[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
+[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "RegistrationBuilder is where all registration syntax lives.")]
 public static partial class RegistrationExtensions
 {
     private const string AssemblyScanningWarning = "Assembly scanning is unlikely to be compatible with member-level trimming; the linker will not be able to determine which types to preserve.";

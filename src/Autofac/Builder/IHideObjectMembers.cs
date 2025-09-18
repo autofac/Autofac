@@ -18,7 +18,7 @@ public interface IHideObjectMembers
     /// Standard System.Object member.
     /// </summary>
     /// <returns>Standard result.</returns>
-    [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+    [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Justification = "Override for standard method to add attributes.")]
     [EditorBrowsable(EditorBrowsableState.Never)]
     Type GetType();
 

@@ -11,7 +11,7 @@ namespace Autofac;
 /// <summary>
 /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
 /// </summary>
-[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
+[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "RegistrationBuilder is where all registration syntax lives.")]
 public static partial class RegistrationExtensions
 {
     /// <summary>
