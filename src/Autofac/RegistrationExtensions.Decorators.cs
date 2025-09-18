@@ -27,6 +27,7 @@ public static partial class RegistrationExtensions
     /// <param name="toKey">Service key or name given to the decorated components.</param>
     /// <param name="decoratorType">The type of the decorator. Must be an open generic type, and accept a parameter
     /// of type <paramref name="decoratedServiceType"/>, which will be set to the instance being decorated.</param>
+    /// <returns>The decorator registration for continued configuration.</returns>
     public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
         RegisterGenericDecorator(
             this ContainerBuilder builder,
@@ -64,6 +65,7 @@ public static partial class RegistrationExtensions
     /// <typeparamref name="TService"/>, given the context and parameters.</param>
     /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
     /// <param name="toKey">Service key or name given to the decorated components.</param>
+    /// <returns>The decorator registration for continued configuration.</returns>
     public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
         RegisterDecorator<TService>(
             this ContainerBuilder builder,
@@ -96,6 +98,7 @@ public static partial class RegistrationExtensions
     /// <typeparamref name="TService"/>, given the context.</param>
     /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
     /// <param name="toKey">Service key or name given to the decorated components.</param>
+    /// <returns>The decorator registration for continued configuration.</returns>
     public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
         RegisterDecorator<TService>(
             this ContainerBuilder builder,
@@ -128,6 +131,7 @@ public static partial class RegistrationExtensions
     /// <typeparamref name="TService"/>.</param>
     /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
     /// <param name="toKey">Service key or name given to the decorated components.</param>
+    /// <returns>The decorator registration for continued configuration.</returns>
     public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
         RegisterDecorator<TService>(
             this ContainerBuilder builder,
@@ -157,8 +161,7 @@ public static partial class RegistrationExtensions
     /// of type <typeparamref name="TService"/>, which will be set to the instance being decorated.</typeparam>
     /// <typeparam name="TService">Service type being decorated.</typeparam>
     /// <param name="builder">Container builder.</param>
-    /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/>
-    /// instance determines if the decorator should be applied.</param>
+    /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/> instance determines if the decorator should be applied.</param>
     public static void RegisterDecorator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool>? condition = null)
         where TDecorator : notnull, TService
     {
@@ -188,8 +191,7 @@ public static partial class RegistrationExtensions
     /// <param name="decoratorType">Service type of the decorator. Must accept a parameter
     /// of type <paramref name="serviceType"/>, which will be set to the instance being decorated.</param>
     /// <param name="serviceType">Service type being decorated.</param>
-    /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/>
-    /// instance determines if the decorator should be applied.</param>
+    /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/> instance determines if the decorator should be applied.</param>
     public static void RegisterDecorator(
         this ContainerBuilder builder,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type decoratorType,
@@ -233,8 +235,7 @@ public static partial class RegistrationExtensions
     /// <param name="builder">Container builder.</param>
     /// <param name="decorator">Function decorating a component instance that provides
     /// <typeparamref name="TService"/>, given the context, parameters and service to decorate.</param>
-    /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/>
-    /// instance determines if the decorator should be applied.</param>
+    /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/> instance determines if the decorator should be applied.</param>
     public static void RegisterDecorator<TService>(
         this ContainerBuilder builder,
         Func<IComponentContext, IEnumerable<Parameter>, TService, TService> decorator,
@@ -279,8 +280,7 @@ public static partial class RegistrationExtensions
     /// <param name="decoratorType">The type of the decorator. Must be an open generic type, and accept a parameter
     /// of type <paramref name="serviceType"/>, which will be set to the instance being decorated.</param>
     /// <param name="serviceType">Service type being decorated. Must be an open generic type.</param>
-    /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/>
-    /// instance determines if the decorator should be applied.</param>
+    /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/> instance determines if the decorator should be applied.</param>
     public static void RegisterGenericDecorator(
         this ContainerBuilder builder,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type decoratorType,

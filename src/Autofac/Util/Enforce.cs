@@ -18,8 +18,8 @@ internal static class Enforce
     /// </summary>
     /// <param name="value">The value.</param>
     /// <param name="name">The parameter name.</param>
-    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
-    public static IEnumerable<T> ArgumentElementNotNull<T>(IEnumerable<T> value, string name)
+    /// <returns>The <paramref name="value"/> if there are no null elements. Throws an exception if the <paramref name="value"/> is null or contains null elements.</returns>
+    public static IEnumerable<T> ArgumentElementNotNull<T>(IEnumerable<T>? value, string name)
         where T : class
     {
         if (value == null)

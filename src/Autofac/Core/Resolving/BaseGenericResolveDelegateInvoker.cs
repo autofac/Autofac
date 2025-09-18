@@ -19,6 +19,9 @@ internal abstract class BaseGenericResolveDelegateInvoker
     /// <summary>
     /// Method implemented by the derived generated class to get the <see cref="ParameterInfo"/> array for the owned delegate.
     /// </summary>
+    /// <returns>
+    /// The <see cref="ParameterInfo"/> array for the delegate.
+    /// </returns>
     protected abstract ParameterInfo[] GetDelegateParameters();
 
     /// <summary>
@@ -28,8 +31,8 @@ internal abstract class BaseGenericResolveDelegateInvoker
     /// <typeparam name="T">The type to resolve.</typeparam>
     /// <param name="context">The context from which to resolve.</param>
     /// <param name="parameters">The set of Autofac resolve parameters.</param>
-    /// <param name="parameterInfoPosition">The position of the parameter in the
-    /// delegate's parameter info set.</param>
+    /// <param name="parameterInfoPosition">The position of the parameter in the delegate's parameter info set.</param>
+    /// <returns>The resolved value.</returns>
     protected T? ResolveWithParametersOrRegistration<T>(IComponentContext context, IEnumerable<Parameter> parameters, int parameterInfoPosition)
         where T : notnull
     {
@@ -51,7 +54,8 @@ internal abstract class BaseGenericResolveDelegateInvoker
     /// <summary>
     /// Checks whether there are any parameters in the set of parameters.
     /// </summary>
-    /// <param name="parameters">The parameters.</param>
+    /// <param name="parameters">The list of parameters to check.</param>
+    /// <returns><see langword="true"/> if there are any parameters; otherwise, <see langword="false"/>.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static bool AnyParameters(IEnumerable<Parameter> parameters)
     {

@@ -46,8 +46,6 @@
     <Rule Id="SA1404" Action="None" />
     <!-- Parameter documentation must be in the right order. -->
     <Rule Id="SA1612" Action="None" />
-    <!-- Return value must be documented. -->
-    <Rule Id="SA1615" Action="None" />
     <!-- Generic type parameters must be documented. -->
     <Rule Id="SA1618" Action="None" />
     <!-- Don't copy/paste documentation. -->

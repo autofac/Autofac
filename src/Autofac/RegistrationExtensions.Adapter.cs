@@ -19,11 +19,10 @@ public static partial class RegistrationExtensions
     /// function.
     /// </summary>
     /// <typeparam name="TFrom">Service type to adapt from.</typeparam>
-    /// <typeparam name="TTo">Service type to adapt to. Must not be the
-    /// same as <typeparamref name="TFrom"/>.</typeparam>
+    /// <typeparam name="TTo">Service type to adapt to. Must not be the same as <typeparamref name="TFrom"/>.</typeparam>
     /// <param name="builder">Container builder.</param>
-    /// <param name="adapter">Function adapting <typeparamref name="TFrom"/> to
-    /// service <typeparamref name="TTo"/>, given the context and parameters.</param>
+    /// <param name="adapter">Function adapting <typeparamref name="TFrom"/> to service <typeparamref name="TTo"/>, given the context and parameters.</param>
+    /// <returns>The adapter registration for continued configuration.</returns>
     public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
         RegisterAdapter<TFrom, TTo>(
             this ContainerBuilder builder,
@@ -50,11 +49,10 @@ public static partial class RegistrationExtensions
     /// function.
     /// </summary>
     /// <typeparam name="TFrom">Service type to adapt from.</typeparam>
-    /// <typeparam name="TTo">Service type to adapt to. Must not be the
-    /// same as <typeparamref name="TFrom"/>.</typeparam>
+    /// <typeparam name="TTo">Service type to adapt to. Must not be the same as <typeparamref name="TFrom"/>.</typeparam>
     /// <param name="builder">Container builder.</param>
-    /// <param name="adapter">Function adapting <typeparamref name="TFrom"/> to
-    /// service <typeparamref name="TTo"/>, given the context.</param>
+    /// <param name="adapter">Function adapting <typeparamref name="TFrom"/> to service <typeparamref name="TTo"/>, given the context.</param>
+    /// <returns>The adapter registration for continued configuration.</returns>
     public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
         RegisterAdapter<TFrom, TTo>(
             this ContainerBuilder builder,
@@ -81,11 +79,10 @@ public static partial class RegistrationExtensions
     /// function.
     /// </summary>
     /// <typeparam name="TFrom">Service type to adapt from.</typeparam>
-    /// <typeparam name="TTo">Service type to adapt to. Must not be the
-    /// same as <typeparamref name="TFrom"/>.</typeparam>
+    /// <typeparam name="TTo">Service type to adapt to. Must not be the same as <typeparamref name="TFrom"/>.</typeparam>
     /// <param name="builder">Container builder.</param>
-    /// <param name="adapter">Function adapting <typeparamref name="TFrom"/> to
-    /// service <typeparamref name="TTo"/>.</param>
+    /// <param name="adapter">Function adapting <typeparamref name="TFrom"/> to service <typeparamref name="TTo"/>.</param>
+    /// <returns>The adapter registration for continued configuration.</returns>
     public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
         RegisterAdapter<TFrom, TTo>(
             this ContainerBuilder builder,

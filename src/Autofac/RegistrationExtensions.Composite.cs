@@ -30,6 +30,7 @@ public static partial class RegistrationExtensions
     /// </typeparam>
     /// <typeparam name="TService">Service type to provide a composite for.</typeparam>
     /// <param name="builder">Container builder.</param>
+    /// <returns>The composite registration for continued configuration.</returns>
     public static IRegistrationBuilder<TComposite, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterComposite<TComposite, TService>(this ContainerBuilder builder)
         where TComposite : notnull, TService
         where TService : notnull
@@ -62,6 +63,7 @@ public static partial class RegistrationExtensions
     /// which will be set to the collection of registered implementations.
     /// </param>
     /// <param name="serviceType">Service type to provide a composite for.</param>
+    /// <returns>The composite registration for continued configuration.</returns>
     public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterComposite(
         this ContainerBuilder builder,
         Type compositeType,
@@ -93,6 +95,7 @@ public static partial class RegistrationExtensions
     /// Callback to create a new instance of the composite, which takes the set of concrete implementations.
     /// </param>
     /// <typeparam name="TService">Service type to provide a composite for.</typeparam>
+    /// <returns>The composite registration for continued configuration.</returns>
     public static IRegistrationBuilder<TService, SimpleActivatorData, SingleRegistrationStyle> RegisterComposite<TService>(
         this ContainerBuilder builder,
         Func<IComponentContext, IEnumerable<Parameter>, IEnumerable<TService>, TService> compositeDelegate)
@@ -129,6 +132,7 @@ public static partial class RegistrationExtensions
     /// Callback to create a new instance of the composite, which takes the set of concrete implementations.
     /// </param>
     /// <typeparam name="TService">Service type to provide a composite for.</typeparam>
+    /// <returns>The composite registration for continued configuration.</returns>
     public static IRegistrationBuilder<TService, SimpleActivatorData, SingleRegistrationStyle> RegisterComposite<TService>(
         this ContainerBuilder builder,
         Func<IComponentContext, IEnumerable<TService>, TService> compositeDelegate)
@@ -154,6 +158,7 @@ public static partial class RegistrationExtensions
     /// which will be set to the collection of registered implementations.
     /// </param>
     /// <param name="serviceType">Service type to provide a composite for.</param>
+    /// <returns>The composite registration for continued configuration.</returns>
     public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> RegisterGenericComposite(
         this ContainerBuilder builder,
         [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type compositeType,

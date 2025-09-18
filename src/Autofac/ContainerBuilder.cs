@@ -105,6 +105,7 @@ public sealed class ContainerBuilder
     /// </summary>
     /// <remarks>This is primarily for extending the builder syntax.</remarks>
     /// <param name="configurationCallback">Callback to execute.</param>
+    /// <returns>A <see cref="DeferredCallback"/> that can be used to unregister the callback.</returns>
     public DeferredCallback RegisterCallback(Action<IComponentRegistryBuilder> configurationCallback)
     {
         var c = new DeferredCallback(configurationCallback);

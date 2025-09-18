@@ -17,11 +17,10 @@ internal static class LightweightAdapterRegistrationExtensions
     /// function.
     /// </summary>
     /// <typeparam name="TFrom">Service type to adapt from.</typeparam>
-    /// <typeparam name="TTo">Service type to adapt to. Must not be the
-    /// same as <typeparamref name="TFrom"/>.</typeparam>
+    /// <typeparam name="TTo">Service type to adapt to. Must not be the same as <typeparamref name="TFrom"/>.</typeparam>
     /// <param name="builder">Container builder.</param>
-    /// <param name="adapter">Function adapting <typeparamref name="TFrom"/> to
-    /// service <typeparamref name="TTo"/>, given the context and parameters.</param>
+    /// <param name="adapter">Function adapting <typeparamref name="TFrom"/> to service <typeparamref name="TTo"/>, given the context and parameters.</param>
+    /// <returns>A registration builder allowing the registration to be further configured.</returns>
     public static IRegistrationBuilder<TTo, LightweightAdapterActivatorData, DynamicRegistrationStyle>
         RegisterAdapter<TFrom, TTo>(
             ContainerBuilder builder,
@@ -42,6 +41,7 @@ internal static class LightweightAdapterRegistrationExtensions
     /// <typeparamref name="TService"/>, given the context and parameters.</param>
     /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
     /// <param name="toKey">Service key or name given to the decorated components.</param>
+    /// <returns>The adapter registration for further configuration.</returns>
     public static IRegistrationBuilder<TService, LightweightAdapterActivatorData, DynamicRegistrationStyle>
         RegisterDecorator<TService>(
             ContainerBuilder builder,

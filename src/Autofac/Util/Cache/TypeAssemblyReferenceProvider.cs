@@ -36,6 +36,9 @@ internal static class TypeAssemblyReferenceProvider
     /// <remarks>
     /// The holding set is cleared each time this method is called.
     /// </remarks>
+    /// <returns>
+    /// The set of assemblies added to the provided <paramref name="holdingSet"/>.
+    /// </returns>
     public static IEnumerable<Assembly> GetAllReferencedAssemblies(MemberInfo memberInfo, HashSet<Assembly> holdingSet)
     {
         holdingSet.Clear();

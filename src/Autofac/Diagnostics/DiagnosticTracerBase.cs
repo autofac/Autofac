@@ -191,6 +191,7 @@ public abstract class DiagnosticTracerBase : IObserver<KeyValuePair<string, obje
     /// <param name="diagnosticName">
     /// The name of the event to check. Diagnostic names are case-sensitive.
     /// </param>
+    /// <returns><see langword="true"/> if the observer is enabled for the event; otherwise, <see langword="false"/>.</returns>
     public bool IsEnabled(string diagnosticName)
     {
         if (_subscriptions.Count == 0)

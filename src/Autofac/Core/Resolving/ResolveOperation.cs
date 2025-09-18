@@ -42,6 +42,7 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     /// Execute the complete resolve operation.
     /// </summary>
     /// <param name="request">The resolution context.</param>
+    /// <returns>The resolved instance.</returns>
     public object Execute(in ResolveRequest request)
     {
         return ExecuteOperation(request);

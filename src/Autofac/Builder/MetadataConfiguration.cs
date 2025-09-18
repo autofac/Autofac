@@ -29,6 +29,9 @@ public class MetadataConfiguration<TMetadata>
     /// <typeparam name="TProperty">The type of the property.</typeparam>
     /// <param name="propertyAccessor">An expression that accesses the property to set.</param>
     /// <param name="value">The property value to set.</param>
+    /// <returns>
+    /// The current <see cref="MetadataConfiguration{TMetadata}"/> for continued configuration.
+    /// </returns>
     public MetadataConfiguration<TMetadata> For<TProperty>(Expression<Func<TMetadata, TProperty>> propertyAccessor, TProperty value)
     {
         if (propertyAccessor == null)

@@ -25,6 +25,7 @@ public class BoundConstructor
     /// <param name="binder">The binder that generated this binding.</param>
     /// <param name="factory">The instance factory.</param>
     /// <param name="valueRetrievers">The set of value-retrieval functions.</param>
+    /// <returns>A <see cref="BoundConstructor"/> with details about the successful bind.</returns>
     [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Validated in constructor.")]
     public static BoundConstructor ForBindSuccess(ConstructorBinder binder, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
         => new(binder, factory, valueRetrievers);
@@ -34,6 +35,7 @@ public class BoundConstructor
     /// </summary>
     /// <param name="binder">The binder that generated this binding.</param>
     /// <param name="firstNonBindableParameter">The first parameter that prevented binding.</param>
+    /// <returns>A <see cref="BoundConstructor"/> with details about the unsuccessful bind.</returns>
     public static BoundConstructor ForBindFailure(ConstructorBinder binder, ParameterInfo firstNonBindableParameter) =>
         new(binder, firstNonBindableParameter);
 
@@ -101,7 +103,7 @@ public class BoundConstructor
     {
         if (!CanInstantiate)
         {
-            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.CannotInstantitate, Description));
+            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.CannotInstantiate, Description));
         }
 
         object?[] values;

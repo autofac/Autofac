@@ -65,6 +65,7 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="this">The type to test.</param>
     /// <param name="openGeneric">The open generic against which the type should be tested.</param>
+    /// <returns><see langword="true"/> if the provided type is a closed version of the provided open generic; otherwise, <see langword="false"/>.</returns>
     public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
     {
         if (@this == null)
@@ -90,8 +91,7 @@ public static class TypeExtensions
     /// </summary>
     /// <typeparam name="T">The type to test assignability to.</typeparam>
     /// <param name="this">The type to test.</param>
-    /// <returns>True if this type is assignable to references of type
-    /// <typeparamref name="T"/>; otherwise, False.</returns>
+    /// <returns><see langword="true"/> if this type is assignable to references of type <typeparamref name="T"/>; otherwise, <see langword="false"/>.</returns>
     public static bool IsAssignableTo<T>(this Type @this)
     {
         if (@this == null)
