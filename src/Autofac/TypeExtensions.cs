@@ -45,6 +45,7 @@ public static class TypeExtensions
     /// Returns true if this type is in the same namespace as <typeparamref name="T"/>
     /// or one of its sub-namespaces.
     /// </summary>
+    /// <typeparam name="T">The type whose namespace is used for comparison.</typeparam>
     /// <param name="this">The type to test.</param>
     /// <returns>True if this type is in the same namespace as <typeparamref name="T"/>
     /// or one of its sub-namespaces; otherwise, false.</returns>

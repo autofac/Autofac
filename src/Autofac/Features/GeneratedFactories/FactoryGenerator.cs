@@ -209,6 +209,7 @@ public class FactoryGenerator
     /// <summary>
     /// Generates a factory delegate that closes over the provided context.
     /// </summary>
+    /// <typeparam name="TDelegate">The type of the delegate to generate.</typeparam>
     /// <param name="context">The context in which the factory will be used.</param>
     /// <param name="parameters">Parameters provided to the resolve call for the factory itself.</param>
     /// <returns>A factory delegate that will work within the context.</returns>

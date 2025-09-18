@@ -6,6 +6,7 @@ namespace Autofac.Core;
 /// <summary>
 /// Fired when the activation process for a new instance is complete.
 /// </summary>
+/// <typeparam name="T">The type of instance being used to satisfy the request.</typeparam>
 public class ActivatedEventArgs<T> : EventArgs, IActivatedEventArgs<T>
 {
     /// <summary>
@@ -46,7 +47,7 @@ public class ActivatedEventArgs<T> : EventArgs, IActivatedEventArgs<T>
     public IComponentRegistration Component { get; }
 
     /// <summary>
-    /// Gets the paramters provided when resolved.
+    /// Gets the parameters provided when resolved.
     /// </summary>
     public IEnumerable<Parameter> Parameters { get; }
 

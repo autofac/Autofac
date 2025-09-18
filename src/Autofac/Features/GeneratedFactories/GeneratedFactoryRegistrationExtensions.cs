@@ -16,6 +16,7 @@ internal static class GeneratedFactoryRegistrationExtensions
     /// <summary>
     /// Registers a factory delegate.
     /// </summary>
+    /// <typeparam name="TLimit">The most specific type to which instances of the registration can be cast.</typeparam>
     /// <param name="builder">Container builder.</param>
     /// <param name="delegateType">Factory type to generate.</param>
     /// <param name="service">The service that the delegate will return instances of.</param>

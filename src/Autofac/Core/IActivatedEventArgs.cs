@@ -6,6 +6,7 @@ namespace Autofac.Core;
 /// <summary>
 /// Fired when the activation process for a new instance is complete.
 /// </summary>
+/// <typeparam name="T">The type of instance being used to satisfy the request.</typeparam>
 [SuppressMessage("Microsoft.Naming", "CA1711:IdentifiersShouldNotHaveIncorrectSuffix")]
 public interface IActivatedEventArgs<out T>
 {
@@ -25,7 +26,7 @@ public interface IActivatedEventArgs<out T>
     IComponentRegistration Component { get; }
 
     /// <summary>
-    /// Gets the paramters provided when resolved.
+    /// Gets the parameters provided when resolved.
     /// </summary>
     IEnumerable<Parameter> Parameters { get; }
 

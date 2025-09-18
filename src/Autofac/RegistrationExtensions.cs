@@ -345,6 +345,9 @@ public static partial class RegistrationExtensions
     /// Configure the component so that any properties whose types are registered in the
     /// container will be wired to instances of the appropriate service.
     /// </summary>
+    /// <typeparam name="TLimit">The most specific type to which instances of the registration can be cast.</typeparam>
+    /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
+    /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
     /// <param name="registration">Registration to auto-wire properties.</param>
     /// <param name="wiringFlags">Set wiring options such as circular dependency wiring support.</param>
     /// <returns>A registration builder allowing further configuration of the component.</returns>

@@ -10,8 +10,7 @@ namespace Autofac.Builder;
 /// <summary>
 /// Data structure used to construct registrations.
 /// </summary>
-/// <typeparam name="TLimit">The most specific type to which instances of the registration
-/// can be cast.</typeparam>
+/// <typeparam name="TLimit">The most specific type to which instances of the registration can be cast.</typeparam>
 /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
 /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
 public interface IRegistrationBuilder<out TLimit, out TActivatorData, out TRegistrationStyle>

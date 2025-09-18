@@ -16,6 +16,7 @@ internal static class Enforce
     /// value if valid so that it can be used inline in
     /// base initializer syntax.
     /// </summary>
+    /// <typeparam name="T">The type of elements in the sequence.</typeparam>
     /// <param name="value">The value.</param>
     /// <param name="name">The parameter name.</param>
     /// <returns>The <paramref name="value"/> if there are no null elements. Throws an exception if the <paramref name="value"/> is null or contains null elements.</returns>
