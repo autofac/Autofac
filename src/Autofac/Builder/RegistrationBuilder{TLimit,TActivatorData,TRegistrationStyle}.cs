@@ -238,8 +238,8 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
     /// Configure the services that the component will provide. The generic parameter(s) to As()
     /// will be exposed as TypedService instances.
     /// </summary>
-    /// <typeparam name="TService1">Service type.</typeparam>
-    /// <typeparam name="TService2">Service type.</typeparam>
+    /// <typeparam name="TService1">First service type.</typeparam>
+    /// <typeparam name="TService2">Second service type.</typeparam>
     /// <returns>A registration builder allowing further configuration of the component.</returns>
     public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2>()
         where TService1 : notnull
@@ -252,9 +252,9 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
     /// Configure the services that the component will provide. The generic parameter(s) to As()
     /// will be exposed as TypedService instances.
     /// </summary>
-    /// <typeparam name="TService1">Service type.</typeparam>
-    /// <typeparam name="TService2">Service type.</typeparam>
-    /// <typeparam name="TService3">Service type.</typeparam>
+    /// <typeparam name="TService1">First service type.</typeparam>
+    /// <typeparam name="TService2">Second service type.</typeparam>
+    /// <typeparam name="TService3">Third service type.</typeparam>
     /// <returns>A registration builder allowing further configuration of the component.</returns>
     public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2, TService3>()
         where TService1 : notnull

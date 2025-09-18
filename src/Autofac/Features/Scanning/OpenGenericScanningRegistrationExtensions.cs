@@ -93,7 +93,7 @@ internal static class OpenGenericScanningRegistrationExtensions
     /// <typeparam name="TRegistrationStyle">The registration style.</typeparam>
     /// <param name="registration">The registration builder.</param>
     /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
-    /// <returns>The registration builder.</returns>
+    /// <returns>The registration builder for continued configuration.</returns>
     public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
         AssignableTo<TLimit, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
@@ -117,7 +117,7 @@ internal static class OpenGenericScanningRegistrationExtensions
     /// <param name="registration">The registration builder.</param>
     /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
     /// <param name="serviceKey">The service key.</param>
-    /// <returns>The registration builder.</returns>
+    /// <returns>The registration builder for continued configuration.</returns>
     public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
         AssignableTo<TLimit, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
@@ -145,7 +145,7 @@ internal static class OpenGenericScanningRegistrationExtensions
     /// <param name="registration">The registration builder.</param>
     /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
     /// <param name="serviceKeyMapping">A function to determine the service key for a given type.</param>
-    /// <returns>The registration builder.</returns>
+    /// <returns>The registration builder for continued configuration.</returns>
     public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
         AssignableTo<TLimit, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,

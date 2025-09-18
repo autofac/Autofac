@@ -28,7 +28,5 @@
     <Rule Id="SA1122" Action="None" />
     <!-- Fields can't start with underscore. -->
     <Rule Id="SA1309" Action="None" />
-    <!-- Don't copy/paste documentation. -->
-    <Rule Id="SA1625" Action="None" />
   </Rules>
 </RuleSet>
