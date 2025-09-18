@@ -15,12 +15,12 @@ namespace Autofac.Features.GeneratedFactories;
 /// </summary>
 public class FactoryGenerator
 {
-    private readonly Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
-
     // The explicit '!' default is ok because the code is never executed, it's just used by
     // the expression tree.
     private static readonly ConstructorInfo RequestConstructor
         = ReflectionExtensions.GetConstructor(() => new ResolveRequest(default!, default!, default!, default));
+
+    private readonly Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FactoryGenerator"/> class.
@@ -93,6 +93,40 @@ public class FactoryGenerator
             },
             delegateType,
             GetParameterMapping(delegateType, parameterMapping));
+    }
+
+    /// <summary>
+    /// Generates a factory delegate that closes over the provided context.
+    /// </summary>
+    /// <param name="context">The context in which the factory will be used.</param>
+    /// <param name="parameters">Parameters provided to the resolve call for the factory itself.</param>
+    /// <returns>A factory delegate that will work within the context.</returns>
+    public Delegate GenerateFactory(IComponentContext context, IEnumerable<Parameter> parameters)
+    {
+        if (context == null)
+        {
+            throw new ArgumentNullException(nameof(context));
+        }
+
+        if (parameters == null)
+        {
+            throw new ArgumentNullException(nameof(parameters));
+        }
+
+        return _generator(context.Resolve<ILifetimeScope>(), parameters);
+    }
+
+    /// <summary>
+    /// Generates a factory delegate that closes over the provided context.
+    /// </summary>
+    /// <typeparam name="TDelegate">The type of the delegate to generate.</typeparam>
+    /// <param name="context">The context in which the factory will be used.</param>
+    /// <param name="parameters">Parameters provided to the resolve call for the factory itself.</param>
+    /// <returns>A factory delegate that will work within the context.</returns>
+    public TDelegate GenerateFactory<TDelegate>(IComponentContext context, IEnumerable<Parameter> parameters)
+        where TDelegate : class
+    {
+        return (TDelegate)(object)GenerateFactory(context, parameters);
     }
 
     private static ParameterMapping GetParameterMapping(Type delegateType, ParameterMapping configuredParameterMapping)
@@ -183,38 +217,5 @@ public class FactoryGenerator
             _ => creatorParams.Select(p => Expression.New(typeof(NamedParameter).GetMatchingConstructor(new[] { typeof(string), typeof(object) })!, Expression.Constant(p.Name, typeof(string)), Expression.Convert(p, typeof(object))))
                               .ToArray(),
         };
-    }
-
-    /// <summary>
-    /// Generates a factory delegate that closes over the provided context.
-    /// </summary>
-    /// <param name="context">The context in which the factory will be used.</param>
-    /// <param name="parameters">Parameters provided to the resolve call for the factory itself.</param>
-    /// <returns>A factory delegate that will work within the context.</returns>
-    public Delegate GenerateFactory(IComponentContext context, IEnumerable<Parameter> parameters)
-    {
-        if (context == null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
-
-        if (parameters == null)
-        {
-            throw new ArgumentNullException(nameof(parameters));
-        }
-
-        return _generator(context.Resolve<ILifetimeScope>(), parameters);
-    }
-
-    /// <summary>
-    /// Generates a factory delegate that closes over the provided context.
-    /// </summary>
-    /// <param name="context">The context in which the factory will be used.</param>
-    /// <param name="parameters">Parameters provided to the resolve call for the factory itself.</param>
-    /// <returns>A factory delegate that will work within the context.</returns>
-    public TDelegate GenerateFactory<TDelegate>(IComponentContext context, IEnumerable<Parameter> parameters)
-        where TDelegate : class
-    {
-        return (TDelegate)(object)GenerateFactory(context, parameters);
     }
 }

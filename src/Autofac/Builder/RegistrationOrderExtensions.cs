@@ -28,7 +28,7 @@ internal static class RegistrationOrderExtensions
     /// <typeparam name="TSingleRegistrationStyle">The registration style type.</typeparam>
     /// <param name="registration">The registration builder.</param>
     /// <param name="source">The source registration to take the order from.</param>
-    /// <returns>The registration builder.</returns>
+    /// <returns>The registration builder for continued configuration.</returns>
     internal static IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> InheritRegistrationOrderFrom<TLimit, TActivatorData, TSingleRegistrationStyle>(
             this IRegistrationBuilder<TLimit, TActivatorData, TSingleRegistrationStyle> registration,
             IComponentRegistration source)

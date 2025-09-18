@@ -80,7 +80,7 @@ internal static class ScanningRegistrationExtensions
     /// <typeparam name="TRegistrationStyle">The registration style.</typeparam>
     /// <param name="registration">The registration builder.</param>
     /// <param name="openGenericServiceType">The open generic to register closed types of.</param>
-    /// <returns>The registration builder.</returns>
+    /// <returns>The registration builder for continued configuration.</returns>
     public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
         AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
@@ -107,7 +107,7 @@ internal static class ScanningRegistrationExtensions
     /// <param name="registration">The registration builder.</param>
     /// <param name="openGenericServiceType">The open generic to register closed types of.</param>
     /// <param name="serviceKey">The service key.</param>
-    /// <returns>The registration builder.</returns>
+    /// <returns>The registration builder for continued configuration.</returns>
     public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
         AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
@@ -137,7 +137,7 @@ internal static class ScanningRegistrationExtensions
     /// <param name="registration">The registration builder.</param>
     /// <param name="openGenericServiceType">The open generic to register closed types of.</param>
     /// <param name="serviceKeyMapping">A function to determine the service key for a given type.</param>
-    /// <returns>The registration builder.</returns>
+    /// <returns>The registration builder for continued configuration.</returns>
     public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
         AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,

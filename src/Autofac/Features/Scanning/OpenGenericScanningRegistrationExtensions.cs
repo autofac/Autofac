@@ -86,26 +86,6 @@ internal static class OpenGenericScanningRegistrationExtensions
         return registration;
     }
 
-    private static void ScanAssembliesForOpenGenerics(IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> rb)
-    {
-        rb.ActivatorData.Filters.Add(t =>
-            rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
-                t.IsOpenGenericTypeOf(swt.ServiceType)));
-
-        var types = assemblies.SelectMany(a => a.GetPermittedTypesForAssemblyScanning())
-            .Where(t => t.IsGenericTypeDefinition)
-            .AllowedByActivatorFilters(rb.ActivatorData);
-
-        static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> TypeBuilderFactory(Type type) => new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
-                new TypedService(type),
-                new ReflectionActivatorData(type),
-                new DynamicRegistrationStyle());
-
-        static void RegistrationSourceFactory(IComponentRegistryBuilder registry, IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> data) => registry.AddRegistrationSource(new OpenGenericRegistrationSource(data.RegistrationData, data.ResolvePipeline, data.ActivatorData));
-
-        types.RegisterUsingTemplate(cr, rb, TypeBuilderFactory, RegistrationSourceFactory);
-    }
-
     /// <summary>
     /// Filters the scanned types to include only those assignable to the provided.
     /// </summary>
@@ -113,7 +93,7 @@ internal static class OpenGenericScanningRegistrationExtensions
     /// <typeparam name="TRegistrationStyle">The registration style.</typeparam>
     /// <param name="registration">The registration builder.</param>
     /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
-    /// <returns>The registration builder.</returns>
+    /// <returns>The registration builder for continued configuration.</returns>
     public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
         AssignableTo<TLimit, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
@@ -137,7 +117,7 @@ internal static class OpenGenericScanningRegistrationExtensions
     /// <param name="registration">The registration builder.</param>
     /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
     /// <param name="serviceKey">The service key.</param>
-    /// <returns>The registration builder.</returns>
+    /// <returns>The registration builder for continued configuration.</returns>
     public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
         AssignableTo<TLimit, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
@@ -165,7 +145,7 @@ internal static class OpenGenericScanningRegistrationExtensions
     /// <param name="registration">The registration builder.</param>
     /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
     /// <param name="serviceKeyMapping">A function to determine the service key for a given type.</param>
-    /// <returns>The registration builder.</returns>
+    /// <returns>The registration builder for continued configuration.</returns>
     public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
         AssignableTo<TLimit, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
@@ -180,5 +160,25 @@ internal static class OpenGenericScanningRegistrationExtensions
         return registration
             .Where(candidateType => candidateType.IsOpenGenericTypeOf(openGenericServiceType))
             .As(candidateType => (Service)new KeyedService(serviceKeyMapping(candidateType), candidateType));
+    }
+
+    private static void ScanAssembliesForOpenGenerics(IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> rb)
+    {
+        rb.ActivatorData.Filters.Add(t =>
+            rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>
+                t.IsOpenGenericTypeOf(swt.ServiceType)));
+
+        var types = assemblies.SelectMany(a => a.GetPermittedTypesForAssemblyScanning())
+            .Where(t => t.IsGenericTypeDefinition)
+            .AllowedByActivatorFilters(rb.ActivatorData);
+
+        static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> TypeBuilderFactory(Type type) => new RegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>(
+                new TypedService(type),
+                new ReflectionActivatorData(type),
+                new DynamicRegistrationStyle());
+
+        static void RegistrationSourceFactory(IComponentRegistryBuilder registry, IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> data) => registry.AddRegistrationSource(new OpenGenericRegistrationSource(data.RegistrationData, data.ResolvePipeline, data.ActivatorData));
+
+        types.RegisterUsingTemplate(cr, rb, TypeBuilderFactory, RegistrationSourceFactory);
     }
 }

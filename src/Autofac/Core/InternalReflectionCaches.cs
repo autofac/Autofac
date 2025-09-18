@@ -15,6 +15,29 @@ namespace Autofac.Core;
 internal class InternalReflectionCaches
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="InternalReflectionCaches"/> class.
+    /// </summary>
+    /// <param name="set">The cache set used to retrieve the required caches.</param>
+    public InternalReflectionCaches(ReflectionCacheSet set)
+    {
+        AssemblyScanAllowedTypes = set.GetOrCreateCache(nameof(AssemblyScanAllowedTypes), _ => new ReflectionCacheAssemblyDictionary<Assembly, IEnumerable<Type>>
+        {
+            Usage = ReflectionCacheUsage.Registration,
+        });
+
+        IsGenericEnumerableInterface = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(IsGenericEnumerableInterface));
+        IsGenericListOrCollectionInterfaceType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(IsGenericListOrCollectionInterfaceType));
+        IsGenericTypeDefinedBy = set.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, bool>>(nameof(IsGenericTypeDefinedBy));
+        IsGenericTypeContainingType = set.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, bool>>(nameof(IsGenericTypeContainingType));
+        ConstructorBinderFactory = set.GetOrCreateCache<ReflectionCacheDictionary<ConstructorInfo, Func<object?[], object>>>(nameof(ConstructorBinderFactory));
+        AutowiringPropertySetters = set.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, Action<object, object?>>>(nameof(AutowiringPropertySetters));
+        AutowiringInjectableProperties = set.GetOrCreateCache<ReflectionCacheDictionary<Type, IReadOnlyList<PropertyInfo>>>(nameof(AutowiringInjectableProperties));
+        DefaultPublicConstructors = set.GetOrCreateCache<ReflectionCacheDictionary<Type, ConstructorInfo[]>>(nameof(DefaultPublicConstructors));
+        GenericTypeDefinitionByType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, Type>>(nameof(GenericTypeDefinitionByType));
+        HasRequiredMemberAttribute = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(HasRequiredMemberAttribute));
+    }
+
+    /// <summary>
     /// Gets the cache used by <see cref="Features.Scanning.AssemblyExtensions.GetPermittedTypesForAssemblyScanning"/>.
     /// </summary>
     public ReflectionCacheAssemblyDictionary<Assembly, IEnumerable<Type>> AssemblyScanAllowedTypes { get; }
@@ -68,27 +91,4 @@ internal class InternalReflectionCaches
     /// Gets a cache used by <see cref="ReflectionActivator"/>.
     /// </summary>
     public ReflectionCacheDictionary<Type, bool> HasRequiredMemberAttribute { get; }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="InternalReflectionCaches"/> class.
-    /// </summary>
-    /// <param name="set">The cache set used to retrieve the required caches.</param>
-    public InternalReflectionCaches(ReflectionCacheSet set)
-    {
-        AssemblyScanAllowedTypes = set.GetOrCreateCache(nameof(AssemblyScanAllowedTypes), _ => new ReflectionCacheAssemblyDictionary<Assembly, IEnumerable<Type>>
-        {
-            Usage = ReflectionCacheUsage.Registration,
-        });
-
-        IsGenericEnumerableInterface = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(IsGenericEnumerableInterface));
-        IsGenericListOrCollectionInterfaceType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(IsGenericListOrCollectionInterfaceType));
-        IsGenericTypeDefinedBy = set.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, bool>>(nameof(IsGenericTypeDefinedBy));
-        IsGenericTypeContainingType = set.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, bool>>(nameof(IsGenericTypeContainingType));
-        ConstructorBinderFactory = set.GetOrCreateCache<ReflectionCacheDictionary<ConstructorInfo, Func<object?[], object>>>(nameof(ConstructorBinderFactory));
-        AutowiringPropertySetters = set.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, Action<object, object?>>>(nameof(AutowiringPropertySetters));
-        AutowiringInjectableProperties = set.GetOrCreateCache<ReflectionCacheDictionary<Type, IReadOnlyList<PropertyInfo>>>(nameof(AutowiringInjectableProperties));
-        DefaultPublicConstructors = set.GetOrCreateCache<ReflectionCacheDictionary<Type, ConstructorInfo[]>>(nameof(DefaultPublicConstructors));
-        GenericTypeDefinitionByType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, Type>>(nameof(GenericTypeDefinitionByType));
-        HasRequiredMemberAttribute = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(HasRequiredMemberAttribute));
-    }
 }

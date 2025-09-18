@@ -10,8 +10,7 @@ namespace Autofac.Builder;
 /// <summary>
 /// Data structure used to construct registrations.
 /// </summary>
-/// <typeparam name="TLimit">The most specific type to which instances of the registration
-/// can be cast.</typeparam>
+/// <typeparam name="TLimit">The most specific type to which instances of the registration can be cast.</typeparam>
 /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
 /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
 public interface IRegistrationBuilder<out TLimit, out TActivatorData, out TRegistrationStyle>
@@ -157,8 +156,8 @@ public interface IRegistrationBuilder<out TLimit, out TActivatorData, out TRegis
     /// Configure the services that the component will provide. The generic parameter(s) to As()
     /// will be exposed as TypedService instances.
     /// </summary>
-    /// <typeparam name="TService1">Service type.</typeparam>
-    /// <typeparam name="TService2">Service type.</typeparam>
+    /// <typeparam name="TService1">First service type.</typeparam>
+    /// <typeparam name="TService2">Second service type.</typeparam>
     /// <returns>A registration builder allowing further configuration of the component.</returns>
     IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2>()
         where TService1 : notnull
@@ -168,9 +167,9 @@ public interface IRegistrationBuilder<out TLimit, out TActivatorData, out TRegis
     /// Configure the services that the component will provide. The generic parameter(s) to As()
     /// will be exposed as TypedService instances.
     /// </summary>
-    /// <typeparam name="TService1">Service type.</typeparam>
-    /// <typeparam name="TService2">Service type.</typeparam>
-    /// <typeparam name="TService3">Service type.</typeparam>
+    /// <typeparam name="TService1">First service type.</typeparam>
+    /// <typeparam name="TService2">Second service type.</typeparam>
+    /// <typeparam name="TService3">Third service type.</typeparam>
     /// <returns>A registration builder allowing further configuration of the component.</returns>
     IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As<TService1, TService2, TService3>()
         where TService1 : notnull

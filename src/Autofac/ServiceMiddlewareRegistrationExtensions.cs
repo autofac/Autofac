@@ -94,12 +94,12 @@ public static class ServiceMiddlewareRegistrationExtensions
     /// <param name="builder">The container builder.</param>
     /// <param name="descriptor">A description for the middleware; this will show up in any resolve tracing.</param>
     /// <param name="phase">The phase of the pipeline the middleware should run at.</param>
+    /// <param name="insertionMode">The insertion mode of the middleware (start or end of phase).</param>
     /// <param name="callback">
     /// A callback invoked to run your middleware.
     /// This callback takes a <see cref="ResolveRequestContext"/>, containing the context for the resolve request, plus
     /// a callback to invoke to continue the pipeline.
     /// </param>
-    /// <param name="insertionMode">The insertion mode of the middleware (start or end of phase).</param>
     public static void RegisterServiceMiddleware<TService>(this ContainerBuilder builder, string descriptor, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContext, Action<ResolveRequestContext>> callback)
     {
         builder.RegisterServiceMiddleware(typeof(TService), new DelegateMiddleware(descriptor, phase, callback), insertionMode);
@@ -145,12 +145,12 @@ public static class ServiceMiddlewareRegistrationExtensions
     /// <param name="serviceType">The service type.</param>
     /// <param name="descriptor">A description for the middleware; this will show up in any resolve tracing.</param>
     /// <param name="phase">The phase of the pipeline the middleware should run at.</param>
+    /// <param name="insertionMode">The insertion mode of the middleware (start or end of phase).</param>
     /// <param name="callback">
     /// A callback invoked to run your middleware.
     /// This callback takes a <see cref="ResolveRequestContext"/>, containing the context for the resolve request, plus
     /// a callback to invoke to continue the pipeline.
     /// </param>
-    /// <param name="insertionMode">The insertion mode of the middleware (start or end of phase).</param>
     public static void RegisterServiceMiddleware(this ContainerBuilder builder, Type serviceType, string descriptor, PipelinePhase phase, MiddlewareInsertionMode insertionMode, Action<ResolveRequestContext, Action<ResolveRequestContext>> callback)
     {
         builder.RegisterServiceMiddleware(serviceType, new DelegateMiddleware(descriptor, phase, callback), insertionMode);

@@ -12,19 +12,43 @@ namespace Autofac.Core;
 /// </summary>
 internal class Disposer : Disposable, IDisposer
 {
+    // Need to use a semaphore instead of a simple object to lock on, because
+    // we need to synchronize an awaitable block.
+    private readonly SemaphoreSlim _synchRoot = new(1, 1);
+
     /// <summary>
     /// Contents all implement IDisposable or IAsyncDisposable.
     /// </summary>
     private Stack<object> _items = new();
 
-    // Need to use a semaphore instead of a simple object to lock on, because
-    // we need to synchronise an awaitable block.
-    private readonly SemaphoreSlim _synchRoot = new(1, 1);
+    /// <summary>
+    /// Adds an object to the disposer, where that object only implements IAsyncDisposable. When the disposer is
+    /// disposed, so will the object be.
+    /// This is not typically recommended, and you should implement IDisposable as well.
+    /// </summary>
+    /// <param name="instance">The instance.</param>
+    /// <remarks>
+    /// If this Disposer is disposed of using a synchronous Dispose call, that call will throw an exception.
+    /// </remarks>
+    public void AddInstanceForAsyncDisposal(IAsyncDisposable instance)
+    {
+        AddInternal(instance);
+    }
+
+    /// <summary>
+    /// Adds an object to the disposer. When the disposer is
+    /// disposed, so will the object be.
+    /// </summary>
+    /// <param name="instance">The instance.</param>
+    public void AddInstanceForDisposal(IDisposable instance)
+    {
+        AddInternal(instance);
+    }
 
     /// <summary>
     /// Releases unmanaged and - optionally - managed resources.
     /// </summary>
-    /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+    /// <param name="disposing"><see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources.</param>
     protected override void Dispose(bool disposing)
     {
         if (disposing)
@@ -48,7 +72,7 @@ internal class Disposer : Disposable, IDisposer
 
                         // Type only implements IAsyncDisposable. We will need to do sync-over-async.
                         // We want to ensure we lose all context here, because if we don't we can deadlock.
-                        // So we push this disposal onto the threadpool.
+                        // So we push this disposal onto the thread pool.
                         Task.Run(async () => await asyncDisposable.DisposeAsync().ConfigureAwait(false))
                             .ConfigureAwait(false)
                             .GetAwaiter().GetResult();
@@ -108,30 +132,6 @@ internal class Disposer : Disposable, IDisposer
                 _synchRoot.Dispose();
             }
         }
-    }
-
-    /// <summary>
-    /// Adds an object to the disposer, where that object only implements IAsyncDisposable. When the disposer is
-    /// disposed, so will the object be.
-    /// This is not typically recommended, and you should implement IDisposable as well.
-    /// </summary>
-    /// <param name="instance">The instance.</param>
-    /// <remarks>
-    /// If this Disposer is disposed of using a synchronous Dispose call, that call will throw an exception.
-    /// </remarks>
-    public void AddInstanceForAsyncDisposal(IAsyncDisposable instance)
-    {
-        AddInternal(instance);
-    }
-
-    /// <summary>
-    /// Adds an object to the disposer. When the disposer is
-    /// disposed, so will the object be.
-    /// </summary>
-    /// <param name="instance">The instance.</param>
-    public void AddInstanceForDisposal(IDisposable instance)
-    {
-        AddInternal(instance);
     }
 
     private void AddInternal(object instance)

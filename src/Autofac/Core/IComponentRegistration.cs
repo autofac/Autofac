@@ -12,6 +12,17 @@ namespace Autofac.Core;
 public interface IComponentRegistration : IDisposable, IAsyncDisposable
 {
     /// <summary>
+    /// Provides an event that will be invoked just before a pipeline is built, and can be used to add additional middleware
+    /// at that point.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// Attaching to this event after a component registration
+    /// has already been built will throw an exception.
+    /// </exception>
+    [SuppressMessage("CA1003", "CA1003", Justification = "Breaking API change.")]
+    event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
+
+    /// <summary>
     /// Gets a unique identifier for this component (shared in all sub-contexts.)
     /// This value also appears in Services.
     /// </summary>
@@ -61,17 +72,6 @@ public interface IComponentRegistration : IDisposable, IAsyncDisposable
     /// Gets the options for the registration.
     /// </summary>
     RegistrationOptions Options { get; }
-
-    /// <summary>
-    /// Provides an event that will be invoked just before a pipeline is built, and can be used to add additional middleware
-    /// at that point.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">
-    /// Attaching to this event after a component registration
-    /// has already been built will throw an exception.
-    /// </exception>
-    [SuppressMessage("CA1003", "CA1003", Justification = "Breaking API change.")]
-    event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
 
     /// <summary>
     /// Builds the resolve pipeline.

@@ -15,11 +15,10 @@ namespace Autofac.Core.Resolving;
 public sealed class SegmentedStack<T> : IEnumerable<T>
     where T : class
 {
+    private const int InitialCapacity = 16;
     private T[] _array;
     private int _next;
     private int _activeSegmentBase;
-
-    private const int InitialCapacity = 16;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SegmentedStack{T}"/> class.
@@ -28,6 +27,11 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     {
         _array = new T[InitialCapacity];
     }
+
+    /// <summary>
+    /// Gets the count of the items in the active segment.
+    /// </summary>
+    public int Count => _next - _activeSegmentBase;
 
     /// <summary>
     /// Push an item onto the stack.
@@ -49,15 +53,6 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         {
             PushWithResize(item);
         }
-    }
-
-    // Do not inline; makes it easier to profile stack resizing.
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    private void PushWithResize(T item)
-    {
-        Array.Resize(ref _array, 2 * _array.Length);
-        _array[_next] = item;
-        _next++;
     }
 
     /// <summary>
@@ -83,11 +78,6 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     }
 
     /// <summary>
-    /// Gets the count of the items in the active segment.
-    /// </summary>
-    public int Count => _next - _activeSegmentBase;
-
-    /// <summary>
     /// Enter a new segment. When this method returns <see cref="Count"/> will be zero, and the stack will appear empty.
     /// </summary>
     /// <returns>An <see cref="IDisposable"/> that will return the stack to the previously active segment when disposed.</returns>
@@ -110,6 +100,15 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return new Enumerator(this);
+    }
+
+    // Do not inline; makes it easier to profile stack resizing.
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void PushWithResize(T item)
+    {
+        Array.Resize(ref _array, 2 * _array.Length);
+        _array[_next] = item;
+        _next++;
     }
 
     private readonly struct StackSegment : IDisposable

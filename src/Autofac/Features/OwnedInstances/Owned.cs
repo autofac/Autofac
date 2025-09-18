@@ -85,7 +85,7 @@ public class Owned<T> : Disposable
     /// <summary>
     /// Releases unmanaged and - optionally - managed resources.
     /// </summary>
-    /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+    /// <param name="disposing"><see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources.</param>
     protected override void Dispose(bool disposing)
     {
         if (disposing)
@@ -104,7 +104,10 @@ public class Owned<T> : Disposable
     /// <summary>
     /// Releases unmanaged and - optionally - managed resources asynchronously.
     /// </summary>
-    /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+    /// <param name="disposing">
+    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources.
+    /// </param>
+    /// <returns>A task to await disposal.</returns>
     protected override async ValueTask DisposeAsync(bool disposing)
     {
         if (disposing)

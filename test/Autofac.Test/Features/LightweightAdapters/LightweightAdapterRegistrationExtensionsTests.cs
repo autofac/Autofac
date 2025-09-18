@@ -66,9 +66,9 @@ public class LightweightAdapterRegistrationExtensionsTests
     [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
     public class OnTopOfAnotherAdapter
     {
-        private readonly Command _from = new();
         private const string NameKey = "Name";
         private const string Name = "N";
+        private readonly Command _from = new();
         private readonly ToolbarButton _to;
 
         public OnTopOfAnotherAdapter()

@@ -36,11 +36,6 @@ namespace Autofac;
 public class NamedParameter : ConstantParameter
 {
     /// <summary>
-    /// Gets the name of the parameter.
-    /// </summary>
-    public string Name { get; }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="NamedParameter"/> class.
     /// </summary>
     /// <param name="name">The name of the parameter.</param>
@@ -48,4 +43,9 @@ public class NamedParameter : ConstantParameter
     public NamedParameter(string name, object? value)
         : base(value, pi => pi.Name == name) =>
             Name = Enforce.ArgumentNotNullOrEmpty(name, "name");
+
+    /// <summary>
+    /// Gets the name of the parameter.
+    /// </summary>
+    public string Name { get; }
 }

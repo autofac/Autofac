@@ -21,6 +21,9 @@ internal class OwnedInstanceRegistrationSource : ImplicitRegistrationSource
     }
 
     /// <inheritdoc/>
+    public override string Description => OwnedInstanceRegistrationSourceResources.OwnedInstanceRegistrationSourceDescription;
+
+    /// <inheritdoc/>
     protected override object ResolveInstance<T>(IComponentContext ctx, in ResolveRequest request)
     {
         var lifetime = ctx.Resolve<ILifetimeScope>().BeginLifetimeScope(request.Service);
@@ -39,7 +42,4 @@ internal class OwnedInstanceRegistrationSource : ImplicitRegistrationSource
     /// <inheritdoc/>
     protected override IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> BuildRegistration(IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> registration)
         => registration.ExternallyOwned();
-
-    /// <inheritdoc/>
-    public override string Description => OwnedInstanceRegistrationSourceResources.OwnedInstanceRegistrationSourceDescription;
 }

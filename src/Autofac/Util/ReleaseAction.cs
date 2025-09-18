@@ -6,6 +6,7 @@ namespace Autofac.Util;
 /// <summary>
 /// Adapts an action to the <see cref="IDisposable"/> interface.
 /// </summary>
+/// <typeparam name="TLimit">The most specific type to which instances of the registration can be cast.</typeparam>
 internal class ReleaseAction<TLimit> : Disposable
 {
     private readonly Action<TLimit> _action;

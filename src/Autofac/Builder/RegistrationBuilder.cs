@@ -43,8 +43,8 @@ public static class RegistrationBuilder
     /// <summary>
     /// Creates a registration builder for the provided delegate.
     /// </summary>
-    /// <param name="delegate">Delegate to register.</param>
     /// <param name="limitType">Most specific type return value of delegate can be cast to.</param>
+    /// <param name="delegate">Delegate to register.</param>
     /// <returns>A registration builder.</returns>
     public static IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> ForDelegate(Type limitType, Func<IComponentContext, IEnumerable<Parameter>, object> @delegate)
     {
@@ -101,6 +101,9 @@ public static class RegistrationBuilder
     /// Create an <see cref='IComponentRegistration'/> from a <see cref='RegistrationBuilder'/>.
     /// There is no need to call this method when registering components through a <see cref="ContainerBuilder"/>.
     /// </summary>
+    /// <typeparam name="TLimit">The most specific type to which instances of the registration can be cast.</typeparam>
+    /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
+    /// <typeparam name="TSingleRegistrationStyle">Registration style for individual components.</typeparam>
     /// <remarks>
     /// When called on the result of one of the <see cref='ContainerBuilder'/> methods,
     /// the returned registration will be different from the one the builder itself registers
@@ -253,7 +256,9 @@ public static class RegistrationBuilder
     /// Register a component in the component registry. This helper method is necessary
     /// in order to execute OnRegistered hooks and respect PreserveDefaults.
     /// </summary>
-    /// <remarks>Hoping to refactor this out.</remarks>
+    /// <typeparam name="TLimit">The most specific type to which instances of the registration can be cast.</typeparam>
+    /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
+    /// <typeparam name="TSingleRegistrationStyle">Registration style for individual components.</typeparam>
     /// <param name="cr">Component registry to make registration in.</param>
     /// <param name="builder">Registration builder with data for new registration.</param>
     public static void RegisterSingleComponent<TLimit, TActivatorData, TSingleRegistrationStyle>(

@@ -14,18 +14,18 @@ namespace Autofac.Core.Registration;
 [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The target registration, if provided, is disposed elsewhere.")]
 public class ComponentRegistration : Disposable, IComponentRegistration
 {
-    private readonly IComponentRegistration? _target;
-    private readonly IResolvePipelineBuilder _lateBuildPipeline;
-
-    private EventHandler<IResolvePipelineBuilder>? _pipelineBuildEvent;
-    private IResolvePipeline? _builtComponentPipeline;
-
     /// <summary>
     /// Defines the options copied from a target registration onto this one.
     /// </summary>
     private const RegistrationOptions OptionsCopiedFromTargetRegistration = RegistrationOptions.Fixed |
                                                                             RegistrationOptions.ExcludeFromCollections |
                                                                             RegistrationOptions.DisableDecoration;
+
+    private readonly IComponentRegistration? _target;
+    private readonly IResolvePipelineBuilder _lateBuildPipeline;
+
+    private EventHandler<IResolvePipelineBuilder>? _pipelineBuildEvent;
+    private IResolvePipeline? _builtComponentPipeline;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ComponentRegistration"/> class.
@@ -150,6 +150,25 @@ public class ComponentRegistration : Disposable, IComponentRegistration
         Options = options | (_target.Options & OptionsCopiedFromTargetRegistration);
     }
 
+    /// <inheritdoc />
+    public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding
+    {
+        add
+        {
+            if (_builtComponentPipeline is object)
+            {
+                throw new InvalidOperationException(ComponentRegistrationResources.PipelineAlreadyBuilt);
+            }
+
+            _pipelineBuildEvent += value;
+        }
+
+        remove
+        {
+            _pipelineBuildEvent -= value;
+        }
+    }
+
     /// <summary>
     /// Gets the component registration upon which this registration is based.
     /// If this registration was created directly by the user, returns this.
@@ -198,25 +217,6 @@ public class ComponentRegistration : Disposable, IComponentRegistration
     public RegistrationOptions Options { get; }
 
     /// <inheritdoc />
-    public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding
-    {
-        add
-        {
-            if (_builtComponentPipeline is object)
-            {
-                throw new InvalidOperationException(ComponentRegistrationResources.PipelineAlreadyBuilt);
-            }
-
-            _pipelineBuildEvent += value;
-        }
-
-        remove
-        {
-            _pipelineBuildEvent -= value;
-        }
-    }
-
-    /// <inheritdoc />
     public IResolvePipeline ResolvePipeline
     {
         get => _builtComponentPipeline ?? throw new InvalidOperationException(ComponentRegistrationResources.ComponentPipelineHasNotBeenBuilt);
@@ -242,6 +242,24 @@ public class ComponentRegistration : Disposable, IComponentRegistration
         }
 
         ResolvePipeline = BuildResolvePipeline(registryServices, _lateBuildPipeline);
+    }
+
+    /// <summary>
+    /// Describes the component in a human-readable form.
+    /// </summary>
+    /// <returns>A description of the component.</returns>
+    public override string ToString()
+    {
+        // Activator = {0}, Services = [{1}], Lifetime = {2}, Sharing = {3}, Ownership = {4}, Pipeline = {5}
+        return string.Format(
+            CultureInfo.CurrentCulture,
+            ComponentRegistrationResources.ToStringFormat,
+            Activator,
+            Services.Select(s => s.Description).JoinWith(", "),
+            Lifetime,
+            Sharing,
+            Ownership,
+            _builtComponentPipeline is null ? ComponentRegistrationResources.PipelineNotBuilt : _builtComponentPipeline.ToString());
     }
 
     /// <summary>
@@ -273,37 +291,6 @@ public class ComponentRegistration : Disposable, IComponentRegistration
         Activator.ConfigurePipeline(registryServices, _lateBuildPipeline);
 
         return _lateBuildPipeline.Build();
-    }
-
-    private bool HasStartableService()
-    {
-        foreach (var service in Services)
-        {
-            if ((service is TypedService typed) && typed.ServiceType == typeof(IStartable))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Describes the component in a human-readable form.
-    /// </summary>
-    /// <returns>A description of the component.</returns>
-    public override string ToString()
-    {
-        // Activator = {0}, Services = [{1}], Lifetime = {2}, Sharing = {3}, Ownership = {4}, Pipeline = {5}
-        return string.Format(
-            CultureInfo.CurrentCulture,
-            ComponentRegistrationResources.ToStringFormat,
-            Activator,
-            Services.Select(s => s.Description).JoinWith(", "),
-            Lifetime,
-            Sharing,
-            Ownership,
-            _builtComponentPipeline is null ? ComponentRegistrationResources.PipelineNotBuilt : _builtComponentPipeline.ToString());
     }
 
     /// <inheritdoc />
@@ -343,5 +330,18 @@ public class ComponentRegistration : Disposable, IComponentRegistration
         return default;
 
         // Do not call the base, otherwise the standard Dispose will fire.
+    }
+
+    private bool HasStartableService()
+    {
+        foreach (var service in Services)
+        {
+            if ((service is TypedService typed) && typed.ServiceType == typeof(IStartable))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

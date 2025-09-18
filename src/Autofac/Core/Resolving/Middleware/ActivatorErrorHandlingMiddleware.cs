@@ -13,14 +13,14 @@ internal class ActivatorErrorHandlingMiddleware : IResolveMiddleware
 {
     private const string ActivatorChainExceptionData = "ActivatorChain";
 
+    private ActivatorErrorHandlingMiddleware()
+    {
+    }
+
     /// <summary>
     /// Gets a singleton instance of the middleware.
     /// </summary>
     public static ActivatorErrorHandlingMiddleware Instance { get; } = new ActivatorErrorHandlingMiddleware();
-
-    private ActivatorErrorHandlingMiddleware()
-    {
-    }
 
     /// <inheritdoc />
     public PipelinePhase Phase => PipelinePhase.Activation;
@@ -48,6 +48,9 @@ internal class ActivatorErrorHandlingMiddleware : IResolveMiddleware
         }
     }
 
+    /// <inheritdoc />
+    public override string ToString() => nameof(ActivatorErrorHandlingMiddleware);
+
     private static DependencyResolutionException PropagateActivationException(IInstanceActivator activator, Exception exception)
     {
         var activatorChain = activator.DisplayName();
@@ -64,7 +67,4 @@ internal class ActivatorErrorHandlingMiddleware : IResolveMiddleware
         result.Data[ActivatorChainExceptionData] = activatorChain;
         return result;
     }
-
-    /// <inheritdoc />
-    public override string ToString() => nameof(ActivatorErrorHandlingMiddleware);
 }

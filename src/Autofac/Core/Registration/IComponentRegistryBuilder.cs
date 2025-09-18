@@ -11,10 +11,15 @@ namespace Autofac.Core.Registration;
 public interface IComponentRegistryBuilder : IDisposable, IAsyncDisposable
 {
     /// <summary>
-    /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.
+    /// Fired whenever a component is registered - either explicitly or via a
+    /// <see cref="IRegistrationSource"/>.
     /// </summary>
-    /// <returns>A new component registry with the configured component registrations.</returns>
-    IComponentRegistry Build();
+    event EventHandler<ComponentRegisteredEventArgs> Registered;
+
+    /// <summary>
+    /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
+    /// </summary>
+    event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded;
 
     /// <summary>
     /// Gets the set of properties used during component registration.
@@ -24,6 +29,12 @@ public interface IComponentRegistryBuilder : IDisposable, IAsyncDisposable
     /// context across registrations.
     /// </value>
     IDictionary<string, object?> Properties { get; }
+
+    /// <summary>
+    /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.
+    /// </summary>
+    /// <returns>A new component registry with the configured component registrations.</returns>
+    IComponentRegistry Build();
 
     /// <summary>
     /// Register a component.
@@ -38,12 +49,6 @@ public interface IComponentRegistryBuilder : IDisposable, IAsyncDisposable
     /// <param name="preserveDefaults">If true, existing defaults for the services provided by the
     /// component will not be changed.</param>
     void Register(IComponentRegistration registration, bool preserveDefaults);
-
-    /// <summary>
-    /// Fired whenever a component is registered - either explicitly or via a
-    /// <see cref="IRegistrationSource"/>.
-    /// </summary>
-    event EventHandler<ComponentRegisteredEventArgs> Registered;
 
     /// <summary>
     /// Determines whether the specified service is registered.
@@ -71,9 +76,4 @@ public interface IComponentRegistryBuilder : IDisposable, IAsyncDisposable
     /// <param name="middleware">The middleware to register.</param>
     /// <param name="insertionMode">The mode of insertion into the pipeline.</param>
     void RegisterServiceMiddleware(Service service, IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase);
-
-    /// <summary>
-    /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
-    /// </summary>
-    event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded;
 }

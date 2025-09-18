@@ -10,6 +10,12 @@ namespace Autofac.Core;
 public interface IRegistrationSource
 {
     /// <summary>
+    /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
+    /// of other components (e.g., Meta, Func, or Owned).
+    /// </summary>
+    bool IsAdapterForIndividualComponents { get; }
+
+    /// <summary>
     /// Retrieve registrations for an unregistered service, to be used
     /// by the container.
     /// </summary>
@@ -24,10 +30,4 @@ public interface IRegistrationSource
     /// that do not implement <paramref name="service"/>.
     /// </remarks>
     IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor);
-
-    /// <summary>
-    /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
-    /// of other components (e.g., Meta, Func, or Owned).
-    /// </summary>
-    bool IsAdapterForIndividualComponents { get; }
 }

@@ -12,7 +12,7 @@ namespace Autofac;
 /// <summary>
 /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
 /// </summary>
-[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
+[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "RegistrationBuilder is where all registration syntax lives.")]
 public static partial class RegistrationExtensions
 {
     private const string AssemblyScanningWarning = "Assembly scanning is unlikely to be compatible with member-level trimming; the linker will not be able to determine which types to preserve.";
@@ -233,20 +233,6 @@ public static partial class RegistrationExtensions
 
         var implementationType = registration.ActivatorData.ImplementationType;
         return registration.As(GetImplementedInterfaces(implementationType));
-    }
-
-    private static Type[] GetImplementedInterfaces(Type type)
-    {
-        var interfaces = type.GetInterfaces().Where(i => i != typeof(IDisposable));
-        return type.IsInterface ? interfaces.AppendItem(type).ToArray() : interfaces.ToArray();
-    }
-
-    private static Type[] GetOpenGenericImplementedInterfaces(this Type @this)
-    {
-        return @this.GetInterfaces()
-            .Where(it => it.IsGenericType)
-            .Select(it => it.GetGenericTypeDefinition())
-            .ToArray();
     }
 
     /// <summary>
@@ -472,5 +458,19 @@ public static partial class RegistrationExtensions
 
         registration.ActivatorData.Filters.Add(predicate);
         return registration;
+    }
+
+    private static Type[] GetImplementedInterfaces(Type type)
+    {
+        var interfaces = type.GetInterfaces().Where(i => i != typeof(IDisposable));
+        return type.IsInterface ? interfaces.AppendItem(type).ToArray() : interfaces.ToArray();
+    }
+
+    private static Type[] GetOpenGenericImplementedInterfaces(this Type @this)
+    {
+        return @this.GetInterfaces()
+            .Where(it => it.IsGenericType)
+            .Select(it => it.GetGenericTypeDefinition())
+            .ToArray();
     }
 }

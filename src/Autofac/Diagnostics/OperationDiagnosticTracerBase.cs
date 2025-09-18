@@ -47,18 +47,6 @@ public abstract class OperationDiagnosticTracerBase<TContent> : DiagnosticTracer
         }
     }
 
-    /// <inheritdoc/>
-    public override void Enable(string diagnosticName)
-    {
-        throw new NotSupportedException(TracerMessages.SubscriptionsDisabled);
-    }
-
-    /// <inheritdoc/>
-    public override void Disable(string diagnosticName)
-    {
-        throw new NotSupportedException(TracerMessages.SubscriptionsDisabled);
-    }
-
     /// <summary>
     /// Event raised when a resolve operation completes and trace data is available.
     /// </summary>
@@ -73,6 +61,18 @@ public abstract class OperationDiagnosticTracerBase<TContent> : DiagnosticTracer
     /// with in-progress operations being traced by this tracer.
     /// </value>
     public abstract int OperationsInProgress { get; }
+
+    /// <inheritdoc/>
+    public override void Enable(string diagnosticName)
+    {
+        throw new NotSupportedException(TracerMessages.SubscriptionsDisabled);
+    }
+
+    /// <inheritdoc/>
+    public override void Disable(string diagnosticName)
+    {
+        throw new NotSupportedException(TracerMessages.SubscriptionsDisabled);
+    }
 
     /// <summary>
     /// Invokes the <see cref="OperationCompleted"/> event.

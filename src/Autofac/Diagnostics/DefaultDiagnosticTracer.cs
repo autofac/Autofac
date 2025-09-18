@@ -26,9 +26,9 @@ public class DefaultDiagnosticTracer : OperationDiagnosticTracerBase<string>
 {
     private const string RequestExceptionTraced = "__RequestException";
 
-    private readonly ConcurrentDictionary<IResolveOperation, IndentingStringBuilder> _operationBuilders = new();
-
     private static readonly string[] NewLineSplit = new[] { Environment.NewLine };
+
+    private readonly ConcurrentDictionary<IResolveOperation, IndentingStringBuilder> _operationBuilders = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultDiagnosticTracer"/> class.
@@ -297,14 +297,14 @@ public class DefaultDiagnosticTracer : OperationDiagnosticTracerBase<string>
             _builder.AppendLine(value);
         }
 
-        private void AppendIndent()
-        {
-            _builder.Append(' ', IndentSize * _indentCount);
-        }
-
         public override string ToString()
         {
             return _builder.ToString();
+        }
+
+        private void AppendIndent()
+        {
+            _builder.Append(' ', IndentSize * _indentCount);
         }
     }
 }

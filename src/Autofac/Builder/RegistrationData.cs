@@ -14,11 +14,9 @@ namespace Autofac.Builder;
 /// </summary>
 public class RegistrationData
 {
+    private readonly HashSet<Service> _services = [];
     private bool _defaultServiceOverridden;
     private Service _defaultService;
-
-    private readonly HashSet<Service> _services = [];
-
     private IComponentLifetime _lifetime = CurrentScopeLifetime.Instance;
 
     /// <summary>
@@ -31,10 +29,15 @@ public class RegistrationData
         _defaultService = defaultService ?? throw new ArgumentNullException(nameof(defaultService));
 
         Metadata = new Dictionary<string, object?>
-            {
-                { MetadataKeys.RegistrationOrderMetadataKey, SequenceGenerator.GetNextUniqueSequence() },
-            };
+        {
+            { MetadataKeys.RegistrationOrderMetadataKey, SequenceGenerator.GetNextUniqueSequence() },
+        };
     }
+
+    /// <summary>
+    /// Gets or sets the instance ownership assigned to the component.
+    /// </summary>
+    public InstanceOwnership Ownership { get; set; } = InstanceOwnership.OwnedByLifetimeScope;
 
     /// <summary>
     /// Gets the services explicitly assigned to the component.
@@ -54,6 +57,46 @@ public class RegistrationData
             }
         }
     }
+
+    /// <summary>
+    /// Gets or sets the lifetime assigned to the component.
+    /// </summary>
+    public IComponentLifetime Lifetime
+    {
+        get
+        {
+            return _lifetime;
+        }
+
+        set
+        {
+            _lifetime = value ?? throw new ArgumentNullException(nameof(value));
+        }
+    }
+
+    /// <summary>
+    /// Gets or sets the sharing mode assigned to the component.
+    /// </summary>
+    public InstanceSharing Sharing { get; set; } = InstanceSharing.None;
+
+    /// <summary>
+    /// Gets the extended properties assigned to the component.
+    /// </summary>
+    public IDictionary<string, object?> Metadata { get; }
+
+    /// <summary>
+    /// Gets or sets the options for the registration.
+    /// </summary>
+    public RegistrationOptions Options { get; set; }
+
+    /// <summary>
+    /// Gets or sets the callback used to register this component.
+    /// </summary>
+    /// <value>
+    /// A <see cref="Builder.DeferredCallback"/> that contains the delegate
+    /// used to register this component with an <see cref="IComponentRegistry"/>.
+    /// </value>
+    public DeferredCallback? DeferredCallback { get; set; }
 
     /// <summary>
     /// Add multiple services for the registration, overriding the default.
@@ -97,51 +140,6 @@ public class RegistrationData
     }
 
     /// <summary>
-    /// Gets or sets the instance ownership assigned to the component.
-    /// </summary>
-    public InstanceOwnership Ownership { get; set; } = InstanceOwnership.OwnedByLifetimeScope;
-
-    /// <summary>
-    /// Gets or sets the lifetime assigned to the component.
-    /// </summary>
-    public IComponentLifetime Lifetime
-    {
-        get
-        {
-            return _lifetime;
-        }
-
-        set
-        {
-            _lifetime = value ?? throw new ArgumentNullException(nameof(value));
-        }
-    }
-
-    /// <summary>
-    /// Gets or sets the sharing mode assigned to the component.
-    /// </summary>
-    public InstanceSharing Sharing { get; set; } = InstanceSharing.None;
-
-    /// <summary>
-    /// Gets the extended properties assigned to the component.
-    /// </summary>
-    public IDictionary<string, object?> Metadata { get; }
-
-    /// <summary>
-    /// Gets or sets the options for the registration.
-    /// </summary>
-    public RegistrationOptions Options { get; set; }
-
-    /// <summary>
-    /// Gets or sets the callback used to register this component.
-    /// </summary>
-    /// <value>
-    /// A <see cref="Builder.DeferredCallback"/> that contains the delegate
-    /// used to register this component with an <see cref="IComponentRegistry"/>.
-    /// </value>
-    public DeferredCallback? DeferredCallback { get; set; }
-
-    /// <summary>
     /// Copies the contents of another RegistrationData object into this one.
     /// </summary>
     /// <param name="that">The data to copy.</param>
@@ -171,14 +169,6 @@ public class RegistrationData
         AddAll(Metadata, that.Metadata.Where(m => m.Key != MetadataKeys.RegistrationOrderMetadataKey));
     }
 
-    private static void AddAll<T>(ICollection<T> to, IEnumerable<T> from)
-    {
-        foreach (var item in from)
-        {
-            to.Add(item);
-        }
-    }
-
     /// <summary>
     /// Empties the configured services.
     /// </summary>
@@ -186,5 +176,13 @@ public class RegistrationData
     {
         _services.Clear();
         _defaultServiceOverridden = true;
+    }
+
+    private static void AddAll<T>(ICollection<T> to, IEnumerable<T> from)
+    {
+        foreach (var item in from)
+        {
+            to.Add(item);
+        }
     }
 }

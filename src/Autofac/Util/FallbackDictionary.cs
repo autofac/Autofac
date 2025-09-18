@@ -9,6 +9,8 @@ namespace Autofac.Util;
 /// <summary>
 /// Dictionary used to allow local property get/set and fall back to parent values.
 /// </summary>
+/// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
+/// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
 internal class FallbackDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     where TKey : notnull
 {

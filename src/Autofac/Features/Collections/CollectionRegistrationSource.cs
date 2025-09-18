@@ -43,6 +43,9 @@ namespace Autofac.Features.Collections;
 /// </remarks>
 internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegistrationSource
 {
+    /// <inheritdoc/>
+    public bool IsAdapterForIndividualComponents => false;
+
     /// <summary>
     /// Retrieve registrations for an unregistered service, to be used
     /// by the container.
@@ -153,9 +156,6 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
 
         return new IComponentRegistration[] { registration };
     }
-
-    /// <inheritdoc/>
-    public bool IsAdapterForIndividualComponents => false;
 
     /// <inheritdoc/>
     public override string ToString()

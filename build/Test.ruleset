@@ -2,6 +2,8 @@
 <RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac assemblies." ToolsVersion="16.0">
   <IncludeAll Action="Warning" />
   <Rules AnalyzerId="Microsoft.Usage" RuleNamespace="Microsoft.Usage">
+    <!-- Avoid excessive parameters on generic types (must be explicitly enabled). -->
+    <Rule Id="CA1005" Action="Warning" />
     <!-- Don't catch general exceptions - test scenarios sometimes require general exception handling. -->
     <Rule Id="CA1031" Action="None" />
     <!-- Implement standard exception constructors - not all of the exception constructors (e.g., parameterless) are desired in our system. -->
@@ -10,6 +12,14 @@
     <Rule Id="CA1040" Action="None" />
     <!-- Do not pass literals as localized parameters  - tests don't need to localize. -->
     <Rule Id="CA1303" Action="None" />
+    <!-- Avoid excessive inheritance (must be explicitly enabled). -->
+    <Rule Id="CA1501" Action="Warning" />
+    <!-- Avoid excessive complexity (must be explicitly enabled). -->
+    <Rule Id="CA1502" Action="Warning" />
+    <!-- Avoid unmaintainable code (must be explicitly enabled). -->
+    <Rule Id="CA1505" Action="Warning" />
+    <!-- Avoid excessive class coupling (must be explicitly enabled). -->
+    <Rule Id="CA1506" Action="Warning" />
     <!-- Use ArgumentNullException.ThrowIfNull - this isn't available until we stop targeting netstandard. -->
     <Rule Id="CA1510" Action="None" />
     <!-- Remove the underscores from member name - unit test scenarios may use underscores. -->
@@ -44,28 +54,22 @@
     <Rule Id="SA1121" Action="None" />
     <!-- Use String.Empty instead of "". -->
     <Rule Id="SA1122" Action="None" />
-    <!-- Using statements must be inside a namespace. -->
-    <Rule Id="SA1200" Action="None" />
-    <!-- Enforce order of class members by member type. -->
+    <!-- Enforce order of class members by member type - sometimes putting test classes/data by the test helps. -->
     <Rule Id="SA1201" Action="None" />
-    <!-- Enforce order of class members by member visibility. -->
+    <!-- Enforce order of class members by member visibility - sometimes putting test classes/data by the test helps. -->
     <Rule Id="SA1202" Action="None" />
-    <!-- Enforce order of constantand static members. -->
-    <Rule Id="SA1203" Action="None" />
-    <!-- Enforce order of static vs. non-static members. -->
+    <!-- Enforce order of static vs. non-static members - sometimes putting test classes/data by the test helps. -->
     <Rule Id="SA1204" Action="None" />
-    <!-- Modifiers are not ordered - .editorconfig handles this. -->
-    <Rule Id="SA1206" Action="None" />
-    <!-- Enforce order of readonly vs. non-readonly members. -->
-    <Rule Id="SA1214" Action="None" />
     <!-- Fields can't start with underscore. -->
     <Rule Id="SA1309" Action="None" />
-    <!-- Suppressions must have a justification. -->
-    <Rule Id="SA1404" Action="None" />
     <!-- Elements should be documented. -->
     <Rule Id="SA1600" Action="None" />
-    <!-- Enuemration items should be documented. -->
+    <!-- Partial items should be documented. -->
+    <Rule Id="SA1601" Action="None" />
+    <!-- Enumeration items should be documented. -->
     <Rule Id="SA1602" Action="None" />
+    <!-- Parameter should be documented. -->
+    <Rule Id="SA1611" Action="None" />
     <!-- Parameter documentation must be in the right order. -->
     <Rule Id="SA1612" Action="None" />
     <!-- Return value must be documented. -->
@@ -74,10 +78,6 @@
     <Rule Id="SA1618" Action="None" />
     <!-- Don't copy/paste documentation. -->
     <Rule Id="SA1625" Action="None" />
-    <!-- Exception documentation must not be empty. -->
-    <Rule Id="SA1627" Action="None" />
-    <!-- Enable XML documentation output. -->
-    <Rule Id="SA1652" Action="None" />
     <!-- Private member is unused - tests for reflection require members that may not get used. -->
     <Rule Id="IDE0051" Action="None" />
     <!-- Private member assigned value never read - tests for reflection require values that may not get used. -->

@@ -433,8 +433,8 @@ public class PropertyInjectionTests
 
     private class ConstructorParamNotAttachedToProperty
     {
-        [SuppressMessage("SA1401", "SA1401")]
-        public string _id = null;
+        [SuppressMessage("SA1401", "SA1401", Justification = "Field access used in test.")]
+        public string _id;
 
         public ConstructorParamNotAttachedToProperty(string id)
         {

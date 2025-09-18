@@ -7,6 +7,7 @@ namespace Autofac.Core;
 /// Fired after the construction of an instance but before that instance
 /// is shared with any other or any members are invoked on it.
 /// </summary>
+/// <typeparam name="T">The type of instance being used to satisfy the request.</typeparam>
 public class ActivatingEventArgs<T> : EventArgs, IActivatingEventArgs<T>
     where T : notnull
 {
@@ -69,6 +70,11 @@ public class ActivatingEventArgs<T> : EventArgs, IActivatingEventArgs<T>
     }
 
     /// <summary>
+    /// Gets the parameters supplied to the activator.
+    /// </summary>
+    public IEnumerable<Parameter> Parameters { get; }
+
+    /// <summary>
     /// The instance can be replaced if needed, e.g. by an interface proxy.
     /// </summary>
     /// <param name="instance">The object to use instead of the activated instance.</param>
@@ -76,9 +82,4 @@ public class ActivatingEventArgs<T> : EventArgs, IActivatingEventArgs<T>
     {
         Instance = (T)instance;
     }
-
-    /// <summary>
-    /// Gets the parameters supplied to the activator.
-    /// </summary>
-    public IEnumerable<Parameter> Parameters { get; }
 }

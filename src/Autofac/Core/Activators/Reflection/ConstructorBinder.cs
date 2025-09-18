@@ -126,6 +126,9 @@ public class ConstructorBinder
     /// Get the constructor factory delegate.
     /// </summary>
     /// <remarks>Will return null if the constructor contains an invalid parameter.</remarks>
+    /// <returns>
+    /// A delegate that can be used to invoke the constructor, or <see langword="null"/> if the constructor is invalid.
+    /// </returns>
     internal Func<object?[], object>? GetConstructorInvoker()
     {
         return _factory;

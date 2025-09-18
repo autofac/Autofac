@@ -11,6 +11,31 @@ namespace Autofac.Core.Registration;
 internal interface IRegisteredServicesTracker : IDisposable, IAsyncDisposable, IComponentRegistryServices
 {
     /// <summary>
+    /// Fired whenever a component is registered - either explicitly or via an <see cref="IRegistrationSource"/>.
+    /// </summary>
+    event EventHandler<IComponentRegistration> Registered;
+
+    /// <summary>
+    /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
+    /// </summary>
+    event EventHandler<IRegistrationSource> RegistrationSourceAdded;
+
+    /// <summary>
+    /// Gets the registered components.
+    /// </summary>
+    IEnumerable<IComponentRegistration> Registrations { get; }
+
+    /// <summary>
+    /// Gets the registration sources that are used by the registry.
+    /// </summary>
+    IEnumerable<IRegistrationSource> Sources { get; }
+
+    /// <summary>
+    /// Gets the set of registered service middleware sources.
+    /// </summary>
+    IEnumerable<IServiceMiddlewareSource> ServiceMiddlewareSources { get; }
+
+    /// <summary>
     /// Adds a registration to the list of registered services.
     /// </summary>
     /// <param name="registration">The registration to add.</param>
@@ -39,35 +64,10 @@ internal interface IRegisteredServicesTracker : IDisposable, IAsyncDisposable, I
     void AddServiceMiddlewareSource(IServiceMiddlewareSource serviceMiddlewareSource);
 
     /// <summary>
-    /// Fired whenever a component is registered - either explicitly or via an <see cref="IRegistrationSource"/>.
-    /// </summary>
-    event EventHandler<IComponentRegistration> Registered;
-
-    /// <summary>
-    /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
-    /// </summary>
-    event EventHandler<IRegistrationSource> RegistrationSourceAdded;
-
-    /// <summary>
     /// Should be called prior to the construction of a <see cref="ComponentRegistry" /> to
     /// indicate that the tracker is complete, and requested service information should no longer be ephemeral.
     /// </summary>
     void Complete();
-
-    /// <summary>
-    /// Gets the registered components.
-    /// </summary>
-    IEnumerable<IComponentRegistration> Registrations { get; }
-
-    /// <summary>
-    /// Gets the registration sources that are used by the registry.
-    /// </summary>
-    IEnumerable<IRegistrationSource> Sources { get; }
-
-    /// <summary>
-    /// Gets the set of registered service middleware sources.
-    /// </summary>
-    IEnumerable<IServiceMiddlewareSource> ServiceMiddlewareSources { get; }
 
     /// <summary>
     /// Gets the set of configured service middleware for a service.

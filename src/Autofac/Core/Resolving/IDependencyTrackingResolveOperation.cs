@@ -12,13 +12,6 @@ namespace Autofac.Core.Resolving;
 public interface IDependencyTrackingResolveOperation : IResolveOperation
 {
     /// <summary>
-    /// Enter a new dependency chain block where subsequent requests inside the operation are allowed to repeat
-    /// registrations from before the block.
-    /// </summary>
-    /// <returns>A disposable that should be disposed to exit the block.</returns>
-    IDisposable EnterNewDependencyDetectionBlock();
-
-    /// <summary>
     /// Gets the modifiable active request stack.
     /// </summary>
     /// <remarks>
@@ -27,4 +20,11 @@ public interface IDependencyTrackingResolveOperation : IResolveOperation
     /// hence it's internal.
     /// </remarks>
     SegmentedStack<ResolveRequestContext> RequestStack { get; }
+
+    /// <summary>
+    /// Enter a new dependency chain block where subsequent requests inside the operation are allowed to repeat
+    /// registrations from before the block.
+    /// </summary>
+    /// <returns>A disposable that should be disposed to exit the block.</returns>
+    IDisposable EnterNewDependencyDetectionBlock();
 }

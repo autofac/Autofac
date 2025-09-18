@@ -11,17 +11,17 @@ namespace Autofac.Core.Registration;
 /// </summary>
 internal class ServiceRegistrationInfo : IResolvePipelineBuilder
 {
-    private volatile bool _isInitialized;
-
-    private readonly Service _service;
-
-    private IComponentRegistration? _fixedRegistration;
-
     /// <summary>
     ///  List of implicit default service implementations. Overriding default implementations are appended to the end,
     ///  so the enumeration should begin from the end too, and the most default implementation comes last.
     /// </summary>
     private readonly List<IComponentRegistration> _defaultImplementations = new();
+
+    private readonly Service _service;
+
+    private volatile bool _isInitialized;
+
+    private IComponentRegistration? _fixedRegistration;
 
     /// <summary>
     ///  List of service implementations coming from sources. Sources have priority over preserve-default implementations.
@@ -114,34 +114,6 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     public IResolvePipeline ServicePipeline => _resolvePipeline ?? throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
 
     /// <summary>
-    /// Gets the set of all middleware registered against the service (excluding the default middleware).
-    /// </summary>
-    public IEnumerable<IResolveMiddleware> ServiceMiddleware
-    {
-        get
-        {
-            if (_customPipelineBuilder is null)
-            {
-                return Enumerable.Empty<IResolveMiddleware>();
-            }
-
-            return _customPipelineBuilder.Middleware.Where(t => !ServicePipelines.IsDefaultMiddleware(t));
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void RequiresInitialization()
-    {
-        // Implementations can be read by consumers while we are inside an initialization window,
-        // even when the initialization hasn't finished yet.
-        // The InitializationDepth property is always 0 outside of the lock-protected initialization block.
-        if (InitializationDepth == 0 && !IsInitialized)
-        {
-            throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
-        }
-    }
-
-    /// <summary>
     /// Gets a value indicating whether any implementations are known.
     /// </summary>
     public bool IsRegistered
@@ -164,6 +136,38 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
             return _customPipelineBuilder is not null;
         }
     }
+
+    /// <summary>
+    /// Gets the set of all middleware registered against the service (excluding the default middleware).
+    /// </summary>
+    public IEnumerable<IResolveMiddleware> ServiceMiddleware
+    {
+        get
+        {
+            if (_customPipelineBuilder is null)
+            {
+                return Enumerable.Empty<IResolveMiddleware>();
+            }
+
+            return _customPipelineBuilder.Middleware.Where(t => !ServicePipelines.IsDefaultMiddleware(t));
+        }
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether this service info is initializing.
+    /// </summary>
+    public bool IsInitializing => !IsInitialized && _sourcesToQuery is not null;
+
+    /// <summary>
+    /// Gets a value indicating whether there are any sources left to query.
+    /// </summary>
+    public bool HasSourcesToQuery => IsInitializing && _sourcesToQuery!.Count != 0;
+
+    /// <inheritdoc/>
+    IEnumerable<IResolveMiddleware> IResolvePipelineBuilder.Middleware => ServiceMiddleware;
+
+    /// <inheritdoc/>
+    PipelineType IResolvePipelineBuilder.Type => PipelineType.Service;
 
     private bool Any =>
         _defaultImplementations.Count > 0 ||
@@ -256,16 +260,6 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     }
 
     /// <summary>
-    /// Gets a value indicating whether this service info is initializing.
-    /// </summary>
-    public bool IsInitializing => !IsInitialized && _sourcesToQuery is not null;
-
-    /// <summary>
-    /// Gets a value indicating whether there are any sources left to query.
-    /// </summary>
-    public bool HasSourcesToQuery => IsInitializing && _sourcesToQuery!.Count != 0;
-
-    /// <summary>
     /// Begin the initialization process for this service info, given the set of dynamic sources.
     /// </summary>
     /// <param name="sources">The set of sources.</param>
@@ -289,15 +283,6 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
 
         // _sourcesToQuery always non-null during Initialization.
         _sourcesToQuery = new Queue<IRegistrationSource>(_sourcesToQuery!.Where(rs => rs != source));
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void EnforceDuringInitialization()
-    {
-        if (!IsInitializing)
-        {
-            throw new InvalidOperationException(ServiceRegistrationInfoResources.NotDuringInitialization);
-        }
     }
 
     /// <summary>
@@ -327,24 +312,6 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     public override string ToString()
     {
         return _service.ToString();
-    }
-
-    private IResolvePipeline BuildPipeline()
-    {
-        // Build the custom service pipeline (if we need to).
-        if (_customPipelineBuilder is object)
-        {
-            // Add the default stages.
-            _customPipelineBuilder.UseRange(ServicePipelines.DefaultMiddleware);
-
-            // Add the default.
-            return _customPipelineBuilder.Build();
-        }
-        else
-        {
-            // Nothing custom, use an empty pipeline.
-            return ServicePipelines.DefaultServicePipeline;
-        }
     }
 
     /// <summary>
@@ -386,12 +353,6 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     }
 
     /// <inheritdoc/>
-    IEnumerable<IResolveMiddleware> IResolvePipelineBuilder.Middleware => ServiceMiddleware;
-
-    /// <inheritdoc/>
-    PipelineType IResolvePipelineBuilder.Type => PipelineType.Service;
-
-    /// <inheritdoc/>
     IResolvePipeline IResolvePipelineBuilder.Build()
     {
         throw new InvalidOperationException(ServiceRegistrationInfoResources.ServicePipelineCannotBeBuilt);
@@ -420,5 +381,44 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         }
 
         return _customPipelineBuilder.Clone();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void RequiresInitialization()
+    {
+        // Implementations can be read by consumers while we are inside an initialization window,
+        // even when the initialization hasn't finished yet.
+        // The InitializationDepth property is always 0 outside of the lock-protected initialization block.
+        if (InitializationDepth == 0 && !IsInitialized)
+        {
+            throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void EnforceDuringInitialization()
+    {
+        if (!IsInitializing)
+        {
+            throw new InvalidOperationException(ServiceRegistrationInfoResources.NotDuringInitialization);
+        }
+    }
+
+    private IResolvePipeline BuildPipeline()
+    {
+        // Build the custom service pipeline (if we need to).
+        if (_customPipelineBuilder is object)
+        {
+            // Add the default stages.
+            _customPipelineBuilder.UseRange(ServicePipelines.DefaultMiddleware);
+
+            // Add the default.
+            return _customPipelineBuilder.Build();
+        }
+        else
+        {
+            // Nothing custom, use an empty pipeline.
+            return ServicePipelines.DefaultServicePipeline;
+        }
     }
 }

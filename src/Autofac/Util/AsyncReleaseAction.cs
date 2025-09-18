@@ -6,6 +6,7 @@ namespace Autofac.Util;
 /// <summary>
 /// Adapts an async action to the <see cref="IAsyncDisposable"/> interface.
 /// </summary>
+/// <typeparam name="TLimit">The most specific type to which instances of the registration can be cast.</typeparam>
 internal class AsyncReleaseAction<TLimit> : Disposable
 {
     private readonly Func<TLimit, ValueTask> _action;

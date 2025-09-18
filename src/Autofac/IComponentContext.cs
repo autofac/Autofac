@@ -25,7 +25,11 @@ public interface IComponentContext
     /// <returns>
     /// The component instance.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     object ResolveComponent(in ResolveRequest request);
 }

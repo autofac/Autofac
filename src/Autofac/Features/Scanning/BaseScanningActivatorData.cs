@@ -9,6 +9,8 @@ namespace Autofac.Features.Scanning;
 /// <summary>
 /// Base activation data for types located by scanning assemblies.
 /// </summary>
+/// <typeparam name="TActivatorData">Activator data type.</typeparam>
+/// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
 public abstract class BaseScanningActivatorData<TActivatorData, TRegistrationStyle> : ReflectionActivatorData
     where TActivatorData : ReflectionActivatorData
 {

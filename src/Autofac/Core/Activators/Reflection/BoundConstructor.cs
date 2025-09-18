@@ -25,24 +25,6 @@ public class BoundConstructor
     /// <param name="binder">The binder that generated this binding.</param>
     /// <param name="factory">The instance factory.</param>
     /// <param name="valueRetrievers">The set of value-retrieval functions.</param>
-    [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Validated in constructor.")]
-    public static BoundConstructor ForBindSuccess(ConstructorBinder binder, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
-        => new(binder, factory, valueRetrievers);
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BoundConstructor"/> class, for an unsuccessful bind.
-    /// </summary>
-    /// <param name="binder">The binder that generated this binding.</param>
-    /// <param name="firstNonBindableParameter">The first parameter that prevented binding.</param>
-    public static BoundConstructor ForBindFailure(ConstructorBinder binder, ParameterInfo firstNonBindableParameter) =>
-        new(binder, firstNonBindableParameter);
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="BoundConstructor"/> class for a successful bind.
-    /// </summary>
-    /// <param name="binder">The binder that generated this binding.</param>
-    /// <param name="factory">The instance factory.</param>
-    /// <param name="valueRetrievers">The set of value-retrieval functions.</param>
     internal BoundConstructor(ConstructorBinder binder, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
     {
         CanInstantiate = true;
@@ -94,6 +76,33 @@ public class BoundConstructor
     public bool CanInstantiate { get; }
 
     /// <summary>
+    /// Gets a description of the constructor parameter binding.
+    /// </summary>
+    public string Description => CanInstantiate
+        ? string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.BoundConstructor, TargetConstructor)
+        : string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.NonBindableConstructor, TargetConstructor, _firstNonBindableParameter);
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BoundConstructor"/> class for a successful bind.
+    /// </summary>
+    /// <param name="binder">The binder that generated this binding.</param>
+    /// <param name="factory">The instance factory.</param>
+    /// <param name="valueRetrievers">The set of value-retrieval functions.</param>
+    /// <returns>A <see cref="BoundConstructor"/> with details about the successful bind.</returns>
+    [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Validated in constructor.")]
+    public static BoundConstructor ForBindSuccess(ConstructorBinder binder, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
+        => new(binder, factory, valueRetrievers);
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BoundConstructor"/> class, for an unsuccessful bind.
+    /// </summary>
+    /// <param name="binder">The binder that generated this binding.</param>
+    /// <param name="firstNonBindableParameter">The first parameter that prevented binding.</param>
+    /// <returns>A <see cref="BoundConstructor"/> with details about the unsuccessful bind.</returns>
+    public static BoundConstructor ForBindFailure(ConstructorBinder binder, ParameterInfo firstNonBindableParameter) =>
+        new(binder, firstNonBindableParameter);
+
+    /// <summary>
     /// Invoke the constructor with the parameter bindings.
     /// </summary>
     /// <returns>The constructed instance.</returns>
@@ -101,7 +110,7 @@ public class BoundConstructor
     {
         if (!CanInstantiate)
         {
-            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.CannotInstantitate, Description));
+            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.CannotInstantiate, Description));
         }
 
         object?[] values;
@@ -132,13 +141,6 @@ public class BoundConstructor
             throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType!.Name), ex);
         }
     }
-
-    /// <summary>
-    /// Gets a description of the constructor parameter binding.
-    /// </summary>
-    public string Description => CanInstantiate
-        ? string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.BoundConstructor, TargetConstructor)
-        : string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.NonBindableConstructor, TargetConstructor, _firstNonBindableParameter);
 
     /// <summary>Returns a System.String that represents the current System.Object.</summary>
     /// <returns>A System.String that represents the current System.Object.</returns>

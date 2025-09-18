@@ -52,6 +52,9 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
     }
 
     /// <inheritdoc/>
+    public bool IsAdapterForIndividualComponents => true;
+
+    /// <inheritdoc/>
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
     {
         if (service == null)
@@ -85,6 +88,17 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
         return Enumerable.Empty<IComponentRegistration>();
     }
 
+    /// <inheritdoc/>
+    public override string ToString()
+    {
+        return string.Format(
+            CultureInfo.CurrentCulture,
+            OpenGenericDecoratorRegistrationSourceResources.OpenGenericDecoratorRegistrationSourceImplFromTo,
+            _activatorData.ImplementationType.FullName,
+            ((Service)_activatorData.FromService).Description,
+            string.Join(", ", _registrationData.Services.Select(s => s.Description).ToArray()));
+    }
+
     private static Parameter[] AddDecoratedComponentParameter(Service service, Type decoratedParameterType, ServiceRegistration decoratedComponent, IList<Parameter> configuredParameters)
     {
         var parameter = new ResolvedParameter(
@@ -99,19 +113,5 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
         }
 
         return resultArray;
-    }
-
-    /// <inheritdoc/>
-    public bool IsAdapterForIndividualComponents => true;
-
-    /// <inheritdoc/>
-    public override string ToString()
-    {
-        return string.Format(
-            CultureInfo.CurrentCulture,
-            OpenGenericDecoratorRegistrationSourceResources.OpenGenericDecoratorRegistrationSourceImplFromTo,
-            _activatorData.ImplementationType.FullName,
-            ((Service)_activatorData.FromService).Description,
-            string.Join(", ", _registrationData.Services.Select(s => s.Description).ToArray()));
     }
 }

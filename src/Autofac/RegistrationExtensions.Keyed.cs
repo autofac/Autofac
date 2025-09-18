@@ -10,7 +10,7 @@ namespace Autofac;
 /// <summary>
 /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
 /// </summary>
-[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
+[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "RegistrationBuilder is where all registration syntax lives.")]
 public static partial class RegistrationExtensions
 {
     /// <summary>
@@ -35,8 +35,8 @@ public static partial class RegistrationExtensions
     /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
     /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
     /// <param name="registration">Registration to set service mapping on.</param>
-    /// <param name="serviceType">Service type provided by the component.</param>
     /// <param name="serviceKeyMapping">Function mapping types to service keys.</param>
+    /// <param name="serviceType">Service type provided by the component.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
         Keyed<TLimit, TScanningActivatorData, TRegistrationStyle>(

@@ -30,6 +30,13 @@ internal class ExternalRegistrySource : IRegistrationSource
     }
 
     /// <summary>
+    /// Gets a value indicating whether components are adapted from the same logical scope.
+    /// In this case because the components that are adapted do not come from the same
+    /// logical scope, we must return false to avoid duplicating them.
+    /// </summary>
+    public bool IsAdapterForIndividualComponents => false;
+
+    /// <summary>
     /// Retrieve registrations for an unregistered service, to be used
     /// by the container.
     /// </summary>
@@ -61,11 +68,4 @@ internal class ExternalRegistrySource : IRegistrationSource
             }
         }
     }
-
-    /// <summary>
-    /// Gets a value indicating whether components are adapted from the same logical scope.
-    /// In this case because the components that are adapted do not come from the same
-    /// logical scope, we must return false to avoid duplicating them.
-    /// </summary>
-    public bool IsAdapterForIndividualComponents => false;
 }

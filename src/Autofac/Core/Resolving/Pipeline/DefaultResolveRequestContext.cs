@@ -38,6 +38,9 @@ internal sealed class DefaultResolveRequestContext : ResolveRequestContext
     }
 
     /// <inheritdoc />
+    public override event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
+
+    /// <inheritdoc />
     public override IResolveOperation Operation { get; }
 
     /// <inheritdoc />
@@ -74,9 +77,6 @@ internal sealed class DefaultResolveRequestContext : ResolveRequestContext
 
     /// <inheritdoc />
     public override IComponentRegistry ComponentRegistry => ActivationScope.ComponentRegistry;
-
-    /// <inheritdoc />
-    public override event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
 
     /// <inheritdoc />
     public override DecoratorContext? DecoratorContext { get; set; }

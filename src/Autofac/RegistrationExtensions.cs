@@ -19,7 +19,7 @@ namespace Autofac;
 /// <summary>
 /// Adds registration syntax to the <see cref="ContainerBuilder"/> type.
 /// </summary>
-[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
+[SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "RegistrationBuilder is where all registration syntax lives.")]
 public static partial class RegistrationExtensions
 {
     /// <summary>
@@ -115,8 +115,8 @@ public static partial class RegistrationExtensions
     /// <summary>
     /// Register a component to be created through reflection.
     /// </summary>
-    /// <param name="implementationType">The type of the component implementation.</param>
     /// <param name="builder">Container builder.</param>
+    /// <param name="implementationType">The type of the component implementation.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>
         RegisterType(this ContainerBuilder builder, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type implementationType)
@@ -345,6 +345,9 @@ public static partial class RegistrationExtensions
     /// Configure the component so that any properties whose types are registered in the
     /// container will be wired to instances of the appropriate service.
     /// </summary>
+    /// <typeparam name="TLimit">The most specific type to which instances of the registration can be cast.</typeparam>
+    /// <typeparam name="TActivatorData">Activator builder type.</typeparam>
+    /// <typeparam name="TRegistrationStyle">Registration style type.</typeparam>
     /// <param name="registration">Registration to auto-wire properties.</param>
     /// <param name="wiringFlags">Set wiring options such as circular dependency wiring support.</param>
     /// <returns>A registration builder allowing further configuration of the component.</returns>

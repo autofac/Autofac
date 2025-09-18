@@ -26,6 +26,13 @@ internal class ComponentRegistrationLifetimeDecorator : Disposable, IComponentRe
     }
 
     /// <inheritdoc/>
+    public event EventHandler<IResolvePipelineBuilder> PipelineBuilding
+    {
+        add => _inner.PipelineBuilding += value;
+        remove => _inner.PipelineBuilding -= value;
+    }
+
+    /// <inheritdoc/>
     public Guid Id => _inner.Id;
 
     /// <inheritdoc/>
@@ -54,13 +61,6 @@ internal class ComponentRegistrationLifetimeDecorator : Disposable, IComponentRe
 
     /// <inheritdoc/>
     public RegistrationOptions Options => _inner.Options;
-
-    /// <inheritdoc/>
-    public event EventHandler<IResolvePipelineBuilder> PipelineBuilding
-    {
-        add => _inner.PipelineBuilding += value;
-        remove => _inner.PipelineBuilding -= value;
-    }
 
     /// <inheritdoc/>
     public void BuildResolvePipeline(IComponentRegistryServices registryServices)

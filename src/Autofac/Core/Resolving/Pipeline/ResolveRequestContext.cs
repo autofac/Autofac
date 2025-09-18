@@ -10,6 +10,12 @@ namespace Autofac.Core.Resolving.Pipeline;
 public abstract class ResolveRequestContext : IComponentContext
 {
     /// <summary>
+    /// Provides an event that will fire when the current request completes.
+    /// Requests will only be considered 'complete' when the overall <see cref="IResolveOperation"/> is completing.
+    /// </summary>
+    public abstract event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
+
+    /// <summary>
     /// Gets a reference to the owning resolve operation (which might encompass multiple nested requests).
     /// </summary>
     public abstract IResolveOperation Operation { get; }
@@ -72,11 +78,8 @@ public abstract class ResolveRequestContext : IComponentContext
     /// </summary>
     public abstract DecoratorContext? DecoratorContext { get; set; }
 
-    /// <summary>
-    /// Provides an event that will fire when the current request completes.
-    /// Requests will only be considered 'complete' when the overall <see cref="IResolveOperation"/> is completing.
-    /// </summary>
-    public abstract event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
+    /// <inheritdoc/>
+    public abstract IComponentRegistry ComponentRegistry { get; }
 
     /// <summary>
     /// Use this method to change the <see cref="ISharingLifetimeScope"/> that is used in this request. Changing this scope will
@@ -90,9 +93,6 @@ public abstract class ResolveRequestContext : IComponentContext
     /// </summary>
     /// <param name="newParameters">The new set of parameters.</param>
     public abstract void ChangeParameters(IEnumerable<Parameter> newParameters);
-
-    /// <inheritdoc/>
-    public abstract IComponentRegistry ComponentRegistry { get; }
 
     /// <inheritdoc/>
     public abstract object ResolveComponent(in ResolveRequest request);

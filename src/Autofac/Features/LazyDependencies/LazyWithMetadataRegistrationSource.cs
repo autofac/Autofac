@@ -26,6 +26,9 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
     private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo);
 
     /// <inheritdoc/>
+    public bool IsAdapterForIndividualComponents => true;
+
+    /// <inheritdoc/>
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
     {
         if (registrationAccessor == null)
@@ -62,9 +65,6 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
         return registrationAccessor(valueService)
             .Select(v => registrationCreator(service, valueService, v));
     }
-
-    /// <inheritdoc/>
-    public bool IsAdapterForIndividualComponents => true;
 
     /// <inheritdoc/>
     public override string ToString()

@@ -37,6 +37,16 @@ public readonly struct ServiceRegistration : IEquatable<ServiceRegistration>
     /// </summary>
     public IDictionary<string, object?> Metadata => Registration.Metadata;
 
+    public static bool operator ==(ServiceRegistration left, ServiceRegistration right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(ServiceRegistration left, ServiceRegistration right)
+    {
+        return !(left == right);
+    }
+
     /// <summary>
     /// Gets the registration order value from the registration.
     /// </summary>
@@ -64,15 +74,5 @@ public readonly struct ServiceRegistration : IEquatable<ServiceRegistration>
         }
 
         return Pipeline.GetHashCode() ^ Registration.GetHashCode();
-    }
-
-    public static bool operator ==(ServiceRegistration left, ServiceRegistration right)
-    {
-        return left.Equals(right);
-    }
-
-    public static bool operator !=(ServiceRegistration left, ServiceRegistration right)
-    {
-        return !(left == right);
     }
 }

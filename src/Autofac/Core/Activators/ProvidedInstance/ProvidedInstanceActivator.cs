@@ -26,6 +26,13 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
         _instance = instance;
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the activator disposes the instance that it holds.
+    /// Necessary because otherwise instances that are never resolved will never be
+    /// disposed.
+    /// </summary>
+    public bool DisposeInstance { get; set; }
+
     /// <inheritdoc/>
     public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)
     {
@@ -41,27 +48,6 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
             next(context);
         });
     }
-
-    private object GetInstance()
-    {
-        CheckNotDisposed();
-
-        if (_activated)
-        {
-            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, _instance.GetType()));
-        }
-
-        _activated = true;
-
-        return _instance;
-    }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the activator disposes the instance that it holds.
-    /// Necessary because otherwise instances that are never resolved will never be
-    /// disposed.
-    /// </summary>
-    public bool DisposeInstance { get; set; }
 
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
@@ -130,5 +116,19 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
         }
 
         return instance.GetType();
+    }
+
+    private object GetInstance()
+    {
+        CheckNotDisposed();
+
+        if (_activated)
+        {
+            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, _instance.GetType()));
+        }
+
+        _activated = true;
+
+        return _instance;
     }
 }
