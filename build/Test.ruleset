@@ -18,6 +18,8 @@
     <Rule Id="CA1502" Action="Warning" />
     <!-- Avoid unmaintainable code (must be explicitly enabled). -->
     <Rule Id="CA1505" Action="Warning" />
+    <!-- Avoid excessive class coupling (must be explicitly enabled). -->
+    <Rule Id="CA1506" Action="Warning" />
     <!-- Use ArgumentNullException.ThrowIfNull - this isn't available until we stop targeting netstandard. -->
     <Rule Id="CA1510" Action="None" />
     <!-- Remove the underscores from member name - unit test scenarios may use underscores. -->
