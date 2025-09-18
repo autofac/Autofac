@@ -150,6 +150,25 @@ public class ComponentRegistration : Disposable, IComponentRegistration
         Options = options | (_target.Options & OptionsCopiedFromTargetRegistration);
     }
 
+    /// <inheritdoc />
+    public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding
+    {
+        add
+        {
+            if (_builtComponentPipeline is object)
+            {
+                throw new InvalidOperationException(ComponentRegistrationResources.PipelineAlreadyBuilt);
+            }
+
+            _pipelineBuildEvent += value;
+        }
+
+        remove
+        {
+            _pipelineBuildEvent -= value;
+        }
+    }
+
     /// <summary>
     /// Gets the component registration upon which this registration is based.
     /// If this registration was created directly by the user, returns this.
@@ -196,25 +215,6 @@ public class ComponentRegistration : Disposable, IComponentRegistration
     /// Gets the options for the registration.
     /// </summary>
     public RegistrationOptions Options { get; }
-
-    /// <inheritdoc />
-    public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding
-    {
-        add
-        {
-            if (_builtComponentPipeline is object)
-            {
-                throw new InvalidOperationException(ComponentRegistrationResources.PipelineAlreadyBuilt);
-            }
-
-            _pipelineBuildEvent += value;
-        }
-
-        remove
-        {
-            _pipelineBuildEvent -= value;
-        }
-    }
 
     /// <inheritdoc />
     public IResolvePipeline ResolvePipeline

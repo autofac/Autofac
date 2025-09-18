@@ -36,15 +36,11 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
         DiagnosticSource = diagnosticSource ?? throw new ArgumentNullException(nameof(diagnosticSource));
     }
 
-    /// <summary>
-    /// Execute the complete resolve operation.
-    /// </summary>
-    /// <param name="request">The resolution context.</param>
-    /// <returns>The resolved instance.</returns>
-    public object Execute(in ResolveRequest request)
-    {
-        return ExecuteOperation(request);
-    }
+    /// <inheritdoc />
+    public event EventHandler<ResolveRequestBeginningEventArgs>? ResolveRequestBeginning;
+
+    /// <inheritdoc />
+    public event EventHandler<ResolveOperationEndingEventArgs>? CurrentOperationEnding;
 
     /// <summary>
     /// Gets the active resolve request.
@@ -69,17 +65,24 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     /// </summary>
     public int RequestDepth { get; private set; }
 
+    /// <inheritdoc/>
+    public SegmentedStack<ResolveRequestContext> RequestStack { get; } = new SegmentedStack<ResolveRequestContext>();
+
     /// <summary>
     /// Gets the <see cref="ResolveRequest" /> that initiated the operation. Other nested requests may have been
     /// issued as a result of this one.
     /// </summary>
     public ResolveRequest? InitiatingRequest { get; private set; }
 
-    /// <inheritdoc />
-    public event EventHandler<ResolveRequestBeginningEventArgs>? ResolveRequestBeginning;
-
-    /// <inheritdoc />
-    public event EventHandler<ResolveOperationEndingEventArgs>? CurrentOperationEnding;
+    /// <summary>
+    /// Execute the complete resolve operation.
+    /// </summary>
+    /// <param name="request">The resolution context.</param>
+    /// <returns>The resolved instance.</returns>
+    public object Execute(in ResolveRequest request)
+    {
+        return ExecuteOperation(request);
+    }
 
     /// <summary>
     /// Enter a new dependency chain block where subsequent requests inside the operation are allowed to repeat
@@ -87,9 +90,6 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     /// </summary>
     /// <returns>A disposable that should be disposed to exit the block.</returns>
     public IDisposable EnterNewDependencyDetectionBlock() => RequestStack.EnterSegment();
-
-    /// <inheritdoc/>
-    public SegmentedStack<ResolveRequestContext> RequestStack { get; } = new SegmentedStack<ResolveRequestContext>();
 
     /// <inheritdoc />
     public object GetOrCreateInstance(ISharingLifetimeScope currentOperationScope, in ResolveRequest request)

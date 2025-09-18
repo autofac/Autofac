@@ -30,6 +30,54 @@ public class Container : Disposable, IContainer, IServiceProvider
     }
 
     /// <summary>
+    /// Fired when a new scope based on the current scope is beginning.
+    /// </summary>
+    public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning
+    {
+        add { _rootLifetimeScope.ChildLifetimeScopeBeginning += value; }
+        remove { _rootLifetimeScope.ChildLifetimeScopeBeginning -= value; }
+    }
+
+    /// <summary>
+    /// Fired when this scope is ending.
+    /// </summary>
+    public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding
+    {
+        add { _rootLifetimeScope.CurrentScopeEnding += value; }
+        remove { _rootLifetimeScope.CurrentScopeEnding -= value; }
+    }
+
+    /// <summary>
+    /// Fired when a resolve operation is beginning in this scope.
+    /// </summary>
+    public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning
+    {
+        add { _rootLifetimeScope.ResolveOperationBeginning += value; }
+        remove { _rootLifetimeScope.ResolveOperationBeginning -= value; }
+    }
+
+    /// <summary>
+    /// Gets the disposer associated with this container. Instances can be associated
+    /// with it manually if required.
+    /// </summary>
+    public IDisposer Disposer => _rootLifetimeScope.Disposer;
+
+    /// <summary>
+    /// Gets the tag applied to the lifetime scope.
+    /// </summary>
+    /// <remarks>The tag applied to this scope and the contexts generated when
+    /// it resolves component dependencies.</remarks>
+    public object Tag => _rootLifetimeScope.Tag;
+
+    /// <summary>
+    /// Gets associated services with the components that provide them.
+    /// </summary>
+    public IComponentRegistry ComponentRegistry { get; }
+
+    /// <inheritdoc/>
+    public DiagnosticListener DiagnosticSource => _rootLifetimeScope.DiagnosticSource;
+
+    /// <summary>
     /// Begin a new sub-scope. Instances created via the sub-scope
     /// will be disposed along with it.
     /// </summary>
@@ -90,54 +138,6 @@ public class Container : Disposable, IContainer, IServiceProvider
         return _rootLifetimeScope.BeginLoadContextLifetimeScope(tag, loadContext, configurationAction);
     }
 #endif
-
-    /// <inheritdoc/>
-    public DiagnosticListener DiagnosticSource => _rootLifetimeScope.DiagnosticSource;
-
-    /// <summary>
-    /// Gets the disposer associated with this container. Instances can be associated
-    /// with it manually if required.
-    /// </summary>
-    public IDisposer Disposer => _rootLifetimeScope.Disposer;
-
-    /// <summary>
-    /// Gets the tag applied to the lifetime scope.
-    /// </summary>
-    /// <remarks>The tag applied to this scope and the contexts generated when
-    /// it resolves component dependencies.</remarks>
-    public object Tag => _rootLifetimeScope.Tag;
-
-    /// <summary>
-    /// Fired when a new scope based on the current scope is beginning.
-    /// </summary>
-    public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning
-    {
-        add { _rootLifetimeScope.ChildLifetimeScopeBeginning += value; }
-        remove { _rootLifetimeScope.ChildLifetimeScopeBeginning -= value; }
-    }
-
-    /// <summary>
-    /// Fired when this scope is ending.
-    /// </summary>
-    public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding
-    {
-        add { _rootLifetimeScope.CurrentScopeEnding += value; }
-        remove { _rootLifetimeScope.CurrentScopeEnding -= value; }
-    }
-
-    /// <summary>
-    /// Fired when a resolve operation is beginning in this scope.
-    /// </summary>
-    public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning
-    {
-        add { _rootLifetimeScope.ResolveOperationBeginning += value; }
-        remove { _rootLifetimeScope.ResolveOperationBeginning -= value; }
-    }
-
-    /// <summary>
-    /// Gets associated services with the components that provide them.
-    /// </summary>
-    public IComponentRegistry ComponentRegistry { get; }
 
     /// <inheritdoc />
     public object ResolveComponent(in ResolveRequest request)

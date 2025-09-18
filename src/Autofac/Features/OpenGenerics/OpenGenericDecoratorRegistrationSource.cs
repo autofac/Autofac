@@ -52,6 +52,9 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
     }
 
     /// <inheritdoc/>
+    public bool IsAdapterForIndividualComponents => true;
+
+    /// <inheritdoc/>
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
     {
         if (service == null)
@@ -100,9 +103,6 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
 
         return resultArray;
     }
-
-    /// <inheritdoc/>
-    public bool IsAdapterForIndividualComponents => true;
 
     /// <inheritdoc/>
     public override string ToString()

@@ -14,11 +14,10 @@ namespace Autofac.Core;
 /// </summary>
 public abstract class ImplicitRegistrationSource : IRegistrationSource
 {
-    private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration valueRegistration);
-
     private static readonly MethodInfo CreateRegistrationMethod = typeof(ImplicitRegistrationSource).GetDeclaredMethod(nameof(CreateRegistration));
 
     private readonly Type _type;
+
     private readonly string _cacheKey;
 
     /// <summary>
@@ -40,6 +39,16 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
             throw new InvalidOperationException(ImplicitRegistrationSourceResources.GenericTypeMustBeUnary);
         }
     }
+
+    private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration valueRegistration);
+
+    /// <inheritdoc />
+    public virtual bool IsAdapterForIndividualComponents => true;
+
+    /// <summary>
+    /// Gets the description of the registration source.
+    /// </summary>
+    public virtual string Description => GetType().Name;
 
     /// <inheritdoc />
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
@@ -67,14 +76,6 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
         return registrationAccessor(valueService)
             .Select(v => registrationCreator(service, valueService, v));
     }
-
-    /// <inheritdoc />
-    public virtual bool IsAdapterForIndividualComponents => true;
-
-    /// <summary>
-    /// Gets the description of the registration source.
-    /// </summary>
-    public virtual string Description => GetType().Name;
 
     /// <inheritdoc/>
     public override string ToString() => Description;

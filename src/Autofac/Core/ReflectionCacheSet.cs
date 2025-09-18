@@ -20,6 +20,14 @@ public sealed class ReflectionCacheSet
     private readonly ConcurrentDictionary<string, IReflectionCache> _caches = new();
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="ReflectionCacheSet"/> class.
+    /// </summary>
+    public ReflectionCacheSet()
+    {
+        Internal = new InternalReflectionCaches(this);
+    }
+
+    /// <summary>
     /// Gets the shared <see cref="ReflectionCacheSet"/>.
     /// </summary>
     /// <remarks>
@@ -46,14 +54,6 @@ public sealed class ReflectionCacheSet
 
             return sharedCache;
         }
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ReflectionCacheSet"/> class.
-    /// </summary>
-    public ReflectionCacheSet()
-    {
-        Internal = new InternalReflectionCaches(this);
     }
 
     /// <summary>
@@ -102,12 +102,6 @@ public sealed class ReflectionCacheSet
         }
     }
 
-    private static class CacheFactory<TCacheStore>
-        where TCacheStore : IReflectionCache, new()
-    {
-        public static Func<string, TCacheStore> Factory { get; } = static (k) => new TCacheStore();
-    }
-
     /// <summary>
     /// Clear the internal reflection cache. Only call this method if you are
     /// dynamically unloading types from the process; calling this method
@@ -149,14 +143,14 @@ public sealed class ReflectionCacheSet
     }
 
     /// <summary>
-    /// Invoked when the container is built, to allow the cache to apply clearing behaviour.
+    /// Invoked when the container is built, to allow the cache to apply clearing behavior.
     /// </summary>
     /// <param name="clearRegistrationCaches">True if we should clear caches marked only for registration.</param>
     internal void OnContainerBuildClearCaches(bool clearRegistrationCaches)
     {
         if (clearRegistrationCaches)
         {
-            // Default behaviour on container build is to clear any caches marked
+            // Default behavior on container build is to clear any caches marked
             // as only being used during registration.
             foreach (var cache in GetAllCaches())
             {
@@ -186,5 +180,11 @@ public sealed class ReflectionCacheSet
         {
             yield return externalItem.Value;
         }
+    }
+
+    private static class CacheFactory<TCacheStore>
+        where TCacheStore : IReflectionCache, new()
+    {
+        public static Func<string, TCacheStore> Factory { get; } = static (k) => new TCacheStore();
     }
 }

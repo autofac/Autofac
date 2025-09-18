@@ -47,6 +47,9 @@ internal class OpenGenericRegistrationSource : IRegistrationSource
     }
 
     /// <inheritdoc/>
+    public bool IsAdapterForIndividualComponents => false;
+
+    /// <inheritdoc/>
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
     {
         if (service == null)
@@ -76,9 +79,6 @@ internal class OpenGenericRegistrationSource : IRegistrationSource
                 services);
         }
     }
-
-    /// <inheritdoc/>
-    public bool IsAdapterForIndividualComponents => false;
 
     /// <inheritdoc/>
     public override string ToString()

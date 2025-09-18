@@ -17,11 +17,6 @@ internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
     /// </summary>
     public const int DefaultMaxResolveDepth = 50;
 
-    /// <summary>
-    /// Gets the default instance of <see cref="CircularDependencyDetectorMiddleware"/>.
-    /// </summary>
-    public static CircularDependencyDetectorMiddleware Default { get; } = new CircularDependencyDetectorMiddleware(DefaultMaxResolveDepth);
-
     private readonly int _maxResolveDepth;
 
     /// <summary>
@@ -32,6 +27,11 @@ internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
     {
         _maxResolveDepth = maxResolveDepth;
     }
+
+    /// <summary>
+    /// Gets the default instance of <see cref="CircularDependencyDetectorMiddleware"/>.
+    /// </summary>
+    public static CircularDependencyDetectorMiddleware Default { get; } = new CircularDependencyDetectorMiddleware(DefaultMaxResolveDepth);
 
     /// <inheritdoc/>
     public PipelinePhase Phase => PipelinePhase.ResolveRequestStart;

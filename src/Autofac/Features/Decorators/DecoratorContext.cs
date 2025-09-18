@@ -12,6 +12,22 @@ public sealed class DecoratorContext : IDecoratorContext
 {
     private readonly IComponentContext _componentContext;
 
+    private DecoratorContext(
+        IComponentContext componentContext,
+        Type implementationType,
+        Type serviceType,
+        object currentInstance,
+        IReadOnlyList<Type>? appliedDecoratorTypes = null,
+        IReadOnlyList<object>? appliedDecorators = null)
+    {
+        _componentContext = componentContext;
+        ImplementationType = implementationType;
+        ServiceType = serviceType;
+        CurrentInstance = currentInstance;
+        AppliedDecoratorTypes = appliedDecoratorTypes ?? Array.Empty<Type>();
+        AppliedDecorators = appliedDecorators ?? Array.Empty<object>();
+    }
+
     /// <inheritdoc />
     public Type ImplementationType { get; private set; }
 
@@ -29,22 +45,6 @@ public sealed class DecoratorContext : IDecoratorContext
 
     /// <inheritdoc />
     public IComponentRegistry ComponentRegistry => _componentContext.ComponentRegistry;
-
-    private DecoratorContext(
-        IComponentContext componentContext,
-        Type implementationType,
-        Type serviceType,
-        object currentInstance,
-        IReadOnlyList<Type>? appliedDecoratorTypes = null,
-        IReadOnlyList<object>? appliedDecorators = null)
-    {
-        _componentContext = componentContext;
-        ImplementationType = implementationType;
-        ServiceType = serviceType;
-        CurrentInstance = currentInstance;
-        AppliedDecoratorTypes = appliedDecoratorTypes ?? Array.Empty<Type>();
-        AppliedDecorators = appliedDecorators ?? Array.Empty<object>();
-    }
 
     /// <summary>
     /// Create a new <see cref="DecoratorContext"/>.

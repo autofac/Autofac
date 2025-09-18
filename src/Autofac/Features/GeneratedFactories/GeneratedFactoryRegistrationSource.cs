@@ -12,6 +12,9 @@ namespace Autofac.Features.GeneratedFactories;
 /// </summary>
 internal class GeneratedFactoryRegistrationSource : IRegistrationSource
 {
+    /// <inheritdoc/>
+    public bool IsAdapterForIndividualComponents => true;
+
     /// <summary>
     /// Retrieve registrations for an unregistered service, to be used
     /// by the container.
@@ -53,9 +56,6 @@ internal class GeneratedFactoryRegistrationSource : IRegistrationSource
                 return rb.CreateRegistration();
             });
     }
-
-    /// <inheritdoc/>
-    public bool IsAdapterForIndividualComponents => true;
 
     /// <inheritdoc/>
     public override string ToString()

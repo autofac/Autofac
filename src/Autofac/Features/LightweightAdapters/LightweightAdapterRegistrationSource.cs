@@ -34,6 +34,9 @@ internal class LightweightAdapterRegistrationSource : IRegistrationSource
     }
 
     /// <inheritdoc/>
+    public bool IsAdapterForIndividualComponents => true;
+
+    /// <inheritdoc/>
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
     {
         if (service == null)
@@ -93,9 +96,6 @@ internal class LightweightAdapterRegistrationSource : IRegistrationSource
 
         return Enumerable.Empty<IComponentRegistration>();
     }
-
-    /// <inheritdoc/>
-    public bool IsAdapterForIndividualComponents => true;
 
     /// <inheritdoc/>
     public override string ToString()

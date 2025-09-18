@@ -29,6 +29,11 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     }
 
     /// <summary>
+    /// Gets the count of the items in the active segment.
+    /// </summary>
+    public int Count => _next - _activeSegmentBase;
+
+    /// <summary>
     /// Push an item onto the stack.
     /// </summary>
     /// <param name="item">The item.</param>
@@ -80,11 +85,6 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         array[next] = null!;
         return item;
     }
-
-    /// <summary>
-    /// Gets the count of the items in the active segment.
-    /// </summary>
-    public int Count => _next - _activeSegmentBase;
 
     /// <summary>
     /// Enter a new segment. When this method returns <see cref="Count"/> will be zero, and the stack will appear empty.

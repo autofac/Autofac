@@ -37,11 +37,6 @@ namespace Autofac;
 public class PositionalParameter : ConstantParameter
 {
     /// <summary>
-    /// Gets the zero-based position of the parameter.
-    /// </summary>
-    public int Position { get; private set; }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="PositionalParameter"/> class.
     /// </summary>
     /// <param name="position">The zero-based position of the parameter.</param>
@@ -56,4 +51,9 @@ public class PositionalParameter : ConstantParameter
 
         Position = position;
     }
+
+    /// <summary>
+    /// Gets the zero-based position of the parameter.
+    /// </summary>
+    public int Position { get; private set; }
 }

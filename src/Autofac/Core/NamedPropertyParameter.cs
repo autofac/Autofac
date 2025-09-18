@@ -13,11 +13,6 @@ namespace Autofac.Core;
 public class NamedPropertyParameter : ConstantParameter
 {
     /// <summary>
-    /// Gets the name of the property.
-    /// </summary>
-    public string Name { get; private set; }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="NamedPropertyParameter"/> class.
     /// </summary>
     /// <param name="name">The name of the property.</param>
@@ -31,4 +26,9 @@ public class NamedPropertyParameter : ConstantParameter
     {
         Name = Enforce.ArgumentNotNullOrEmpty(name, "name");
     }
+
+    /// <summary>
+    /// Gets the name of the property.
+    /// </summary>
+    public string Name { get; private set; }
 }

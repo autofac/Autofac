@@ -13,11 +13,6 @@ public abstract class ConstantParameter : Parameter
     private readonly Predicate<ParameterInfo> _predicate;
 
     /// <summary>
-    /// Gets the value of the parameter.
-    /// </summary>
-    public object? Value { get; }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="ConstantParameter"/> class.
     /// </summary>
     /// <param name="value">
@@ -31,6 +26,11 @@ public abstract class ConstantParameter : Parameter
         Value = value;
         _predicate = predicate ?? throw new ArgumentNullException(nameof(predicate));
     }
+
+    /// <summary>
+    /// Gets the value of the parameter.
+    /// </summary>
+    public object? Value { get; }
 
     /// <summary>
     /// Returns true if the parameter is able to provide a value to a particular site.

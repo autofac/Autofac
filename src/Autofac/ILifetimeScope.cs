@@ -65,6 +65,37 @@ namespace Autofac;
 public interface ILifetimeScope : IComponentContext, IDisposable, IAsyncDisposable
 {
     /// <summary>
+    /// Fired when a new scope based on the current scope is beginning.
+    /// </summary>
+    event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning;
+
+    /// <summary>
+    /// Fired when this scope is ending.
+    /// </summary>
+    event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding;
+
+    /// <summary>
+    /// Fired when a resolve operation is beginning in this scope.
+    /// </summary>
+    event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning;
+
+    /// <summary>
+    /// Gets the disposer associated with this <see cref="ILifetimeScope"/>.
+    /// Component instances can be associated with it manually if required.
+    /// </summary>
+    /// <remarks>Typical usage does not require interaction with this member- it
+    /// is used when extending the container.</remarks>
+    IDisposer Disposer { get; }
+
+    /// <summary>
+    /// Gets the tag applied to the <see cref="ILifetimeScope"/>.
+    /// </summary>
+    /// <remarks>Tags allow a level in the lifetime hierarchy to be identified.
+    /// In most applications, tags are not necessary.</remarks>
+    /// <seealso cref="IRegistrationBuilder{TLimit,TActivatorData,TRegistrationStyle}.InstancePerMatchingLifetimeScope"/>
+    object Tag { get; }
+
+    /// <summary>
     /// Begin a new nested scope. Component instances created via the new scope
     /// will be disposed along with it.
     /// </summary>
@@ -224,35 +255,4 @@ public interface ILifetimeScope : IComponentContext, IDisposable, IAsyncDisposab
     /// </remarks>
     ILifetimeScope BeginLoadContextLifetimeScope(object tag, AssemblyLoadContext loadContext, Action<ContainerBuilder> configurationAction);
 #endif
-
-    /// <summary>
-    /// Gets the disposer associated with this <see cref="ILifetimeScope"/>.
-    /// Component instances can be associated with it manually if required.
-    /// </summary>
-    /// <remarks>Typical usage does not require interaction with this member- it
-    /// is used when extending the container.</remarks>
-    IDisposer Disposer { get; }
-
-    /// <summary>
-    /// Gets the tag applied to the <see cref="ILifetimeScope"/>.
-    /// </summary>
-    /// <remarks>Tags allow a level in the lifetime hierarchy to be identified.
-    /// In most applications, tags are not necessary.</remarks>
-    /// <seealso cref="IRegistrationBuilder{TLimit,TActivatorData,TRegistrationStyle}.InstancePerMatchingLifetimeScope"/>
-    object Tag { get; }
-
-    /// <summary>
-    /// Fired when a new scope based on the current scope is beginning.
-    /// </summary>
-    event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning;
-
-    /// <summary>
-    /// Fired when this scope is ending.
-    /// </summary>
-    event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding;
-
-    /// <summary>
-    /// Fired when a resolve operation is beginning in this scope.
-    /// </summary>
-    event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning;
 }

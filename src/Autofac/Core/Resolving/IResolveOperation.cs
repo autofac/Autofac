@@ -13,6 +13,16 @@ namespace Autofac.Core.Resolving;
 public interface IResolveOperation
 {
     /// <summary>
+    /// Raised when a resolve request starts.
+    /// </summary>
+    event EventHandler<ResolveRequestBeginningEventArgs>? ResolveRequestBeginning;
+
+    /// <summary>
+    /// Raised when the entire operation is complete.
+    /// </summary>
+    event EventHandler<ResolveOperationEndingEventArgs>? CurrentOperationEnding;
+
+    /// <summary>
     /// Gets the active resolve request.
     /// </summary>
     ResolveRequestContext? ActiveRequestContext { get; }
@@ -42,16 +52,6 @@ public interface IResolveOperation
     /// issued as a result of this one.
     /// </summary>
     ResolveRequest? InitiatingRequest { get; }
-
-    /// <summary>
-    /// Raised when a resolve request starts.
-    /// </summary>
-    event EventHandler<ResolveRequestBeginningEventArgs>? ResolveRequestBeginning;
-
-    /// <summary>
-    /// Raised when the entire operation is complete.
-    /// </summary>
-    event EventHandler<ResolveOperationEndingEventArgs>? CurrentOperationEnding;
 
     /// <summary>
     /// Get or create and share an instance of the requested service in the <paramref name="currentOperationScope"/>.

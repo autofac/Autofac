@@ -26,8 +26,6 @@
     <Rule Id="SA1121" Action="None" />
     <!-- Use String.Empty instead of "". -->
     <Rule Id="SA1122" Action="None" />
-    <!-- Enforce order of class members by member type. -->
-    <Rule Id="SA1201" Action="None" />
     <!-- Enforce order of class members by member visibility. -->
     <Rule Id="SA1202" Action="None" />
     <!-- Fields can't start with underscore. -->

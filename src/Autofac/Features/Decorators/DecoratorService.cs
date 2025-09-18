@@ -13,14 +13,6 @@ namespace Autofac.Features.Decorators;
 /// </remarks>
 public sealed class DecoratorService : Service, IServiceWithType, IEquatable<DecoratorService>
 {
-    /// <inheritdoc />
-    public Type ServiceType { get; }
-
-    /// <summary>
-    /// Gets the condition that must be met for the decorator to be applied.
-    /// </summary>
-    public Func<IDecoratorContext, bool> Condition { get; }
-
     /// <summary>
     /// Initializes a new instance of the <see cref="DecoratorService"/> class.
     /// </summary>
@@ -31,6 +23,14 @@ public sealed class DecoratorService : Service, IServiceWithType, IEquatable<Dec
         ServiceType = serviceType ?? throw new ArgumentNullException(nameof(serviceType));
         Condition = condition ?? (context => true);
     }
+
+    /// <inheritdoc />
+    public Type ServiceType { get; }
+
+    /// <summary>
+    /// Gets the condition that must be met for the decorator to be applied.
+    /// </summary>
+    public Func<IDecoratorContext, bool> Condition { get; }
 
     /// <inheritdoc />
     public override string Description => $"Decorator ({ServiceType.FullName})";

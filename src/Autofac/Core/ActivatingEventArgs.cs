@@ -70,6 +70,11 @@ public class ActivatingEventArgs<T> : EventArgs, IActivatingEventArgs<T>
     }
 
     /// <summary>
+    /// Gets the parameters supplied to the activator.
+    /// </summary>
+    public IEnumerable<Parameter> Parameters { get; }
+
+    /// <summary>
     /// The instance can be replaced if needed, e.g. by an interface proxy.
     /// </summary>
     /// <param name="instance">The object to use instead of the activated instance.</param>
@@ -77,9 +82,4 @@ public class ActivatingEventArgs<T> : EventArgs, IActivatingEventArgs<T>
     {
         Instance = (T)instance;
     }
-
-    /// <summary>
-    /// Gets the parameters supplied to the activator.
-    /// </summary>
-    public IEnumerable<Parameter> Parameters { get; }
 }

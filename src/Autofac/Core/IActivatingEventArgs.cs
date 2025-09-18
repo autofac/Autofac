@@ -32,13 +32,13 @@ public interface IActivatingEventArgs<out T>
     T Instance { get; }
 
     /// <summary>
+    /// Gets the parameters supplied to the activator.
+    /// </summary>
+    IEnumerable<Parameter> Parameters { get; }
+
+    /// <summary>
     /// The instance can be replaced if needed, e.g. by an interface proxy.
     /// </summary>
     /// <param name="instance">The object to use instead of the activated instance.</param>
     void ReplaceInstance(object instance);
-
-    /// <summary>
-    /// Gets the parameters supplied to the activator.
-    /// </summary>
-    IEnumerable<Parameter> Parameters { get; }
 }

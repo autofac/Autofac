@@ -24,6 +24,11 @@ namespace Autofac.Core.Lifetime;
 public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
 {
     /// <summary>
+    /// The tag applied to root scopes when no other tag is specified.
+    /// </summary>
+    public static readonly object RootTag = "root";
+
+    /// <summary>
     /// Protects shared instances from concurrent access. Other members and the base class are thread-safe.
     /// </summary>
     private readonly object _synchRoot = new();
@@ -31,19 +36,6 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     private readonly ConcurrentDictionary<(Guid, Guid), object> _sharedQualifiedInstances = new();
     private object? _anonymousTag;
     private LifetimeScope? _parentScope;
-
-    /// <summary>
-    /// Gets the id of the lifetime scope self-registration.
-    /// </summary>
-    internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
-
-    /// <summary>
-    /// The tag applied to root scopes when no other tag is specified.
-    /// </summary>
-    public static readonly object RootTag = "root";
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private object MakeAnonymousTag() => _anonymousTag = new object();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LifetimeScope"/> class.
@@ -88,6 +80,60 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     }
 
     /// <summary>
+    /// Fired when a new scope based on the current scope is beginning.
+    /// </summary>
+    public event EventHandler<LifetimeScopeBeginningEventArgs>? ChildLifetimeScopeBeginning;
+
+    /// <summary>
+    /// Fired when this scope is ending.
+    /// </summary>
+    public event EventHandler<LifetimeScopeEndingEventArgs>? CurrentScopeEnding;
+
+    /// <summary>
+    /// Fired when a resolve operation is beginning in this scope.
+    /// </summary>
+    public event EventHandler<ResolveOperationBeginningEventArgs>? ResolveOperationBeginning;
+
+    /// <summary>
+    /// Gets the id of the lifetime scope self-registration.
+    /// </summary>
+    internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
+
+    /// <summary>
+    /// Gets the parent of this node of the hierarchy, or null.
+    /// </summary>
+    public ISharingLifetimeScope? ParentLifetimeScope => _parentScope;
+
+    /// <summary>
+    /// Gets the root of the sharing hierarchy.
+    /// </summary>
+    public ISharingLifetimeScope RootLifetimeScope { get; }
+
+    /// <summary>
+    /// Gets the <see cref="DiagnosticListener"/> to which
+    /// trace events should be written.
+    /// </summary>
+    internal DiagnosticListener DiagnosticSource { get; }
+
+    /// <summary>
+    /// Gets the disposer associated with this container. Instances can be associated
+    /// with it manually if required.
+    /// </summary>
+    public IDisposer Disposer { get; } = new Disposer();
+
+    /// <summary>
+    /// Gets the tag applied to the lifetime scope.
+    /// </summary>
+    /// <remarks>The tag applied to this scope and the contexts generated when
+    /// it resolves component dependencies.</remarks>
+    public object Tag { get; }
+
+    /// <summary>
+    /// Gets the services associated with the components that provide them.
+    /// </summary>
+    public IComponentRegistry ComponentRegistry { get; }
+
+    /// <summary>
     /// Begin a new anonymous sub-scope. Instances created via the sub-scope
     /// will be disposed along with it.
     /// </summary>
@@ -112,6 +158,9 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         RaiseBeginning(scope);
         return scope;
     }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private object MakeAnonymousTag() => _anonymousTag = new object();
 
     private void CheckTagIsUnique(object tag)
     {
@@ -141,12 +190,6 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         var handler = ChildLifetimeScopeBeginning;
         handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
     }
-
-    /// <summary>
-    /// Gets the <see cref="DiagnosticListener"/> to which
-    /// trace events should be written.
-    /// </summary>
-    internal DiagnosticListener DiagnosticSource { get; }
 
     /// <summary>
     /// Begin a new anonymous sub-scope, with additional components available to it.
@@ -333,16 +376,6 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         return operation.Execute(request);
     }
 
-    /// <summary>
-    /// Gets the parent of this node of the hierarchy, or null.
-    /// </summary>
-    public ISharingLifetimeScope? ParentLifetimeScope => _parentScope;
-
-    /// <summary>
-    /// Gets the root of the sharing hierarchy.
-    /// </summary>
-    public ISharingLifetimeScope RootLifetimeScope { get; }
-
     /// <inheritdoc />
     public object CreateSharedInstance(Guid id, Func<object> creator)
     {
@@ -420,24 +453,6 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             ? TryGetSharedInstance(primaryId, out value)
             : _sharedQualifiedInstances.TryGetValue((primaryId, qualifyingId.Value), out value);
     }
-
-    /// <summary>
-    /// Gets the disposer associated with this container. Instances can be associated
-    /// with it manually if required.
-    /// </summary>
-    public IDisposer Disposer { get; } = new Disposer();
-
-    /// <summary>
-    /// Gets the tag applied to the lifetime scope.
-    /// </summary>
-    /// <remarks>The tag applied to this scope and the contexts generated when
-    /// it resolves component dependencies.</remarks>
-    public object Tag { get; }
-
-    /// <summary>
-    /// Gets the services associated with the components that provide them.
-    /// </summary>
-    public IComponentRegistry ComponentRegistry { get; }
 
     /// <summary>
     /// Releases unmanaged and - optionally - managed resources.
@@ -528,21 +543,6 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
 
         return this.ResolveOptional(serviceType);
     }
-
-    /// <summary>
-    /// Fired when a new scope based on the current scope is beginning.
-    /// </summary>
-    public event EventHandler<LifetimeScopeBeginningEventArgs>? ChildLifetimeScopeBeginning;
-
-    /// <summary>
-    /// Fired when this scope is ending.
-    /// </summary>
-    public event EventHandler<LifetimeScopeEndingEventArgs>? CurrentScopeEnding;
-
-    /// <summary>
-    /// Fired when a resolve operation is beginning in this scope.
-    /// </summary>
-    public event EventHandler<ResolveOperationBeginningEventArgs>? ResolveOperationBeginning;
 
     [DoesNotReturn]
     private static void ThrowDisposedException()

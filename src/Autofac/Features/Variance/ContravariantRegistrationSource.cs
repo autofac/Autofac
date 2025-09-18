@@ -40,6 +40,12 @@ public class ContravariantRegistrationSource : IRegistrationSource
     private const string IsContravariantAdapter = "IsContravariantAdapter";
 
     /// <summary>
+    /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
+    /// of other components (e.g., Meta, Func, or Owned).
+    /// </summary>
+    public bool IsAdapterForIndividualComponents => true;
+
+    /// <summary>
     /// Retrieve registrations for an unregistered service, to be used
     /// by the container.
     /// </summary>
@@ -170,10 +176,4 @@ public class ContravariantRegistrationSource : IRegistrationSource
         contravariantParameterIndex = default;
         return false;
     }
-
-    /// <summary>
-    /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
-    /// of other components (e.g., Meta, Func, or Owned).
-    /// </summary>
-    public bool IsAdapterForIndividualComponents => true;
 }

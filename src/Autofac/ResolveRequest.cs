@@ -57,14 +57,6 @@ public readonly struct ResolveRequest : IEquatable<ResolveRequest>
     /// </summary>
     public IComponentRegistration? DecoratorTarget { get; }
 
-    /// <inheritdoc/>
-    public override bool Equals(object? obj) =>
-        obj is ResolveRequest other && Equals(other);
-
-    /// <inheritdoc/>
-    public bool Equals(ResolveRequest other) =>
-        Service == other.Service && Registration == other.Registration && ResolvePipeline == other.ResolvePipeline && Parameters == other.Parameters && DecoratorTarget == other.DecoratorTarget;
-
     /// <summary>
     /// Implements the operator ==.
     /// </summary>
@@ -81,6 +73,14 @@ public readonly struct ResolveRequest : IEquatable<ResolveRequest>
     /// <returns>The result of the operator.</returns>
     public static bool operator !=(ResolveRequest left, ResolveRequest right) =>
         !(left == right);
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) =>
+        obj is ResolveRequest other && Equals(other);
+
+    /// <inheritdoc/>
+    public bool Equals(ResolveRequest other) =>
+        Service == other.Service && Registration == other.Registration && ResolvePipeline == other.ResolvePipeline && Parameters == other.Parameters && DecoratorTarget == other.DecoratorTarget;
 
     /// <inheritdoc/>
     public override int GetHashCode() =>

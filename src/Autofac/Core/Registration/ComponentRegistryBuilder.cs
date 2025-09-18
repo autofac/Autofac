@@ -31,6 +31,58 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
         _registeredServicesTracker.RegistrationSourceAdded += OnRegistrationSourceAdded;
     }
 
+    /// <summary>
+    /// Fired whenever a component is registered - either explicitly or via a
+    /// <see cref="IRegistrationSource"/>.
+    /// </summary>
+    public event EventHandler<ComponentRegisteredEventArgs> Registered
+    {
+        add
+        {
+            foreach (IComponentRegistration registration in _registeredServicesTracker.Registrations)
+            {
+                value(this, new ComponentRegisteredEventArgs(this, registration));
+            }
+
+            Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() + value;
+        }
+
+        remove
+        {
+            Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() - value;
+        }
+    }
+
+    /// <summary>
+    /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
+    /// </summary>
+    public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded
+    {
+        add
+        {
+            foreach (IRegistrationSource source in _registeredServicesTracker.Sources)
+            {
+                value(this, new RegistrationSourceAddedEventArgs(this, source));
+            }
+
+            Properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() + value;
+        }
+
+        remove
+        {
+            Properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() - value;
+        }
+    }
+
+    /// <summary>
+    /// Gets the set of properties used during component registration.
+    /// </summary>
+    /// <value>
+    /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
+    /// context across registrations.
+    /// </value>
+    public IDictionary<string, object?> Properties { get; }
+
     private void OnRegistered(object? sender, IComponentRegistration e)
     {
         var handler = GetRegistered();
@@ -64,15 +116,6 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
         // Do not call the base, otherwise the standard Dispose will fire.
         return _registeredServicesTracker.DisposeAsync();
     }
-
-    /// <summary>
-    /// Gets the set of properties used during component registration.
-    /// </summary>
-    /// <value>
-    /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
-    /// context across registrations.
-    /// </value>
-    public IDictionary<string, object?> Properties { get; }
 
     /// <summary>
     /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.
@@ -151,28 +194,6 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     }
 
     /// <summary>
-    /// Fired whenever a component is registered - either explicitly or via a
-    /// <see cref="IRegistrationSource"/>.
-    /// </summary>
-    public event EventHandler<ComponentRegisteredEventArgs> Registered
-    {
-        add
-        {
-            foreach (IComponentRegistration registration in _registeredServicesTracker.Registrations)
-            {
-                value(this, new ComponentRegisteredEventArgs(this, registration));
-            }
-
-            Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() + value;
-        }
-
-        remove
-        {
-            Properties[MetadataKeys.RegisteredPropertyKey] = GetRegistered() - value;
-        }
-    }
-
-    /// <summary>
     /// Add a registration source that will provide registrations on-the-fly.
     /// </summary>
     /// <param name="source">The source to register.</param>
@@ -184,27 +205,6 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     /// <inheritdoc/>
     public void AddServiceMiddlewareSource(IServiceMiddlewareSource servicePipelineSource)
         => _registeredServicesTracker.AddServiceMiddlewareSource(servicePipelineSource);
-
-    /// <summary>
-    /// Fired when an <see cref="IRegistrationSource"/> is added to the registry.
-    /// </summary>
-    public event EventHandler<RegistrationSourceAddedEventArgs> RegistrationSourceAdded
-    {
-        add
-        {
-            foreach (IRegistrationSource source in _registeredServicesTracker.Sources)
-            {
-                value(this, new RegistrationSourceAddedEventArgs(this, source));
-            }
-
-            Properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() + value;
-        }
-
-        remove
-        {
-            Properties[MetadataKeys.RegistrationSourceAddedPropertyKey] = GetRegistrationSourceAdded() - value;
-        }
-    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private EventHandler<ComponentRegisteredEventArgs>? GetRegistered()

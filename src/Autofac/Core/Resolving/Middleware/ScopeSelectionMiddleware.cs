@@ -12,15 +12,15 @@ namespace Autofac.Core.Resolving.Middleware;
 /// </summary>
 internal class ScopeSelectionMiddleware : IResolveMiddleware
 {
-    /// <summary>
-    /// Gets the singleton instance of the <see cref="ScopeSelectionMiddleware"/>.
-    /// </summary>
-    public static ScopeSelectionMiddleware Instance => new();
-
     private ScopeSelectionMiddleware()
     {
         // Only want to use the static instance.
     }
+
+    /// <summary>
+    /// Gets the singleton instance of the <see cref="ScopeSelectionMiddleware"/>.
+    /// </summary>
+    public static ScopeSelectionMiddleware Instance => new();
 
     /// <inheritdoc/>
     public PipelinePhase Phase => PipelinePhase.ScopeSelection;

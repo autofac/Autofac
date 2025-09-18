@@ -10,14 +10,14 @@ namespace Autofac.Core.Resolving.Middleware;
 /// </summary>
 internal class RegistrationPipelineInvokeMiddleware : IResolveMiddleware
 {
+    private RegistrationPipelineInvokeMiddleware()
+    {
+    }
+
     /// <summary>
     /// Gets the singleton instance of this middleware.
     /// </summary>
     public static RegistrationPipelineInvokeMiddleware Instance { get; } = new RegistrationPipelineInvokeMiddleware();
-
-    private RegistrationPipelineInvokeMiddleware()
-    {
-    }
 
     /// <inheritdoc/>
     public PipelinePhase Phase => PipelinePhase.ServicePipelineEnd;

@@ -47,6 +47,27 @@ namespace Autofac;
 public abstract class Module : IModule
 {
     /// <summary>
+    /// Gets the assembly in which the concrete module type is located. To avoid bugs whereby deriving from a module will
+    /// change the target assembly, this property can only be used by modules that inherit directly from
+    /// <see cref="Module"/>.
+    /// </summary>
+    [SuppressMessage("Design", "CA1065:Do not raise exceptions in unexpected locations", Justification = "Prevent breaking change")]
+    protected virtual Assembly ThisAssembly
+    {
+        get
+        {
+            var thisType = GetType();
+            var baseType = thisType.BaseType;
+            if (baseType != typeof(Module))
+            {
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ModuleResources.ThisAssemblyUnavailable, thisType, baseType));
+            }
+
+            return thisType.Assembly;
+        }
+    }
+
+    /// <summary>
     /// Apply the module to the component registry.
     /// </summary>
     /// <param name="componentRegistry">Component registry to apply configuration to.</param>
@@ -124,26 +145,5 @@ public abstract class Module : IModule
 
         componentRegistry.RegistrationSourceAdded +=
             (sender, e) => AttachToRegistrationSource(e.ComponentRegistry, e.RegistrationSource);
-    }
-
-    /// <summary>
-    /// Gets the assembly in which the concrete module type is located. To avoid bugs whereby deriving from a module will
-    /// change the target assembly, this property can only be used by modules that inherit directly from
-    /// <see cref="Module"/>.
-    /// </summary>
-    [SuppressMessage("Design", "CA1065:Do not raise exceptions in unexpected locations", Justification = "Prevent breaking change")]
-    protected virtual Assembly ThisAssembly
-    {
-        get
-        {
-            var thisType = GetType();
-            var baseType = thisType.BaseType;
-            if (baseType != typeof(Module))
-            {
-                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ModuleResources.ThisAssemblyUnavailable, thisType, baseType));
-            }
-
-            return thisType.Assembly;
-        }
     }
 }
