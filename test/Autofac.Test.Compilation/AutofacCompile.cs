@@ -16,8 +16,6 @@ namespace Autofac.Test.Compilation;
 /// </summary>
 public class AutofacCompile
 {
-    private string? _body;
-
     private readonly List<MetadataReference> _references = new()
     {
         // Bring in the appropriate SDK package
@@ -27,6 +25,8 @@ public class AutofacCompile
         MetadataReference.CreateFromFile(typeof(ContainerBuilder).Assembly.Location),
         MetadataReference.CreateFromFile(typeof(AutofacCompile).Assembly.Location),
     };
+
+    private string? _body;
 
     public AutofacCompile Body(string body)
     {
