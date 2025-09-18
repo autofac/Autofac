@@ -4,6 +4,14 @@
   <Rules AnalyzerId="Microsoft.Usage" RuleNamespace="Microsoft.Usage">
     <!-- Implement standard exception constructors - not all of the exception constructors (e.g., parameterless) are desired in our system. -->
     <Rule Id="CA1032" Action="None" />
+    <!-- Avoid excessive inheritance (must be explicitly enabled). -->
+    <Rule Id="CA1501" Action="Warning" />
+    <!-- Avoid excessive complexity (must be explicitly enabled). -->
+    <Rule Id="CA1502" Action="Warning" />
+    <!-- Avoid unmaintainable code (must be explicitly enabled). -->
+    <Rule Id="CA1505" Action="Warning" />
+    <!-- Avoid excessive class coupling (must be explicitly enabled). -->
+    <Rule Id="CA1506" Action="Warning" />
     <!-- Use ArgumentNullException.ThrowIfNull - this isn't available until we stop targeting netstandard. -->
     <Rule Id="CA1510" Action="None" />
     <!-- Use ArgumentOutOfRangeException.ThrowIfNegative - this isn't available until we stop targeting anything below net8.0. -->
