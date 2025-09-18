@@ -46,6 +46,9 @@ public sealed class DecoratorContext : IDecoratorContext
     /// <inheritdoc />
     public IComponentRegistry ComponentRegistry => _componentContext.ComponentRegistry;
 
+    /// <inheritdoc />
+    public object ResolveComponent(in ResolveRequest request) => _componentContext.ResolveComponent(request);
+
     /// <summary>
     /// Create a new <see cref="DecoratorContext"/>.
     /// </summary>
@@ -76,7 +79,4 @@ public sealed class DecoratorContext : IDecoratorContext
 
         return new DecoratorContext(_componentContext, ImplementationType, ServiceType, decoratorInstance, appliedDecoratorTypes, appliedDecorators);
     }
-
-    /// <inheritdoc />
-    public object ResolveComponent(in ResolveRequest request) => _componentContext.ResolveComponent(request);
 }

@@ -49,20 +49,6 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
         });
     }
 
-    private object GetInstance()
-    {
-        CheckNotDisposed();
-
-        if (_activated)
-        {
-            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, _instance.GetType()));
-        }
-
-        _activated = true;
-
-        return _instance;
-    }
-
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
@@ -130,5 +116,19 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
         }
 
         return instance.GetType();
+    }
+
+    private object GetInstance()
+    {
+        CheckNotDisposed();
+
+        if (_activated)
+        {
+            throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, ProvidedInstanceActivatorResources.InstanceAlreadyActivated, _instance.GetType()));
+        }
+
+        _activated = true;
+
+        return _instance;
     }
 }

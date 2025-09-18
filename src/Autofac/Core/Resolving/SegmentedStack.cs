@@ -55,15 +55,6 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         }
     }
 
-    // Do not inline; makes it easier to profile stack resizing.
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    private void PushWithResize(T item)
-    {
-        Array.Resize(ref _array, 2 * _array.Length);
-        _array[_next] = item;
-        _next++;
-    }
-
     /// <summary>
     /// Pop the item at the top of the stack (and return it).
     /// </summary>
@@ -109,6 +100,15 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return new Enumerator(this);
+    }
+
+    // Do not inline; makes it easier to profile stack resizing.
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private void PushWithResize(T item)
+    {
+        Array.Resize(ref _array, 2 * _array.Length);
+        _array[_next] = item;
+        _next++;
     }
 
     private readonly struct StackSegment : IDisposable

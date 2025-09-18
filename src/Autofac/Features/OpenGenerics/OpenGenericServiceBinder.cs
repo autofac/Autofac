@@ -68,8 +68,6 @@ internal static class OpenGenericServiceBinder
         return false;
     }
 
-    private static Type GetGenericTypeDefinition(Type type) => ReflectionCacheSet.Shared.Internal.GenericTypeDefinitionByType.GetOrAdd(type, static t => t.GetGenericTypeDefinition());
-
     /// <summary>
     /// Given a closed generic service (that is being requested), creates a regular delegate callback
     /// and associated services from the open generic delegate and services.
@@ -122,6 +120,57 @@ internal static class OpenGenericServiceBinder
         constructedServices = null;
         return false;
     }
+
+    /// <summary>
+    /// Throws an exception if an open generic implementation type cannot implement the set of specified open services.
+    /// </summary>
+    /// <param name="implementationType">The open generic implementation type.</param>
+    /// <param name="services">The set of open generic services.</param>
+    public static void EnforceBindable(Type implementationType, IEnumerable<Service> services)
+    {
+        if (implementationType == null)
+        {
+            throw new ArgumentNullException(nameof(implementationType));
+        }
+
+        if (services == null)
+        {
+            throw new ArgumentNullException(nameof(services));
+        }
+
+        if (!implementationType.IsGenericTypeDefinition)
+        {
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ImplementorMustBeOpenGenericTypeDefinition, implementationType));
+        }
+
+        foreach (var service in services.OfType<IServiceWithType>())
+        {
+            if (!service.ServiceType.IsGenericTypeDefinition)
+            {
+                throw new ArgumentException(
+                    string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ServiceTypeMustBeOpenGenericTypeDefinition, service));
+            }
+
+            if (service.ServiceType.IsInterface)
+            {
+                if (GetInterfaces(implementationType, service.ServiceType).Length == 0)
+                {
+                    var message = string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ImplementorDoesntImplementService, implementationType.FullName, service.ServiceType.FullName);
+                    throw new InvalidOperationException(message);
+                }
+            }
+            else
+            {
+                if (!Traverse.Across(implementationType, t => t.BaseType!).Any(t => IsCompatibleGenericClassDefinition(t, service.ServiceType)))
+                {
+                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.TypesAreNotConvertible, implementationType, service));
+                }
+            }
+        }
+    }
+
+    private static Type GetGenericTypeDefinition(Type type) => ReflectionCacheSet.Shared.Internal.GenericTypeDefinitionByType.GetOrAdd(type, static t => t.GetGenericTypeDefinition());
 
     private static Type?[] TryMapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
     {
@@ -235,55 +284,6 @@ internal static class OpenGenericServiceBinder
                 implementationGenericArgumentDefinition, argdef.Key.GenericTypeArguments.Zip(
                     argdef.Value.GenericTypeArguments, (a, b) => new KeyValuePair<Type, Type>(a, b))))
             .FirstOrDefault(x => x is not null);
-    }
-
-    /// <summary>
-    /// Throws an exception if an open generic implementation type cannot implement the set of specified open services.
-    /// </summary>
-    /// <param name="implementationType">The open generic implementation type.</param>
-    /// <param name="services">The set of open generic services.</param>
-    public static void EnforceBindable(Type implementationType, IEnumerable<Service> services)
-    {
-        if (implementationType == null)
-        {
-            throw new ArgumentNullException(nameof(implementationType));
-        }
-
-        if (services == null)
-        {
-            throw new ArgumentNullException(nameof(services));
-        }
-
-        if (!implementationType.IsGenericTypeDefinition)
-        {
-            throw new ArgumentException(
-                string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ImplementorMustBeOpenGenericTypeDefinition, implementationType));
-        }
-
-        foreach (var service in services.OfType<IServiceWithType>())
-        {
-            if (!service.ServiceType.IsGenericTypeDefinition)
-            {
-                throw new ArgumentException(
-                    string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ServiceTypeMustBeOpenGenericTypeDefinition, service));
-            }
-
-            if (service.ServiceType.IsInterface)
-            {
-                if (GetInterfaces(implementationType, service.ServiceType).Length == 0)
-                {
-                    var message = string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ImplementorDoesntImplementService, implementationType.FullName, service.ServiceType.FullName);
-                    throw new InvalidOperationException(message);
-                }
-            }
-            else
-            {
-                if (!Traverse.Across(implementationType, t => t.BaseType!).Any(t => IsCompatibleGenericClassDefinition(t, service.ServiceType)))
-                {
-                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.TypesAreNotConvertible, implementationType, service));
-                }
-            }
-        }
     }
 
     private static bool IsCompatibleGenericClassDefinition(Type implementor, Type serviceType)

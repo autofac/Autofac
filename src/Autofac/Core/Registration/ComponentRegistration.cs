@@ -245,6 +245,24 @@ public class ComponentRegistration : Disposable, IComponentRegistration
     }
 
     /// <summary>
+    /// Describes the component in a human-readable form.
+    /// </summary>
+    /// <returns>A description of the component.</returns>
+    public override string ToString()
+    {
+        // Activator = {0}, Services = [{1}], Lifetime = {2}, Sharing = {3}, Ownership = {4}, Pipeline = {5}
+        return string.Format(
+            CultureInfo.CurrentCulture,
+            ComponentRegistrationResources.ToStringFormat,
+            Activator,
+            Services.Select(s => s.Description).JoinWith(", "),
+            Lifetime,
+            Sharing,
+            Ownership,
+            _builtComponentPipeline is null ? ComponentRegistrationResources.PipelineNotBuilt : _builtComponentPipeline.ToString());
+    }
+
+    /// <summary>
     /// Populates the resolve pipeline with middleware based on the registration, and builds the pipeline.
     /// </summary>
     /// <param name="registryServices">The known set of all services.</param>
@@ -273,37 +291,6 @@ public class ComponentRegistration : Disposable, IComponentRegistration
         Activator.ConfigurePipeline(registryServices, _lateBuildPipeline);
 
         return _lateBuildPipeline.Build();
-    }
-
-    private bool HasStartableService()
-    {
-        foreach (var service in Services)
-        {
-            if ((service is TypedService typed) && typed.ServiceType == typeof(IStartable))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Describes the component in a human-readable form.
-    /// </summary>
-    /// <returns>A description of the component.</returns>
-    public override string ToString()
-    {
-        // Activator = {0}, Services = [{1}], Lifetime = {2}, Sharing = {3}, Ownership = {4}, Pipeline = {5}
-        return string.Format(
-            CultureInfo.CurrentCulture,
-            ComponentRegistrationResources.ToStringFormat,
-            Activator,
-            Services.Select(s => s.Description).JoinWith(", "),
-            Lifetime,
-            Sharing,
-            Ownership,
-            _builtComponentPipeline is null ? ComponentRegistrationResources.PipelineNotBuilt : _builtComponentPipeline.ToString());
     }
 
     /// <inheritdoc />
@@ -343,5 +330,18 @@ public class ComponentRegistration : Disposable, IComponentRegistration
         return default;
 
         // Do not call the base, otherwise the standard Dispose will fire.
+    }
+
+    private bool HasStartableService()
+    {
+        foreach (var service in Services)
+        {
+            if ((service is TypedService typed) && typed.ServiceType == typeof(IStartable))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

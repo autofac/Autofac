@@ -83,40 +83,6 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     /// </value>
     public IDictionary<string, object?> Properties { get; }
 
-    private void OnRegistered(object? sender, IComponentRegistration e)
-    {
-        var handler = GetRegistered();
-
-        handler?.Invoke(this, new ComponentRegisteredEventArgs(this, e));
-    }
-
-    private void OnRegistrationSourceAdded(object? sender, IRegistrationSource e)
-    {
-        var handler = GetRegistrationSourceAdded();
-
-        handler?.Invoke(this, new RegistrationSourceAddedEventArgs(this, e));
-    }
-
-    /// <inheritdoc />
-    protected override void Dispose(bool disposing)
-    {
-        _registeredServicesTracker.Registered -= OnRegistered;
-        _registeredServicesTracker.RegistrationSourceAdded -= OnRegistrationSourceAdded;
-        _registeredServicesTracker.Dispose();
-
-        base.Dispose(disposing);
-    }
-
-    /// <inheritdoc />
-    protected override ValueTask DisposeAsync(bool disposing)
-    {
-        _registeredServicesTracker.Registered -= OnRegistered;
-        _registeredServicesTracker.RegistrationSourceAdded -= OnRegistrationSourceAdded;
-
-        // Do not call the base, otherwise the standard Dispose will fire.
-        return _registeredServicesTracker.DisposeAsync();
-    }
-
     /// <summary>
     /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.
     /// </summary>
@@ -205,6 +171,40 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     /// <inheritdoc/>
     public void AddServiceMiddlewareSource(IServiceMiddlewareSource servicePipelineSource)
         => _registeredServicesTracker.AddServiceMiddlewareSource(servicePipelineSource);
+
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        _registeredServicesTracker.Registered -= OnRegistered;
+        _registeredServicesTracker.RegistrationSourceAdded -= OnRegistrationSourceAdded;
+        _registeredServicesTracker.Dispose();
+
+        base.Dispose(disposing);
+    }
+
+    /// <inheritdoc />
+    protected override ValueTask DisposeAsync(bool disposing)
+    {
+        _registeredServicesTracker.Registered -= OnRegistered;
+        _registeredServicesTracker.RegistrationSourceAdded -= OnRegistrationSourceAdded;
+
+        // Do not call the base, otherwise the standard Dispose will fire.
+        return _registeredServicesTracker.DisposeAsync();
+    }
+
+    private void OnRegistered(object? sender, IComponentRegistration e)
+    {
+        var handler = GetRegistered();
+
+        handler?.Invoke(this, new ComponentRegisteredEventArgs(this, e));
+    }
+
+    private void OnRegistrationSourceAdded(object? sender, IRegistrationSource e)
+    {
+        var handler = GetRegistrationSourceAdded();
+
+        handler?.Invoke(this, new RegistrationSourceAddedEventArgs(this, e));
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private EventHandler<ComponentRegisteredEventArgs>? GetRegistered()

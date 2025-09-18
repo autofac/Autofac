@@ -169,14 +169,6 @@ public class RegistrationData
         AddAll(Metadata, that.Metadata.Where(m => m.Key != MetadataKeys.RegistrationOrderMetadataKey));
     }
 
-    private static void AddAll<T>(ICollection<T> to, IEnumerable<T> from)
-    {
-        foreach (var item in from)
-        {
-            to.Add(item);
-        }
-    }
-
     /// <summary>
     /// Empties the configured services.
     /// </summary>
@@ -184,5 +176,13 @@ public class RegistrationData
     {
         _services.Clear();
         _defaultServiceOverridden = true;
+    }
+
+    private static void AddAll<T>(ICollection<T> to, IEnumerable<T> from)
+    {
+        foreach (var item in from)
+        {
+            to.Add(item);
+        }
     }
 }

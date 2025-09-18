@@ -22,6 +22,30 @@ internal class Disposer : Disposable, IDisposer
     private Stack<object> _items = new();
 
     /// <summary>
+    /// Adds an object to the disposer, where that object only implements IAsyncDisposable. When the disposer is
+    /// disposed, so will the object be.
+    /// This is not typically recommended, and you should implement IDisposable as well.
+    /// </summary>
+    /// <param name="instance">The instance.</param>
+    /// <remarks>
+    /// If this Disposer is disposed of using a synchronous Dispose call, that call will throw an exception.
+    /// </remarks>
+    public void AddInstanceForAsyncDisposal(IAsyncDisposable instance)
+    {
+        AddInternal(instance);
+    }
+
+    /// <summary>
+    /// Adds an object to the disposer. When the disposer is
+    /// disposed, so will the object be.
+    /// </summary>
+    /// <param name="instance">The instance.</param>
+    public void AddInstanceForDisposal(IDisposable instance)
+    {
+        AddInternal(instance);
+    }
+
+    /// <summary>
     /// Releases unmanaged and - optionally - managed resources.
     /// </summary>
     /// <param name="disposing"><see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources.</param>
@@ -108,30 +132,6 @@ internal class Disposer : Disposable, IDisposer
                 _synchRoot.Dispose();
             }
         }
-    }
-
-    /// <summary>
-    /// Adds an object to the disposer, where that object only implements IAsyncDisposable. When the disposer is
-    /// disposed, so will the object be.
-    /// This is not typically recommended, and you should implement IDisposable as well.
-    /// </summary>
-    /// <param name="instance">The instance.</param>
-    /// <remarks>
-    /// If this Disposer is disposed of using a synchronous Dispose call, that call will throw an exception.
-    /// </remarks>
-    public void AddInstanceForAsyncDisposal(IAsyncDisposable instance)
-    {
-        AddInternal(instance);
-    }
-
-    /// <summary>
-    /// Adds an object to the disposer. When the disposer is
-    /// disposed, so will the object be.
-    /// </summary>
-    /// <param name="instance">The instance.</param>
-    public void AddInstanceForDisposal(IDisposable instance)
-    {
-        AddInternal(instance);
     }
 
     private void AddInternal(object instance)

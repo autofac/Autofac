@@ -42,23 +42,6 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// </summary>
     /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
     /// <param name="componentRegistry">Components used in the scope.</param>
-    /// <param name="parent">Parent scope.</param>
-    protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent, object tag)
-    {
-        ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
-        Tag = tag ?? throw new ArgumentNullException(nameof(tag));
-        _parentScope = parent ?? throw new ArgumentNullException(nameof(parent));
-
-        _sharedInstances[SelfRegistrationId] = this;
-        RootLifetimeScope = _parentScope.RootLifetimeScope;
-        DiagnosticSource = _parentScope.DiagnosticSource;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LifetimeScope"/> class.
-    /// </summary>
-    /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
-    /// <param name="componentRegistry">Components used in the scope.</param>
     public LifetimeScope(IComponentRegistry componentRegistry, object tag)
     {
         ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
@@ -80,6 +63,23 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="LifetimeScope"/> class.
+    /// </summary>
+    /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
+    /// <param name="componentRegistry">Components used in the scope.</param>
+    /// <param name="parent">Parent scope.</param>
+    protected LifetimeScope(IComponentRegistry componentRegistry, LifetimeScope parent, object tag)
+    {
+        ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));
+        Tag = tag ?? throw new ArgumentNullException(nameof(tag));
+        _parentScope = parent ?? throw new ArgumentNullException(nameof(parent));
+
+        _sharedInstances[SelfRegistrationId] = this;
+        RootLifetimeScope = _parentScope.RootLifetimeScope;
+        DiagnosticSource = _parentScope.DiagnosticSource;
+    }
+
+    /// <summary>
     /// Fired when a new scope based on the current scope is beginning.
     /// </summary>
     public event EventHandler<LifetimeScopeBeginningEventArgs>? ChildLifetimeScopeBeginning;
@@ -95,11 +95,6 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     public event EventHandler<ResolveOperationBeginningEventArgs>? ResolveOperationBeginning;
 
     /// <summary>
-    /// Gets the id of the lifetime scope self-registration.
-    /// </summary>
-    internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
-
-    /// <summary>
     /// Gets the parent of this node of the hierarchy, or null.
     /// </summary>
     public ISharingLifetimeScope? ParentLifetimeScope => _parentScope;
@@ -108,12 +103,6 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// Gets the root of the sharing hierarchy.
     /// </summary>
     public ISharingLifetimeScope RootLifetimeScope { get; }
-
-    /// <summary>
-    /// Gets the <see cref="DiagnosticListener"/> to which
-    /// trace events should be written.
-    /// </summary>
-    internal DiagnosticListener DiagnosticSource { get; }
 
     /// <summary>
     /// Gets the disposer associated with this container. Instances can be associated
@@ -132,6 +121,17 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// Gets the services associated with the components that provide them.
     /// </summary>
     public IComponentRegistry ComponentRegistry { get; }
+
+    /// <summary>
+    /// Gets the id of the lifetime scope self-registration.
+    /// </summary>
+    internal static Guid SelfRegistrationId { get; } = Guid.NewGuid();
+
+    /// <summary>
+    /// Gets the <see cref="DiagnosticListener"/> to which
+    /// trace events should be written.
+    /// </summary>
+    internal DiagnosticListener DiagnosticSource { get; }
 
     /// <summary>
     /// Begin a new anonymous sub-scope. Instances created via the sub-scope
@@ -157,38 +157,6 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         var scope = new LifetimeScope(ComponentRegistry, this, tag);
         RaiseBeginning(scope);
         return scope;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private object MakeAnonymousTag() => _anonymousTag = new object();
-
-    private void CheckTagIsUnique(object tag)
-    {
-        if (ReferenceEquals(tag, _anonymousTag))
-        {
-            return;
-        }
-
-        ISharingLifetimeScope parentScope = this;
-        while (parentScope != RootLifetimeScope)
-        {
-            // In the scope where we are searching for parents, then the parent scope will not be null.
-            if (parentScope.Tag.Equals(tag))
-            {
-                throw new InvalidOperationException(
-                    string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
-            }
-
-            // In the scope of searching for tags, the ParentLifetimeScope will always be set.
-            parentScope = parentScope.ParentLifetimeScope!;
-        }
-    }
-
-    [SuppressMessage("CA1030", "CA1030", Justification = "This method raises the event; it's not the event proper.")]
-    private void RaiseBeginning(ILifetimeScope scope)
-    {
-        var handler = ChildLifetimeScopeBeginning;
-        handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
     }
 
     /// <summary>
@@ -277,93 +245,6 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         return newScope;
     }
 #endif
-
-    private LifetimeScope InternalBeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
-    {
-        if (configurationAction == null)
-        {
-            throw new ArgumentNullException(nameof(configurationAction));
-        }
-
-        CheckNotDisposed();
-        CheckTagIsUnique(tag);
-
-        var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction, isolatedScope);
-        var scope = new LifetimeScope(localsBuilder.Build(), this, tag);
-        scope.Disposer.AddInstanceForDisposal(localsBuilder);
-
-        if (localsBuilder.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options)
-            && options is not null
-            && !((ContainerBuildOptions)options).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
-        {
-            StartableManager.StartStartableComponents(localsBuilder.Properties, scope);
-        }
-
-        // Run any build callbacks.
-        BuildCallbackManager.RunBuildCallbacks(scope);
-
-        RaiseBeginning(scope);
-
-        return scope;
-    }
-
-    /// <summary>
-    /// Creates and setup the registry for a child scope.
-    /// </summary>
-    /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
-    /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
-    /// that adds component registrations visible only in the child scope.</param>
-    /// <param name="isolatedScope">
-    /// Indicates whether the generated registry should be 'isolated'; an isolated registry does not hold on to
-    /// any type information for retrieved services that do not result in registrations.
-    /// </param>
-    /// <returns>Registry to use for a child scope.</returns>
-    /// <remarks>It is the responsibility of the caller to make sure that the registry is properly
-    /// disposed of. This is generally done by adding the registry to the <see cref="Disposer"/>
-    /// property of the child scope.</remarks>
-    private ComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
-    {
-        var restrictedRootScopeLifetime = new MatchingScopeLifetime(tag);
-        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
-
-        var fallbackProperties = new FallbackDictionary<string, object?>(ComponentRegistry.Properties);
-
-        foreach (var source in ComponentRegistry.Sources)
-        {
-            if (source.IsAdapterForIndividualComponents || (source is IPerScopeRegistrationSource && isolatedScope))
-            {
-                tracker.AddRegistrationSource(source);
-            }
-        }
-
-        // Issue #272: Only the most nested parent registry with HasLocalComponents is registered as an external source
-        // It provides all non-adapting registrations from itself and from it's parent registries
-        ISharingLifetimeScope? parent = this;
-        while (parent is not null)
-        {
-            if (parent.ComponentRegistry.HasLocalComponents)
-            {
-                var externalSource = new ExternalRegistrySource(parent.ComponentRegistry, isolatedScope);
-                tracker.AddRegistrationSource(externalSource);
-
-                // Add a source for the service pipeline stages.
-                var externalServicePipelineSource = new ExternalRegistryServiceMiddlewareSource(parent.ComponentRegistry, isolatedScope);
-                tracker.AddServiceMiddlewareSource(externalServicePipelineSource);
-
-                break;
-            }
-
-            parent = parent.ParentLifetimeScope;
-        }
-
-        var registryBuilder = new ComponentRegistryBuilder(tracker, fallbackProperties);
-        var builder = new ContainerBuilder(fallbackProperties, registryBuilder);
-
-        configurationAction(builder);
-
-        builder.UpdateRegistry(registryBuilder);
-        return registryBuilder;
-    }
 
     /// <inheritdoc />
     public object ResolveComponent(in ResolveRequest request)
@@ -455,6 +336,25 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     }
 
     /// <summary>
+    /// Gets the service object of the specified type.
+    /// </summary>
+    /// <param name="serviceType">An object that specifies the type of service object
+    /// to get.</param>
+    /// <returns>
+    /// A service object of type <paramref name="serviceType"/>.-or- null if there is
+    /// no service object of type <paramref name="serviceType"/>.
+    /// </returns>
+    public object? GetService(Type serviceType)
+    {
+        if (serviceType == null)
+        {
+            throw new ArgumentNullException(nameof(serviceType));
+        }
+
+        return this.ResolveOptional(serviceType);
+    }
+
+    /// <summary>
     /// Releases unmanaged and - optionally - managed resources.
     /// </summary>
     /// <param name="disposing"><see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources.</param>
@@ -505,6 +405,73 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         // Don't call the base (which would just call the normal Dispose).
     }
 
+    [DoesNotReturn]
+    private static void ThrowDisposedException()
+    {
+        throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private object MakeAnonymousTag() => _anonymousTag = new object();
+
+    private void CheckTagIsUnique(object tag)
+    {
+        if (ReferenceEquals(tag, _anonymousTag))
+        {
+            return;
+        }
+
+        ISharingLifetimeScope parentScope = this;
+        while (parentScope != RootLifetimeScope)
+        {
+            // In the scope where we are searching for parents, then the parent scope will not be null.
+            if (parentScope.Tag.Equals(tag))
+            {
+                throw new InvalidOperationException(
+                    string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.DuplicateTagDetected, tag));
+            }
+
+            // In the scope of searching for tags, the ParentLifetimeScope will always be set.
+            parentScope = parentScope.ParentLifetimeScope!;
+        }
+    }
+
+    [SuppressMessage("CA1030", "CA1030", Justification = "This method raises the event; it's not the event proper.")]
+    private void RaiseBeginning(ILifetimeScope scope)
+    {
+        var handler = ChildLifetimeScopeBeginning;
+        handler?.Invoke(this, new LifetimeScopeBeginningEventArgs(scope));
+    }
+
+    private LifetimeScope InternalBeginLifetimeScope(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
+    {
+        if (configurationAction == null)
+        {
+            throw new ArgumentNullException(nameof(configurationAction));
+        }
+
+        CheckNotDisposed();
+        CheckTagIsUnique(tag);
+
+        var localsBuilder = CreateScopeRestrictedRegistry(tag, configurationAction, isolatedScope);
+        var scope = new LifetimeScope(localsBuilder.Build(), this, tag);
+        scope.Disposer.AddInstanceForDisposal(localsBuilder);
+
+        if (localsBuilder.Properties.TryGetValue(MetadataKeys.ContainerBuildOptions, out var options)
+            && options is not null
+            && !((ContainerBuildOptions)options).HasFlag(ContainerBuildOptions.IgnoreStartableComponents))
+        {
+            StartableManager.StartStartableComponents(localsBuilder.Properties, scope);
+        }
+
+        // Run any build callbacks.
+        BuildCallbackManager.RunBuildCallbacks(scope);
+
+        RaiseBeginning(scope);
+
+        return scope;
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void CheckNotDisposed()
     {
@@ -516,6 +483,64 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     }
 
     /// <summary>
+    /// Creates and setup the registry for a child scope.
+    /// </summary>
+    /// <param name="tag">The tag applied to the <see cref="ILifetimeScope"/>.</param>
+    /// <param name="configurationAction">Action on a <see cref="ContainerBuilder"/>
+    /// that adds component registrations visible only in the child scope.</param>
+    /// <param name="isolatedScope">
+    /// Indicates whether the generated registry should be 'isolated'; an isolated registry does not hold on to
+    /// any type information for retrieved services that do not result in registrations.
+    /// </param>
+    /// <returns>Registry to use for a child scope.</returns>
+    /// <remarks>It is the responsibility of the caller to make sure that the registry is properly
+    /// disposed of. This is generally done by adding the registry to the <see cref="Disposer"/>
+    /// property of the child scope.</remarks>
+    private ComponentRegistryBuilder CreateScopeRestrictedRegistry(object tag, Action<ContainerBuilder> configurationAction, bool isolatedScope)
+    {
+        var restrictedRootScopeLifetime = new MatchingScopeLifetime(tag);
+        var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
+
+        var fallbackProperties = new FallbackDictionary<string, object?>(ComponentRegistry.Properties);
+
+        foreach (var source in ComponentRegistry.Sources)
+        {
+            if (source.IsAdapterForIndividualComponents || (source is IPerScopeRegistrationSource && isolatedScope))
+            {
+                tracker.AddRegistrationSource(source);
+            }
+        }
+
+        // Issue #272: Only the most nested parent registry with HasLocalComponents is registered as an external source
+        // It provides all non-adapting registrations from itself and from it's parent registries
+        ISharingLifetimeScope? parent = this;
+        while (parent is not null)
+        {
+            if (parent.ComponentRegistry.HasLocalComponents)
+            {
+                var externalSource = new ExternalRegistrySource(parent.ComponentRegistry, isolatedScope);
+                tracker.AddRegistrationSource(externalSource);
+
+                // Add a source for the service pipeline stages.
+                var externalServicePipelineSource = new ExternalRegistryServiceMiddlewareSource(parent.ComponentRegistry, isolatedScope);
+                tracker.AddServiceMiddlewareSource(externalServicePipelineSource);
+
+                break;
+            }
+
+            parent = parent.ParentLifetimeScope;
+        }
+
+        var registryBuilder = new ComponentRegistryBuilder(tracker, fallbackProperties);
+        var builder = new ContainerBuilder(fallbackProperties, registryBuilder);
+
+        configurationAction(builder);
+
+        builder.UpdateRegistry(registryBuilder);
+        return registryBuilder;
+    }
+
+    /// <summary>
     /// Gets a value indicating whether this or any of the parent disposables have been disposed.
     /// </summary>
     /// <returns>true if this instance of any of the parent instances have been disposed.</returns>
@@ -523,30 +548,5 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     private bool IsTreeDisposed()
     {
         return IsDisposed || (_parentScope?.IsTreeDisposed() ?? false);
-    }
-
-    /// <summary>
-    /// Gets the service object of the specified type.
-    /// </summary>
-    /// <param name="serviceType">An object that specifies the type of service object
-    /// to get.</param>
-    /// <returns>
-    /// A service object of type <paramref name="serviceType"/>.-or- null if there is
-    /// no service object of type <paramref name="serviceType"/>.
-    /// </returns>
-    public object? GetService(Type serviceType)
-    {
-        if (serviceType == null)
-        {
-            throw new ArgumentNullException(nameof(serviceType));
-        }
-
-        return this.ResolveOptional(serviceType);
-    }
-
-    [DoesNotReturn]
-    private static void ThrowDisposedException()
-    {
-        throw new ObjectDisposedException(LifetimeScopeResources.ScopeIsDisposed, innerException: null);
     }
 }

@@ -165,6 +165,105 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
         return this;
     }
 
+    /// <inheritdoc />
+    public IResolvePipeline Build()
+    {
+        return BuildPipeline(_last);
+    }
+
+    /// <inheritdoc/>
+    public IResolvePipelineBuilder Clone()
+    {
+        // To clone a pipeline, we create a new instance, then insert the same stage
+        // objects in the same order.
+        var newPipeline = new ResolvePipelineBuilder(Type);
+        var currentStage = _first;
+
+        while (currentStage is not null)
+        {
+            newPipeline.AppendStage(currentStage.Middleware);
+            currentStage = currentStage.Next;
+        }
+
+        return newPipeline;
+    }
+
+    /// <inheritdoc/>
+    public IEnumerator<IResolveMiddleware> GetEnumerator()
+    {
+        return new PipelineBuilderEnumerator(_first);
+    }
+
+    /// <inheritdoc/>
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    private static ResolvePipeline BuildPipeline(MiddlewareDeclaration? lastDecl)
+    {
+        // When we build, we go through the set and construct a single call stack, starting from the end.
+        var current = lastDecl;
+        Action<ResolveRequestContext>? currentInvoke = TerminateAction;
+
+        Action<ResolveRequestContext> Chain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
+        {
+            var stagePhase = stage.Phase;
+
+            return (context) =>
+            {
+                // Same basic flow in if/else, but doing a one-time check for diagnostics
+                // and choosing the "diagnostics enabled" version vs. the more common
+                // "no diagnostics enabled" path: hot-path optimization.
+                if (context.DiagnosticSource.IsEnabled())
+                {
+                    context.DiagnosticSource.MiddlewareStart(context, stage);
+                    var succeeded = false;
+                    try
+                    {
+                        context.PhaseReached = stagePhase;
+                        stage.Execute(context, next);
+                        succeeded = true;
+                    }
+                    finally
+                    {
+                        if (succeeded)
+                        {
+                            context.DiagnosticSource.MiddlewareSuccess(context, stage);
+                        }
+                        else
+                        {
+                            context.DiagnosticSource.MiddlewareFailure(context, stage);
+                        }
+                    }
+                }
+                else
+                {
+                    context.PhaseReached = stagePhase;
+                    stage.Execute(context, next);
+                }
+            };
+        }
+
+        while (current is not null)
+        {
+            var stage = current.Middleware;
+            currentInvoke = Chain(currentInvoke, stage);
+            current = current.Previous;
+        }
+
+        return new ResolvePipeline(currentInvoke);
+    }
+
+    private static string DescribeValidEnumRange(PipelinePhase start, PipelinePhase end)
+    {
+        var enumValues = Enum.GetValues(typeof(PipelinePhase))
+                             .Cast<PipelinePhase>()
+                             .Where(value => value >= start && value <= end);
+
+        return string.Join(", ", enumValues);
+    }
+
     private void AddStage(IResolveMiddleware stage, MiddlewareInsertionMode insertionLocation)
     {
         VerifyPhase(stage.Phase);
@@ -225,105 +324,6 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
             _last.Next = newDecl;
             _last = newDecl;
         }
-    }
-
-    /// <inheritdoc />
-    public IResolvePipeline Build()
-    {
-        return BuildPipeline(_last);
-    }
-
-    private static ResolvePipeline BuildPipeline(MiddlewareDeclaration? lastDecl)
-    {
-        // When we build, we go through the set and construct a single call stack, starting from the end.
-        var current = lastDecl;
-        Action<ResolveRequestContext>? currentInvoke = TerminateAction;
-
-        Action<ResolveRequestContext> Chain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
-        {
-            var stagePhase = stage.Phase;
-
-            return (context) =>
-            {
-                // Same basic flow in if/else, but doing a one-time check for diagnostics
-                // and choosing the "diagnostics enabled" version vs. the more common
-                // "no diagnostics enabled" path: hot-path optimization.
-                if (context.DiagnosticSource.IsEnabled())
-                {
-                    context.DiagnosticSource.MiddlewareStart(context, stage);
-                    var succeeded = false;
-                    try
-                    {
-                        context.PhaseReached = stagePhase;
-                        stage.Execute(context, next);
-                        succeeded = true;
-                    }
-                    finally
-                    {
-                        if (succeeded)
-                        {
-                            context.DiagnosticSource.MiddlewareSuccess(context, stage);
-                        }
-                        else
-                        {
-                            context.DiagnosticSource.MiddlewareFailure(context, stage);
-                        }
-                    }
-                }
-                else
-                {
-                    context.PhaseReached = stagePhase;
-                    stage.Execute(context, next);
-                }
-            };
-        }
-
-        while (current is not null)
-        {
-            var stage = current.Middleware;
-            currentInvoke = Chain(currentInvoke, stage);
-            current = current.Previous;
-        }
-
-        return new ResolvePipeline(currentInvoke);
-    }
-
-    /// <inheritdoc/>
-    public IResolvePipelineBuilder Clone()
-    {
-        // To clone a pipeline, we create a new instance, then insert the same stage
-        // objects in the same order.
-        var newPipeline = new ResolvePipelineBuilder(Type);
-        var currentStage = _first;
-
-        while (currentStage is not null)
-        {
-            newPipeline.AppendStage(currentStage.Middleware);
-            currentStage = currentStage.Next;
-        }
-
-        return newPipeline;
-    }
-
-    /// <inheritdoc/>
-    public IEnumerator<IResolveMiddleware> GetEnumerator()
-    {
-        return new PipelineBuilderEnumerator(_first);
-    }
-
-    /// <inheritdoc/>
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-
-    private static string DescribeValidEnumRange(PipelinePhase start, PipelinePhase end)
-    {
-        var enumValues = Enum.GetValues(typeof(PipelinePhase))
-                             .Cast<PipelinePhase>()
-                             .Where(value => value >= start && value <= end);
-
-        return string.Join(", ", enumValues);
     }
 
     private void VerifyPhase(PipelinePhase middlewarePhase)

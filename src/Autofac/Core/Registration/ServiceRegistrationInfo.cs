@@ -137,11 +137,6 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         }
     }
 
-    private bool Any =>
-        _defaultImplementations.Count > 0 ||
-        _sourceImplementations is not null ||
-        _preserveDefaultImplementations is not null;
-
     /// <summary>
     /// Gets the set of all middleware registered against the service (excluding the default middleware).
     /// </summary>
@@ -174,17 +169,10 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     /// <inheritdoc/>
     PipelineType IResolvePipelineBuilder.Type => PipelineType.Service;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void RequiresInitialization()
-    {
-        // Implementations can be read by consumers while we are inside an initialization window,
-        // even when the initialization hasn't finished yet.
-        // The InitializationDepth property is always 0 outside of the lock-protected initialization block.
-        if (InitializationDepth == 0 && !IsInitialized)
-        {
-            throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
-        }
-    }
+    private bool Any =>
+        _defaultImplementations.Count > 0 ||
+        _sourceImplementations is not null ||
+        _preserveDefaultImplementations is not null;
 
     /// <summary>
     /// Add an implementation for the service.
@@ -297,15 +285,6 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         _sourcesToQuery = new Queue<IRegistrationSource>(_sourcesToQuery!.Where(rs => rs != source));
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void EnforceDuringInitialization()
-    {
-        if (!IsInitializing)
-        {
-            throw new InvalidOperationException(ServiceRegistrationInfoResources.NotDuringInitialization);
-        }
-    }
-
     /// <summary>
     /// Dequeue the next registration source.
     /// </summary>
@@ -333,24 +312,6 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     public override string ToString()
     {
         return _service.ToString();
-    }
-
-    private IResolvePipeline BuildPipeline()
-    {
-        // Build the custom service pipeline (if we need to).
-        if (_customPipelineBuilder is object)
-        {
-            // Add the default stages.
-            _customPipelineBuilder.UseRange(ServicePipelines.DefaultMiddleware);
-
-            // Add the default.
-            return _customPipelineBuilder.Build();
-        }
-        else
-        {
-            // Nothing custom, use an empty pipeline.
-            return ServicePipelines.DefaultServicePipeline;
-        }
     }
 
     /// <summary>
@@ -420,5 +381,44 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         }
 
         return _customPipelineBuilder.Clone();
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void RequiresInitialization()
+    {
+        // Implementations can be read by consumers while we are inside an initialization window,
+        // even when the initialization hasn't finished yet.
+        // The InitializationDepth property is always 0 outside of the lock-protected initialization block.
+        if (InitializationDepth == 0 && !IsInitialized)
+        {
+            throw new InvalidOperationException(ServiceRegistrationInfoResources.NotInitialized);
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void EnforceDuringInitialization()
+    {
+        if (!IsInitializing)
+        {
+            throw new InvalidOperationException(ServiceRegistrationInfoResources.NotDuringInitialization);
+        }
+    }
+
+    private IResolvePipeline BuildPipeline()
+    {
+        // Build the custom service pipeline (if we need to).
+        if (_customPipelineBuilder is object)
+        {
+            // Add the default stages.
+            _customPipelineBuilder.UseRange(ServicePipelines.DefaultMiddleware);
+
+            // Add the default.
+            return _customPipelineBuilder.Build();
+        }
+        else
+        {
+            // Nothing custom, use an empty pipeline.
+            return ServicePipelines.DefaultServicePipeline;
+        }
     }
 }

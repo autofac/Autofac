@@ -297,14 +297,14 @@ public class DefaultDiagnosticTracer : OperationDiagnosticTracerBase<string>
             _builder.AppendLine(value);
         }
 
-        private void AppendIndent()
-        {
-            _builder.Append(' ', IndentSize * _indentCount);
-        }
-
         public override string ToString()
         {
             return _builder.ToString();
+        }
+
+        private void AppendIndent()
+        {
+            _builder.Append(' ', IndentSize * _indentCount);
         }
     }
 }

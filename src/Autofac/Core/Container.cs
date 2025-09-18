@@ -146,6 +146,21 @@ public class Container : Disposable, IContainer, IServiceProvider
     }
 
     /// <summary>
+    /// Gets the service object of the specified type.
+    /// </summary>
+    /// <param name="serviceType">An object that specifies the type of service object
+    /// to get.</param>
+    /// <returns>
+    /// A service object of type <paramref name="serviceType"/>.-or- null if there is
+    /// no service object of type <paramref name="serviceType"/>.
+    /// </returns>
+    public object GetService(Type serviceType)
+    {
+        // GetService implementation on LifetimeScope either returns an object, or throws.
+        return ((IServiceProvider)_rootLifetimeScope).GetService(serviceType)!;
+    }
+
+    /// <summary>
     /// Releases unmanaged and - optionally - managed resources.
     /// </summary>
     /// <param name="disposing"><see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources.</param>
@@ -171,20 +186,5 @@ public class Container : Disposable, IContainer, IServiceProvider
         }
 
         // Do not call the base, otherwise the standard Dispose will fire.
-    }
-
-    /// <summary>
-    /// Gets the service object of the specified type.
-    /// </summary>
-    /// <param name="serviceType">An object that specifies the type of service object
-    /// to get.</param>
-    /// <returns>
-    /// A service object of type <paramref name="serviceType"/>.-or- null if there is
-    /// no service object of type <paramref name="serviceType"/>.
-    /// </returns>
-    public object GetService(Type serviceType)
-    {
-        // GetService implementation on LifetimeScope either returns an object, or throws.
-        return ((IServiceProvider)_rootLifetimeScope).GetService(serviceType)!;
     }
 }

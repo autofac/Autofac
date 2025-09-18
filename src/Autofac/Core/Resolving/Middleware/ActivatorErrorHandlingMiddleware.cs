@@ -48,6 +48,9 @@ internal class ActivatorErrorHandlingMiddleware : IResolveMiddleware
         }
     }
 
+    /// <inheritdoc />
+    public override string ToString() => nameof(ActivatorErrorHandlingMiddleware);
+
     private static DependencyResolutionException PropagateActivationException(IInstanceActivator activator, Exception exception)
     {
         var activatorChain = activator.DisplayName();
@@ -64,7 +67,4 @@ internal class ActivatorErrorHandlingMiddleware : IResolveMiddleware
         result.Data[ActivatorChainExceptionData] = activatorChain;
         return result;
     }
-
-    /// <inheritdoc />
-    public override string ToString() => nameof(ActivatorErrorHandlingMiddleware);
 }

@@ -78,35 +78,6 @@ public abstract class DiagnosticTracerBase : IObserver<KeyValuePair<string, obje
     }
 
     /// <summary>
-    /// Subscribes the observer to a particular named diagnostic event.
-    /// </summary>
-    /// <param name="diagnosticName">
-    /// The name of the event to which the observer should subscribe. Diagnostic
-    /// names are case-sensitive.
-    /// </param>
-    /// <remarks>
-    /// <para>
-    /// Derived classes may override the public <see cref="Enable"/> method to
-    /// handle consumer calls to enabling events; constructors needing to call
-    /// non-virtual methods may directly call this to avoid executing against
-    /// partially constructed derived classes.
-    /// </para>
-    /// </remarks>
-    /// <seealso cref="DisableBase"/>
-    protected void EnableBase(string diagnosticName)
-    {
-        if (diagnosticName == null)
-        {
-            throw new ArgumentNullException(nameof(diagnosticName));
-        }
-
-        if (!_subscriptions.Contains(diagnosticName))
-        {
-            _subscriptions.Add(diagnosticName);
-        }
-    }
-
-    /// <summary>
     /// Subscribes the observer to all Autofac events.
     /// </summary>
     /// <remarks>
@@ -156,32 +127,6 @@ public abstract class DiagnosticTracerBase : IObserver<KeyValuePair<string, obje
     public virtual void Disable(string diagnosticName)
     {
         DisableBase(diagnosticName);
-    }
-
-    /// <summary>
-    /// Unsubscribes the observer from a particular named diagnostic event.
-    /// </summary>
-    /// <param name="diagnosticName">
-    /// The name of the event to which the observer should unsubscribe. Diagnostic
-    /// names are case-sensitive.
-    /// </param>
-    /// <remarks>
-    /// <para>
-    /// Derived classes may override the public <see cref="Disable"/> method to
-    /// handle consumer calls to disabling events; constructors needing to call
-    /// non-virtual methods may directly call this to avoid executing against
-    /// partially constructed derived classes.
-    /// </para>
-    /// </remarks>
-    /// <seealso cref="EnableBase"/>
-    protected void DisableBase(string diagnosticName)
-    {
-        if (diagnosticName == null)
-        {
-            throw new ArgumentNullException(nameof(diagnosticName));
-        }
-
-        _subscriptions.Remove(diagnosticName);
     }
 
     /// <summary>
@@ -235,6 +180,61 @@ public abstract class DiagnosticTracerBase : IObserver<KeyValuePair<string, obje
     {
         // This is what gets called when a new diagnostic event occurs.
         Write(value.Key, value.Value);
+    }
+
+    /// <summary>
+    /// Subscribes the observer to a particular named diagnostic event.
+    /// </summary>
+    /// <param name="diagnosticName">
+    /// The name of the event to which the observer should subscribe. Diagnostic
+    /// names are case-sensitive.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// Derived classes may override the public <see cref="Enable"/> method to
+    /// handle consumer calls to enabling events; constructors needing to call
+    /// non-virtual methods may directly call this to avoid executing against
+    /// partially constructed derived classes.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="DisableBase"/>
+    protected void EnableBase(string diagnosticName)
+    {
+        if (diagnosticName == null)
+        {
+            throw new ArgumentNullException(nameof(diagnosticName));
+        }
+
+        if (!_subscriptions.Contains(diagnosticName))
+        {
+            _subscriptions.Add(diagnosticName);
+        }
+    }
+
+    /// <summary>
+    /// Unsubscribes the observer from a particular named diagnostic event.
+    /// </summary>
+    /// <param name="diagnosticName">
+    /// The name of the event to which the observer should unsubscribe. Diagnostic
+    /// names are case-sensitive.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// Derived classes may override the public <see cref="Disable"/> method to
+    /// handle consumer calls to disabling events; constructors needing to call
+    /// non-virtual methods may directly call this to avoid executing against
+    /// partially constructed derived classes.
+    /// </para>
+    /// </remarks>
+    /// <seealso cref="EnableBase"/>
+    protected void DisableBase(string diagnosticName)
+    {
+        if (diagnosticName == null)
+        {
+            throw new ArgumentNullException(nameof(diagnosticName));
+        }
+
+        _subscriptions.Remove(diagnosticName);
     }
 
     /// <summary>
