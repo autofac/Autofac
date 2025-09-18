@@ -15,7 +15,6 @@ public class RegistrationSourceAddedEventArgs : EventArgs
     /// </summary>
     /// <param name="componentRegistry">The registry to which the source was added.</param>
     /// <param name="registrationSource">The source that was added.</param>
-    /// <exception cref="ArgumentNullException"></exception>
     public RegistrationSourceAddedEventArgs(IComponentRegistryBuilder componentRegistry, IRegistrationSource registrationSource)
     {
         ComponentRegistry = componentRegistry ?? throw new ArgumentNullException(nameof(componentRegistry));

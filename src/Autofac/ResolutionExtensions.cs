@@ -263,8 +263,12 @@ public static class ResolutionExtensions
     /// <typeparam name="TService">The service to retrieve.</typeparam>
     /// <param name="context">The context from which to resolve the service.</param>
     /// <returns>The component instance that provides the service.</returns>
-    /// <exception cref="ComponentNotRegisteredException" />
-    /// <exception cref="DependencyResolutionException" />
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService Resolve<TService>(this IComponentContext context)
         where TService : notnull
     {
@@ -280,8 +284,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService Resolve<TService>(this IComponentContext context, IEnumerable<Parameter> parameters)
         where TService : notnull
     {
@@ -297,8 +305,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService Resolve<TService>(this IComponentContext context, params Parameter[] parameters)
         where TService : notnull
     {
@@ -313,8 +325,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object Resolve(this IComponentContext context, Type serviceType)
     {
         return Resolve(context, serviceType, ResolveRequest.NoParameters);
@@ -329,8 +345,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object Resolve(this IComponentContext context, Type serviceType, IEnumerable<Parameter> parameters)
     {
         return ResolveService(context, new TypedService(serviceType), parameters);
@@ -345,8 +365,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object Resolve(this IComponentContext context, Type serviceType, params Parameter[] parameters)
     {
         return context.Resolve(serviceType, (IEnumerable<Parameter>)parameters);
@@ -361,8 +385,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService ResolveKeyed<TService>(this IComponentContext context, object serviceKey)
         where TService : notnull
     {
@@ -379,8 +407,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService ResolveKeyed<TService>(this IComponentContext context, object serviceKey, IEnumerable<Parameter> parameters)
         where TService : notnull
     {
@@ -397,8 +429,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService ResolveKeyed<TService>(this IComponentContext context, object serviceKey, params Parameter[] parameters)
         where TService : notnull
     {
@@ -414,8 +450,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object ResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType)
     {
         return ResolveKeyed(context, serviceKey, serviceType, ResolveRequest.NoParameters);
@@ -431,8 +471,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object ResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, IEnumerable<Parameter> parameters)
     {
         return ResolveService(context, new KeyedService(serviceKey, serviceType), parameters);
@@ -448,8 +492,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object ResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, params Parameter[] parameters)
     {
         return context.ResolveKeyed(serviceKey, serviceType, (IEnumerable<Parameter>)parameters);
@@ -464,8 +512,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService ResolveNamed<TService>(this IComponentContext context, string serviceName)
         where TService : notnull
     {
@@ -482,8 +534,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService ResolveNamed<TService>(this IComponentContext context, string serviceName, IEnumerable<Parameter> parameters)
         where TService : notnull
     {
@@ -500,8 +556,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService ResolveNamed<TService>(this IComponentContext context, string serviceName, params Parameter[] parameters)
         where TService : notnull
     {
@@ -517,8 +577,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object ResolveNamed(this IComponentContext context, string serviceName, Type serviceType)
     {
         return ResolveNamed(context, serviceName, serviceType, ResolveRequest.NoParameters);
@@ -534,8 +598,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object ResolveNamed(this IComponentContext context, string serviceName, Type serviceType, IEnumerable<Parameter> parameters)
     {
         return ResolveService(context, new KeyedService(serviceName, serviceType), parameters);
@@ -551,8 +619,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object ResolveNamed(this IComponentContext context, string serviceName, Type serviceType, params Parameter[] parameters)
     {
         return context.ResolveNamed(serviceName, serviceType, (IEnumerable<Parameter>)parameters);
@@ -567,7 +639,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService? ResolveOptional<TService>(this IComponentContext context)
         where TService : class
     {
@@ -584,7 +658,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService? ResolveOptional<TService>(this IComponentContext context, IEnumerable<Parameter> parameters)
         where TService : class
     {
@@ -601,7 +677,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService? ResolveOptional<TService>(this IComponentContext context, params Parameter[] parameters)
         where TService : class
     {
@@ -617,7 +695,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object? ResolveOptional(this IComponentContext context, Type serviceType)
     {
         return ResolveOptional(context, serviceType, ResolveRequest.NoParameters);
@@ -633,7 +713,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object? ResolveOptional(this IComponentContext context, Type serviceType, IEnumerable<Parameter> parameters)
     {
         return ResolveOptionalService(context, new TypedService(serviceType), parameters);
@@ -649,7 +731,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object? ResolveOptional(this IComponentContext context, Type serviceType, params Parameter[] parameters)
     {
         return context.ResolveOptional(serviceType, (IEnumerable<Parameter>)parameters);
@@ -665,7 +749,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService? ResolveOptionalKeyed<TService>(this IComponentContext context, object serviceKey)
         where TService : class
     {
@@ -683,7 +769,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService? ResolveOptionalKeyed<TService>(this IComponentContext context, object serviceKey, IEnumerable<Parameter> parameters)
         where TService : class
     {
@@ -701,7 +789,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService? ResolveOptionalKeyed<TService>(this IComponentContext context, object serviceKey, params Parameter[] parameters)
         where TService : class
     {
@@ -718,7 +808,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService? ResolveOptionalNamed<TService>(this IComponentContext context, string serviceName)
         where TService : class
     {
@@ -736,7 +828,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService? ResolveOptionalNamed<TService>(this IComponentContext context, string serviceName, IEnumerable<Parameter> parameters)
         where TService : class
     {
@@ -754,7 +848,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static TService? ResolveOptionalNamed<TService>(this IComponentContext context, string serviceName, params Parameter[] parameters)
         where TService : class
     {
@@ -770,7 +866,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object? ResolveOptionalService(this IComponentContext context, Service service)
     {
         return ResolveOptionalService(context, service, ResolveRequest.NoParameters);
@@ -786,7 +884,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object? ResolveOptionalService(this IComponentContext context, Service service, IEnumerable<Parameter> parameters)
     {
         if (context == null)
@@ -818,7 +918,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object? ResolveOptionalService(this IComponentContext context, Service service, params Parameter[] parameters)
     {
         return context.ResolveOptionalService(service, (IEnumerable<Parameter>)parameters);
@@ -832,8 +934,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object ResolveService(this IComponentContext context, Service service)
     {
         return ResolveService(context, service, ResolveRequest.NoParameters);
@@ -848,8 +954,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object ResolveService(this IComponentContext context, Service service, IEnumerable<Parameter> parameters)
     {
         if (service == null)
@@ -879,8 +989,12 @@ public static class ResolutionExtensions
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
-    /// <exception cref="ComponentNotRegisteredException"/>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="ComponentNotRegisteredException">
+    /// Thrown if the requested component is not registered.
+    /// </exception>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static object ResolveService(this IComponentContext context, Service service, params Parameter[] parameters)
     {
         return context.ResolveService(service, (IEnumerable<Parameter>)parameters);
@@ -895,7 +1009,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// True if a component providing the service is available.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static bool TryResolve<T>(this IComponentContext context, [NotNullWhen(returnValue: true)] out T? instance)
         where T : class
     {
@@ -923,7 +1039,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// True if a component providing the service is available.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static bool TryResolve(this IComponentContext context, Type serviceType, [NotNullWhen(returnValue: true)] out object? instance)
     {
         return context.TryResolveService(new TypedService(serviceType), ResolveRequest.NoParameters, out instance);
@@ -939,7 +1057,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// True if a component providing the service is available.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static bool TryResolveKeyed<T>(this IComponentContext context, object serviceKey, [NotNullWhen(returnValue: true)] out T? instance)
         where T : class
     {
@@ -967,7 +1087,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// True if a component providing the service is available.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static bool TryResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, [NotNullWhen(returnValue: true)] out object? instance)
     {
         return context.TryResolveService(new KeyedService(serviceKey, serviceType), ResolveRequest.NoParameters, out instance);
@@ -983,7 +1105,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// True if a component providing the service is available.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static bool TryResolveNamed<T>(this IComponentContext context, string serviceName, [NotNullWhen(returnValue: true)] out T? instance)
         where T : class
     {
@@ -1011,7 +1135,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// True if a component providing the service is available.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static bool TryResolveNamed(this IComponentContext context, string serviceName, Type serviceType, [NotNullWhen(returnValue: true)] out object? instance)
     {
         return context.TryResolveService(new KeyedService(serviceName, serviceType), ResolveRequest.NoParameters, out instance);
@@ -1026,7 +1152,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// True if a component providing the service is available.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     public static bool TryResolveService(this IComponentContext context, Service service, [NotNullWhen(returnValue: true)] out object? instance)
     {
         return context.TryResolveService(service, ResolveRequest.NoParameters, out instance);
@@ -1042,7 +1170,9 @@ public static class ResolutionExtensions
     /// <returns>
     /// True if a component providing the service is available.
     /// </returns>
-    /// <exception cref="DependencyResolutionException"/>
+    /// <exception cref="DependencyResolutionException">
+    /// Thrown if the component cannot be resolved.
+    /// </exception>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="context" /> is <see langword="null" />.
     /// </exception>

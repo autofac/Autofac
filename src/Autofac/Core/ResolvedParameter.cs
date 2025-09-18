@@ -64,8 +64,6 @@ public class ResolvedParameter : Parameter
     /// <typeparam name="TService">The type of the parameter to match.</typeparam>
     /// <param name="serviceName">The name of the matching service to resolve.</param>
     /// <returns>A configured <see cref="ResolvedParameter"/> instance.</returns>
-    /// <remarks>
-    /// </remarks>
     public static ResolvedParameter ForNamed<TService>(string serviceName)
     {
         if (serviceName == null)
