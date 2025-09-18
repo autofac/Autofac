@@ -35,8 +35,8 @@ public static partial class RegistrationExtensions
     /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
     /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
     /// <param name="registration">Registration to set service mapping on.</param>
-    /// <param name="serviceType">Service type provided by the component.</param>
     /// <param name="serviceNameMapping">Function mapping types to service names.</param>
+    /// <param name="serviceType">Service type provided by the component.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
         Named<TLimit, TScanningActivatorData, TRegistrationStyle>(

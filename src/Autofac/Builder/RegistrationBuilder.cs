@@ -43,8 +43,8 @@ public static class RegistrationBuilder
     /// <summary>
     /// Creates a registration builder for the provided delegate.
     /// </summary>
-    /// <param name="delegate">Delegate to register.</param>
     /// <param name="limitType">Most specific type return value of delegate can be cast to.</param>
+    /// <param name="delegate">Delegate to register.</param>
     /// <returns>A registration builder.</returns>
     public static IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> ForDelegate(Type limitType, Func<IComponentContext, IEnumerable<Parameter>, object> @delegate)
     {

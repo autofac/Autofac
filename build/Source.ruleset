@@ -40,8 +40,6 @@
     <Rule Id="SA1214" Action="None" />
     <!-- Fields can't start with underscore. -->
     <Rule Id="SA1309" Action="None" />
-    <!-- Parameter documentation must be in the right order. -->
-    <Rule Id="SA1612" Action="None" />
     <!-- Don't copy/paste documentation. -->
     <Rule Id="SA1625" Action="None" />
     <!-- Exception documentation must not be empty. -->

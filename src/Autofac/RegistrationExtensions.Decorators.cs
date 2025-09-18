@@ -22,11 +22,13 @@ public static partial class RegistrationExtensions
     /// The <paramref name="fromKey"/> and <paramref name="toKey"/> parameters must be different values.
     /// </summary>
     /// <param name="builder">Container builder.</param>
+    /// <param name="decoratorType">
+    /// The type of the decorator. Must be an open generic type, and accept a parameter
+    /// of type <paramref name="decoratedServiceType"/>, which will be set to the instance being decorated.
+    /// </param>
     /// <param name="decoratedServiceType">Service type being decorated. Must be an open generic type.</param>
     /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
     /// <param name="toKey">Service key or name given to the decorated components.</param>
-    /// <param name="decoratorType">The type of the decorator. Must be an open generic type, and accept a parameter
-    /// of type <paramref name="decoratedServiceType"/>, which will be set to the instance being decorated.</param>
     /// <returns>The decorator registration for continued configuration.</returns>
     public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
         RegisterGenericDecorator(

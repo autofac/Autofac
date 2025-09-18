@@ -324,8 +324,8 @@ public static class ResolutionExtensions
     /// Retrieve a service from the context.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceType">The service type.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
@@ -340,8 +340,8 @@ public static class ResolutionExtensions
     /// Retrieve a service from the context.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceType">The service type.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
@@ -528,9 +528,9 @@ public static class ResolutionExtensions
     /// Retrieve a service from the context.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceName">The service name.</param>
     /// <param name="serviceType">Type of the service.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
@@ -545,9 +545,9 @@ public static class ResolutionExtensions
     /// Retrieve a service from the context.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceName">The service name.</param>
     /// <param name="serviceType">Type of the service.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
@@ -628,8 +628,8 @@ public static class ResolutionExtensions
     /// registered.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceType">The type of the service.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
@@ -644,8 +644,8 @@ public static class ResolutionExtensions
     /// registered.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceType">The type of the service.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <returns>
     /// The component instance that provides the service, or null.
     /// </returns>
@@ -677,8 +677,8 @@ public static class ResolutionExtensions
     /// registered.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceKey">The name of the service.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <typeparam name="TService">The service to resolve.</typeparam>
     /// <returns>
     /// The component instance that provides the service, or null.
@@ -695,8 +695,8 @@ public static class ResolutionExtensions
     /// registered.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceKey">The key of the service.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <typeparam name="TService">The service to resolve.</typeparam>
     /// <returns>
     /// The component instance that provides the service, or null.
@@ -730,8 +730,8 @@ public static class ResolutionExtensions
     /// registered.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceName">The name of the service.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <typeparam name="TService">The service to resolve.</typeparam>
     /// <returns>
     /// The component instance that provides the service, or null.
@@ -748,8 +748,8 @@ public static class ResolutionExtensions
     /// registered.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceName">The name of the service.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <typeparam name="TService">The service to resolve.</typeparam>
     /// <returns>
     /// The component instance that provides the service, or null.
@@ -843,8 +843,8 @@ public static class ResolutionExtensions
     /// Retrieve a service from the context.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="service">The service to resolve.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
@@ -874,8 +874,8 @@ public static class ResolutionExtensions
     /// Retrieve a service from the context.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="service">The service to resolve.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <returns>
     /// The component instance that provides the service.
     /// </returns>
@@ -1037,8 +1037,8 @@ public static class ResolutionExtensions
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
     /// <param name="service">The service to resolve.</param>
-    /// <param name="instance">The resulting component instance providing the service, or null.</param>
     /// <param name="parameters">The parameters.</param>
+    /// <param name="instance">The resulting component instance providing the service, or null.</param>
     /// <returns>
     /// True if a component providing the service is available.
     /// </returns>

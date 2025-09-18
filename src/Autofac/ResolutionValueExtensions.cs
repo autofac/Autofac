@@ -85,8 +85,8 @@ public static class ResolutionValueExtensions
     /// registered.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceKey">The name of the service.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <typeparam name="TService">The service to resolve.</typeparam>
     /// <returns>
     /// The component instance that provides the service, or null.
@@ -103,8 +103,8 @@ public static class ResolutionValueExtensions
     /// registered.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceKey">The key of the service.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <typeparam name="TService">The service to resolve.</typeparam>
     /// <returns>
     /// The component instance that provides the service, or null.
@@ -138,8 +138,8 @@ public static class ResolutionValueExtensions
     /// registered.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceName">The name of the service.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <typeparam name="TService">The service to resolve.</typeparam>
     /// <returns>
     /// The component instance that provides the service, or null.
@@ -156,8 +156,8 @@ public static class ResolutionValueExtensions
     /// registered.
     /// </summary>
     /// <param name="context">The context from which to resolve the service.</param>
-    /// <param name="parameters">Parameters for the service.</param>
     /// <param name="serviceName">The name of the service.</param>
+    /// <param name="parameters">Parameters for the service.</param>
     /// <typeparam name="TService">The service to resolve.</typeparam>
     /// <returns>
     /// The component instance that provides the service, or null.

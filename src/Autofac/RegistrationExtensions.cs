@@ -115,8 +115,8 @@ public static partial class RegistrationExtensions
     /// <summary>
     /// Register a component to be created through reflection.
     /// </summary>
-    /// <param name="implementationType">The type of the component implementation.</param>
     /// <param name="builder">Container builder.</param>
+    /// <param name="implementationType">The type of the component implementation.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>
         RegisterType(this ContainerBuilder builder, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type implementationType)
