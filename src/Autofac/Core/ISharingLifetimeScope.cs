@@ -23,7 +23,7 @@ public interface ISharingLifetimeScope : ILifetimeScope
     /// </summary>
     /// <param name="id">Key to look up.</param>
     /// <param name="value">The instance that has the specified key.</param>
-    /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if the key was found; otherwise, <see langword="false"/>.</returns>
     bool TryGetSharedInstance(Guid id, [NotNullWhen(true)] out object? value);
 
     /// <summary>
@@ -36,7 +36,7 @@ public interface ISharingLifetimeScope : ILifetimeScope
     /// or is otherwise "namespaced" by it.
     /// </param>
     /// <param name="value">The instance that has the specified keys.</param>
-    /// <returns><c>true</c> if the key was found; otherwise, <c>false</c>.</returns>
+    /// <returns><see langword="true"/> if the key was found; otherwise, <see langword="false"/>.</returns>
     bool TryGetSharedInstance(Guid primaryId, Guid? qualifyingId, [NotNullWhen(true)] out object? value);
 
     /// <summary>
