@@ -15,11 +15,10 @@ namespace Autofac.Core.Resolving;
 public sealed class SegmentedStack<T> : IEnumerable<T>
     where T : class
 {
+    private const int InitialCapacity = 16;
     private T[] _array;
     private int _next;
     private int _activeSegmentBase;
-
-    private const int InitialCapacity = 16;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SegmentedStack{T}"/> class.

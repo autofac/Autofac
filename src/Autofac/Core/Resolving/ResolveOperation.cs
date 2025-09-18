@@ -14,8 +14,8 @@ namespace Autofac.Core.Resolving;
 /// </summary>
 internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
 {
-    private readonly List<DefaultResolveRequestContext> _successfulRequests = new(SuccessListInitialCapacity);
     private const int SuccessListInitialCapacity = 32;
+    private readonly List<DefaultResolveRequestContext> _successfulRequests = new(SuccessListInitialCapacity);
     private bool _ended;
     private int _nextCompleteSuccessfulRequestStartPos;
 

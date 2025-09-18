@@ -30,8 +30,6 @@
     <Rule Id="SA1201" Action="None" />
     <!-- Enforce order of class members by member visibility. -->
     <Rule Id="SA1202" Action="None" />
-    <!-- Enforce order of constant and static members. -->
-    <Rule Id="SA1203" Action="None" />
     <!-- Enforce order of static vs. non-static members. -->
     <Rule Id="SA1204" Action="None" />
     <!-- Fields can't start with underscore. -->

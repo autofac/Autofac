@@ -14,18 +14,18 @@ namespace Autofac.Core.Registration;
 [SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2213", Justification = "The target registration, if provided, is disposed elsewhere.")]
 public class ComponentRegistration : Disposable, IComponentRegistration
 {
-    private readonly IComponentRegistration? _target;
-    private readonly IResolvePipelineBuilder _lateBuildPipeline;
-
-    private EventHandler<IResolvePipelineBuilder>? _pipelineBuildEvent;
-    private IResolvePipeline? _builtComponentPipeline;
-
     /// <summary>
     /// Defines the options copied from a target registration onto this one.
     /// </summary>
     private const RegistrationOptions OptionsCopiedFromTargetRegistration = RegistrationOptions.Fixed |
                                                                             RegistrationOptions.ExcludeFromCollections |
                                                                             RegistrationOptions.DisableDecoration;
+
+    private readonly IComponentRegistration? _target;
+    private readonly IResolvePipelineBuilder _lateBuildPipeline;
+
+    private EventHandler<IResolvePipelineBuilder>? _pipelineBuildEvent;
+    private IResolvePipeline? _builtComponentPipeline;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ComponentRegistration"/> class.

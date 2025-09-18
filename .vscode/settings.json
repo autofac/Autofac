@@ -14,6 +14,7 @@
     "netcoreapp",
     "netstandard",
     "notnull",
+    "parameterless",
     "paramref",
     "startable",
     "subclassing",
