@@ -14,11 +14,9 @@ namespace Autofac.Builder;
 /// </summary>
 public class RegistrationData
 {
+    private readonly HashSet<Service> _services = [];
     private bool _defaultServiceOverridden;
     private Service _defaultService;
-
-    private readonly HashSet<Service> _services = [];
-
     private IComponentLifetime _lifetime = CurrentScopeLifetime.Instance;
 
     /// <summary>

@@ -12,14 +12,14 @@ namespace Autofac.Core;
 /// </summary>
 internal class Disposer : Disposable, IDisposer
 {
+    // Need to use a semaphore instead of a simple object to lock on, because
+    // we need to synchronize an awaitable block.
+    private readonly SemaphoreSlim _synchRoot = new(1, 1);
+
     /// <summary>
     /// Contents all implement IDisposable or IAsyncDisposable.
     /// </summary>
     private Stack<object> _items = new();
-
-    // Need to use a semaphore instead of a simple object to lock on, because
-    // we need to synchronise an awaitable block.
-    private readonly SemaphoreSlim _synchRoot = new(1, 1);
 
     /// <summary>
     /// Releases unmanaged and - optionally - managed resources.
@@ -48,7 +48,7 @@ internal class Disposer : Disposable, IDisposer
 
                         // Type only implements IAsyncDisposable. We will need to do sync-over-async.
                         // We want to ensure we lose all context here, because if we don't we can deadlock.
-                        // So we push this disposal onto the threadpool.
+                        // So we push this disposal onto the thread pool.
                         Task.Run(async () => await asyncDisposable.DisposeAsync().ConfigureAwait(false))
                             .ConfigureAwait(false)
                             .GetAwaiter().GetResult();

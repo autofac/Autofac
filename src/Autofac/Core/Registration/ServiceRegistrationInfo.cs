@@ -11,17 +11,17 @@ namespace Autofac.Core.Registration;
 /// </summary>
 internal class ServiceRegistrationInfo : IResolvePipelineBuilder
 {
-    private volatile bool _isInitialized;
-
-    private readonly Service _service;
-
-    private IComponentRegistration? _fixedRegistration;
-
     /// <summary>
     ///  List of implicit default service implementations. Overriding default implementations are appended to the end,
     ///  so the enumeration should begin from the end too, and the most default implementation comes last.
     /// </summary>
     private readonly List<IComponentRegistration> _defaultImplementations = new();
+
+    private readonly Service _service;
+
+    private volatile bool _isInitialized;
+
+    private IComponentRegistration? _fixedRegistration;
 
     /// <summary>
     ///  List of service implementations coming from sources. Sources have priority over preserve-default implementations.
