@@ -263,6 +263,32 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         // Do not call the base, otherwise the standard Dispose will fire.
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static IEnumerable<IRegistrationSource> ExcludeSource(IEnumerable<IRegistrationSource> sources, IRegistrationSource exclude)
+    {
+        foreach (var item in sources)
+        {
+            if (item != exclude)
+            {
+                yield return item;
+            }
+        }
+    }
+
+    private static ServiceRegistrationInfo GetEphemeralServiceInfo(Dictionary<Service, ServiceRegistrationInfo> ephemeralSet, Service service, ServiceRegistrationInfo info)
+    {
+        if (ephemeralSet.TryGetValue(service, out var ephemeral))
+        {
+            return ephemeral;
+        }
+
+        var newCopy = info.CloneUninitialized();
+
+        ephemeralSet.Add(service, newCopy);
+
+        return newCopy;
+    }
+
     private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
     {
         var createdEphemeralSet = false;
@@ -408,34 +434,8 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static IEnumerable<IRegistrationSource> ExcludeSource(IEnumerable<IRegistrationSource> sources, IRegistrationSource exclude)
-    {
-        foreach (var item in sources)
-        {
-            if (item != exclude)
-            {
-                yield return item;
-            }
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ServiceRegistrationInfo GetServiceInfo(Service service)
     {
         return _serviceInfo.GetOrAdd(service, RegInfoFactory);
-    }
-
-    private static ServiceRegistrationInfo GetEphemeralServiceInfo(Dictionary<Service, ServiceRegistrationInfo> ephemeralSet, Service service, ServiceRegistrationInfo info)
-    {
-        if (ephemeralSet.TryGetValue(service, out var ephemeral))
-        {
-            return ephemeral;
-        }
-
-        var newCopy = info.CloneUninitialized();
-
-        ephemeralSet.Add(service, newCopy);
-
-        return newCopy;
     }
 }

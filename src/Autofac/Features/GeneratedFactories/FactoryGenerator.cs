@@ -15,12 +15,12 @@ namespace Autofac.Features.GeneratedFactories;
 /// </summary>
 public class FactoryGenerator
 {
-    private readonly Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
-
     // The explicit '!' default is ok because the code is never executed, it's just used by
     // the expression tree.
     private static readonly ConstructorInfo RequestConstructor
         = ReflectionExtensions.GetConstructor(() => new ResolveRequest(default!, default!, default!, default));
+
+    private readonly Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FactoryGenerator"/> class.

@@ -197,6 +197,13 @@ public sealed class ContainerBuilder
         Build(componentRegistry, true);
     }
 
+    private static bool IsFirstContainerBuilder()
+    {
+        // First container will start with a value of 0, we will try and set it to 1;
+        // if the value is 0, it means it's the first builder.
+        return Interlocked.CompareExchange(ref _builderAlreadyAllocated, 1, 0) == 0;
+    }
+
     private void Build(IComponentRegistryBuilder componentRegistry, bool excludeDefaultModules)
     {
         if (componentRegistry == null)
@@ -232,12 +239,5 @@ public sealed class ContainerBuilder
         componentRegistry.AddRegistrationSource(new LazyWithMetadataRegistrationSource());
         componentRegistry.AddRegistrationSource(new StronglyTypedMetaRegistrationSource());
         componentRegistry.AddRegistrationSource(new GeneratedFactoryRegistrationSource());
-    }
-
-    private static bool IsFirstContainerBuilder()
-    {
-        // First container will start with a value of 0, we will try and set it to 1;
-        // if the value is 0, it means it's the first builder.
-        return Interlocked.CompareExchange(ref _builderAlreadyAllocated, 1, 0) == 0;
     }
 }

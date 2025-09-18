@@ -26,9 +26,9 @@ public class DefaultDiagnosticTracer : OperationDiagnosticTracerBase<string>
 {
     private const string RequestExceptionTraced = "__RequestException";
 
-    private readonly ConcurrentDictionary<IResolveOperation, IndentingStringBuilder> _operationBuilders = new();
-
     private static readonly string[] NewLineSplit = new[] { Environment.NewLine };
+
+    private readonly ConcurrentDictionary<IResolveOperation, IndentingStringBuilder> _operationBuilders = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DefaultDiagnosticTracer"/> class.

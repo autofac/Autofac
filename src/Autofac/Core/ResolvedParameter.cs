@@ -26,6 +26,45 @@ public class ResolvedParameter : Parameter
     }
 
     /// <summary>
+    /// Construct a <see cref="ResolvedParameter"/> that will match parameters of type
+    /// <typeparamref name="TService"/> and resolve for those parameters an implementation
+    /// registered with the key <paramref name="serviceKey"/>.
+    /// </summary>
+    /// <typeparam name="TService">The type of the parameter to match.</typeparam>
+    /// <param name="serviceKey">The key of the matching service to resolve.</param>
+    /// <returns>A configured <see cref="ResolvedParameter"/> instance.</returns>
+    public static ResolvedParameter ForKeyed<TService>(object serviceKey)
+    {
+        if (serviceKey == null)
+        {
+            throw new ArgumentNullException(nameof(serviceKey));
+        }
+
+        var ks = new KeyedService(serviceKey, typeof(TService));
+        return new ResolvedParameter(
+            (pi, c) => pi.ParameterType == typeof(TService) && c.IsRegisteredService(ks),
+            (pi, c) => c.ResolveService(ks));
+    }
+
+    /// <summary>
+    /// Construct a <see cref="ResolvedParameter"/> that will match parameters of type
+    /// <typeparamref name="TService"/> and resolve for those parameters an implementation
+    /// registered with the name <paramref name="serviceName"/>.
+    /// </summary>
+    /// <typeparam name="TService">The type of the parameter to match.</typeparam>
+    /// <param name="serviceName">The name of the matching service to resolve.</param>
+    /// <returns>A configured <see cref="ResolvedParameter"/> instance.</returns>
+    public static ResolvedParameter ForNamed<TService>(string serviceName)
+    {
+        if (serviceName == null)
+        {
+            throw new ArgumentNullException(nameof(serviceName));
+        }
+
+        return ForKeyed<TService>(serviceName);
+    }
+
+    /// <summary>
     /// Returns true if the parameter is able to provide a value to a particular site.
     /// </summary>
     /// <param name="pi">Constructor, method, or property-mutator parameter.</param>
@@ -54,44 +93,5 @@ public class ResolvedParameter : Parameter
 
         valueProvider = null;
         return false;
-    }
-
-    /// <summary>
-    /// Construct a <see cref="ResolvedParameter"/> that will match parameters of type
-    /// <typeparamref name="TService"/> and resolve for those parameters an implementation
-    /// registered with the name <paramref name="serviceName"/>.
-    /// </summary>
-    /// <typeparam name="TService">The type of the parameter to match.</typeparam>
-    /// <param name="serviceName">The name of the matching service to resolve.</param>
-    /// <returns>A configured <see cref="ResolvedParameter"/> instance.</returns>
-    public static ResolvedParameter ForNamed<TService>(string serviceName)
-    {
-        if (serviceName == null)
-        {
-            throw new ArgumentNullException(nameof(serviceName));
-        }
-
-        return ForKeyed<TService>(serviceName);
-    }
-
-    /// <summary>
-    /// Construct a <see cref="ResolvedParameter"/> that will match parameters of type
-    /// <typeparamref name="TService"/> and resolve for those parameters an implementation
-    /// registered with the key <paramref name="serviceKey"/>.
-    /// </summary>
-    /// <typeparam name="TService">The type of the parameter to match.</typeparam>
-    /// <param name="serviceKey">The key of the matching service to resolve.</param>
-    /// <returns>A configured <see cref="ResolvedParameter"/> instance.</returns>
-    public static ResolvedParameter ForKeyed<TService>(object serviceKey)
-    {
-        if (serviceKey == null)
-        {
-            throw new ArgumentNullException(nameof(serviceKey));
-        }
-
-        var ks = new KeyedService(serviceKey, typeof(TService));
-        return new ResolvedParameter(
-            (pi, c) => pi.ParameterType == typeof(TService) && c.IsRegisteredService(ks),
-            (pi, c) => c.ResolveService(ks));
     }
 }

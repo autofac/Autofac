@@ -317,6 +317,15 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
         return GetEnumerator();
     }
 
+    private static string DescribeValidEnumRange(PipelinePhase start, PipelinePhase end)
+    {
+        var enumValues = Enum.GetValues(typeof(PipelinePhase))
+                             .Cast<PipelinePhase>()
+                             .Where(value => value >= start && value <= end);
+
+        return string.Join(", ", enumValues);
+    }
+
     private void VerifyPhase(PipelinePhase middlewarePhase)
     {
         if (Type == PipelineType.Service)
@@ -340,14 +349,5 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
                         middlewarePhase,
                         DescribeValidEnumRange(PipelinePhase.RegistrationPipelineStart, PipelinePhase.Activation)));
         }
-    }
-
-    private static string DescribeValidEnumRange(PipelinePhase start, PipelinePhase end)
-    {
-        var enumValues = Enum.GetValues(typeof(PipelinePhase))
-                             .Cast<PipelinePhase>()
-                             .Where(value => value >= start && value <= end);
-
-        return string.Join(", ", enumValues);
     }
 }

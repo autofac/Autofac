@@ -17,6 +17,30 @@ internal abstract class BaseGenericResolveDelegateInvoker
     private ParameterInfo[]? _methodParameters;
 
     /// <summary>
+    /// Checks whether there are any parameters in the set of parameters.
+    /// </summary>
+    /// <param name="parameters">The list of parameters to check.</param>
+    /// <returns><see langword="true"/> if there are any parameters; otherwise, <see langword="false"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static bool AnyParameters(IEnumerable<Parameter> parameters)
+    {
+        // The by-far most common way you'll end up with no parameters is by
+        // invoking a Resolve() function call that doesn't accept parameters, so
+        // the readonly NoParameters shared value is used.
+        // A ReferenceEquals comparison here handles that neatly, and is
+        // significantly faster in benchmarks than doing the Any() call in every
+        // case.
+        if (ReferenceEquals(parameters, ResolveRequest.NoParameters))
+        {
+            return false;
+        }
+
+        // Might be some parameters, so use Any to check for parameters.
+        // For a List- or Array-backed call, this is pretty quick.
+        return parameters.Any();
+    }
+
+    /// <summary>
     /// Method implemented by the derived generated class to get the <see cref="ParameterInfo"/> array for the owned delegate.
     /// </summary>
     /// <returns>
@@ -49,29 +73,5 @@ internal abstract class BaseGenericResolveDelegateInvoker
         }
 
         return context.Resolve<T>();
-    }
-
-    /// <summary>
-    /// Checks whether there are any parameters in the set of parameters.
-    /// </summary>
-    /// <param name="parameters">The list of parameters to check.</param>
-    /// <returns><see langword="true"/> if there are any parameters; otherwise, <see langword="false"/>.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected static bool AnyParameters(IEnumerable<Parameter> parameters)
-    {
-        // The by-far most common way you'll end up with no parameters is by
-        // invoking a Resolve() function call that doesn't accept parameters, so
-        // the readonly NoParameters shared value is used.
-        // A ReferenceEquals comparison here handles that neatly, and is
-        // significantly faster in benchmarks than doing the Any() call in every
-        // case.
-        if (ReferenceEquals(parameters, ResolveRequest.NoParameters))
-        {
-            return false;
-        }
-
-        // Might be some parameters, so use Any to check for parameters.
-        // For a List- or Array-backed call, this is pretty quick.
-        return parameters.Any();
     }
 }
