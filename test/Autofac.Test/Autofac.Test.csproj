@@ -26,11 +26,6 @@
     <AdditionalFiles Include="..\..\build\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="TestResults\**" />
-    <EmbeddedResource Remove="TestResults\**" />
-    <None Remove="TestResults\**" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\Shims\required\*.cs" Link="Util\shims\required\%(FileName).cs" />
     <None Include="..\Shims\required\README.md" Link="Util\shims\required\README.md" />
   </ItemGroup>
@@ -43,6 +38,7 @@
     <PackageReference Include="NSubstitute" Version="5.3.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2">

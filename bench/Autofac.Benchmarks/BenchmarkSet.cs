@@ -1,4 +1,7 @@
-﻿using Autofac.Benchmarks.Decorators;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using Autofac.Benchmarks.Decorators;
 
 namespace Autofac.Benchmarks;
 

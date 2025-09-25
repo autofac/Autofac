@@ -6,11 +6,10 @@
     <GenerateProgramFile>false</GenerateProgramFile>
     <PlatformTarget>$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</PlatformTarget>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>Autofac.Benchmarks</AssemblyName>
     <AssemblyOriginatorKeyFile>../../Autofac.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
-    <PackageId>Autofac.Benchmarks</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <PreserveCompilationContext>true</PreserveCompilationContext>
     <CodeAnalysisRuleSet>../../build/Test.ruleset</CodeAnalysisRuleSet>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
@@ -27,9 +26,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Autofac\Autofac.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\build\stylecop.json" Link="stylecop.json" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />

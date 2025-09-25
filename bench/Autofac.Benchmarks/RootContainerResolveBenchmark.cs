@@ -1,4 +1,7 @@
-﻿namespace Autofac.Benchmarks;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+namespace Autofac.Benchmarks;
 
 /// <summary>
 /// Tests the performance of retrieving various simple components from a root container.
@@ -45,9 +48,15 @@ public class RootContainerResolveBenchmark
         GC.KeepAlive(shared);
     }
 
-    internal class NonSharedDelegate { }
+    internal class NonSharedDelegate
+    {
+    }
 
-    internal class NonSharedReflection { }
+    internal class NonSharedReflection
+    {
+    }
 
-    internal class Shared { }
+    internal class Shared
+    {
+    }
 }

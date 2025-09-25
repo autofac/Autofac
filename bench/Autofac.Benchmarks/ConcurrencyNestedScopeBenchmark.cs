@@ -1,4 +1,7 @@
-﻿namespace Autofac.Benchmarks;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+namespace Autofac.Benchmarks;
 
 /// <summary>
 /// Test the performance of resolving a relatively simple object graph, but within 2 levels of nested lifetime scopes,
@@ -73,16 +76,22 @@ public class ConcurrencyNestedScopeBenchmark
 
     internal class MockRequestScopeService1
     {
-        public MockRequestScopeService1() { }
+        public MockRequestScopeService1()
+        {
+        }
     }
 
     internal class MockRequestScopeService2
     {
-        public MockRequestScopeService2(MockRequestScopeService1 service1, MockGlobalSingleton singleton) { }
+        public MockRequestScopeService2(MockRequestScopeService1 service1, MockGlobalSingleton singleton)
+        {
+        }
     }
 
     internal class MockUnitOfWork
     {
-        public MockUnitOfWork(MockGlobalSingleton singleton) { }
+        public MockUnitOfWork(MockGlobalSingleton singleton)
+        {
+        }
     }
 }

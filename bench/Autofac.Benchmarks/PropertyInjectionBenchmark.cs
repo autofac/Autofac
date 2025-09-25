@@ -1,4 +1,7 @@
-﻿namespace Autofac.Benchmarks;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+namespace Autofac.Benchmarks;
 
 public class PropertyInjectionBenchmark
 {
@@ -52,7 +55,11 @@ public class PropertyInjectionBenchmark
         public D2 D2 { get; set; }
     }
 
-    internal class D1 { }
+    internal class D1
+    {
+    }
 
-    internal class D2 { }
+    internal class D2
+    {
+    }
 }

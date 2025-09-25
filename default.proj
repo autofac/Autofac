@@ -3,6 +3,7 @@
   <PropertyGroup>
     <!-- Increment the overall semantic version here. -->
     <Version>8.4.0</Version>
+    <SolutionName>Autofac</SolutionName>
     <Configuration Condition="'$(Configuration)'==''">Release</Configuration>
     <ArtifactDirectory>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),"artifacts"))</ArtifactDirectory>
     <PackageDirectory>$([System.IO.Path]::Combine($(ArtifactDirectory),"packages"))</PackageDirectory>
@@ -36,11 +37,11 @@
     <CleanDirectory Include="$(ArtifactDirectory)" />
     <SourceProject Include="$(MSBuildProjectDirectory)/src/**/*.csproj" />
     <TestProject Include="$(MSBuildProjectDirectory)/test/**/*.csproj" />
-    <SolutionFile Include="Autofac.sln" />
+    <SolutionFile Include="$(SolutionName).sln" />
   </ItemGroup>
   <Target Name="All">
     <Message Text="****************************************" Importance="high" />
-    <Message Text="Autofac v$(Version)" Importance="high" />
+    <Message Text="$(SolutionName) v$(Version)" Importance="high" />
     <Message Text="$(Configuration) Configuration" Importance="high" />
     <Message Text="$(BuildDateTime)" Importance="high" />
     <Message Text="****************************************" Importance="high" />

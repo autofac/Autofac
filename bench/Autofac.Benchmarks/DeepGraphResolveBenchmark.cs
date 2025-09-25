@@ -1,4 +1,7 @@
-﻿namespace Autofac.Benchmarks;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+namespace Autofac.Benchmarks;
 
 /// <summary>
 /// Tests the performance of retrieving a (reasonably) deeply-nested object graph.
@@ -30,30 +33,44 @@ public class DeepGraphResolveBenchmark
 
     internal class A
     {
-        public A(B1 b1, B2 b2) { }
+        public A(B1 b1, B2 b2)
+        {
+        }
     }
 
     internal class B1
     {
-        public B1(B2 b2, C1 c1, C2 c2) { }
+        public B1(B2 b2, C1 c1, C2 c2)
+        {
+        }
     }
 
     internal class B2
     {
-        public B2(C1 c1, C2 c2) { }
+        public B2(C1 c1, C2 c2)
+        {
+        }
     }
 
     internal class C1
     {
-        public C1(C2 c2, D1 d1, D2 d2) { }
+        public C1(C2 c2, D1 d1, D2 d2)
+        {
+        }
     }
 
     internal class C2
     {
-        public C2(D1 d1, D2 d2) { }
+        public C2(D1 d1, D2 d2)
+        {
+        }
     }
 
-    internal class D1 { }
+    internal class D1
+    {
+    }
 
-    internal class D2 { }
+    internal class D2
+    {
+    }
 }

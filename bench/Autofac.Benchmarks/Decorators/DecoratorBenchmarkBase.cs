@@ -1,4 +1,7 @@
-﻿namespace Autofac.Benchmarks.Decorators;
+﻿// Copyright (c) Autofac Project. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+namespace Autofac.Benchmarks.Decorators;
 
 public abstract class DecoratorBenchmarkBase<TCommandHandler>
 {
@@ -9,7 +12,7 @@ public abstract class DecoratorBenchmarkBase<TCommandHandler>
     {
         using (var scope = Container.BeginLifetimeScope())
         {
-            //NO-OP for baseline measurement
+            // NO-OP for baseline measurement
         }
     }
 
