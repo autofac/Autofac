@@ -1,7 +1,7 @@
 {
   "recommendations": [
-    "ms-dotnettools.csdevkit",
+    "davidanson.vscode-markdownlint",
     "editorconfig.editorconfig",
-    "davidanson.vscode-markdownlint"
+    "ms-dotnettools.csdevkit"
   ]
 }

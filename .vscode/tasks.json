@@ -1,5 +1,32 @@
 {
+  "linux": {
+    "options": {
+      "shell": {
+        "args": [
+          "-NoProfile",
+          "-Command"
+        ],
+        "executable": "pwsh"
+      }
+    }
+  },
+  "osx": {
+    "options": {
+      "shell": {
+        "args": [
+          "-NoProfile",
+          "-Command"
+        ],
+        "executable": "/usr/local/bin/pwsh"
+      }
+    }
+  },
   "tasks": [
+    {
+      "command": "If (Test-Path ${workspaceFolder}/artifacts/logs) { Remove-Item ${workspaceFolder}/artifacts/logs -Recurse -Force }; New-Item -Path ${workspaceFolder}/artifacts/logs -ItemType Directory -Force | Out-Null",
+      "label": "create log directory",
+      "type": "shell"
+    },
     {
       "args": [
         "build",
@@ -22,10 +49,18 @@
         "${workspaceFolder}/Autofac.sln",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary",
+        "--results-directory",
+        "\"artifacts/logs\"",
+        "--logger:trx",
+        "--collect:\"XPlat Code Coverage\"",
+        "--settings:build/Coverage.runsettings",
         "--filter",
         "FullyQualifiedName!~Benchmark"
       ],
       "command": "dotnet",
+      "dependsOn": [
+        "create log directory"
+      ],
       "group": {
         "isDefault": true,
         "kind": "test"
@@ -35,5 +70,18 @@
       "type": "process"
     }
   ],
-  "version": "2.0.0"
+  "version": "2.0.0",
+  "windows": {
+    "options": {
+      "shell": {
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-Command"
+        ],
+        "executable": "pwsh.exe"
+      }
+    }
+  }
 }
