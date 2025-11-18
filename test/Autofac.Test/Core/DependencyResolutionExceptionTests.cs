@@ -42,7 +42,7 @@ public class DependencyResolutionExceptionTests
         builder.Register(c => new B(c.Resolve<A>()));
         builder.RegisterType<C>();
 
-        Exception ex;
+        DependencyResolutionException ex;
         using (var container = builder.Build())
         {
             ex = Assert.Throws<DependencyResolutionException>(() => container.Resolve<C>());

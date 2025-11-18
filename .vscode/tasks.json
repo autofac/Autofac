@@ -31,6 +31,7 @@
       "args": [
         "build",
         "${workspaceFolder}/Autofac.sln",
+        "--tl:off",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -50,9 +51,9 @@
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary",
         "--results-directory",
-        "\"artifacts/logs\"",
+        "artifacts/logs",
         "--logger:trx",
-        "--collect:\"XPlat Code Coverage\"",
+        "--collect:XPlat Code Coverage",
         "--settings:build/Coverage.runsettings",
         "--filter",
         "FullyQualifiedName!~Benchmark"

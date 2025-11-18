@@ -8,13 +8,13 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: "586c3ea3f51230da42bab657c6a32e9e66c364f0" # v0.44.0
+    rev: "192ad822316c3a22fb3d3cc8aa6eafa0b8488360" # v0.45.0
     hooks:
       - id: markdownlint
         args:
           - --fix
   - repo: https://github.com/tillig/json-sort-cli
-    rev: "e49ea86dde26d69661d5de4ab738a7e14c6275b2" # v2.0.3
+    rev: "009ab2ab49e1f2fa9d6b9dfc31009ceeca055204" # v3.0.0
     hooks:
       - id: json-sort
         args:

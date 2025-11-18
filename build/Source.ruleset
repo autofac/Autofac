@@ -26,6 +26,8 @@
     <Rule Id="CA2229" Action="None" />
     <!-- Mark ISerializable types with SerializableAttribute - false positive when building .NET Core. -->
     <Rule Id="CA2237" Action="None" />
+    <!-- Prefer generic overloads to using Type parameters - many aren't available in earlier frameworks; and we do a lot of reflection work in Autofac. -->
+    <Rule Id="CA2263" Action="None" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <!-- Prefix local calls with this. -->

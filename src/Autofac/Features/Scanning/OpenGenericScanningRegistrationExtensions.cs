@@ -162,7 +162,7 @@ internal static class OpenGenericScanningRegistrationExtensions
             .As(candidateType => (Service)new KeyedService(serviceKeyMapping(candidateType), candidateType));
     }
 
-    private static void ScanAssembliesForOpenGenerics(IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> rb)
+    private static void ScanAssembliesForOpenGenerics(IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, RegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> rb)
     {
         rb.ActivatorData.Filters.Add(t =>
             rb.RegistrationData.Services.OfType<IServiceWithType>().All(swt =>

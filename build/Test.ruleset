@@ -22,6 +22,8 @@
     <Rule Id="CA1506" Action="Warning" />
     <!-- Use ArgumentNullException.ThrowIfNull - this isn't available until we stop targeting netstandard. -->
     <Rule Id="CA1510" Action="None" />
+    <!-- Make API types internal - causes problems with tests and test assemblies. -->
+    <Rule Id="CA1515" Action="None" />
     <!-- Remove the underscores from member name - unit test scenarios may use underscores. -->
     <Rule Id="CA1707" Action="None" />
     <!-- Change names to avoid reserved word overlaps (e.g., Delegate, GetType, etc.) - too many of these in the public API, we'd break if we fixed it. -->
@@ -46,6 +48,8 @@
     <Rule Id="CA2234" Action="None" />
     <!-- Mark ISerializable types with SerializableAttribute - false positive when building .NET Core. -->
     <Rule Id="CA2237" Action="None" />
+    <!-- Prefer generic overloads to using Type parameters - we do a lot of reflection work in Autofac that needs to be tested. -->
+    <Rule Id="CA2263" Action="None" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <!-- Prefix local calls with this. -->
