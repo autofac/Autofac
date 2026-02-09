@@ -45,19 +45,16 @@ public class KeyedServiceTests
         /*
          * Table for what results are included:
          *
-         * Query                     | Keyed? | Unkeyed? | AnyKey? |
-         * ---------------------------------------------------------
-         * GetServices(Type)         | no     | yes      | no      |
-         * GetService(Type)          | no     | yes      | no      |
+         * Query                                   | Keyed? | Unkeyed? | AnyKey? |
+         * -----------------------------------------------------------------------
+         * Resolve<IEnumerable<Type>>              | no     | yes      | no      |
+         * Resolve<Type>                           | no     | yes      | no      |
          *
-         * GetKeyedServices(null)    | no     | yes      | no      |
-         * GetKeyedService(null)     | no     | yes      | no      |
+         * ResolveKeyed<IEnumerable<Type>>(AnyKey) | yes    | no       | no      |
+         * ResolveKeyed<Type>(AnyKey)              | throw  | throw    | throw   |
          *
-         * GetKeyedServices(AnyKey)  | yes    | no       | no      |
-         * GetKeyedService(AnyKey)   | throw  | throw    | throw   |
-         *
-         * GetKeyedServices(key)     | yes    | no       | no      |
-         * GetKeyedService(key)      | yes    | no       | yes     |
+         * ResolveKeyed<IEnumerable<Type>>(key)    | yes    | no       | no      |
+         * ResolveKeyed<Type>(key)                 | yes    | no       | yes     |
          *
          * Summary:
          * - Autofac does not support null keys, so there is no concept of differentiating between null key and unkeyed.
@@ -769,7 +766,7 @@ public class KeyedServiceTests
         var provider = builder.Build();
 
         Assert.Null(provider.Resolve<IService>());
-        Assert.Equal(typeof(Service), provider.ResolveKeyed<IService>("service1")!.GetType());
+        Assert.Equal(typeof(Service), provider.ResolveKeyed<IService>("service1").GetType());
     }
 
     [Fact]
@@ -973,7 +970,7 @@ public class KeyedServiceTests
         var sut = provider.Resolve<SimpleParentWithDynamicKeyedService>();
 
         // Act
-        var result = sut!.GetService("simple");
+        var result = sut.GetService("simple");
 
         // Assert
         Assert.True(result.GetType() == typeof(SimpleService));
@@ -988,7 +985,7 @@ public class KeyedServiceTests
             _lifetimeScope = lifetimeScope;
         }
 
-        public ISimpleService GetService(string name) => _lifetimeScope.ResolveKeyed<ISimpleService>(name)!;
+        public ISimpleService GetService(string name) => _lifetimeScope.ResolveKeyed<ISimpleService>(name);
     }
 
     private interface ISimpleService
