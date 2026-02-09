@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core;
+using Autofac.Core.Registration;
 using Autofac.Features.AttributeFilters;
 
 namespace Autofac.Specification.Test.Resolution;
@@ -77,7 +78,7 @@ public class KeyedServiceTests
             new[] { keyedService1, keyedService2 },
             provider.ResolveKeyed<IEnumerable<IService>>(KeyedService.AnyKey));
 
-        Assert.Throws<InvalidOperationException>(() => provider.ResolveKeyed<IService>(KeyedService.AnyKey));
+        Assert.Throws<DependencyResolutionException>(() => provider.ResolveKeyed<IService>(KeyedService.AnyKey));
 
         // Keyed.
         Assert.Equal(
@@ -98,11 +99,11 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
         Assert.Same(service1, provider.ResolveKeyed<IService>("service1"));
         Assert.Same(service2, provider.ResolveKeyed<IService>("service2"));
 
-        Assert.Null(provider.Resolve(typeof(IService)));
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve(typeof(IService)));
         Assert.Same(service1, provider.ResolveKeyed("service1", typeof(IService)));
         Assert.Same(service2, provider.ResolveKeyed("service2", typeof(IService)));
     }
@@ -211,50 +212,13 @@ public class KeyedServiceTests
         Assert.Equal(new[] { service5, service6 }, unkeyedServices);
     }
 
-    [Fact]
-    public void ResolveKeyedServicesAnyKeyConsistency()
-    {
-        var builder = new ContainerBuilder();
-        var service = new Service("first-service");
-        builder.RegisterInstance<IService>(service).Keyed<IService>("first-service");
-
-        var provider1 = builder.Build();
-        Assert.Throws<InvalidOperationException>(() => provider1.ResolveKeyed<IService>(KeyedService.AnyKey));
-        // We don't return KeyedService.AnyKey registration when listing services
-        Assert.Equal(new[] { service }, provider1.ResolveKeyed<IEnumerable<IService>>(KeyedService.AnyKey));
-
-        var provider2 = builder.Build();
-        Assert.Equal(new[] { service }, provider2.ResolveKeyed<IEnumerable<IService>>(KeyedService.AnyKey));
-        Assert.Throws<InvalidOperationException>(() => provider2.ResolveKeyed<IService>(KeyedService.AnyKey));
-    }
-
-    [Fact]
-    public void ResolveKeyedServicesAnyKeyConsistencyWithAnyKeyRegistration()
-    {
-        var builder = new ContainerBuilder();
-        var service = new Service("first-service");
-        var any = new Service("any");
-        builder.RegisterInstance<IService>(service).Keyed<IService>("first-service");
-        builder.Register<IService>(ctx => any).Keyed<IService>(KeyedService.AnyKey).SingleInstance();
-
-        var provider1 = builder.Build();
-        Assert.Equal(new[] { service }, provider1.ResolveKeyed<IEnumerable<IService>>(KeyedService.AnyKey));
-
-        // Check twice in different order to check caching
-        var provider2 = builder.Build();
-        Assert.Equal(new[] { service }, provider2.ResolveKeyed<IEnumerable<IService>>(KeyedService.AnyKey));
-        Assert.Same(any, provider2.ResolveKeyed<IService>(new object()));
-
-        Assert.Throws<InvalidOperationException>(() => provider2.ResolveKeyed<IService>(KeyedService.AnyKey));
-    }
-
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    // Test ordering and slot assignments when DI calls the service's constructor
-    // across keyed services with different service types and keys.
     public void ResolveWithAnyKeyQuery_Constructor(bool anyKeyQueryBeforeSingletonQueries)
     {
+        // Test ordering and slot assignments when DI calls the service's constructor
+        // across keyed services with different service types and keys.
         var builder = new ContainerBuilder();
 
         // Interweave these to check that the slot \ ordering logic is correct.
@@ -313,10 +277,10 @@ public class KeyedServiceTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    // Test ordering and slot assignments when DI calls the service's constructor
-    // across keyed services with different service types with duplicate keys.
     public void ResolveWithAnyKeyQuery_Constructor_Duplicates(bool anyKeyQueryBeforeSingletonQueries)
     {
+        // Test ordering and slot assignments when DI calls the service's constructor
+        // across keyed services with different service types with duplicate keys.
         var builder = new ContainerBuilder();
 
         // Interweave these to check that the slot \ ordering logic is correct.
@@ -380,10 +344,10 @@ public class KeyedServiceTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    // Test ordering and slot assignments when service is provided
-    // across keyed services with different service types and keys.
     public void ResolveWithAnyKeyQuery_InstanceProvided(bool anyKeyQueryBeforeSingletonQueries)
     {
+        // Test ordering and slot assignments when service is provided
+        // across keyed services with different service types and keys.
         var builder = new ContainerBuilder();
 
         TestServiceA serviceA1 = new();
@@ -456,10 +420,10 @@ public class KeyedServiceTests
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    // Test ordering and slot assignments when service is provided
-    // across keyed services with different service types with duplicate keys.
     public void ResolveWithAnyKeyQuery_InstanceProvided_Duplicates(bool anyKeyQueryBeforeSingletonQueries)
     {
+        // Test ordering and slot assignments when service is provided
+        // across keyed services with different service types with duplicate keys.
         var builder = new ContainerBuilder();
 
         TestServiceA serviceA1 = new();
@@ -580,7 +544,7 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
         Assert.Same(service, provider.ResolveKeyed<IService>("service1"));
         Assert.Same(service, provider.ResolveKeyed("service1", typeof(IService)));
     }
@@ -594,7 +558,7 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
         var svc = provider.ResolveKeyed<IService>(serviceKey);
         Assert.NotNull(svc);
         Assert.Equal(serviceKey, svc.ToString());
@@ -608,7 +572,7 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
 
         var serviceKey1 = "some-key";
         var svc1 = provider.ResolveKeyed<IService>(serviceKey1);
@@ -647,7 +611,7 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
         var svc = provider.Resolve<OtherService>();
         Assert.NotNull(svc);
         Assert.Equal("service1", svc.Service1.ToString());
@@ -666,8 +630,8 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
-        Assert.Throws<InvalidOperationException>(() => provider.Resolve<OtherService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
+        Assert.Throws<DependencyResolutionException>(() => provider.Resolve<OtherService>());
     }
 
     [Fact]
@@ -680,8 +644,8 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
-        Assert.Throws<InvalidOperationException>(() => provider.Resolve<OtherService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
+        Assert.Throws<DependencyResolutionException>(() => provider.Resolve<OtherService>());
     }
 
     [Fact]
@@ -695,7 +659,7 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
         Assert.NotNull(provider.Resolve<OtherServiceWithDefaultCtorArgs>());
     }
 
@@ -713,7 +677,7 @@ public class KeyedServiceTests
         var provider = builder.Build();
 
         Assert.NotNull(provider.Resolve<IService>());
-        Assert.Throws<InvalidOperationException>(() => provider.Resolve<OtherService>());
+        Assert.Throws<DependencyResolutionException>(() => provider.Resolve<OtherService>());
     }
 
     [Fact]
@@ -725,7 +689,7 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
         Assert.Same(service, provider.ResolveKeyed<IService>("service1"));
         Assert.Same(service, provider.ResolveKeyed("service1", typeof(IService)));
     }
@@ -745,7 +709,7 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
 
         for (int i = 0; i < 3; i++)
         {
@@ -765,7 +729,7 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
         Assert.Equal(typeof(Service), provider.ResolveKeyed<IService>("service1").GetType());
     }
 
@@ -777,7 +741,7 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
         var first = provider.ResolveKeyed<IService>("service1");
         var second = provider.ResolveKeyed<IService>("service1");
         Assert.NotSame(first, second);
@@ -793,7 +757,7 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
         var first = provider.ResolveKeyed<IService>("service1");
         var second = provider.ResolveKeyed<IService>("service1");
         Assert.NotSame(first, second);
@@ -807,7 +771,7 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        Assert.Null(provider.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
         var first = provider.ResolveKeyed<IService>("service1");
         var second = provider.ResolveKeyed<IService>("service1");
         Assert.NotSame(first, second);
@@ -823,11 +787,11 @@ public class KeyedServiceTests
         var scopeA = provider.BeginLifetimeScope();
         var scopeB = provider.BeginLifetimeScope();
 
-        Assert.Null(scopeA.Resolve<IService>());
-        Assert.Null(scopeB.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => scopeA.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => scopeB.Resolve<IService>());
 
-        Assert.Throws<InvalidOperationException>(() => scopeA.ResolveKeyed<IService>(KeyedService.AnyKey));
-        Assert.Throws<InvalidOperationException>(() => scopeB.ResolveKeyed<IService>(KeyedService.AnyKey));
+        Assert.Throws<DependencyResolutionException>(() => scopeA.ResolveKeyed<IService>(KeyedService.AnyKey));
+        Assert.Throws<DependencyResolutionException>(() => scopeB.ResolveKeyed<IService>(KeyedService.AnyKey));
 
         var serviceA1 = scopeA.ResolveKeyed<IService>("key");
         var serviceA2 = scopeA.ResolveKeyed<IService>("key");
@@ -850,11 +814,11 @@ public class KeyedServiceTests
         var scopeA = provider.BeginLifetimeScope();
         var scopeB = provider.BeginLifetimeScope();
 
-        Assert.Null(scopeA.Resolve<IService>());
-        Assert.Null(scopeB.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => scopeA.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => scopeB.Resolve<IService>());
 
-        Assert.Throws<InvalidOperationException>(() => scopeA.ResolveKeyed<IService>(KeyedService.AnyKey));
-        Assert.Throws<InvalidOperationException>(() => scopeB.ResolveKeyed<IService>(KeyedService.AnyKey));
+        Assert.Throws<DependencyResolutionException>(() => scopeA.ResolveKeyed<IService>(KeyedService.AnyKey));
+        Assert.Throws<DependencyResolutionException>(() => scopeB.ResolveKeyed<IService>(KeyedService.AnyKey));
 
         var serviceA1 = scopeA.ResolveKeyed<IService>("key");
         var serviceA2 = scopeA.ResolveKeyed<IService>("key");
@@ -877,8 +841,8 @@ public class KeyedServiceTests
         var scopeA = provider.BeginLifetimeScope();
         var scopeB = provider.BeginLifetimeScope();
 
-        Assert.Null(scopeA.Resolve<IService>());
-        Assert.Null(scopeB.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => scopeA.Resolve<IService>());
+        Assert.Throws<ComponentNotRegisteredException>(() => scopeB.Resolve<IService>());
 
         var serviceA1 = scopeA.ResolveKeyed<IService>("key");
         var serviceA2 = scopeA.ResolveKeyed<IService>("key");
@@ -898,12 +862,12 @@ public class KeyedServiceTests
         var provider = builder.Build();
         var serviceKey = new object();
 
-        InvalidOperationException e;
+        ComponentNotRegisteredException e;
 
-        e = Assert.Throws<InvalidOperationException>(() => provider.ResolveKeyed<IService>(serviceKey));
+        e = Assert.Throws<ComponentNotRegisteredException>(() => provider.ResolveKeyed<IService>(serviceKey));
         VerifyException();
 
-        e = Assert.Throws<InvalidOperationException>(() => provider.ResolveKeyed(serviceKey, typeof(IService)));
+        e = Assert.Throws<ComponentNotRegisteredException>(() => provider.ResolveKeyed(serviceKey, typeof(IService)));
         VerifyException();
 
         void VerifyException()
