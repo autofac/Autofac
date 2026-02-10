@@ -55,19 +55,6 @@ internal static class KeyedServiceParameterInjector
         return AppendKeyParameter(parameters, serviceKey);
     }
 
-    /// <summary>
-    /// Creates a parameter that can supply the keyed service key to constructor arguments, if available.
-    /// </summary>
-    /// <param name="parameters">The parameters supplied by the caller.</param>
-    /// <returns>A parameter capable of supplying the keyed service key, or null if not available.</returns>
-    public static Parameter? TryCreateConstructorParameter(IEnumerable<Parameter> parameters)
-    {
-        return parameters?
-            .OfType<KeyedServiceKeyParameter>()
-            .FirstOrDefault()?
-            .ForConstructorInjection();
-    }
-
     private static bool HasKeyParameter(IEnumerable<Parameter> parameters, object serviceKey)
         => parameters.OfType<KeyedServiceKeyParameter>().Any(p => Equals(p.ServiceKey, serviceKey));
 

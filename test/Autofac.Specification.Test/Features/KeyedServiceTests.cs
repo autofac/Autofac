@@ -16,8 +16,9 @@ namespace Autofac.Specification.Test.Features;
 // actually supports.
 //
 // - Autofac does not support null keys (which is the same as register-by-type).
-// - Autofac does not support injecting the key as a constructor parameter into
-//   the service being resolved.
+// - Autofac injects the keyed value into constructors or properties that are
+//   explicitly decorated with the ServiceKeyAttribute from Autofac. This is the
+//   same concept as the MEDI attribute but not the same literal type.
 // - Autofac scopes and injected ILifetimeScope behave slightly differently than
 //   MEDI's IServiceScope and injected IServiceProvider, so some of the scope
 //   related tests have been omitted or modified.
@@ -568,6 +569,21 @@ public class KeyedServiceTests
     }
 
     [Fact]
+    public void ResolveKeyedServiceSingletonInstanceWithPropertyInjection()
+    {
+        var serviceKey = "this-is-my-service";
+        var builder = new ContainerBuilder();
+        builder.RegisterType<KeyAwarePropertyService>().Keyed<KeyAwarePropertyService>(serviceKey).PropertiesAutowired().SingleInstance();
+
+        var provider = builder.Build();
+
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<KeyAwarePropertyService>());
+        var svc = provider.ResolveKeyed<KeyAwarePropertyService>(serviceKey);
+        Assert.NotNull(svc);
+        Assert.Equal(serviceKey, svc.Key);
+    }
+
+    [Fact]
     public void ResolveKeyedServiceSingletonInstanceWithAnyKey()
     {
         var builder = new ContainerBuilder();
@@ -873,7 +889,7 @@ public class KeyedServiceTests
 
         public Service() => _id = Guid.NewGuid().ToString();
 
-        public Service(string id) => _id = id;
+        public Service([ServiceKey] string id) => _id = id;
 
         public override string ToString() => _id;
     }
@@ -924,6 +940,12 @@ public class KeyedServiceTests
 
         // Assert
         Assert.True(result.GetType() == typeof(SimpleService));
+    }
+
+    private class KeyAwarePropertyService
+    {
+        [ServiceKey]
+        public object Key { get; set; } = default!;
     }
 
     private class SimpleParentWithDynamicKeyedService
