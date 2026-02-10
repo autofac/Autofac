@@ -21,6 +21,9 @@ namespace Autofac.Specification.Test.Features;
 // - Autofac scopes and injected ILifetimeScope behave slightly differently than
 //   MEDI's IServiceScope and injected IServiceProvider, so some of the scope
 //   related tests have been omitted or modified.
+// - Autofac KeyFilterAttribute/WithAttributeFiltering does not REQUIRE the
+//   presence of the keyed service. If the injection can fall back to an
+//   unkeyed/typed service, that is allowed.
 public class KeyedServiceTests
 {
     [Fact]
@@ -661,23 +664,6 @@ public class KeyedServiceTests
 
         Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
         Assert.NotNull(provider.Resolve<OtherServiceWithDefaultCtorArgs>());
-    }
-
-    [Fact]
-    public void ResolveKeyedServiceWithKeyedParameter_MissingRegistrationButWithUnkeyedService()
-    {
-        var builder = new ContainerBuilder();
-
-        // We are not registering "service1" and "service2" keyed IService services and OtherService requires them,
-        // but we are registering an unkeyed IService service which should not be injected into OtherService.
-        builder.RegisterType<Service>().As<IService>().SingleInstance();
-
-        builder.RegisterType<OtherService>().SingleInstance().WithAttributeFiltering();
-
-        var provider = builder.Build();
-
-        Assert.NotNull(provider.Resolve<IService>());
-        Assert.Throws<DependencyResolutionException>(() => provider.Resolve<OtherService>());
     }
 
     [Fact]
