@@ -138,6 +138,13 @@ public sealed class KeyFilterAttribute : ParameterFilterAttribute
             throw new ArgumentNullException(nameof(context));
         }
 
+        // Note that the design of attribute filtering is that the attribute
+        // doesn't REQUIRE the presence of the keyed service. If the injection
+        // can fall back to an unkeyed/typed service, that is allowed. Changing
+        // that behavior will be breaking... and possibly expensive because we
+        // would have to assume the attribute can supply the value and, later,
+        // actually try to resolve the dependency and fail. No short-circuit
+        // checks.
         return context.ComponentRegistry.IsRegistered(new KeyedService(Key, parameter.ParameterType));
     }
 }
