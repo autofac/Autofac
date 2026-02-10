@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Globalization;
 using System.Reflection;
 using Autofac.Core;
 
@@ -116,7 +117,23 @@ public sealed class KeyFilterAttribute : ParameterFilterAttribute
             throw new ArgumentNullException(nameof(context));
         }
 
-        context.TryResolveKeyed(Key, parameter.ParameterType, out var value);
+        if (!context.TryResolveKeyed(Key, parameter.ParameterType, out var value))
+        {
+            if (parameter.HasDefaultValue)
+            {
+                return parameter.DefaultValue;
+            }
+
+            throw new DependencyResolutionException(
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    KeyFilterAttributeResources.KeyedServiceNotRegistered,
+                    parameter.Name,
+                    parameter.Member?.DeclaringType?.FullName ?? parameter.Member?.Name ?? "Unknown",
+                    parameter.ParameterType.FullName ?? parameter.ParameterType.Name,
+                    Key));
+        }
+
         return value;
     }
 
@@ -138,6 +155,6 @@ public sealed class KeyFilterAttribute : ParameterFilterAttribute
             throw new ArgumentNullException(nameof(context));
         }
 
-        return context.ComponentRegistry.IsRegistered(new KeyedService(Key, parameter.ParameterType));
+        return true;
     }
 }

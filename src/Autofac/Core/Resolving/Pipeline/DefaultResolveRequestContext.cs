@@ -31,7 +31,7 @@ internal sealed class DefaultResolveRequestContext : ResolveRequestContext
     {
         Operation = owningOperation;
         ActivationScope = scope;
-        Parameters = KeyedServiceParameterUtilities.EnsureKeyedServiceParameter(request.Service, request.Parameters);
+        Parameters = KeyedServiceParameterInjector.AddKeyedServiceParameter(request.Service, request.Parameters);
         _resolveRequest = request;
         PhaseReached = PipelinePhase.ResolveRequestStart;
         DiagnosticSource = diagnosticSource;

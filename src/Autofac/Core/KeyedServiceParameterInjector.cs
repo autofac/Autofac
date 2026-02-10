@@ -17,7 +17,7 @@ internal static partial class KeyedServiceParameterInjector
     /// <param name="service">The service being resolved.</param>
     /// <param name="parameters">The parameters supplied by the caller.</param>
     /// <returns>An enumerable that exposes the keyed service key when appropriate.</returns>
-    public static IEnumerable<Parameter> EnsureKeyedServiceParameter(Service service, IEnumerable<Parameter> parameters)
+    public static IEnumerable<Parameter> AddKeyedServiceParameter(Service service, IEnumerable<Parameter> parameters)
     {
         if (service == null)
         {

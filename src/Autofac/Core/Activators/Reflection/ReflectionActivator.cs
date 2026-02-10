@@ -279,7 +279,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
     private IEnumerable<Parameter> GetAllParameters(IEnumerable<Parameter> parameters)
     {
-        var keyedParameter = KeyedServiceParameterUtilities.TryCreateConstructorParameter(parameters);
+        var keyedParameter = KeyedServiceParameterInjector.TryCreateConstructorParameter(parameters);
 
         // Most often, there will be no `parameters` and/or no `_defaultParameters`; in both of those cases we can avoid allocating.
         // Do a reference compare with the NoParameters constant; faster than an Any() check for the common case.
