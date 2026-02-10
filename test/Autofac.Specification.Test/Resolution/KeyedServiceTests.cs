@@ -964,17 +964,9 @@ public class KeyedServiceTests
     {
     }
 
-    private class FakeService : IFakeSingletonService, IFakeOpenGenericService<PocoClass>, IDisposable
+    private class FakeService : IFakeSingletonService, IFakeOpenGenericService<PocoClass>
     {
         public PocoClass Value { get; set; }
-
-        public bool Disposed { get; private set; }
-
-        public void Dispose()
-        {
-            ObjectDisposedException.ThrowIf(Disposed, nameof(FakeService));
-            Disposed = true;
-        }
     }
 
     private interface IFakeSingletonService
