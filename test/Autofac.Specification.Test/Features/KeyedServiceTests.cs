@@ -5,7 +5,7 @@ using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Features.AttributeFilters;
 
-namespace Autofac.Specification.Test.Resolution;
+namespace Autofac.Specification.Test.Features;
 
 // Tests here mimic the keyed service tests from
 // Microsoft.Extensions.DependencyInjection.Specification.Tests.
