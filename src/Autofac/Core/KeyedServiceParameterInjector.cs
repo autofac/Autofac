@@ -1,15 +1,12 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Collections;
-using System.Reflection;
-
 namespace Autofac.Core;
 
 /// <summary>
 /// Helper methods for ensuring keyed resolve requests carry the requested key as a parameter.
 /// </summary>
-internal static partial class KeyedServiceParameterInjector
+internal static class KeyedServiceParameterInjector
 {
     /// <summary>
     /// Ensures keyed service requests carry their associated key with the parameter sequence.
@@ -29,7 +26,7 @@ internal static partial class KeyedServiceParameterInjector
             return parameters ?? throw new ArgumentNullException(nameof(parameters));
         }
 
-        return EnsureKeyedServiceParameter(keyedService.ServiceKey, parameters);
+        return AddKeyedServiceParameter(keyedService.ServiceKey, parameters);
     }
 
     /// <summary>
@@ -38,7 +35,7 @@ internal static partial class KeyedServiceParameterInjector
     /// <param name="serviceKey">The keyed service key.</param>
     /// <param name="parameters">The parameters supplied by the caller.</param>
     /// <returns>An enumerable that exposes the keyed service key when appropriate.</returns>
-    public static IEnumerable<Parameter> EnsureKeyedServiceParameter(object serviceKey, IEnumerable<Parameter> parameters)
+    public static IEnumerable<Parameter> AddKeyedServiceParameter(object serviceKey, IEnumerable<Parameter> parameters)
     {
         if (serviceKey == null)
         {
@@ -50,19 +47,12 @@ internal static partial class KeyedServiceParameterInjector
             throw new ArgumentNullException(nameof(parameters));
         }
 
-        if (KeyedService.IsAnyKey(serviceKey))
+        if (KeyedService.IsAnyKey(serviceKey) || HasKeyParameter(parameters, serviceKey))
         {
             return parameters;
         }
 
-        if (parameters is IKeyedServiceKeyAccessor accessor &&
-            accessor.TryGetServiceKey(out var existingKey) &&
-            Equals(existingKey, serviceKey))
-        {
-            return parameters;
-        }
-
-        return new KeyedServiceParameterCollection(parameters, serviceKey);
+        return AppendKeyParameter(parameters, serviceKey);
     }
 
     /// <summary>
@@ -72,72 +62,24 @@ internal static partial class KeyedServiceParameterInjector
     /// <returns>A parameter capable of supplying the keyed service key, or null if not available.</returns>
     public static Parameter? TryCreateConstructorParameter(IEnumerable<Parameter> parameters)
     {
-        if (parameters is IKeyedServiceKeyAccessor accessor &&
-            accessor.TryGetServiceKey(out var key))
-        {
-            return new KeyedServiceConstructorParameter(key);
-        }
-
-        return null;
+        return parameters?
+            .OfType<KeyedServiceKeyParameter>()
+            .FirstOrDefault()?
+            .ForConstructorInjection();
     }
 
-    /// <summary>
-    /// Wraps a set of parameters with an associated keyed service key.
-    /// </summary>
-    private sealed class KeyedServiceParameterCollection : IEnumerable<Parameter>, IKeyedServiceKeyAccessor
+    private static bool HasKeyParameter(IEnumerable<Parameter> parameters, object serviceKey)
+        => parameters.OfType<KeyedServiceKeyParameter>().Any(p => Equals(p.ServiceKey, serviceKey));
+
+    private static IEnumerable<Parameter> AppendKeyParameter(IEnumerable<Parameter> parameters, object serviceKey)
     {
-        private readonly IEnumerable<Parameter> _source;
-        private readonly object _key;
+        var keyParameter = new KeyedServiceKeyParameter(serviceKey);
 
-        public KeyedServiceParameterCollection(IEnumerable<Parameter> source, object key)
+        if (ReferenceEquals(parameters, ResolveRequest.NoParameters))
         {
-            _source = source ?? throw new ArgumentNullException(nameof(source));
-            _key = key ?? throw new ArgumentNullException(nameof(key));
+            return new Parameter[] { keyParameter };
         }
 
-        public IEnumerator<Parameter> GetEnumerator() => _source.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public bool TryGetServiceKey([NotNullWhen(returnValue: true)] out object? key)
-        {
-            key = _key;
-            return true;
-        }
-    }
-
-    /// <summary>
-    /// Supplies the keyed service key value to constructor parameters when matching by type.
-    /// </summary>
-    private sealed class KeyedServiceConstructorParameter : Parameter
-    {
-        private readonly object _key;
-
-        public KeyedServiceConstructorParameter(object key)
-        {
-            _key = key ?? throw new ArgumentNullException(nameof(key));
-        }
-
-        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, [NotNullWhen(returnValue: true)] out Func<object?>? valueProvider)
-        {
-            if (pi == null)
-            {
-                throw new ArgumentNullException(nameof(pi));
-            }
-
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            if (pi.ParameterType.IsAssignableFrom(_key.GetType()))
-            {
-                valueProvider = () => _key;
-                return true;
-            }
-
-            valueProvider = null;
-            return false;
-        }
+        return parameters.Append(keyParameter);
     }
 }

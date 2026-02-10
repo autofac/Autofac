@@ -103,10 +103,10 @@ public static class ParameterExtensions
             throw new ArgumentNullException(nameof(parameters));
         }
 
-        if (parameters is IKeyedServiceKeyAccessor accessor &&
-            accessor.TryGetServiceKey(out var key))
+        var keyParameter = parameters.OfType<KeyedServiceKeyParameter>().FirstOrDefault();
+        if (keyParameter is not null)
         {
-            return (T)key;
+            return (T)keyParameter.ServiceKey;
         }
 
         throw new InvalidOperationException(ResolutionExtensionsResources.KeyedServiceKeyUnavailable);
