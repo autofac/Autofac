@@ -639,7 +639,7 @@ public class KeyedServiceTests
     {
         var builder = new ContainerBuilder();
 
-        // We are not registering "service1" and "service1" keyed IService services and OtherService requires them.
+        // We are not registering "service1" and "service2" keyed IService services and OtherService requires them.
         builder.RegisterType<OtherService>().SingleInstance().WithAttributeFiltering();
 
         var provider = builder.Build();
@@ -653,7 +653,7 @@ public class KeyedServiceTests
     {
         var builder = new ContainerBuilder();
 
-        // We are not registering "service1" and "service1" keyed IService services and OtherServiceWithDefaultCtorArgs
+        // We are not registering "service1" and "service2" keyed IService services and OtherServiceWithDefaultCtorArgs
         // specifies them but has argument defaults if missing.
         builder.RegisterType<OtherServiceWithDefaultCtorArgs>().SingleInstance().WithAttributeFiltering();
 
@@ -668,7 +668,7 @@ public class KeyedServiceTests
     {
         var builder = new ContainerBuilder();
 
-        // We are not registering "service1" and "service1" keyed IService services and OtherService requires them,
+        // We are not registering "service1" and "service2" keyed IService services and OtherService requires them,
         // but we are registering an unkeyed IService service which should not be injected into OtherService.
         builder.RegisterType<Service>().As<IService>().SingleInstance();
 
