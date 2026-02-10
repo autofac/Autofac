@@ -11,7 +11,6 @@ using System.Runtime.Loader;
 using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
-using Autofac.Features.Collections;
 using Autofac.Util;
 
 namespace Autofac.Core.Lifetime;

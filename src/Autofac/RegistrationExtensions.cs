@@ -6,11 +6,9 @@ using System.Linq.Expressions;
 using System.Reflection;
 using Autofac.Builder;
 using Autofac.Core;
-using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Lifetime;
-using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.Scanning;
 using Autofac.Util;
 
