@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
@@ -280,22 +279,34 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
     private IEnumerable<Parameter> GetAllParameters(IEnumerable<Parameter> parameters)
     {
+        var keyedParameter = KeyedServiceParameterUtilities.TryCreateConstructorParameter(parameters);
+
         // Most often, there will be no `parameters` and/or no `_defaultParameters`; in both of those cases we can avoid allocating.
         // Do a reference compare with the NoParameters constant; faster than an Any() check for the common case.
         if (ReferenceEquals(ResolveRequest.NoParameters, parameters))
         {
-            return _defaultParameters;
+            if (keyedParameter is null)
+            {
+                return _defaultParameters;
+            }
+
+            return EnumerateParameters(Array.Empty<Parameter>(), keyedParameter);
         }
 
         if (parameters.Any())
         {
-            return EnumerateParameters(parameters);
+            return EnumerateParameters(parameters, keyedParameter);
         }
 
-        return _defaultParameters;
+        if (keyedParameter is null)
+        {
+            return _defaultParameters;
+        }
+
+        return EnumerateParameters(parameters, keyedParameter);
     }
 
-    private IEnumerable<Parameter> EnumerateParameters(IEnumerable<Parameter> parameters)
+    private IEnumerable<Parameter> EnumerateParameters(IEnumerable<Parameter> parameters, Parameter? keyedParameter = null)
     {
         foreach (var param in parameters)
         {
@@ -305,6 +316,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         foreach (var defaultParam in _defaultParameters)
         {
             yield return defaultParam;
+        }
+
+        if (keyedParameter is not null)
+        {
+            yield return keyedParameter;
         }
     }
 

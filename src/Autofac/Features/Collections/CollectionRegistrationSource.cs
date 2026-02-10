@@ -113,16 +113,27 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
         }
 
         var elementTypeService = swt.ChangeType(elementType);
+        var isAnyKeyQuery = service is KeyedService keyedService && KeyedService.IsAnyKey(keyedService.ServiceKey);
 
         var activator = new DelegateActivator(
             limitType,
             (c, p) =>
             {
-                var itemRegistrations = c.ComponentRegistry
-                    .ServiceRegistrationsFor(elementTypeService)
-                    .Where(cr => !cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections))
-                    .OrderBy(cr => cr.Registration.GetRegistrationOrder())
-                    .ToList();
+                List<ServiceRegistration> itemRegistrations;
+
+                if (isAnyKeyQuery)
+                {
+                    // AnyKey queries for collections return _all_ keyed services.
+                    itemRegistrations = GetAllSpecificKeyedRegistrations(c.ComponentRegistry, elementType);
+                }
+                else
+                {
+                    itemRegistrations = c.ComponentRegistry
+                        .ServiceRegistrationsFor(elementTypeService)
+                        .Where(cr => !cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections))
+                        .OrderBy(cr => cr.Registration.GetRegistrationOrder())
+                        .ToList();
+                }
 
                 var output = factory(itemRegistrations.Count);
                 var isFixedSize = output.IsFixedSize;
@@ -149,8 +160,8 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
             Guid.NewGuid(),
             activator,
             CurrentScopeLifetime.Instance,
-            InstanceSharing.None,
-            InstanceOwnership.ExternallyOwned,
+            isAnyKeyQuery ? InstanceSharing.Shared : InstanceSharing.None,
+            isAnyKeyQuery ? InstanceOwnership.OwnedByLifetimeScope : InstanceOwnership.ExternallyOwned,
             new[] { service },
             new Dictionary<string, object?>());
 
@@ -177,5 +188,44 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
         var parameter = Expression.Parameter(typeof(int));
         var newArray = Expression.NewArrayBounds(elementType, parameter);
         return Expression.Lambda<Func<int, IList>>(newArray, parameter).Compile();
+    }
+
+    private static List<ServiceRegistration> GetAllSpecificKeyedRegistrations(IComponentRegistry registry, Type elementType)
+    {
+        var result = new List<ServiceRegistration>();
+        var processedServices = new HashSet<KeyedService>();
+
+        foreach (var registration in registry.Registrations)
+        {
+            if (registration.Metadata.ContainsKey(MetadataKeys.AnyKeyAdapter))
+            {
+                continue;
+            }
+
+            foreach (var keyed in registration.Services.OfType<KeyedService>())
+            {
+                if (keyed.ServiceType != elementType || KeyedService.IsAnyKey(keyed.ServiceKey))
+                {
+                    continue;
+                }
+
+                if (!processedServices.Add(keyed))
+                {
+                    continue;
+                }
+
+                var serviceRegistrations = registry
+                    .ServiceRegistrationsFor(keyed)
+                    .Where(cr =>
+                        !cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections) &&
+                        !cr.Registration.Metadata.ContainsKey(MetadataKeys.AnyKeyAdapter));
+
+                result.AddRange(serviceRegistrations);
+            }
+        }
+
+        return result
+            .OrderBy(cr => cr.Registration.GetRegistrationOrder())
+            .ToList();
     }
 }

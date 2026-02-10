@@ -20,6 +20,11 @@ public sealed class KeyedService : Service, IServiceWithType, IEquatable<KeyedSe
     }
 
     /// <summary>
+    /// Gets a sentinel key representing a wildcard keyed registration.
+    /// </summary>
+    public static object AnyKey { get; } = new object();
+
+    /// <summary>
     /// Gets the key of the service.
     /// </summary>
     /// <value>The key of the service.</value>
@@ -36,6 +41,21 @@ public sealed class KeyedService : Service, IServiceWithType, IEquatable<KeyedSe
     /// </summary>
     /// <value>The description.</value>
     public override string Description => ServiceKey + " (" + ServiceType.FullName + ")";
+
+    /// <summary>
+    /// Determines whether the provided key is the <see cref="AnyKey"/> sentinel.
+    /// </summary>
+    /// <param name="serviceKey">The key to test.</param>
+    /// <returns><see langword="true"/> when the key represents <see cref="AnyKey"/>; otherwise, <see langword="false"/>.</returns>
+    public static bool IsAnyKey(object serviceKey)
+    {
+        if (serviceKey == null)
+        {
+            throw new ArgumentNullException(nameof(serviceKey));
+        }
+
+        return ReferenceEquals(serviceKey, AnyKey);
+    }
 
     /// <summary>
     /// Indicates whether the current object is equal to another object of the same type.

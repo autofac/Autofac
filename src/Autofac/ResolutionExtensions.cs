@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Core.Registration;
+using Autofac.Util;
 
 namespace Autofac;
 
@@ -416,6 +417,8 @@ public static class ResolutionExtensions
     public static TService ResolveKeyed<TService>(this IComponentContext context, object serviceKey, IEnumerable<Parameter> parameters)
         where TService : notnull
     {
+        EnsureAnyKeyUsageIsValid(serviceKey, typeof(TService));
+        parameters = KeyedServiceParameterInjector.EnsureKeyedServiceParameter(serviceKey, parameters);
         return CastInstance<TService>(ResolveService(context, new KeyedService(serviceKey, typeof(TService)), parameters));
     }
 
@@ -479,6 +482,8 @@ public static class ResolutionExtensions
     /// </exception>
     public static object ResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, IEnumerable<Parameter> parameters)
     {
+        EnsureAnyKeyUsageIsValid(serviceKey, serviceType);
+        parameters = KeyedServiceParameterInjector.EnsureKeyedServiceParameter(serviceKey, parameters);
         return ResolveService(context, new KeyedService(serviceKey, serviceType), parameters);
     }
 
@@ -1092,7 +1097,9 @@ public static class ResolutionExtensions
     /// </exception>
     public static bool TryResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, [NotNullWhen(returnValue: true)] out object? instance)
     {
-        return context.TryResolveService(new KeyedService(serviceKey, serviceType), ResolveRequest.NoParameters, out instance);
+        EnsureAnyKeyUsageIsValid(serviceKey, serviceType);
+        var parameters = KeyedServiceParameterInjector.EnsureKeyedServiceParameter(serviceKey, ResolveRequest.NoParameters);
+        return context.TryResolveService(new KeyedService(serviceKey, serviceType), parameters, out instance);
     }
 
     /// <summary>
@@ -1191,6 +1198,33 @@ public static class ResolutionExtensions
 
         instance = context.ResolveComponent(new ResolveRequest(service, serviceRegistration, parameters));
         return true;
+    }
+
+    private static void EnsureAnyKeyUsageIsValid(object serviceKey, Type serviceType)
+    {
+        if (serviceKey == null)
+        {
+            throw new ArgumentNullException(nameof(serviceKey));
+        }
+
+        if (serviceType == null)
+        {
+            throw new ArgumentNullException(nameof(serviceType));
+        }
+
+        if (!KeyedService.IsAnyKey(serviceKey))
+        {
+            return;
+        }
+
+        if (!serviceType.IsCollectionServiceType())
+        {
+            throw new DependencyResolutionException(
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    ResolutionExtensionsResources.AnyKeyRequiresEnumerable,
+                    serviceType.FullName));
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

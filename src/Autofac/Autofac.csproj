@@ -172,6 +172,9 @@
     <EmbeddedResource Update="Core\ImplicitRegistrationSourceResources.resx">
       <StronglyTypedNamespace>Autofac.Core</StronglyTypedNamespace>
     </EmbeddedResource>
+    <EmbeddedResource Update="Features\AttributeFilters\KeyFilterAttributeResources.resx">
+      <StronglyTypedNamespace>Autofac.Features.AttributeFilters</StronglyTypedNamespace>
+    </EmbeddedResource>
     <EmbeddedResource Update="Features\LazyDependencies\LazyRegistrationSourceResources.resx">
       <StronglyTypedNamespace>Autofac.Features.LazyDependencies</StronglyTypedNamespace>
     </EmbeddedResource>
