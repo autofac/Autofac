@@ -96,6 +96,22 @@ internal static class KeyedServiceParameterInjector
 
     private static bool HasKeyParameter(IEnumerable<Parameter> parameters, object serviceKey)
     {
+        if (parameters is IReadOnlyList<Parameter> readOnlyList)
+        {
+            if (readOnlyList.Count == 0)
+            {
+                return false;
+            }
+
+            // Fast path for the common case where the key parameter is last.
+            var lastIndex = readOnlyList.Count - 1;
+            if (readOnlyList[lastIndex] is KeyedServiceKeyParameter lastKey &&
+                Equals(lastKey.ServiceKey, serviceKey))
+            {
+                return true;
+            }
+        }
+
         foreach (var parameter in parameters)
         {
             if (parameter is KeyedServiceKeyParameter keyParameter && Equals(keyParameter.ServiceKey, serviceKey))

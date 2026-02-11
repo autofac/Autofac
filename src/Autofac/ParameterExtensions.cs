@@ -103,10 +103,12 @@ public static class ParameterExtensions
             throw new ArgumentNullException(nameof(parameters));
         }
 
-        var keyParameter = parameters.OfType<KeyedServiceKeyParameter>().FirstOrDefault();
-        if (keyParameter is not null)
+        foreach (var parameter in parameters)
         {
-            return (T)keyParameter.ServiceKey;
+            if (parameter is KeyedServiceKeyParameter keyParameter)
+            {
+                return (T)keyParameter.ServiceKey;
+            }
         }
 
         throw new InvalidOperationException(ResolutionExtensionsResources.KeyedServiceKeyUnavailable);
