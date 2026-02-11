@@ -3,7 +3,4 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup>
-    <NuGetAudit>false</NuGetAudit>
-  </PropertyGroup>
 </Project>
