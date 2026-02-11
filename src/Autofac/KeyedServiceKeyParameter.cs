@@ -3,7 +3,6 @@
 
 using System.Reflection;
 using Autofac.Core;
-using Autofac.Util;
 
 namespace Autofac;
 
@@ -51,19 +50,6 @@ internal sealed class KeyedServiceKeyParameter : Parameter
 
     private static bool ShouldInject(ParameterInfo parameter)
     {
-        if (parameter.IsDefined(typeof(ServiceKeyAttribute), inherit: true))
-        {
-            // It's a constructor parameter with the attribute.
-            return true;
-        }
-
-        if (parameter.TryGetDeclaringProperty(out PropertyInfo? property) &&
-            property.IsDefined(typeof(ServiceKeyAttribute), inherit: true))
-        {
-            // It's a property setter parameter with the attribute on the property.
-            return true;
-        }
-
-        return false;
+        return ServiceKeyAttributeCache.ParameterHasServiceKey(parameter);
     }
 }

@@ -35,6 +35,9 @@ internal class InternalReflectionCaches
         DefaultPublicConstructors = set.GetOrCreateCache<ReflectionCacheDictionary<Type, ConstructorInfo[]>>(nameof(DefaultPublicConstructors));
         GenericTypeDefinitionByType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, Type>>(nameof(GenericTypeDefinitionByType));
         HasRequiredMemberAttribute = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(HasRequiredMemberAttribute));
+        ServiceKeyParameterAttributes = set.GetOrCreateCache<ReflectionCacheParameterDictionary<bool>>(nameof(ServiceKeyParameterAttributes));
+        ServiceKeyPropertyAttributes = set.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, bool>>(nameof(ServiceKeyPropertyAttributes));
+        ServiceKeyUsageByType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(ServiceKeyUsageByType));
     }
 
     /// <summary>
@@ -91,4 +94,19 @@ internal class InternalReflectionCaches
     /// Gets a cache used by <see cref="ReflectionActivator"/>.
     /// </summary>
     public ReflectionCacheDictionary<Type, bool> HasRequiredMemberAttribute { get; }
+
+    /// <summary>
+    /// Gets a cache used to track <see cref="ServiceKeyAttribute"/> usage on parameters.
+    /// </summary>
+    public ReflectionCacheParameterDictionary<bool> ServiceKeyParameterAttributes { get; }
+
+    /// <summary>
+    /// Gets a cache used to track <see cref="ServiceKeyAttribute"/> usage on properties.
+    /// </summary>
+    public ReflectionCacheDictionary<PropertyInfo, bool> ServiceKeyPropertyAttributes { get; }
+
+    /// <summary>
+    /// Gets a cache used to determine if a type uses <see cref="ServiceKeyAttribute"/>.
+    /// </summary>
+    public ReflectionCacheDictionary<Type, bool> ServiceKeyUsageByType { get; }
 }

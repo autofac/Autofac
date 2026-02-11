@@ -418,7 +418,6 @@ public static class ResolutionExtensions
         where TService : notnull
     {
         EnsureAnyKeyUsageIsValid(serviceKey, typeof(TService));
-        parameters = KeyedServiceParameterInjector.AddKeyedServiceParameter(serviceKey, parameters);
         return CastInstance<TService>(ResolveService(context, new KeyedService(serviceKey, typeof(TService)), parameters));
     }
 
@@ -483,7 +482,6 @@ public static class ResolutionExtensions
     public static object ResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, IEnumerable<Parameter> parameters)
     {
         EnsureAnyKeyUsageIsValid(serviceKey, serviceType);
-        parameters = KeyedServiceParameterInjector.AddKeyedServiceParameter(serviceKey, parameters);
         return ResolveService(context, new KeyedService(serviceKey, serviceType), parameters);
     }
 
@@ -1098,8 +1096,7 @@ public static class ResolutionExtensions
     public static bool TryResolveKeyed(this IComponentContext context, object serviceKey, Type serviceType, [NotNullWhen(returnValue: true)] out object? instance)
     {
         EnsureAnyKeyUsageIsValid(serviceKey, serviceType);
-        var parameters = KeyedServiceParameterInjector.AddKeyedServiceParameter(serviceKey, ResolveRequest.NoParameters);
-        return context.TryResolveService(new KeyedService(serviceKey, serviceType), parameters, out instance);
+        return context.TryResolveService(new KeyedService(serviceKey, serviceType), ResolveRequest.NoParameters, out instance);
     }
 
     /// <summary>

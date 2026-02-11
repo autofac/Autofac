@@ -32,6 +32,40 @@ internal static class KeyedServiceParameterInjector
     /// <summary>
     /// Ensures keyed service requests carry their associated key with the parameter sequence.
     /// </summary>
+    /// <param name="service">The service being resolved.</param>
+    /// <param name="parameters">The parameters supplied by the caller.</param>
+    /// <param name="registration">The component registration (if known).</param>
+    /// <returns>An enumerable that exposes the keyed service key when appropriate.</returns>
+    public static IEnumerable<Parameter> AddKeyedServiceParameter(Service service, IEnumerable<Parameter> parameters, IComponentRegistration? registration)
+    {
+        if (service == null)
+        {
+            throw new ArgumentNullException(nameof(service));
+        }
+
+        if (parameters == null)
+        {
+            throw new ArgumentNullException(nameof(parameters));
+        }
+
+        if (service is not KeyedService keyedService || KeyedService.IsAnyKey(keyedService.ServiceKey))
+        {
+            // It's not a keyed service OR it's registered with AnyKey.
+            return parameters;
+        }
+
+        if (registration?.Activator is Autofac.Core.Activators.Reflection.ReflectionActivator reflectionActivator &&
+            !reflectionActivator.RequiresServiceKeyParameter)
+        {
+            return parameters;
+        }
+
+        return AddKeyedServiceParameter(keyedService.ServiceKey, parameters);
+    }
+
+    /// <summary>
+    /// Ensures keyed service requests carry their associated key with the parameter sequence.
+    /// </summary>
     /// <param name="serviceKey">The keyed service key.</param>
     /// <param name="parameters">The parameters supplied by the caller.</param>
     /// <returns>An enumerable that exposes the keyed service key when appropriate.</returns>
@@ -47,7 +81,12 @@ internal static class KeyedServiceParameterInjector
             throw new ArgumentNullException(nameof(parameters));
         }
 
-        if (KeyedService.IsAnyKey(serviceKey) || HasKeyParameter(parameters, serviceKey))
+        if (KeyedService.IsAnyKey(serviceKey))
+        {
+            return parameters;
+        }
+
+        if (HasKeyParameter(parameters, serviceKey))
         {
             return parameters;
         }
@@ -56,7 +95,17 @@ internal static class KeyedServiceParameterInjector
     }
 
     private static bool HasKeyParameter(IEnumerable<Parameter> parameters, object serviceKey)
-        => parameters.OfType<KeyedServiceKeyParameter>().Any(p => Equals(p.ServiceKey, serviceKey));
+    {
+        foreach (var parameter in parameters)
+        {
+            if (parameter is KeyedServiceKeyParameter keyParameter && Equals(keyParameter.ServiceKey, serviceKey))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     private static IEnumerable<Parameter> AppendKeyParameter(IEnumerable<Parameter> parameters, object serviceKey)
     {
