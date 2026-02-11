@@ -569,7 +569,23 @@ public class KeyedServiceTests
     }
 
     [Fact]
-    public void ResolveKeyedServiceSingletonInstanceWithPropertyInjection()
+    public void ResolveKeyedServiceOpenGenericWithKeyInjection()
+    {
+        var serviceKey = "this-is-my-service";
+        var builder = new ContainerBuilder();
+        builder.RegisterGeneric(typeof(KeyAwareGenericService<>)).Keyed(serviceKey, typeof(KeyAwareGenericService<>));
+        builder.RegisterType<PocoClass>();
+
+        var provider = builder.Build();
+
+        Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<KeyAwareGenericService<PocoClass>>());
+        var svc = provider.ResolveKeyed<KeyAwareGenericService<PocoClass>>(serviceKey);
+        Assert.NotNull(svc);
+        Assert.Equal(serviceKey, svc.Key);
+    }
+
+    [Fact]
+    public void ResolveKeyedServiceSingletonInstanceWithKeyPropertyInjection()
     {
         var serviceKey = "this-is-my-service";
         var builder = new ContainerBuilder();
@@ -946,6 +962,19 @@ public class KeyedServiceTests
     {
         [ServiceKey]
         public object Key { get; set; } = default!;
+    }
+
+    private class KeyAwareGenericService<T>
+    {
+        public KeyAwareGenericService([ServiceKey] string key, T value)
+        {
+            Key = key;
+            Value = value;
+        }
+
+        public string Key { get; set; } = default!;
+
+        public T Value { get; set; } = default!;
     }
 
     private class SimpleParentWithDynamicKeyedService
