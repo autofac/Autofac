@@ -8,33 +8,34 @@ using Autofac.Core;
 namespace Autofac.Util.Cache;
 
 /// <summary>
-/// A reflection cache dictionary, keyed on an <see cref="Assembly"/>.
+/// A reflection cache dictionary, keyed on a <see cref="ParameterInfo"/>.
 /// </summary>
-/// <typeparam name="TKey">The dictionary key.</typeparam>
 /// <typeparam name="TValue">The value type.</typeparam>
-public sealed class ReflectionCacheAssemblyDictionary<TKey, TValue>
-    : ConcurrentDictionary<TKey, TValue>, IReflectionCache
-    where TKey : Assembly
+public sealed class ReflectionCacheParameterDictionary<TValue>
+    : ConcurrentDictionary<ParameterInfo, TValue>, IReflectionCache
 {
     /// <inheritdoc />
     public ReflectionCacheUsage Usage { get; set; } = ReflectionCacheUsage.All;
 
     /// <inheritdoc />
-    public void Clear(ReflectionCacheClearPredicate? predicate)
+    public void Clear(ReflectionCacheClearPredicate predicate)
     {
         if (predicate is null)
         {
-            Clear();
+            throw new ArgumentNullException(nameof(predicate));
+        }
+
+        if (Count == 0)
+        {
             return;
         }
 
-        var reusableArrayForPredicate = new Assembly[1];
+        var reusableAssemblySet = new HashSet<Assembly>();
 
         foreach (var kvp in this)
         {
-            reusableArrayForPredicate[0] = kvp.Key;
-
-            if (predicate(null, reusableArrayForPredicate))
+            var member = kvp.Key.Member;
+            if (predicate(member, TypeAssemblyReferenceProvider.GetAllReferencedAssemblies(member, reusableAssemblySet)))
             {
                 TryRemove(kvp.Key, out _);
             }

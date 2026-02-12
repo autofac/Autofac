@@ -7,6 +7,7 @@ using Autofac.Core.Registration;
 using Autofac.Features.Collections;
 using Autofac.Features.GeneratedFactories;
 using Autofac.Features.Indexed;
+using Autofac.Features.KeyedServices;
 using Autofac.Features.LazyDependencies;
 using Autofac.Features.Metadata;
 using Autofac.Features.OwnedInstances;
@@ -233,6 +234,7 @@ public sealed class ContainerBuilder
     {
         this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();
         componentRegistry.AddRegistrationSource(new CollectionRegistrationSource());
+        componentRegistry.AddRegistrationSource(new AnyKeyRegistrationSource());
         componentRegistry.AddRegistrationSource(new OwnedInstanceRegistrationSource());
         componentRegistry.AddRegistrationSource(new MetaRegistrationSource());
         componentRegistry.AddRegistrationSource(new LazyRegistrationSource());

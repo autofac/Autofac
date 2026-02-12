@@ -117,7 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AnyKeyRequiresEnumerable" xml:space="preserve">
+    <value>AnyKey can only be used when resolving collection services. Service type {0} is not a collection.</value>
+  </data>
   <data name="CouldNotCastInstance" xml:space="preserve">
     <value>Resolved instance of type '{0}' could not be cast to the requested service type '{1}'.</value>
+  </data>
+  <data name="KeyedServiceKeyUnavailable" xml:space="preserve">
+    <value>No keyed service key is available for the current resolve operation.</value>
   </data>
 </root>

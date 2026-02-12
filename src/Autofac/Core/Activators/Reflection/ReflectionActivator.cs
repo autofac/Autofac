@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Util;
@@ -18,6 +17,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     private readonly Type _implementationType;
     private readonly Parameter[] _configuredProperties;
     private readonly Parameter[] _defaultParameters;
+    private readonly bool _requiresServiceKeyParameter;
 
     private ConstructorBinder[]? _constructorBinders;
     private bool _anyRequiredMembers;
@@ -50,6 +50,9 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
 
         _implementationType = implementationType;
+        _requiresServiceKeyParameter = ReflectionCacheSet.Shared.Internal.ServiceKeyUsageByType.GetOrAdd(
+            _implementationType,
+            static t => UsesServiceKeyAttribute(t));
         ConstructorFinder = constructorFinder ?? throw new ArgumentNullException(nameof(constructorFinder));
         ConstructorSelector = constructorSelector ?? throw new ArgumentNullException(nameof(constructorSelector));
         _configuredProperties = configuredProperties.ToArray();
@@ -65,6 +68,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     /// Gets the constructor selector.
     /// </summary>
     public IConstructorSelector ConstructorSelector { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether the activation pipeline needs a keyed service parameter for this type.
+    /// </summary>
+    internal bool RequiresServiceKeyParameter => _requiresServiceKeyParameter;
 
     /// <inheritdoc/>
     public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)
@@ -154,6 +162,43 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
             next(context);
         });
+    }
+
+    /// <summary>
+    /// Determines if any constructor parameters or settable properties on the
+    /// type have a <see cref="ServiceKeyAttribute"/>, which would require
+    /// special handling in the activation pipeline.
+    /// </summary>
+    /// <param name="implementationType">The type to inspect.</param>
+    /// <returns><see langword="true"/> if the type uses the <see cref="ServiceKeyAttribute"/>; otherwise, <see langword="false"/>.</returns>
+    private static bool UsesServiceKeyAttribute(Type implementationType)
+    {
+        // Intentionally not picky about _which_ constructor or property has the
+        // attribute. If a different constructor is picked via constructor
+        // binder/selector, it's fine; we just want to try to shortcut the case
+        // where we "may or may not need it." If you mark a property with the
+        // attribute but never inject properties, we'll still provide the
+        // parameter "just in case" you change your mind at runtime.
+        foreach (var constructor in implementationType.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+        {
+            foreach (var parameter in constructor.GetParameters())
+            {
+                if (ServiceKeyAttributeCache.ParameterHasServiceKey(parameter))
+                {
+                    return true;
+                }
+            }
+        }
+
+        foreach (var property in implementationType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+        {
+            if (property.CanWrite && ServiceKeyAttributeCache.PropertyHasServiceKey(property))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void UseSingleConstructorActivation(IResolvePipelineBuilder pipelineBuilder, ConstructorBinder singleConstructor)

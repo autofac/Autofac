@@ -31,7 +31,7 @@ internal sealed class DefaultResolveRequestContext : ResolveRequestContext
     {
         Operation = owningOperation;
         ActivationScope = scope;
-        Parameters = request.Parameters;
+        Parameters = KeyedServiceParameterInjector.AddKeyedServiceParameter(request.Service, request.Parameters, request.Registration);
         _resolveRequest = request;
         PhaseReached = PipelinePhase.ResolveRequestStart;
         DiagnosticSource = diagnosticSource;
@@ -87,7 +87,7 @@ internal sealed class DefaultResolveRequestContext : ResolveRequestContext
 
     /// <inheritdoc />
     public override void ChangeParameters(IEnumerable<Parameter> newParameters) =>
-        Parameters = newParameters ?? throw new ArgumentNullException(nameof(newParameters));
+        Parameters = KeyedServiceParameterInjector.AddKeyedServiceParameter(Service, newParameters ?? throw new ArgumentNullException(nameof(newParameters)), Registration);
 
     /// <inheritdoc />
     public override object ResolveComponent(in ResolveRequest request) =>

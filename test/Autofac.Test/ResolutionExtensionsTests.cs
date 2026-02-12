@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Collections.Generic;
+using System.Linq;
 using Autofac.Core;
 using Autofac.Core.Activators.ProvidedInstance;
 using Autofac.Core.Registration;
@@ -170,5 +172,54 @@ public class ResolutionExtensionsTests
 
         Assert.False(container.TryResolveKeyed<object>("name", out var o));
         Assert.Null(o);
+    }
+
+    [Fact]
+    public void ResolveKeyed_AnyKeyNonCollection()
+    {
+        using var container = Factory.CreateEmptyContainer();
+
+        Assert.Throws<DependencyResolutionException>(
+            () => container.ResolveKeyed<object>(KeyedService.AnyKey));
+    }
+
+    [Fact]
+    public void ResolveKeyed_AnyKeyEnumerable()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<AnyKeyService>().Keyed<AnyKeyService>("first");
+        builder.RegisterType<AnyKeyService>().Keyed<AnyKeyService>("second");
+        using var container = builder.Build();
+
+        var services = container.ResolveKeyed<IEnumerable<AnyKeyService>>(KeyedService.AnyKey).ToList();
+
+        Assert.Equal(2, services.Count);
+    }
+
+    [Fact]
+    public void TryResolveKeyed_AnyKeyNonCollection()
+    {
+        using var container = Factory.CreateEmptyContainer();
+
+        Assert.Throws<DependencyResolutionException>(
+            () => container.TryResolveKeyed(KeyedService.AnyKey, typeof(object), out _));
+    }
+
+    [Fact]
+    public void TryResolveKeyed_AnyKeyEnumerable()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<AnyKeyService>().Keyed<AnyKeyService>("only");
+        using var container = builder.Build();
+
+        var result = container.TryResolveKeyed<IEnumerable<AnyKeyService>>(KeyedService.AnyKey, out var services);
+
+        Assert.True(result);
+        Assert.NotNull(services);
+        Assert.Single(services!);
+    }
+
+    private sealed class AnyKeyService
+    {
     }
 }

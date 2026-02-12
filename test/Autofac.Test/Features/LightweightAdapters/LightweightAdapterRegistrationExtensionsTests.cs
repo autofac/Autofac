@@ -129,11 +129,11 @@ public class LightweightAdapterRegistrationExtensionsTests
         {
             var resolved = _container.Resolve<IParameterizedService>(TypedParameter.From<IService>(new Implementer1()));
             var dec2 = Assert.IsType<ParameterizedDecorator2>(resolved);
-            Assert.Empty(dec2.Parameters);
+            Assert.Empty(dec2.Parameters.OfType<TypedParameter>());
             var dec1 = Assert.IsType<ParameterizedDecorator1>(dec2.Implementer);
-            Assert.Empty(dec1.Parameters);
+            Assert.Empty(dec1.Parameters.OfType<TypedParameter>());
             var imp = Assert.IsType<ParameterizedImplementer>(dec1.Implementer);
-            Assert.Single(imp.Parameters);
+            Assert.Single(imp.Parameters.OfType<TypedParameter>());
         }
 
         public interface IParameterizedService

@@ -89,6 +89,31 @@ public static class ParameterExtensions
         return ConstantValue<TypedParameter, T>(parameters, c => c.Type == typeof(T));
     }
 
+    /// <summary>
+    /// Retrieve the keyed service key value associated with the current resolve operation.
+    /// </summary>
+    /// <typeparam name="T">The type to which the returned value will be cast.</typeparam>
+    /// <param name="parameters">The available parameters to choose from.</param>
+    /// <returns>The value of the keyed service key.</returns>
+    /// <seealso cref="KeyedServiceParameterInjector"/>
+    public static T KeyedServiceKey<T>(this IEnumerable<Parameter> parameters)
+    {
+        if (parameters == null)
+        {
+            throw new ArgumentNullException(nameof(parameters));
+        }
+
+        foreach (var parameter in parameters)
+        {
+            if (parameter is KeyedServiceKeyParameter keyParameter)
+            {
+                return (T)keyParameter.ServiceKey;
+            }
+        }
+
+        throw new InvalidOperationException(ResolutionExtensionsResources.KeyedServiceKeyUnavailable);
+    }
+
     private static TValue ConstantValue<TParameter, TValue>(IEnumerable<Parameter> parameters, Func<TParameter, bool> predicate)
         where TParameter : ConstantParameter
     {

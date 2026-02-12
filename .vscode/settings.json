@@ -11,6 +11,7 @@
     "finalizers",
     "inheritdoc",
     "langword",
+    "medi",
     "netcoreapp",
     "netstandard",
     "notnull",
@@ -20,6 +21,7 @@
     "subclassing",
     "typeparam",
     "unconfigured",
+    "unkeyed",
     "xunit"
   ],
   "coverage-gutters.coverageBaseDir": "artifacts/logs",

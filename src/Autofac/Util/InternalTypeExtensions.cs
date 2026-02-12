@@ -112,6 +112,17 @@ internal static class InternalTypeExtensions
     }
 
     /// <summary>
+    /// Checks whether a type is any sort of a collection - array, generic enumerable, or generic list/collection interface.
+    /// </summary>
+    /// <param name="serviceType">The type to check.</param>
+    /// <returns>True if the type is a collection type; false otherwise.</returns>
+    public static bool IsCollectionServiceType(this Type serviceType)
+    {
+        return serviceType.IsArray ||
+               serviceType.IsGenericEnumerableInterfaceType();
+    }
+
+    /// <summary>
     /// Checks whether a type is compiler generated.
     /// </summary>
     /// <param name="type">The type to check.</param>
