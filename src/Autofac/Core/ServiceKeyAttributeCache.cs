@@ -9,6 +9,12 @@ namespace Autofac.Core;
 /// <summary>
 /// Caches lookups for <see cref="ServiceKeyAttribute"/> to avoid repeated reflection scans.
 /// </summary>
+/// <remarks>
+/// This class doesn't actually do the caching itself, but provides a single
+/// point of access to the cache for both parameters and properties. This is an
+/// important distinction because this class is not responsible for flushing
+/// reflection info - that's handled by the <see cref="ReflectionCacheSet"/>.
+/// </remarks>
 internal static class ServiceKeyAttributeCache
 {
     /// <summary>
