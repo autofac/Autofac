@@ -22,6 +22,13 @@ public sealed class KeyedService : Service, IServiceWithType, IEquatable<KeyedSe
     /// <summary>
     /// Gets a sentinel key representing a wildcard keyed registration.
     /// </summary>
+    /// <value>
+    /// A singleton object that can be used as a key to match any keyed registration.
+    /// </value>
+    /// <remarks>
+    /// Registering a service with this key will allow it to be resolved by any
+    /// keyed service request for the same service type.
+    /// </remarks>
     public static object AnyKey { get; } = new object();
 
     /// <summary>
@@ -46,7 +53,9 @@ public sealed class KeyedService : Service, IServiceWithType, IEquatable<KeyedSe
     /// Determines whether the provided key is the <see cref="AnyKey"/> sentinel.
     /// </summary>
     /// <param name="serviceKey">The key to test.</param>
-    /// <returns><see langword="true"/> when the key represents <see cref="AnyKey"/>; otherwise, <see langword="false"/>.</returns>
+    /// <returns>
+    /// <see langword="true"/> when the key is <see cref="AnyKey"/>; otherwise, <see langword="false"/>.
+    /// </returns>
     public static bool IsAnyKey(object serviceKey)
     {
         if (serviceKey == null)
