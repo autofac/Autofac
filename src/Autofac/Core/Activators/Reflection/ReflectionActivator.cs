@@ -164,8 +164,21 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         });
     }
 
+    /// <summary>
+    /// Determines if any constructor parameters or settable properties on the
+    /// type have a <see cref="ServiceKeyAttribute"/>, which would require
+    /// special handling in the activation pipeline.
+    /// </summary>
+    /// <param name="implementationType">The type to inspect.</param>
+    /// <returns><see langword="true"/> if the type uses the <see cref="ServiceKeyAttribute"/>; otherwise, <see langword="false"/>.</returns>
     private static bool UsesServiceKeyAttribute(Type implementationType)
     {
+        // Intentionally not picky about _which_ constructor or property has the
+        // attribute. If a different constructor is picked via constructor
+        // binder/selector, it's fine; we just want to try to shortcut the case
+        // where we "may or may not need it." If you mark a property with the
+        // attribute but never inject properties, we'll still provide the
+        // parameter "just in case" you change your mind at runtime.
         foreach (var constructor in implementationType.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
         {
             foreach (var parameter in constructor.GetParameters())
