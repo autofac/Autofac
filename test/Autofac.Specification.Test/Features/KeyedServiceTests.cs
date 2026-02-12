@@ -719,7 +719,7 @@ public class KeyedServiceTests
         builder
             .Register<IService>((ctx, p) =>
             {
-                var key = p.Named<string>("key");
+                var key = p.KeyedServiceKey<string>();
                 return new Service(key);
             })
             .Keyed<IService>(KeyedService.AnyKey)
@@ -732,8 +732,8 @@ public class KeyedServiceTests
         for (int i = 0; i < 3; i++)
         {
             var key = "service" + i;
-            var s1 = provider.ResolveKeyed<IService>(key, new NamedParameter("key", key));
-            var s2 = provider.ResolveKeyed<IService>(key, new NamedParameter("key", key));
+            var s1 = provider.ResolveKeyed<IService>(key);
+            var s2 = provider.ResolveKeyed<IService>(key);
             Assert.Same(s1, s2);
             Assert.Equal(key, s1.ToString());
         }
@@ -755,7 +755,13 @@ public class KeyedServiceTests
     public void ResolveKeyedServiceTransientFactory()
     {
         var builder = new ContainerBuilder();
-        builder.Register<IService>(ctx => new Service("service1")).Keyed<IService>("service1");
+        builder
+            .Register<IService>((ctx, p) =>
+            {
+                var key = p.KeyedServiceKey<string>();
+                return new Service(key);
+            })
+            .Keyed<IService>("service1");
 
         var provider = builder.Build();
 
