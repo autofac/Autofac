@@ -118,9 +118,8 @@ internal static class InternalTypeExtensions
     /// <returns>True if the type is a collection type; false otherwise.</returns>
     public static bool IsCollectionServiceType(this Type serviceType)
     {
-        return serviceType.IsGenericTypeDefinedBy(typeof(IEnumerable<>)) ||
-               serviceType.IsArray ||
-               serviceType.IsGenericListOrCollectionInterfaceType();
+        return serviceType.IsArray ||
+               serviceType.IsGenericEnumerableInterfaceType();
     }
 
     /// <summary>
