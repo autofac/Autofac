@@ -119,41 +119,65 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
             limitType,
             (c, p) =>
             {
-                List<ServiceRegistration> itemRegistrations;
-
                 if (isAnyKeyQuery)
                 {
-                    // AnyKey queries for collections return _all_ keyed services.
-                    itemRegistrations = GetAllSpecificKeyedRegistrations(c.ComponentRegistry, elementType);
-                }
-                else
-                {
-                    itemRegistrations = c.ComponentRegistry
-                        .ServiceRegistrationsFor(elementTypeService)
-                        .Where(cr => !cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections))
-                        .OrderBy(cr => cr.Registration.GetRegistrationOrder())
-                        .ToList();
+                    // AnyKey queries for collections return _all_ explicitly
+                    // keyed services. (Services _registered_ with AnyKey are
+                    // intentionally excluded, however, since they are
+                    // effectively "default" registrations and would be
+                    // duplicated in the output if included alongside their
+                    // explicitly keyed counterparts.)
+                    //
+                    // We must resolve each element using the concrete keyed
+                    // service so the KeyedServiceParameterInjector can flow
+                    // that key into [ServiceKey] parameters.
+                    var keyedRegistrations = GetAllSpecificKeyedRegistrations(c.ComponentRegistry, elementType);
+                    var output = factory(keyedRegistrations.Count);
+                    var isFixedSize = output.IsFixedSize;
+
+                    for (var i = 0; i < keyedRegistrations.Count; i++)
+                    {
+                        var (keyedService, itemRegistration) = keyedRegistrations[i];
+                        var resolveRequest = new ResolveRequest(keyedService, itemRegistration, p);
+                        var component = c.ResolveComponent(resolveRequest);
+                        if (isFixedSize)
+                        {
+                            output[i] = component;
+                        }
+                        else
+                        {
+                            output.Add(component);
+                        }
+                    }
+
+                    return output;
                 }
 
-                var output = factory(itemRegistrations.Count);
-                var isFixedSize = output.IsFixedSize;
+                var itemRegistrations = c.ComponentRegistry
+                    .ServiceRegistrationsFor(elementTypeService)
+                    .Where(cr => !cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections))
+                    .OrderBy(cr => cr.Registration.GetRegistrationOrder())
+                    .ToList();
+
+                var defaultOutput = factory(itemRegistrations.Count);
+                var defaultOutputIsFixedSize = defaultOutput.IsFixedSize;
 
                 for (var i = 0; i < itemRegistrations.Count; i++)
                 {
                     var itemRegistration = itemRegistrations[i];
                     var resolveRequest = new ResolveRequest(elementTypeService, itemRegistration, p);
                     var component = c.ResolveComponent(resolveRequest);
-                    if (isFixedSize)
+                    if (defaultOutputIsFixedSize)
                     {
-                        output[i] = component;
+                        defaultOutput[i] = component;
                     }
                     else
                     {
-                        output.Add(component);
+                        defaultOutput.Add(component);
                     }
                 }
 
-                return output;
+                return defaultOutput;
             });
 
         var registration = new ComponentRegistration(
@@ -190,9 +214,9 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
         return Expression.Lambda<Func<int, IList>>(newArray, parameter).Compile();
     }
 
-    private static List<ServiceRegistration> GetAllSpecificKeyedRegistrations(IComponentRegistry registry, Type elementType)
+    private static List<(KeyedService KeyedService, ServiceRegistration Registration)> GetAllSpecificKeyedRegistrations(IComponentRegistry registry, Type elementType)
     {
-        var result = new List<ServiceRegistration>();
+        var result = new List<(KeyedService, ServiceRegistration)>();
         var processedServices = new HashSet<KeyedService>();
 
         foreach (var registration in registry.Registrations)
@@ -220,12 +244,17 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
                         !cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections) &&
                         !cr.Registration.Metadata.ContainsKey(MetadataKeys.AnyKeyAdapter));
 
-                result.AddRange(serviceRegistrations);
+                foreach (var serviceRegistration in serviceRegistrations)
+                {
+                    // Return both the keyed service and the registration so callers can issue
+                    // resolve requests that still know the original key.
+                    result.Add((keyed, serviceRegistration));
+                }
             }
         }
 
         return result
-            .OrderBy(cr => cr.Registration.GetRegistrationOrder())
+            .OrderBy(tuple => tuple.Item2.Registration.GetRegistrationOrder())
             .ToList();
     }
 }
