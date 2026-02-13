@@ -901,6 +901,20 @@ public class KeyedServiceTests
         }
     }
 
+    [Fact]
+    public void ResolveAnyKeyWithInjectedKeyedParameter()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Service>().Keyed<IService>("a");
+        builder.RegisterType<Service>().Keyed<IService>("b");
+        var provider = builder.Build();
+
+        var services = provider.ResolveKeyed<IEnumerable<IService>>(KeyedService.AnyKey).ToList();
+        Assert.Equal(2, services.Count);
+        Assert.Equal("a", services[0].ToString());
+        Assert.Equal("b", services[1].ToString());
+    }
+
     private interface IService
     {
     }
