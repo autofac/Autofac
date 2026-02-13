@@ -95,7 +95,6 @@ public static class ParameterExtensions
     /// <typeparam name="T">The type to which the returned value will be cast.</typeparam>
     /// <param name="parameters">The available parameters to choose from.</param>
     /// <returns>The value of the keyed service key.</returns>
-    /// <seealso cref="KeyedServiceParameterInjector"/>
     public static T KeyedServiceKey<T>(this IEnumerable<Parameter> parameters)
     {
         if (!TryGetKeyedServiceKey(parameters, out T value))
@@ -113,7 +112,6 @@ public static class ParameterExtensions
     /// <param name="parameters">The available parameters to choose from.</param>
     /// <param name="value">The value of the keyed service key.</param>
     /// <returns><see langword="true"/> if a keyed service key is available; otherwise, <see langword="false"/>.</returns>
-    /// <seealso cref="KeyedServiceParameterInjector"/>
     public static bool TryGetKeyedServiceKey<T>(this IEnumerable<Parameter> parameters, [NotNullWhen(true)] out T value)
     {
         if (parameters == null)
