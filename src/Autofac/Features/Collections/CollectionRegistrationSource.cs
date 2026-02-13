@@ -119,65 +119,12 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
             limitType,
             (c, p) =>
             {
-                if (isAnyKeyQuery)
-                {
-                    // AnyKey queries for collections return _all_ explicitly
-                    // keyed services. (Services _registered_ with AnyKey are
-                    // intentionally excluded, however, since they are
-                    // effectively "default" registrations and would be
-                    // duplicated in the output if included alongside their
-                    // explicitly keyed counterparts.)
-                    //
-                    // We must resolve each element using the concrete keyed
-                    // service so the KeyedServiceParameterInjector can flow
-                    // that key into [ServiceKey] parameters.
-                    var keyedRegistrations = GetAllSpecificKeyedRegistrations(c.ComponentRegistry, elementType);
-                    var output = factory(keyedRegistrations.Count);
-                    var isFixedSize = output.IsFixedSize;
+                var registrationTuples = isAnyKeyQuery
+                    ? GetAllSpecificKeyedRegistrations(c.ComponentRegistry, elementType)
+                        .ConvertAll(static tuple => ((Service)tuple.KeyedService, tuple.Registration))
+                    : BuildStandardRegistrationList(c.ComponentRegistry, elementTypeService);
 
-                    for (var i = 0; i < keyedRegistrations.Count; i++)
-                    {
-                        var (keyedService, itemRegistration) = keyedRegistrations[i];
-                        var resolveRequest = new ResolveRequest(keyedService, itemRegistration, p);
-                        var component = c.ResolveComponent(resolveRequest);
-                        if (isFixedSize)
-                        {
-                            output[i] = component;
-                        }
-                        else
-                        {
-                            output.Add(component);
-                        }
-                    }
-
-                    return output;
-                }
-
-                var itemRegistrations = c.ComponentRegistry
-                    .ServiceRegistrationsFor(elementTypeService)
-                    .Where(cr => !cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections))
-                    .OrderBy(cr => cr.Registration.GetRegistrationOrder())
-                    .ToList();
-
-                var defaultOutput = factory(itemRegistrations.Count);
-                var defaultOutputIsFixedSize = defaultOutput.IsFixedSize;
-
-                for (var i = 0; i < itemRegistrations.Count; i++)
-                {
-                    var itemRegistration = itemRegistrations[i];
-                    var resolveRequest = new ResolveRequest(elementTypeService, itemRegistration, p);
-                    var component = c.ResolveComponent(resolveRequest);
-                    if (defaultOutputIsFixedSize)
-                    {
-                        defaultOutput[i] = component;
-                    }
-                    else
-                    {
-                        defaultOutput.Add(component);
-                    }
-                }
-
-                return defaultOutput;
+                return BuildCollection(c, factory, registrationTuples, p);
             });
 
         var registration = new ComponentRegistration(
@@ -214,6 +161,24 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
         return Expression.Lambda<Func<int, IList>>(newArray, parameter).Compile();
     }
 
+    /// <summary>
+    /// When the query is for "any keyed" enumerable, we need to find all the
+    /// specific keyed registrations and return them.
+    /// </summary>
+    /// <param name="registry">
+    /// The registry to search for registrations. We need to search the entire
+    /// registry because "any keyed" could match any specific key.
+    /// </param>
+    /// <param name="elementType">
+    /// The element type of the enumerable being resolved. We need this to
+    /// filter the registry down to only the relevant registrations.
+    /// </param>
+    /// <returns>
+    /// A list of tuples containing the specific keyed service and the
+    /// registration for each matching registration. We return the specific
+    /// keyed service so that we can issue resolve requests that still know the
+    /// original key.
+    /// </returns>
     private static List<(KeyedService KeyedService, ServiceRegistration Registration)> GetAllSpecificKeyedRegistrations(IComponentRegistry registry, Type elementType)
     {
         var result = new List<(KeyedService, ServiceRegistration)>();
@@ -256,5 +221,43 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
         return result
             .OrderBy(tuple => tuple.Item2.Registration.GetRegistrationOrder())
             .ToList();
+    }
+
+    private static List<(Service Service, ServiceRegistration Registration)> BuildStandardRegistrationList(IComponentRegistry registry, Service elementTypeService)
+    {
+        return registry
+            .ServiceRegistrationsFor(elementTypeService)
+            .Where(cr => !cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections))
+            .OrderBy(cr => cr.Registration.GetRegistrationOrder())
+            .Select(cr => ((Service)elementTypeService, cr))
+            .ToList();
+    }
+
+    private static IList BuildCollection(
+        IComponentContext context,
+        Func<int, IList> factory,
+        List<(Service Service, ServiceRegistration Registration)> registrations,
+        IEnumerable<Parameter> parameters)
+    {
+        var output = factory(registrations.Count);
+        var isFixedSize = output.IsFixedSize;
+
+        for (var i = 0; i < registrations.Count; i++)
+        {
+            var (service, registration) = registrations[i];
+            var resolveRequest = new ResolveRequest(service, registration, parameters);
+            var component = context.ResolveComponent(resolveRequest);
+
+            if (isFixedSize)
+            {
+                output[i] = component;
+            }
+            else
+            {
+                output.Add(component);
+            }
+        }
+
+        return output;
     }
 }
