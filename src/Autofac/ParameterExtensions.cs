@@ -98,6 +98,24 @@ public static class ParameterExtensions
     /// <seealso cref="KeyedServiceParameterInjector"/>
     public static T KeyedServiceKey<T>(this IEnumerable<Parameter> parameters)
     {
+        if (!TryGetKeyedServiceKey(parameters, out T value))
+        {
+            throw new InvalidOperationException(ResolutionExtensionsResources.KeyedServiceKeyUnavailable);
+        }
+
+        return value;
+    }
+
+    /// <summary>
+    /// Attempts to retrieve the keyed service key value associated with the current resolve operation.
+    /// </summary>
+    /// <typeparam name="T">The type to which the returned value will be cast.</typeparam>
+    /// <param name="parameters">The available parameters to choose from.</param>
+    /// <param name="value">The value of the keyed service key.</param>
+    /// <returns><see langword="true"/> if a keyed service key is available; otherwise, <see langword="false"/>.</returns>
+    /// <seealso cref="KeyedServiceParameterInjector"/>
+    public static bool TryGetKeyedServiceKey<T>(this IEnumerable<Parameter> parameters, [NotNullWhen(true)] out T value)
+    {
         if (parameters == null)
         {
             throw new ArgumentNullException(nameof(parameters));
@@ -107,11 +125,13 @@ public static class ParameterExtensions
         {
             if (parameter is KeyedServiceKeyParameter keyParameter)
             {
-                return (T)keyParameter.ServiceKey;
+                value = (T)keyParameter.ServiceKey;
+                return true;
             }
         }
 
-        throw new InvalidOperationException(ResolutionExtensionsResources.KeyedServiceKeyUnavailable);
+        value = default!;
+        return false;
     }
 
     private static TValue ConstantValue<TParameter, TValue>(IEnumerable<Parameter> parameters, Func<TParameter, bool> predicate)
