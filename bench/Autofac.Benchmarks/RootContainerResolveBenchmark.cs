@@ -8,7 +8,7 @@ namespace Autofac.Benchmarks;
 /// </summary>
 public class RootContainerResolveBenchmark
 {
-    private IContainer _container;
+    private IContainer _container = default!;
 
     [GlobalSetup]
     public void Setup()

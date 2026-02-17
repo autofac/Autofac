@@ -8,7 +8,7 @@ namespace Autofac.Benchmarks;
 /// </summary>
 public class DeepGraphResolveBenchmark
 {
-    private IContainer _container;
+    private IContainer _container = default!;
 
     [GlobalSetup]
     public void Setup()

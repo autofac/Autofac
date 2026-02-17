@@ -5,7 +5,7 @@ namespace Autofac.Benchmarks;
 
 public class ChildScopeResolveBenchmark
 {
-    private IContainer _container;
+    private IContainer _container = default!;
 
     [Benchmark]
     public void Resolve()

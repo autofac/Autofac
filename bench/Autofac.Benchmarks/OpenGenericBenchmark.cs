@@ -5,7 +5,7 @@ namespace Autofac.Benchmarks;
 
 public class OpenGenericBenchmark
 {
-    private IContainer _container;
+    private IContainer _container = default!;
 
     [GlobalSetup]
     public void Setup()
