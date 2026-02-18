@@ -16,10 +16,10 @@ internal static class Program
         // Usage:
         //
         // Just run the benchmark with the source code version of the project:
-        // dotnet run -c Release --project bench/Autofac.Benchmarks
+        // dotnet run -c Release --project bench/Autofac.Benchmarks -- --filter *Benchmarks*
         //
         // Run the benchmark comparing the source code version to a specific package version:
-        // dotnet run -c Release --project bench/Autofac.Benchmarks -- --baseline-version 9.0.0
+        // dotnet run -c Release --project bench/Autofac.Benchmarks -- --baseline-version 9.0.0 --filter *Benchmarks*
         var config = new BenchmarkConfig();
 
         config.AddJob(
