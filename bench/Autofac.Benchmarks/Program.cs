@@ -23,7 +23,7 @@ internal static class Program
         var config = new BenchmarkConfig();
 
         config.AddJob(
-            Job.InProcess
+            Job.Default
                 .WithId("Source"));
 
         if (!string.IsNullOrWhiteSpace(baselineVersion))
