@@ -37,6 +37,7 @@ internal static class Program
                         $"/p:BaselinePackageVersion={baselineVersion}"));
         }
 
+        Console.WriteLine($"Benchmark types configured: {BenchmarkSet.All.Length}");
         new BenchmarkSwitcher(BenchmarkSet.All).Run(filteredArgs, config);
     }
 
