@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Diagnostics;
 using Autofac.Builder;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Middleware;
 
@@ -26,6 +28,28 @@ internal class StartableMiddleware : IResolveMiddleware
     /// <inheritdoc />
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
     {
+        if (!AutofacMetrics.MetricsEnabled)
+        {
+            ExecuteCore(context, next);
+            return;
+        }
+
+        var start = Stopwatch.GetTimestamp();
+        try
+        {
+            ExecuteCore(context, next);
+        }
+        finally
+        {
+            AutofacMetrics.RecordMiddlewareExecution(nameof(StartableMiddleware), Stopwatch.GetTimestamp() - start);
+        }
+    }
+
+    /// <inheritdoc/>
+    public override string ToString() => nameof(StartableMiddleware);
+
+    private static void ExecuteCore(ResolveRequestContext context, Action<ResolveRequestContext> next)
+    {
         next(context);
 
         if (context.Instance is IStartable startable
@@ -39,7 +63,4 @@ internal class StartableMiddleware : IResolveMiddleware
             startable.Start();
         }
     }
-
-    /// <inheritdoc/>
-    public override string ToString() => nameof(StartableMiddleware);
 }

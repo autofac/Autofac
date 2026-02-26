@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration;
@@ -303,6 +304,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         var info = GetServiceInfo(service);
+        var instrumentationService = AutofacMetrics.MetricsEnabled ? service.ToString() : null;
         if (info.IsInitialized)
         {
             return info;
@@ -324,7 +326,16 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         var lockTaken = false;
         try
         {
-            Monitor.Enter(info, ref lockTaken);
+            if (AutofacMetrics.MetricsEnabled)
+            {
+                var wait = ValueStopwatch.StartNew();
+                Monitor.Enter(info, ref lockTaken);
+                AutofacMetrics.RecordLockContention("Service", instrumentationService, wait.ElapsedTicks);
+            }
+            else
+            {
+                Monitor.Enter(info, ref lockTaken);
+            }
 
             if (info.IsInitialized)
             {

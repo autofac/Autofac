@@ -1,9 +1,11 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Middleware;
 
@@ -38,6 +40,25 @@ internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
 
     /// <inheritdoc/>
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
+    {
+        if (!AutofacMetrics.MetricsEnabled)
+        {
+            ExecuteCore(context, next);
+            return;
+        }
+
+        var start = Stopwatch.GetTimestamp();
+        try
+        {
+            ExecuteCore(context, next);
+        }
+        finally
+        {
+            AutofacMetrics.RecordMiddlewareExecution(nameof(CircularDependencyDetectorMiddleware), Stopwatch.GetTimestamp() - start);
+        }
+    }
+
+    private void ExecuteCore(ResolveRequestContext context, Action<ResolveRequestContext> next)
     {
         if (context.Operation is not IDependencyTrackingResolveOperation dependencyTrackingResolveOperation)
         {

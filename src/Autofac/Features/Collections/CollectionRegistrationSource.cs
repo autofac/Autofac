@@ -8,6 +8,7 @@ using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
+using Autofac.Diagnostics;
 using Autofac.Features.Decorators;
 using Autofac.Util;
 using Autofac.Util.Cache;
@@ -124,7 +125,11 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
                         .ConvertAll(static tuple => ((Service)tuple.KeyedService, tuple.Registration))
                     : BuildStandardRegistrationList(c.ComponentRegistry, elementTypeService);
 
-                return BuildCollection(c, factory, registrationTuples, p);
+                var collectionKind = isAnyKeyQuery ? "any-keyed" : "standard";
+                var collectionDetail = isAnyKeyQuery
+                    ? elementType.FullName ?? elementType.Name
+                    : elementTypeService.ToString() ?? elementTypeService.GetType().Name;
+                return BuildCollection(c, factory, registrationTuples, p, collectionKind, collectionDetail);
             });
 
         var registration = new ComponentRegistration(
@@ -237,8 +242,17 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
         IComponentContext context,
         Func<int, IList> factory,
         List<(Service Service, ServiceRegistration Registration)> registrations,
-        IEnumerable<Parameter> parameters)
+        IEnumerable<Parameter> parameters,
+        string collectionKind,
+        string collectionDetail)
     {
+        var recordMetrics = AutofacMetrics.MetricsEnabled;
+        ValueStopwatch instrumentationTimer = default;
+        if (recordMetrics)
+        {
+            instrumentationTimer = ValueStopwatch.StartNew();
+        }
+
         var output = factory(registrations.Count);
         var isFixedSize = output.IsFixedSize;
 
@@ -256,6 +270,15 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
             {
                 output.Add(component);
             }
+        }
+
+        if (recordMetrics)
+        {
+            AutofacMetrics.RecordCollectionBuild(
+                kind: collectionKind,
+                detail: collectionDetail,
+                itemCount: registrations.Count,
+                elapsedTicks: instrumentationTimer.ElapsedTicks);
         }
 
         return output;

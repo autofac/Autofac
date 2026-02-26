@@ -1,9 +1,11 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Middleware;
 
@@ -28,6 +30,28 @@ internal class ScopeSelectionMiddleware : IResolveMiddleware
     /// <inheritdoc/>
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
     {
+        if (!AutofacMetrics.MetricsEnabled)
+        {
+            ExecuteCore(context, next);
+            return;
+        }
+
+        var start = Stopwatch.GetTimestamp();
+        try
+        {
+            ExecuteCore(context, next);
+        }
+        finally
+        {
+            AutofacMetrics.RecordMiddlewareExecution(nameof(ScopeSelectionMiddleware), Stopwatch.GetTimestamp() - start);
+        }
+    }
+
+    /// <inheritdoc/>
+    public override string ToString() => nameof(ScopeSelectionMiddleware);
+
+    private static void ExecuteCore(ResolveRequestContext context, Action<ResolveRequestContext> next)
+    {
         try
         {
             context.ChangeScope(context.Registration.Lifetime.FindScope(context.ActivationScope));
@@ -47,7 +71,4 @@ internal class ScopeSelectionMiddleware : IResolveMiddleware
 
         next(context);
     }
-
-    /// <inheritdoc/>
-    public override string ToString() => nameof(ScopeSelectionMiddleware);
 }

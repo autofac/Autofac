@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Diagnostics;
 using System.Globalization;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Middleware;
 
@@ -28,23 +30,20 @@ internal class ActivatorErrorHandlingMiddleware : IResolveMiddleware
     /// <inheritdoc />
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
     {
+        if (!AutofacMetrics.MetricsEnabled)
+        {
+            ExecuteCore(context, next);
+            return;
+        }
+
+        var start = Stopwatch.GetTimestamp();
         try
         {
-            next(context);
-
-            if (context.Instance is null)
-            {
-                // Exited the Activation Stage without creating an instance.
-                throw new DependencyResolutionException(MiddlewareMessages.ActivatorDidNotPopulateInstance);
-            }
+            ExecuteCore(context, next);
         }
-        catch (ObjectDisposedException)
+        finally
         {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            throw PropagateActivationException(context.Registration.Activator, ex);
+            AutofacMetrics.RecordMiddlewareExecution(nameof(ActivatorErrorHandlingMiddleware), Stopwatch.GetTimestamp() - start);
         }
     }
 
@@ -66,5 +65,27 @@ internal class ActivatorErrorHandlingMiddleware : IResolveMiddleware
         var result = new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ErrorDuringActivation, activatorChain), innerException);
         result.Data[ActivatorChainExceptionData] = activatorChain;
         return result;
+    }
+
+    private static void ExecuteCore(ResolveRequestContext context, Action<ResolveRequestContext> next)
+    {
+        try
+        {
+            next(context);
+
+            if (context.Instance is null)
+            {
+                // Exited the Activation Stage without creating an instance.
+                throw new DependencyResolutionException(MiddlewareMessages.ActivatorDidNotPopulateInstance);
+            }
+        }
+        catch (ObjectDisposedException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw PropagateActivationException(context.Registration.Activator, ex);
+        }
     }
 }
