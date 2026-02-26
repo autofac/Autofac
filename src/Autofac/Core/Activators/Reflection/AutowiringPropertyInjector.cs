@@ -105,7 +105,7 @@ internal static class AutowiringPropertyInjector
                 instanceType,
                 injectableProperties.Count,
                 injectedProperties,
-                instrumentationTimer.ElapsedTicks);
+                instrumentationTimer.GetElapsedTime());
         }
     }
 

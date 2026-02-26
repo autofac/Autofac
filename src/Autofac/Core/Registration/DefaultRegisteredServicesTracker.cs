@@ -294,7 +294,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         {
             var wait = ValueStopwatch.StartNew();
             Monitor.Enter(info, ref lockTaken);
-            AutofacMetrics.RecordLockContention("Service", instrumentationService, wait.ElapsedTicks);
+            AutofacMetrics.RecordLockContention("Service", instrumentationService, wait.GetElapsedTime());
         }
         else
         {

@@ -147,22 +147,21 @@ internal static class AutofacMetrics
     /// <param name="kind">The kind of collection (e.g., standard, any-keyed).</param>
     /// <param name="detail">Additional detail such as the service description.</param>
     /// <param name="itemCount">The number of elements added to the collection.</param>
-    /// <param name="elapsedTicks">The elapsed stopwatch ticks for the build.</param>
-    public static void RecordCollectionBuild(string kind, string? detail, int itemCount, long elapsedTicks)
+    /// <param name="elapsed">The elapsed time for the build.</param>
+    public static void RecordCollectionBuild(string kind, string? detail, int itemCount, TimeSpan elapsed)
     {
-        if (!MetricsEnabled || CollectionBuildDuration is null || elapsedTicks <= 0)
+        if (!MetricsEnabled || CollectionBuildDuration is null || elapsed <= TimeSpan.Zero)
         {
             return;
         }
 
-        var seconds = elapsedTicks / (double)Stopwatch.Frequency;
         var tags = new TagList
         {
             { "autofac.collection.kind", kind },
             { "autofac.collection.detail", detail ?? "<null>" },
         };
 
-        CollectionBuildDuration.Record(seconds, tags);
+        CollectionBuildDuration.Record(elapsed.TotalSeconds, tags);
         CollectionBuildCount?.Add(1, tags);
         CollectionItemCount?.Add(itemCount, tags);
     }
@@ -173,22 +172,21 @@ internal static class AutofacMetrics
     /// <param name="instanceType">The concrete instance type.</param>
     /// <param name="inspectedProperties">The number of properties evaluated for injection.</param>
     /// <param name="assignedProperties">The number of properties that were assigned.</param>
-    /// <param name="elapsedTicks">The elapsed stopwatch ticks for the injection.</param>
-    public static void RecordPropertyInjection(Type instanceType, int inspectedProperties, int assignedProperties, long elapsedTicks)
+    /// <param name="elapsed">The elapsed time for the injection.</param>
+    public static void RecordPropertyInjection(Type instanceType, int inspectedProperties, int assignedProperties, TimeSpan elapsed)
     {
-        if (!MetricsEnabled || PropertyInjectionDuration is null || elapsedTicks <= 0)
+        if (!MetricsEnabled || PropertyInjectionDuration is null || elapsed <= TimeSpan.Zero)
         {
             return;
         }
 
-        var seconds = elapsedTicks / (double)Stopwatch.Frequency;
         var tags = new TagList
         {
             { "autofac.property.type", instanceType.FullName ?? instanceType.Name },
             { "autofac.property.inspected", inspectedProperties },
         };
 
-        PropertyInjectionDuration.Record(seconds, tags);
+        PropertyInjectionDuration.Record(elapsed.TotalSeconds, tags);
         PropertyInjectionCount?.Add(1, tags);
         PropertyInjectionAssignments?.Add(assignedProperties, tags);
     }
@@ -197,21 +195,20 @@ internal static class AutofacMetrics
     /// Records a reflection-based activation event.
     /// </summary>
     /// <param name="implementationType">The activated implementation type.</param>
-    /// <param name="elapsedTicks">The elapsed stopwatch ticks for activation.</param>
-    public static void RecordReflectionActivation(Type implementationType, long elapsedTicks)
+    /// <param name="elapsed">The elapsed time for activation.</param>
+    public static void RecordReflectionActivation(Type implementationType, TimeSpan elapsed)
     {
-        if (!MetricsEnabled || ReflectionActivationDuration is null || elapsedTicks <= 0)
+        if (!MetricsEnabled || ReflectionActivationDuration is null || elapsed <= TimeSpan.Zero)
         {
             return;
         }
 
-        var seconds = elapsedTicks / (double)Stopwatch.Frequency;
         var tags = new TagList
         {
             { "autofac.reflection.type", implementationType.FullName ?? implementationType.Name },
         };
 
-        ReflectionActivationDuration.Record(seconds, tags);
+        ReflectionActivationDuration.Record(elapsed.TotalSeconds, tags);
     }
 
     /// <summary>
@@ -219,45 +216,43 @@ internal static class AutofacMetrics
     /// </summary>
     /// <param name="category">The lock category (e.g., service or lifetime scope).</param>
     /// <param name="detail">Additional details about the lock, if any.</param>
-    /// <param name="elapsedTicks">The time spent waiting, in stopwatch ticks.</param>
-    public static void RecordLockContention(string category, string? detail, long elapsedTicks)
+    /// <param name="elapsed">The time spent waiting.</param>
+    public static void RecordLockContention(string category, string? detail, TimeSpan elapsed)
     {
-        if (!MetricsEnabled || LockContentionDuration is null || elapsedTicks <= 0)
+        if (!MetricsEnabled || LockContentionDuration is null || elapsed <= TimeSpan.Zero)
         {
             return;
         }
 
-        var seconds = elapsedTicks / (double)Stopwatch.Frequency;
         var tags = new TagList
         {
             { "autofac.lock.category", category },
             { "autofac.lock.detail", detail ?? "<null>" },
         };
 
-        LockContentionDuration.Record(seconds, tags);
+        LockContentionDuration.Record(elapsed.TotalSeconds, tags);
         LockContentionCount?.Add(1, tags);
-        LockContentionTotalTime?.Add(seconds, tags);
+        LockContentionTotalTime?.Add(elapsed.TotalSeconds, tags);
     }
 
     /// <summary>
     /// Records a resolve pipeline middleware execution event.
     /// </summary>
     /// <param name="middlewareName">The middleware name.</param>
-    /// <param name="elapsedTicks">The elapsed stopwatch ticks for the execution.</param>
-    public static void RecordMiddlewareExecution(string middlewareName, long elapsedTicks)
+    /// <param name="elapsed">The elapsed time for the execution.</param>
+    public static void RecordMiddlewareExecution(string middlewareName, TimeSpan elapsed)
     {
-        if (!MetricsEnabled || MiddlewareExecutionDuration is null || elapsedTicks <= 0)
+        if (!MetricsEnabled || MiddlewareExecutionDuration is null || elapsed <= TimeSpan.Zero)
         {
             return;
         }
 
-        var seconds = elapsedTicks / (double)Stopwatch.Frequency;
         var tags = new TagList
         {
             { "autofac.middleware.name", middlewareName },
         };
 
-        MiddlewareExecutionDuration.Record(seconds, tags);
+        MiddlewareExecutionDuration.Record(elapsed.TotalSeconds, tags);
         MiddlewareExecutionCount?.Add(1, tags);
     }
 

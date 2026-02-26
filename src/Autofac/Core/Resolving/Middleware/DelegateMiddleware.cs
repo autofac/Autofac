@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Diagnostics;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Diagnostics;
 
@@ -40,14 +39,14 @@ internal class DelegateMiddleware : IResolveMiddleware
             return;
         }
 
-        var start = Stopwatch.GetTimestamp();
+        var timer = ValueStopwatch.StartNew();
         try
         {
             _callback(context, next);
         }
         finally
         {
-            AutofacMetrics.RecordMiddlewareExecution(ToString(), Stopwatch.GetTimestamp() - start);
+            AutofacMetrics.RecordMiddlewareExecution(ToString(), timer.GetElapsedTime());
         }
     }
 

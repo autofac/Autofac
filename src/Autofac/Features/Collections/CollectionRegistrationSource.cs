@@ -278,7 +278,7 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
                 kind: collectionKind,
                 detail: collectionDetail,
                 itemCount: registrations.Count,
-                elapsedTicks: instrumentationTimer.ElapsedTicks);
+                elapsed: instrumentationTimer.GetElapsedTime());
         }
 
         return output;

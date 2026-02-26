@@ -234,7 +234,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
                 if (recordMetrics)
                 {
-                    AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.ElapsedTicks);
+                    AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.GetElapsedTime());
                 }
 
                 next(context);
@@ -270,7 +270,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
                 if (recordMetrics)
                 {
-                    AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.ElapsedTicks);
+                    AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.GetElapsedTime());
                 }
 
                 next(context);
@@ -329,7 +329,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         if (recordMetrics)
         {
-            AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.ElapsedTicks);
+            AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.GetElapsedTime());
         }
 
         return instance;

@@ -279,7 +279,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             {
                 var wait = ValueStopwatch.StartNew();
                 Monitor.Enter(_synchRoot, ref lockTaken);
-                AutofacMetrics.RecordLockContention("LifetimeScopeSharedInstance", instrumentationDetail, wait.ElapsedTicks);
+                AutofacMetrics.RecordLockContention("LifetimeScopeSharedInstance", instrumentationDetail, wait.GetElapsedTime());
             }
             else
             {
@@ -336,7 +336,7 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             {
                 var wait = ValueStopwatch.StartNew();
                 Monitor.Enter(_synchRoot, ref lockTaken);
-                AutofacMetrics.RecordLockContention("LifetimeScopeQualifiedSharedInstance", instrumentationDetail, wait.ElapsedTicks);
+                AutofacMetrics.RecordLockContention("LifetimeScopeQualifiedSharedInstance", instrumentationDetail, wait.GetElapsedTime());
             }
             else
             {
