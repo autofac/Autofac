@@ -20,6 +20,8 @@ internal static class Program
         //
         // Run the benchmark comparing the source code version to a specific package version:
         // dotnet run -c Release --project bench/Autofac.Benchmarks -- --baseline-version 9.0.0 --filter *Benchmarks*
+        //
+        // Markdown tables are emitted by default; see BenchmarkDotNet.Artifacts/.../results/*.md.
         var config = new BenchmarkConfig();
 
         config.AddJob(
