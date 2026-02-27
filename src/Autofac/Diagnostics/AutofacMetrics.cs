@@ -213,10 +213,17 @@ internal static class AutofacMetrics
     }
 
     /// <summary>
-    /// Records the wait duration for a lock contention event.
+    /// Records the wait duration for a lock contention event. This may include
+    /// time spent waiting as well as acquiring the lock, but will be closely
+    /// correlated with contention time.
     /// </summary>
     /// <param name="category">The lock category (e.g., service or lifetime scope).</param>
-    /// <param name="detail">Additional details about the lock, if any.</param>
+    /// <param name="detail">
+    /// Additional details about the lock, if any. Note this will likely
+    /// generate high-cardinality metrics in a production environment since it
+    /// will track information about services and lifetime scopes acquiring
+    /// locks and include identities for each.
+    /// </param>
     /// <param name="elapsed">The time spent waiting.</param>
     public static void RecordLockContention(string category, string? detail, TimeSpan elapsed)
     {
