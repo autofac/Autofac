@@ -4,6 +4,7 @@
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 using Autofac.Util;
 
 namespace Autofac.Core.Registration;
@@ -263,6 +264,12 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         // Do not call the base, otherwise the standard Dispose will fire.
     }
 
+    /// <summary>
+    /// Filters registration sources to skip a single source.
+    /// </summary>
+    /// <param name="sources">The source sequence to scan.</param>
+    /// <param name="exclude">The source to exclude.</param>
+    /// <returns>Sources that are not the excluded instance.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static IEnumerable<IRegistrationSource> ExcludeSource(IEnumerable<IRegistrationSource> sources, IRegistrationSource exclude)
     {
@@ -275,6 +282,33 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
     }
 
+    /// <summary>
+    /// Acquires the service info lock and records wait time when metrics are enabled.
+    /// </summary>
+    /// <param name="info">The service info lock target.</param>
+    /// <param name="instrumentationService">Optional detail about the service for metrics.</param>
+    /// <param name="lockTaken">Tracks whether the lock was acquired.</param>
+    private static void EnterServiceInfoLock(ServiceRegistrationInfo info, string? instrumentationService, ref bool lockTaken)
+    {
+        if (AutofacMetrics.MetricsEnabled)
+        {
+            var wait = ValueStopwatch.StartNew();
+            Monitor.Enter(info, ref lockTaken);
+            AutofacMetrics.RecordLockContention("Service", instrumentationService, wait.GetElapsedTime());
+        }
+        else
+        {
+            Monitor.Enter(info, ref lockTaken);
+        }
+    }
+
+    /// <summary>
+    /// Gets or creates an ephemeral service info entry used during pre-complete initialization.
+    /// </summary>
+    /// <param name="ephemeralSet">The ephemeral map for this initialization pass.</param>
+    /// <param name="service">The service key.</param>
+    /// <param name="info">The baseline service info to clone if needed.</param>
+    /// <returns>An ephemeral service info entry for the service.</returns>
     private static ServiceRegistrationInfo GetEphemeralServiceInfo(Dictionary<Service, ServiceRegistrationInfo> ephemeralSet, Service service, ServiceRegistrationInfo info)
     {
         if (ephemeralSet.TryGetValue(service, out var ephemeral))
@@ -289,102 +323,59 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         return newCopy;
     }
 
-    private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
+    /// <summary>
+    /// Unwraps scope-isolated services and notes when isolation applies.
+    /// </summary>
+    /// <param name="service">The service to inspect.</param>
+    /// <param name="isScopeIsolatedService">Set to <see langword="true"/> when the service is scope isolated.</param>
+    /// <returns>The inner service to process.</returns>
+    private static Service ResolveScopeIsolation(Service service, ref bool isScopeIsolatedService)
     {
-        var createdEphemeralSet = false;
-        var isScopeIsolatedService = false;
-
         if (service is ScopeIsolatedService scopeIsolatedService)
         {
             // This is an isolated service query; use the wrapped service instead and
             // remember that fact for later.
             isScopeIsolatedService = true;
-            service = scopeIsolatedService.Service;
+            return scopeIsolatedService.Service;
         }
 
+        return service;
+    }
+
+    /// <summary>
+    /// Ensures the service info is initialized and returns it.
+    /// </summary>
+    /// <param name="service">The service being queried.</param>
+    /// <returns>The initialized service info.</returns>
+    private ServiceRegistrationInfo GetInitializedServiceInfo(Service service)
+    {
+        var createdEphemeralSet = false;
+        var isScopeIsolatedService = false;
+
+        service = ResolveScopeIsolation(service, ref isScopeIsolatedService);
+
         var info = GetServiceInfo(service);
+        var instrumentationService = AutofacMetrics.MetricsEnabled ? service.ToString() : null;
         if (info.IsInitialized)
         {
             return info;
         }
 
-        if (!_trackerPopulationComplete)
-        {
-            // We need an ephemeral set for this pre-complete initialization.
-            if (_ephemeralServiceInfo is null)
-            {
-                _ephemeralServiceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
-                createdEphemeralSet = true;
-            }
-
-            info = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
-        }
+        info = GetServiceInfoForInitialization(service, info, ref createdEphemeralSet);
 
         var succeeded = false;
         var lockTaken = false;
         try
         {
-            Monitor.Enter(info, ref lockTaken);
+            EnterServiceInfoLock(info, instrumentationService, ref lockTaken);
 
             if (info.IsInitialized)
             {
                 return info;
             }
 
-            if (!info.IsInitializing)
-            {
-                BeginServiceInfoInitialization(service, info, _dynamicRegistrationSources);
-            }
-
-            info.InitializationDepth++;
-
-            while (info.HasSourcesToQuery)
-            {
-                var next = info.DequeueNextSource();
-
-                // Do not query per-scope registration sources
-                // for isolated services.
-                if (isScopeIsolatedService && next is IPerScopeRegistrationSource)
-                {
-                    continue;
-                }
-
-                foreach (var provided in next.RegistrationsFor(service, _registrationAccessor))
-                {
-                    // This ensures that multiple services provided by the same
-                    // component share a single component (we don't re-query for them)
-                    foreach (var additionalService in provided.Services)
-                    {
-                        var additionalInfo = GetServiceInfo(additionalService);
-                        if (additionalInfo.IsInitialized || additionalInfo == info)
-                        {
-                            continue;
-                        }
-
-                        if (_ephemeralServiceInfo is not null)
-                        {
-                            // Use ephemeral info for additional services.
-                            additionalInfo = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
-                        }
-
-                        if (!additionalInfo.IsInitializing)
-                        {
-                            BeginServiceInfoInitialization(additionalService, additionalInfo, ExcludeSource(_dynamicRegistrationSources, next));
-                        }
-                        else
-                        {
-                            additionalInfo.SkipSource(next);
-                        }
-                    }
-
-                    AddRegistration(
-                        provided,
-                        preserveDefaults: true,
-                        originatedFromDynamicSource: true);
-                }
-            }
-
-            succeeded = true;
+            // PopulateServiceInfo increments InitializationDepth; the decrement is paired in finally.
+            succeeded = PopulateServiceInfo(service, info, isScopeIsolatedService);
         }
         finally
         {
@@ -410,8 +401,8 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
                 Monitor.Exit(info);
             }
 
-            // This method was the entry point to an ephemeral service info initialization.
-            // We need to discard it, so the next set of ephemeral service info is done from scratch.
+            // This method was the entry point to an ephemeral initialization pass.
+            // Discard the temporary map so later calls start with a clean slate.
             if (createdEphemeralSet)
             {
                 _ephemeralServiceInfo?.Clear();
@@ -422,6 +413,102 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         return info;
     }
 
+    /// <summary>
+    /// Returns the appropriate service info for initialization, swapping to an ephemeral copy when needed.
+    /// </summary>
+    /// <param name="service">The service being queried.</param>
+    /// <param name="info">The current service info.</param>
+    /// <param name="createdEphemeralSet">Set to <see langword="true"/> when a new ephemeral set is created.</param>
+    /// <returns>The service info to use for initialization.</returns>
+    private ServiceRegistrationInfo GetServiceInfoForInitialization(Service service, ServiceRegistrationInfo info, ref bool createdEphemeralSet)
+    {
+        if (!_trackerPopulationComplete)
+        {
+            // We need an ephemeral set for this pre-complete initialization.
+            if (_ephemeralServiceInfo is null)
+            {
+                _ephemeralServiceInfo = new Dictionary<Service, ServiceRegistrationInfo>();
+                createdEphemeralSet = true;
+            }
+
+            info = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+        }
+
+        return info;
+    }
+
+    /// <summary>
+    /// Populates service info by querying registration sources and adding derived registrations.
+    /// </summary>
+    /// <param name="service">The service being initialized.</param>
+    /// <param name="info">The service info to populate.</param>
+    /// <param name="isScopeIsolatedService"><see langword="true"/> when per-scope sources should be skipped.</param>
+    /// <returns><see langword="true"/> when initialization completes.</returns>
+    private bool PopulateServiceInfo(Service service, ServiceRegistrationInfo info, bool isScopeIsolatedService)
+    {
+        if (!info.IsInitializing)
+        {
+            BeginServiceInfoInitialization(service, info, _dynamicRegistrationSources);
+        }
+
+        info.InitializationDepth++;
+
+        // Drain sources in-order; registrations can enqueue additional sources.
+        while (info.HasSourcesToQuery)
+        {
+            var next = info.DequeueNextSource();
+
+            // Do not query per-scope registration sources
+            // for isolated services.
+            if (isScopeIsolatedService && next is IPerScopeRegistrationSource)
+            {
+                continue;
+            }
+
+            foreach (var provided in next.RegistrationsFor(service, _registrationAccessor))
+            {
+                // This ensures that multiple services provided by the same
+                // component share a single component (we don't re-query for them)
+                foreach (var additionalService in provided.Services)
+                {
+                    var additionalInfo = GetServiceInfo(additionalService);
+                    if (additionalInfo.IsInitialized || additionalInfo == info)
+                    {
+                        continue;
+                    }
+
+                    if (_ephemeralServiceInfo is not null)
+                    {
+                        // Use ephemeral info for additional services.
+                        additionalInfo = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+                    }
+
+                    if (!additionalInfo.IsInitializing)
+                    {
+                        BeginServiceInfoInitialization(additionalService, additionalInfo, ExcludeSource(_dynamicRegistrationSources, next));
+                    }
+                    else
+                    {
+                        additionalInfo.SkipSource(next);
+                    }
+                }
+
+                AddRegistration(
+                    provided,
+                    preserveDefaults: true,
+                    originatedFromDynamicSource: true);
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Seeds service info with middleware and registration sources.
+    /// </summary>
+    /// <param name="service">The service being initialized.</param>
+    /// <param name="info">The service info to update.</param>
+    /// <param name="registrationSources">Sources to query for registrations.</param>
     private void BeginServiceInfoInitialization(Service service, ServiceRegistrationInfo info, IEnumerable<IRegistrationSource> registrationSources)
     {
         // Add any additional service pipeline configuration from external sources.
@@ -433,6 +520,11 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         info.BeginInitialization(registrationSources);
     }
 
+    /// <summary>
+    /// Gets or creates the service info entry for a service key.
+    /// </summary>
+    /// <param name="service">The service key.</param>
+    /// <returns>The service info entry.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private ServiceRegistrationInfo GetServiceInfo(Service service)
     {

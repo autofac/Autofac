@@ -4,6 +4,7 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Middleware;
 
@@ -38,6 +39,51 @@ internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
 
     /// <inheritdoc/>
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
+    {
+        if (!AutofacMetrics.MetricsEnabled)
+        {
+            ExecuteCore(context, next);
+            return;
+        }
+
+        var timer = ValueStopwatch.StartNew();
+        try
+        {
+            ExecuteCore(context, next);
+        }
+        finally
+        {
+            AutofacMetrics.RecordMiddlewareExecution(nameof(CircularDependencyDetectorMiddleware), timer.GetElapsedTime());
+        }
+    }
+
+    /// <inheritdoc/>
+    public override string ToString() => nameof(CircularDependencyDetectorMiddleware);
+
+    private static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<ResolveRequestContext> requestStack)
+    {
+        if (registration == null)
+        {
+            throw new ArgumentNullException(nameof(registration));
+        }
+
+        if (requestStack == null)
+        {
+            throw new ArgumentNullException(nameof(requestStack));
+        }
+
+        var dependencyGraph = Display(registration);
+
+        return requestStack.Select(a => a.Registration)
+            .Aggregate(dependencyGraph, (current, requestor) => Display(requestor) + " -> " + current);
+    }
+
+    private static string Display(IComponentRegistration registration)
+    {
+        return registration.Activator.DisplayName();
+    }
+
+    private void ExecuteCore(ResolveRequestContext context, Action<ResolveRequestContext> next)
     {
         if (context.Operation is not IDependencyTrackingResolveOperation dependencyTrackingResolveOperation)
         {
@@ -94,31 +140,5 @@ internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
         {
             requestStack.Pop();
         }
-    }
-
-    /// <inheritdoc/>
-    public override string ToString() => nameof(CircularDependencyDetectorMiddleware);
-
-    private static string CreateDependencyGraphTo(IComponentRegistration registration, IEnumerable<ResolveRequestContext> requestStack)
-    {
-        if (registration == null)
-        {
-            throw new ArgumentNullException(nameof(registration));
-        }
-
-        if (requestStack == null)
-        {
-            throw new ArgumentNullException(nameof(requestStack));
-        }
-
-        var dependencyGraph = Display(registration);
-
-        return requestStack.Select(a => a.Registration)
-            .Aggregate(dependencyGraph, (current, requestor) => Display(requestor) + " -> " + current);
-    }
-
-    private static string Display(IComponentRegistration registration)
-    {
-        return registration.Activator.DisplayName();
     }
 }

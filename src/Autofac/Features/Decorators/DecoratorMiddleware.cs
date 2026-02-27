@@ -5,6 +5,7 @@ using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 
 namespace Autofac.Features.Decorators;
 
@@ -32,6 +33,28 @@ internal class DecoratorMiddleware : IResolveMiddleware
 
     /// <inheritdoc/>
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
+    {
+        if (!AutofacMetrics.MetricsEnabled)
+        {
+            ExecuteCore(context, next);
+            return;
+        }
+
+        var timer = ValueStopwatch.StartNew();
+        try
+        {
+            ExecuteCore(context, next);
+        }
+        finally
+        {
+            AutofacMetrics.RecordMiddlewareExecution(nameof(DecoratorMiddleware), timer.GetElapsedTime());
+        }
+    }
+
+    /// <inheritdoc/>
+    public override string ToString() => nameof(DecoratorMiddleware) + " [" + _decoratorRegistration.Activator.LimitType.Name + "]";
+
+    private void ExecuteCore(ResolveRequestContext context, Action<ResolveRequestContext> next)
     {
         // Go down the pipeline first, need that instance.
         next(context);
@@ -128,7 +151,4 @@ internal class DecoratorMiddleware : IResolveMiddleware
             context.Instance = decoratedInstance;
         }
     }
-
-    /// <inheritdoc/>
-    public override string ToString() => nameof(DecoratorMiddleware) + " [" + _decoratorRegistration.Activator.LimitType.Name + "]";
 }

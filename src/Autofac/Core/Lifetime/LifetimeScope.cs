@@ -5,12 +5,14 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Threading;
 #if NET5_0_OR_GREATER
 using System.Runtime.Loader;
 #endif
 using Autofac.Builder;
 using Autofac.Core.Registration;
 using Autofac.Core.Resolving;
+using Autofac.Diagnostics;
 using Autofac.Util;
 
 namespace Autofac.Core.Lifetime;
@@ -269,8 +271,21 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             return tempResult;
         }
 
-        lock (_synchRoot)
+        var instrumentationDetail = AutofacMetrics.MetricsEnabled ? $"Tag:{Tag},Id:{id}" : null;
+        var lockTaken = false;
+        try
         {
+            if (AutofacMetrics.MetricsEnabled)
+            {
+                var wait = ValueStopwatch.StartNew();
+                Monitor.Enter(_synchRoot, ref lockTaken);
+                AutofacMetrics.RecordLockContention("LifetimeScopeSharedInstance", instrumentationDetail, wait.GetElapsedTime());
+            }
+            else
+            {
+                Monitor.Enter(_synchRoot, ref lockTaken);
+            }
+
             if (_sharedInstances.TryGetValue(id, out var result))
             {
                 return result;
@@ -283,6 +298,13 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             }
 
             return result;
+        }
+        finally
+        {
+            if (lockTaken)
+            {
+                Monitor.Exit(_synchRoot);
+            }
         }
     }
 
@@ -306,8 +328,21 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             return tempResult;
         }
 
-        lock (_synchRoot)
+        var instrumentationDetail = AutofacMetrics.MetricsEnabled ? $"Tag:{Tag},Key:{instanceKey}" : null;
+        var lockTaken = false;
+        try
         {
+            if (AutofacMetrics.MetricsEnabled)
+            {
+                var wait = ValueStopwatch.StartNew();
+                Monitor.Enter(_synchRoot, ref lockTaken);
+                AutofacMetrics.RecordLockContention("LifetimeScopeQualifiedSharedInstance", instrumentationDetail, wait.GetElapsedTime());
+            }
+            else
+            {
+                Monitor.Enter(_synchRoot, ref lockTaken);
+            }
+
             if (_sharedQualifiedInstances.TryGetValue(instanceKey, out var result))
             {
                 return result;
@@ -320,6 +355,13 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
             }
 
             return result;
+        }
+        finally
+        {
+            if (lockTaken)
+            {
+                Monitor.Exit(_synchRoot);
+            }
         }
     }
 

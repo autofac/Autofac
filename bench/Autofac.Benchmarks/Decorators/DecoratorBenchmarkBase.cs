@@ -1,11 +1,14 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 namespace Autofac.Benchmarks.Decorators;
 
 public abstract class DecoratorBenchmarkBase<TCommandHandler>
+    where TCommandHandler : notnull
 {
-    protected IContainer Container { get; set; }
+    protected IContainer Container { get; set; } = default!;
 
     [Benchmark(Baseline = true)]
     public virtual void Baseline()
@@ -25,7 +28,7 @@ public abstract class DecoratorBenchmarkBase<TCommandHandler>
         using (var scope = Container.BeginLifetimeScope())
         {
             var iteration = 0;
-            object item = null;
+            object? item = null;
             while (iteration++ < repetitions)
             {
                 item = scope.Resolve<IEnumerable<TCommandHandler>>();
@@ -43,7 +46,7 @@ public abstract class DecoratorBenchmarkBase<TCommandHandler>
         using (var scope = Container.BeginLifetimeScope())
         {
             var iteration = 0;
-            object item = null;
+            object? item = null;
             while (iteration++ < repetitions)
             {
                 item = scope.Resolve<TCommandHandler>();

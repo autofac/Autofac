@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Middleware;
 
@@ -26,6 +27,28 @@ internal class DisposalTrackingMiddleware : IResolveMiddleware
     /// <inheritdoc />
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
     {
+        if (!AutofacMetrics.MetricsEnabled)
+        {
+            ExecuteCore(context, next);
+            return;
+        }
+
+        var timer = ValueStopwatch.StartNew();
+        try
+        {
+            ExecuteCore(context, next);
+        }
+        finally
+        {
+            AutofacMetrics.RecordMiddlewareExecution(nameof(DisposalTrackingMiddleware), timer.GetElapsedTime());
+        }
+    }
+
+    /// <inheritdoc />
+    public override string ToString() => nameof(DisposalTrackingMiddleware);
+
+    private static void ExecuteCore(ResolveRequestContext context, Action<ResolveRequestContext> next)
+    {
         next(context);
 
         if (context.Registration.Ownership == InstanceOwnership.OwnedByLifetimeScope)
@@ -44,7 +67,4 @@ internal class DisposalTrackingMiddleware : IResolveMiddleware
             }
         }
     }
-
-    /// <inheritdoc />
-    public override string ToString() => nameof(DisposalTrackingMiddleware);
 }

@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Reflection;
+using Autofac.Diagnostics;
 using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection;
@@ -49,11 +50,18 @@ internal static class AutowiringPropertyInjector
         }
 
         var resolveParameters = parameters as Parameter[] ?? parameters.ToArray();
+        var recordMetrics = AutofacMetrics.MetricsEnabled;
+        ValueStopwatch instrumentationTimer = default;
+        if (recordMetrics)
+        {
+            instrumentationTimer = ValueStopwatch.StartNew();
+        }
 
         var injectablePropertiesCache = ReflectionCacheSet.Shared.Internal.AutowiringInjectableProperties;
 
         var instanceType = instance.GetType();
         var injectableProperties = injectablePropertiesCache.GetOrAdd(instanceType, type => GetInjectableProperties(type).ToList());
+        var injectedProperties = 0;
 
         for (var index = 0; index < injectableProperties.Count; index++)
         {
@@ -77,6 +85,7 @@ internal static class AutowiringPropertyInjector
             {
                 var setter = ReflectionCacheSet.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
                 setter(instance, valueProvider!());
+                injectedProperties++;
                 continue;
             }
 
@@ -86,7 +95,17 @@ internal static class AutowiringPropertyInjector
             {
                 var setter = ReflectionCacheSet.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
                 setter(instance, propertyValue);
+                injectedProperties++;
             }
+        }
+
+        if (recordMetrics)
+        {
+            AutofacMetrics.RecordPropertyInjection(
+                instanceType,
+                injectableProperties.Count,
+                injectedProperties,
+                instrumentationTimer.GetElapsedTime());
         }
     }
 

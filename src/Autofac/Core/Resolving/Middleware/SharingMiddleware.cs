@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Middleware;
 
@@ -20,6 +21,28 @@ internal class SharingMiddleware : IResolveMiddleware
 
     /// <inheritdoc />
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
+    {
+        if (!AutofacMetrics.MetricsEnabled)
+        {
+            ExecuteCore(context, next);
+            return;
+        }
+
+        var timer = ValueStopwatch.StartNew();
+        try
+        {
+            ExecuteCore(context, next);
+        }
+        finally
+        {
+            AutofacMetrics.RecordMiddlewareExecution(nameof(SharingMiddleware), timer.GetElapsedTime());
+        }
+    }
+
+    /// <inheritdoc />
+    public override string ToString() => nameof(SharingMiddleware);
+
+    private static void ExecuteCore(ResolveRequestContext context, Action<ResolveRequestContext> next)
     {
         var registration = context.Registration;
         var decoratorRegistration = context.DecoratorTarget;
@@ -55,7 +78,4 @@ internal class SharingMiddleware : IResolveMiddleware
             }
         }
     }
-
-    /// <inheritdoc />
-    public override string ToString() => nameof(SharingMiddleware);
 }

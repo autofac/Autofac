@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 using Autofac.Core.Resolving.Pipeline;
+using Autofac.Diagnostics;
 using Autofac.Util;
 
 namespace Autofac.Core.Activators.Reflection;
@@ -218,11 +219,23 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             {
                 CheckNotDisposed();
 
+                var recordMetrics = AutofacMetrics.MetricsEnabled;
+                ValueStopwatch instrumentationTimer = default;
+                if (recordMetrics)
+                {
+                    instrumentationTimer = ValueStopwatch.StartNew();
+                }
+
                 var instance = boundConstructor.Instantiate();
 
                 InjectProperties(instance, context, boundConstructor, GetAllParameters(context.Parameters));
 
                 context.Instance = instance;
+
+                if (recordMetrics)
+                {
+                    AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.GetElapsedTime());
+                }
 
                 next(context);
             });
@@ -232,6 +245,13 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (context, next) =>
             {
                 CheckNotDisposed();
+
+                var recordMetrics = AutofacMetrics.MetricsEnabled;
+                ValueStopwatch instrumentationTimer = default;
+                if (recordMetrics)
+                {
+                    instrumentationTimer = ValueStopwatch.StartNew();
+                }
 
                 var prioritizedParameters = GetAllParameters(context.Parameters);
 
@@ -247,6 +267,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
                 InjectProperties(instance, context, bound, prioritizedParameters);
 
                 context.Instance = instance;
+
+                if (recordMetrics)
+                {
+                    AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.GetElapsedTime());
+                }
 
                 next(context);
             });
@@ -277,6 +302,13 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         CheckNotDisposed();
 
+        var recordMetrics = AutofacMetrics.MetricsEnabled;
+        ValueStopwatch instrumentationTimer = default;
+        if (recordMetrics)
+        {
+            instrumentationTimer = ValueStopwatch.StartNew();
+        }
+
         var prioritizedParameters = GetAllParameters(parameters);
 
         var allBindings = GetAllBindings(_constructorBinders!, context, prioritizedParameters);
@@ -294,6 +326,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         var instance = selectedBinding.Instantiate();
 
         InjectProperties(instance, context, selectedBinding, prioritizedParameters);
+
+        if (recordMetrics)
+        {
+            AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.GetElapsedTime());
+        }
 
         return instance;
     }

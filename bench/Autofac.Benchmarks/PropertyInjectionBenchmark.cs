@@ -5,7 +5,7 @@ namespace Autofac.Benchmarks;
 
 public class PropertyInjectionBenchmark
 {
-    private IContainer _container;
+    private IContainer _container = default!;
 
     [GlobalSetup]
     public void Setup()
@@ -30,29 +30,29 @@ public class PropertyInjectionBenchmark
 
     internal class A
     {
-        public B1 B1 { get; set; }
+        public B1? B1 { get; set; }
 
-        public B2 B2 { get; set; }
+        public B2? B2 { get; set; }
     }
 
     internal class B1
     {
-        public C1 C1 { get; set; }
+        public C1? C1 { get; set; }
     }
 
     internal class B2
     {
-        public C2 C2 { get; set; }
+        public C2? C2 { get; set; }
     }
 
     internal class C1
     {
-        public D1 D1 { get; set; }
+        public D1? D1 { get; set; }
     }
 
     internal class C2
     {
-        public D2 D2 { get; set; }
+        public D2? D2 { get; set; }
     }
 
     internal class D1
