@@ -11,6 +11,7 @@ namespace Autofac.Diagnostics;
 /// <summary>
 /// Lightweight stopwatch for timing without heap allocations.
 /// </summary>
+[ExcludeFromCodeCoverage]
 internal struct ValueStopwatch
 {
 #if !NET7_0_OR_GREATER

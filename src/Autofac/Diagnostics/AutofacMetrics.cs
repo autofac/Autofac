@@ -9,6 +9,7 @@ namespace Autofac.Diagnostics;
 /// <summary>
 /// Centralized metrics wiring for Autofac diagnostics.
 /// </summary>
+[ExcludeFromCodeCoverage]
 internal static class AutofacMetrics
 {
     private const string DiagnosticsEnvironmentVariable = "AUTOFAC_METRICS";
