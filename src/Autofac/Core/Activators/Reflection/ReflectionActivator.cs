@@ -228,7 +228,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
                 var instance = boundConstructor.Instantiate();
 
-                InjectProperties(instance, context, boundConstructor, GetAllParameters(context.Parameters));
+                if (ShouldInjectProperties(boundConstructor))
+                {
+                    var prioritizedParameters = GetAllParameters(context.Parameters);
+                    InjectProperties(instance, context, boundConstructor, prioritizedParameters);
+                }
 
                 context.Instance = instance;
 
@@ -422,20 +426,12 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
     private void InjectProperties(object instance, IComponentContext context, BoundConstructor constructor, IEnumerable<Parameter> allParameters)
     {
-        // We only need to do any injection if we have a set of property information.
-        if (_defaultFoundPropertySet is null)
+        if (!ShouldInjectProperties(constructor))
         {
             return;
         }
 
-        // If this constructor sets all required members,
-        // and we have no configured properties, we can just jump out.
-        if (_configuredProperties.Length == 0 && constructor.SetsRequiredMembers)
-        {
-            return;
-        }
-
-        var workingSetOfProperties = (InjectablePropertyState[])_defaultFoundPropertySet.Clone();
+        var workingSetOfProperties = (InjectablePropertyState[])_defaultFoundPropertySet!.Clone();
 
         foreach (var configuredProperty in _configuredProperties)
         {
@@ -507,6 +503,16 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
                 throw new DependencyResolutionException(BuildRequiredPropertyResolutionMessage(failingRequiredProperties));
             }
         }
+    }
+
+    private bool ShouldInjectProperties(BoundConstructor constructor)
+    {
+        if (_defaultFoundPropertySet is null)
+        {
+            return false;
+        }
+
+        return _configuredProperties.Length != 0 || !constructor.SetsRequiredMembers;
     }
 
     private string BuildRequiredPropertyResolutionMessage(IReadOnlyList<InjectableProperty> failingRequiredProperties)
