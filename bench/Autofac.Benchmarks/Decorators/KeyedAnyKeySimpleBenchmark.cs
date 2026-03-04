@@ -9,7 +9,7 @@ namespace Autofac.Benchmarks.Decorators;
 /// <summary>
 /// Benchmarks keyed decorators when components are registered with AnyKey.
 /// </summary>
-public class KeyedAnyKeyBenchmark : DecoratorBenchmarkBase<ICommandHandler>
+public class KeyedAnyKeySimpleBenchmark : DecoratorBenchmarkBase<ICommandHandler>
 {
     [GlobalSetup]
     public void Setup()
