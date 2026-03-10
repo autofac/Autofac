@@ -8,11 +8,11 @@ using Autofac.Core;
 namespace Autofac.Util.Cache;
 
 /// <summary>
-/// A reflection cache dictionary, keyed on a <see cref="ParameterInfo"/>.
+/// A reflection cache dictionary keyed on <see cref="KeyedService"/>, using the service type for cache eviction.
 /// </summary>
 /// <typeparam name="TValue">The value type.</typeparam>
-internal sealed class ReflectionCacheParameterDictionary<TValue>
-    : ConcurrentDictionary<ParameterInfo, TValue>, IReflectionCache
+internal sealed class ReflectionCacheKeyedServiceDictionary<TValue>
+    : ConcurrentDictionary<KeyedService, TValue>, IReflectionCache
 {
     /// <inheritdoc />
     public ReflectionCacheUsage Usage { get; set; } = ReflectionCacheUsage.All;
@@ -34,8 +34,8 @@ internal sealed class ReflectionCacheParameterDictionary<TValue>
 
         foreach (var kvp in this)
         {
-            var member = kvp.Key.Member;
-            if (predicate(member, TypeAssemblyReferenceProvider.GetAllReferencedAssemblies(member, reusableAssemblySet)))
+            var serviceType = kvp.Key.ServiceType;
+            if (predicate(serviceType, TypeAssemblyReferenceProvider.GetAllReferencedAssemblies(serviceType, reusableAssemblySet)))
             {
                 TryRemove(kvp.Key, out _);
             }
