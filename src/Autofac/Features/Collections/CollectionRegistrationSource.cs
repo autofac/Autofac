@@ -203,8 +203,13 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
                 continue;
             }
 
-            foreach (var keyed in registration.Services.OfType<KeyedService>())
+            foreach (var svc in registration.Services)
             {
+                if (svc is not KeyedService keyed)
+                {
+                    continue;
+                }
+
                 if (keyed.ServiceType != elementType || KeyedService.IsAnyKey(keyed.ServiceKey))
                 {
                     continue;
@@ -215,34 +220,38 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
                     continue;
                 }
 
-                var serviceRegistrations = registry
-                    .ServiceRegistrationsFor(keyed)
-                    .Where(cr =>
-                        !cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections) &&
-                        !cr.Registration.Metadata.ContainsKey(MetadataKeys.AnyKeyAdapter));
-
-                foreach (var serviceRegistration in serviceRegistrations)
+                foreach (var serviceRegistration in registry.ServiceRegistrationsFor(keyed))
                 {
-                    // Return both the keyed service and the registration so callers can issue
-                    // resolve requests that still know the original key.
+                    if (serviceRegistration.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections) ||
+                        serviceRegistration.Registration.Metadata.ContainsKey(MetadataKeys.AnyKeyAdapter))
+                    {
+                        continue;
+                    }
+
                     result.Add((keyed, serviceRegistration));
                 }
             }
         }
 
-        return result
-            .OrderBy(tuple => tuple.Item2.Registration.GetRegistrationOrder())
-            .ToList();
+        result.Sort(static (a, b) => a.Item2.GetRegistrationOrder().CompareTo(b.Item2.GetRegistrationOrder()));
+        return result;
     }
 
     private static List<(Service Service, ServiceRegistration Registration)> BuildStandardRegistrationList(IComponentRegistry registry, Service elementTypeService)
     {
-        return registry
-            .ServiceRegistrationsFor(elementTypeService)
-            .Where(cr => !cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections))
-            .OrderBy(cr => cr.Registration.GetRegistrationOrder())
-            .Select(cr => ((Service)elementTypeService, cr))
-            .ToList();
+        var registrations = registry.ServiceRegistrationsFor(elementTypeService);
+        var result = new List<(Service, ServiceRegistration)>();
+
+        foreach (var cr in registrations)
+        {
+            if (!cr.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections))
+            {
+                result.Add((elementTypeService, cr));
+            }
+        }
+
+        result.Sort(static (a, b) => a.Item2.GetRegistrationOrder().CompareTo(b.Item2.GetRegistrationOrder()));
+        return result;
     }
 
     private static IList BuildCollection(
