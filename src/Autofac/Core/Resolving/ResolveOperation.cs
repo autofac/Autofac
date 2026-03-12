@@ -99,6 +99,19 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
             throw new ObjectDisposedException(ResolveOperationResources.TemporaryContextDisposed, innerException: null);
         }
 
+        // Fast-path: if the registration is shared and already cached, skip the entire
+        // pipeline (context allocation, middleware chain, etc.). Only safe when:
+        //  - no event handlers or diagnostics are observing,
+        //  - the service pipeline is the default (no decorators or custom service middleware).
+        if (request.Registration.Sharing == InstanceSharing.Shared &&
+            request.ResolvePipeline == ServicePipelines.DefaultServicePipeline &&
+            ResolveRequestBeginning is null &&
+            !DiagnosticSource.IsEnabled() &&
+            currentOperationScope.TryGetSharedInstance(request.Registration.Id, request.DecoratorTarget?.Id, out var cached))
+        {
+            return cached;
+        }
+
         // Create a new request context.
         var requestContext = new DefaultResolveRequestContext(this, request, currentOperationScope, DiagnosticSource);
 
