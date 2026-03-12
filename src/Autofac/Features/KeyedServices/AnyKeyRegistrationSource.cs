@@ -22,8 +22,12 @@ internal sealed class AnyKeyRegistrationSource : IRegistrationSource
     /// </summary>
     public AnyKeyRegistrationSource()
     {
-        _adapterCache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheKeyedServiceDictionary<IComponentRegistration[]>>(nameof(AnyKeyRegistrationSource));
-        _adapterCache.Usage = ReflectionCacheUsage.Resolution;
+        _adapterCache = new ReflectionCacheKeyedServiceDictionary<IComponentRegistration[]>
+        {
+            Usage = ReflectionCacheUsage.Resolution,
+        };
+
+        ReflectionCacheSet.Shared.RegisterExternalCache(_adapterCache);
     }
 
     /// <inheritdoc/>
