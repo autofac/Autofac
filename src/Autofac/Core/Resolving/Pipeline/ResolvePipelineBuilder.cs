@@ -210,6 +210,61 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
         {
             var stagePhase = stage.Phase;
 
+            // MetricsEnabled is static readonly (set once at startup), so checking here
+            // at pipeline build time avoids a per-invocation branch in every middleware.
+            if (AutofacMetrics.MetricsEnabled)
+            {
+                var stageName = stage.ToString()!;
+
+                return (context) =>
+                {
+                    if (context.DiagnosticSource.IsEnabled())
+                    {
+                        context.DiagnosticSource.MiddlewareStart(context, stage);
+                        var succeeded = false;
+                        try
+                        {
+                            context.PhaseReached = stagePhase;
+                            var timer = ValueStopwatch.StartNew();
+                            try
+                            {
+                                stage.Execute(context, next);
+                            }
+                            finally
+                            {
+                                AutofacMetrics.RecordMiddlewareExecution(stageName, timer.GetElapsedTime());
+                            }
+
+                            succeeded = true;
+                        }
+                        finally
+                        {
+                            if (succeeded)
+                            {
+                                context.DiagnosticSource.MiddlewareSuccess(context, stage);
+                            }
+                            else
+                            {
+                                context.DiagnosticSource.MiddlewareFailure(context, stage);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        context.PhaseReached = stagePhase;
+                        var timer = ValueStopwatch.StartNew();
+                        try
+                        {
+                            stage.Execute(context, next);
+                        }
+                        finally
+                        {
+                            AutofacMetrics.RecordMiddlewareExecution(stageName, timer.GetElapsedTime());
+                        }
+                    }
+                };
+            }
+
             return (context) =>
             {
                 // Same basic flow in if/else, but doing a one-time check for diagnostics

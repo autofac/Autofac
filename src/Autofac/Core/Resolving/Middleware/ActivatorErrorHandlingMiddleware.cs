@@ -3,7 +3,6 @@
 
 using System.Globalization;
 using Autofac.Core.Resolving.Pipeline;
-using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Middleware;
 
@@ -29,20 +28,23 @@ internal class ActivatorErrorHandlingMiddleware : IResolveMiddleware
     /// <inheritdoc />
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
     {
-        if (!AutofacMetrics.MetricsEnabled)
-        {
-            ExecuteCore(context, next);
-            return;
-        }
-
-        var timer = ValueStopwatch.StartNew();
         try
         {
-            ExecuteCore(context, next);
+            next(context);
+
+            if (context.Instance is null)
+            {
+                // Exited the Activation Stage without creating an instance.
+                throw new DependencyResolutionException(MiddlewareMessages.ActivatorDidNotPopulateInstance);
+            }
         }
-        finally
+        catch (ObjectDisposedException)
         {
-            AutofacMetrics.RecordMiddlewareExecution(nameof(ActivatorErrorHandlingMiddleware), timer.GetElapsedTime());
+            throw;
+        }
+        catch (Exception ex)
+        {
+            throw PropagateActivationException(context.Registration.Activator, ex);
         }
     }
 
@@ -64,27 +66,5 @@ internal class ActivatorErrorHandlingMiddleware : IResolveMiddleware
         var result = new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, ComponentActivationResources.ErrorDuringActivation, activatorChain), innerException);
         result.Data[ActivatorChainExceptionData] = activatorChain;
         return result;
-    }
-
-    private static void ExecuteCore(ResolveRequestContext context, Action<ResolveRequestContext> next)
-    {
-        try
-        {
-            next(context);
-
-            if (context.Instance is null)
-            {
-                // Exited the Activation Stage without creating an instance.
-                throw new DependencyResolutionException(MiddlewareMessages.ActivatorDidNotPopulateInstance);
-            }
-        }
-        catch (ObjectDisposedException)
-        {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            throw PropagateActivationException(context.Registration.Activator, ex);
-        }
     }
 }

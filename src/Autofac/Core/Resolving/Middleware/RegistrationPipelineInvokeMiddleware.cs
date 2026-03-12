@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core.Resolving.Pipeline;
-using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Middleware;
 
@@ -26,21 +25,7 @@ internal class RegistrationPipelineInvokeMiddleware : IResolveMiddleware
     /// <inheritdoc/>
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
     {
-        if (!AutofacMetrics.MetricsEnabled)
-        {
-            context.Registration.ResolvePipeline.Invoke(context);
-            return;
-        }
-
-        var timer = ValueStopwatch.StartNew();
-        try
-        {
-            context.Registration.ResolvePipeline.Invoke(context);
-        }
-        finally
-        {
-            AutofacMetrics.RecordMiddlewareExecution(nameof(RegistrationPipelineInvokeMiddleware), timer.GetElapsedTime());
-        }
+        context.Registration.ResolvePipeline.Invoke(context);
     }
 
     /// <inheritdoc/>
