@@ -132,6 +132,21 @@ internal static class KeyedServiceParameterInjector
             return new Parameter[] { keyParameter };
         }
 
+        // Build a concrete array to avoid LINQ AppendIterator allocation.
+        if (parameters is IReadOnlyCollection<Parameter> collection)
+        {
+            var result = new Parameter[collection.Count + 1];
+            var i = 0;
+            foreach (var p in collection)
+            {
+                result[i++] = p;
+            }
+
+            result[i] = keyParameter;
+            return result;
+        }
+
+        // Fallback for unknown enumerable types.
         return parameters.Append(keyParameter);
     }
 }
