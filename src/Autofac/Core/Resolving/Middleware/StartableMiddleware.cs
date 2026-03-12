@@ -3,7 +3,6 @@
 
 using Autofac.Builder;
 using Autofac.Core.Resolving.Pipeline;
-using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Middleware;
 
@@ -27,28 +26,6 @@ internal class StartableMiddleware : IResolveMiddleware
     /// <inheritdoc />
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
     {
-        if (!AutofacMetrics.MetricsEnabled)
-        {
-            ExecuteCore(context, next);
-            return;
-        }
-
-        var timer = ValueStopwatch.StartNew();
-        try
-        {
-            ExecuteCore(context, next);
-        }
-        finally
-        {
-            AutofacMetrics.RecordMiddlewareExecution(nameof(StartableMiddleware), timer.GetElapsedTime());
-        }
-    }
-
-    /// <inheritdoc/>
-    public override string ToString() => nameof(StartableMiddleware);
-
-    private static void ExecuteCore(ResolveRequestContext context, Action<ResolveRequestContext> next)
-    {
         next(context);
 
         if (context.Instance is IStartable startable
@@ -62,4 +39,7 @@ internal class StartableMiddleware : IResolveMiddleware
             startable.Start();
         }
     }
+
+    /// <inheritdoc/>
+    public override string ToString() => nameof(StartableMiddleware);
 }

@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core.Resolving.Pipeline;
-using Autofac.Diagnostics;
 
 namespace Autofac.Core.Resolving.Middleware;
 
@@ -33,21 +32,7 @@ internal class DelegateMiddleware : IResolveMiddleware
     /// <inheritdoc />
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)
     {
-        if (!AutofacMetrics.MetricsEnabled)
-        {
-            _callback(context, next);
-            return;
-        }
-
-        var timer = ValueStopwatch.StartNew();
-        try
-        {
-            _callback(context, next);
-        }
-        finally
-        {
-            AutofacMetrics.RecordMiddlewareExecution(ToString(), timer.GetElapsedTime());
-        }
+        _callback(context, next);
     }
 
     /// <inheritdoc />

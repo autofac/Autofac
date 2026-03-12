@@ -6,6 +6,7 @@ using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Registration;
 using Autofac.Util;
+using Autofac.Util.Cache;
 
 namespace Autofac.Features.KeyedServices;
 
@@ -14,6 +15,21 @@ namespace Autofac.Features.KeyedServices;
 /// </summary>
 internal sealed class AnyKeyRegistrationSource : IRegistrationSource
 {
+    private readonly ReflectionCacheKeyedServiceDictionary<IComponentRegistration[]> _adapterCache;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AnyKeyRegistrationSource"/> class.
+    /// </summary>
+    public AnyKeyRegistrationSource()
+    {
+        _adapterCache = new ReflectionCacheKeyedServiceDictionary<IComponentRegistration[]>
+        {
+            Usage = ReflectionCacheUsage.Resolution,
+        };
+
+        ReflectionCacheSet.Shared.RegisterExternalCache(_adapterCache);
+    }
+
     /// <inheritdoc/>
     public bool IsAdapterForIndividualComponents => true;
 
@@ -37,6 +53,11 @@ internal sealed class AnyKeyRegistrationSource : IRegistrationSource
             return Enumerable.Empty<IComponentRegistration>();
         }
 
+        if (_adapterCache.TryGetValue(keyedService, out var cached))
+        {
+            return cached;
+        }
+
         // If there are already specific registrations for this key, do nothing.
         if (registrationAccessor(service).Any())
         {
@@ -51,7 +72,14 @@ internal sealed class AnyKeyRegistrationSource : IRegistrationSource
             return Enumerable.Empty<IComponentRegistration>();
         }
 
-        return anyKeyRegistrations.Select(r => CreateAdapterRegistration(r, keyedService));
+        var adapters = new IComponentRegistration[anyKeyRegistrations.Length];
+        for (var i = 0; i < anyKeyRegistrations.Length; i++)
+        {
+            adapters[i] = CreateAdapterRegistration(anyKeyRegistrations[i], keyedService);
+        }
+
+        _adapterCache.TryAdd(keyedService, adapters);
+        return adapters;
     }
 
     private static ComponentRegistration CreateAdapterRegistration(ServiceRegistration anyKeyRegistration, KeyedService requestedService)

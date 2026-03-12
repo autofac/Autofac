@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 namespace Autofac.Benchmarks.Decorators;
 
 public abstract class DecoratorBenchmarkBase<TCommandHandler>

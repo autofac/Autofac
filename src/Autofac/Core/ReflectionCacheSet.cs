@@ -18,6 +18,8 @@ public sealed class ReflectionCacheSet
 
     private readonly ConcurrentDictionary<string, IReflectionCache> _caches = new();
 
+    private readonly List<WeakReference<IReflectionCache>> _externalCaches = new();
+
     /// <summary>
     /// Initializes a new instance of the <see cref="ReflectionCacheSet"/> class.
     /// </summary>
@@ -102,6 +104,26 @@ public sealed class ReflectionCacheSet
     }
 
     /// <summary>
+    /// Register an externally-owned <see cref="IReflectionCache"/> so it participates
+    /// in <see cref="Clear()"/> and <see cref="Clear(ReflectionCacheClearPredicate)"/> calls.
+    /// The cache is held via a weak reference so it does not prevent garbage collection
+    /// of the owning object (e.g., a container or registration source).
+    /// </summary>
+    /// <param name="cache">The cache to register.</param>
+    public void RegisterExternalCache(IReflectionCache cache)
+    {
+        if (cache is null)
+        {
+            throw new ArgumentNullException(nameof(cache));
+        }
+
+        lock (_externalCaches)
+        {
+            _externalCaches.Add(new WeakReference<IReflectionCache>(cache));
+        }
+    }
+
+    /// <summary>
     /// Clear the internal reflection cache. Only call this method if you are
     /// dynamically unloading types from the process; calling this method
     /// otherwise will only slow down Autofac during normal operation.
@@ -117,6 +139,8 @@ public sealed class ReflectionCacheSet
         {
             cache.Clear();
         }
+
+        ClearExternalCaches(static cache => cache.Clear());
     }
 
     /// <summary>
@@ -139,6 +163,8 @@ public sealed class ReflectionCacheSet
         {
             cache.Clear(predicate);
         }
+
+        ClearExternalCaches(cache => cache.Clear(predicate));
     }
 
     /// <summary>
@@ -171,6 +197,25 @@ public sealed class ReflectionCacheSet
         }
 
         return _sharedSet.TryGetTarget(out sharedCache);
+    }
+
+    private void ClearExternalCaches(Action<IReflectionCache> clearAction)
+    {
+        lock (_externalCaches)
+        {
+            for (var i = _externalCaches.Count - 1; i >= 0; i--)
+            {
+                if (_externalCaches[i].TryGetTarget(out var cache))
+                {
+                    clearAction(cache);
+                }
+                else
+                {
+                    // Prune dead references.
+                    _externalCaches.RemoveAt(i);
+                }
+            }
+        }
     }
 
     private IEnumerable<IReflectionCache> GetAllCaches()
