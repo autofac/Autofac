@@ -53,7 +53,6 @@ public abstract class Module : IModule
     /// </summary>
     [SuppressMessage("Design", "CA1065:Do not raise exceptions in unexpected locations", Justification = "Prevent breaking change")]
     protected virtual Assembly ThisAssembly
-    {
         get
         {
             var thisType = GetType();
