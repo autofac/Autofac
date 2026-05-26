@@ -284,7 +284,7 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
     public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> As(params Type[] services)
     {
         // Issue #919: Use arrays and iteration rather than LINQ to reduce memory allocation.
-        Service[] argArray = new Service[services.Length];
+        var argArray = new Service[services.Length];
         for (var i = 0; i < services.Length; i++)
         {
             var service = services[i];
