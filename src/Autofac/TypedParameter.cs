@@ -50,7 +50,10 @@ public class TypedParameter : ConstantParameter
     /// Gets the type against which targets are matched.
     /// </summary>
     [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "Property serves a different purpose than the default get method.")]
-    public Type Type { get; private set; }
+    public Type Type
+    {
+        get; private set;
+    }
 
     /// <summary>
     /// Shortcut for creating <see cref="TypedParameter"/>

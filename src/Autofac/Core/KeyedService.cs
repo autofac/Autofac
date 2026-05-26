@@ -35,13 +35,19 @@ public sealed class KeyedService : Service, IServiceWithType, IEquatable<KeyedSe
     /// Gets the key of the service.
     /// </summary>
     /// <value>The key of the service.</value>
-    public object ServiceKey { get; }
+    public object ServiceKey
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the type of the service.
     /// </summary>
     /// <value>The type of the service.</value>
-    public Type ServiceType { get; }
+    public Type ServiceType
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a human-readable description of the service.

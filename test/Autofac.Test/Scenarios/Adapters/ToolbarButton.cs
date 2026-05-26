@@ -11,7 +11,13 @@ public class ToolbarButton : IToolbarButton
         Name = name;
     }
 
-    public string Name { get; }
+    public string Name
+    {
+        get;
+    }
 
-    public Command Command { get; }
+    public Command Command
+    {
+        get;
+    }
 }

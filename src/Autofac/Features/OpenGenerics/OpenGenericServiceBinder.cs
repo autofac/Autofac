@@ -260,8 +260,8 @@ internal static class OpenGenericServiceBinder
         return baseType;
     }
 
-    private static Type[] GetInterfaces(Type implementationType, Type serviceType) =>
-        implementationType.GetInterfaces()
+    private static Type[] GetInterfaces(Type implementationType, Type serviceType)
+        => implementationType.GetInterfaces()
             .Where(i => i.Name == serviceType.Name && i.Namespace == serviceType.Namespace)
             .ToArray();
 

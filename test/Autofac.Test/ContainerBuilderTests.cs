@@ -64,7 +64,7 @@ public class ContainerBuilderTests
         builder.RegisterGeneric(typeof(Repository<>)).As(typeof(IRepository<>));
         builder.RegisterType<Controller>().PropertiesAutowired();
 
-        IContainer container = builder.Build();
+        var container = builder.Build();
         var controller = container.Resolve<Controller>();
         controller.UseTheRepository();
 
@@ -82,7 +82,10 @@ public class ContainerBuilderTests
 
     private class Controller
     {
-        public Lazy<IRepository<object>> TheRepository { get; set; }
+        public Lazy<IRepository<object>> TheRepository
+        {
+            get; set;
+        }
 
         public void UseTheRepository()
         {

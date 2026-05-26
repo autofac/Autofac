@@ -24,10 +24,16 @@ public class OperationFailureDiagnosticData
     /// <summary>
     /// Gets the resolve operation that failed.
     /// </summary>
-    public IResolveOperation Operation { get; private set; }
+    public IResolveOperation Operation
+    {
+        get; private set;
+    }
 
     /// <summary>
     /// Gets the exception that caused the operation failure.
     /// </summary>
-    public Exception OperationException { get; private set; }
+    public Exception OperationException
+    {
+        get; private set;
+    }
 }

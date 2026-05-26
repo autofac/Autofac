@@ -308,7 +308,7 @@ public class WithAttributeFilterTestFixture
     [Fact]
     public void ComponentsThatAreNotUsedDoNotGetActivated()
     {
-        int adapterActivationCount = 0;
+        var adapterActivationCount = 0;
         var builder = new ContainerBuilder();
         builder.RegisterType<MsBuildAdapter>()
             .WithMetadata<AdapterMetadata>(m => m.For(am => am.Target, "Solution"))
@@ -399,7 +399,10 @@ public class WithAttributeFilterTestFixture
 
     private class IdentifiableObject
     {
-        public string Id { get; set; }
+        public string Id
+        {
+            get; set;
+        }
     }
 
     private class ManagerWithManyIndividualConcrete
@@ -416,13 +419,25 @@ public class WithAttributeFilterTestFixture
             Third = third;
         }
 
-        public ILogger Logger { get; set; }
+        public ILogger Logger
+        {
+            get; set;
+        }
 
-        public IdentifiableObject First { get; set; }
+        public IdentifiableObject First
+        {
+            get; set;
+        }
 
-        public IdentifiableObject Second { get; set; }
+        public IdentifiableObject Second
+        {
+            get; set;
+        }
 
-        public IdentifiableObject Third { get; set; }
+        public IdentifiableObject Third
+        {
+            get; set;
+        }
     }
 
     private class ManagerWithLazySingle
@@ -432,7 +447,10 @@ public class WithAttributeFilterTestFixture
             Logger = logger;
         }
 
-        public Lazy<ILogger> Logger { get; set; }
+        public Lazy<ILogger> Logger
+        {
+            get; set;
+        }
     }
 
     private class ManagerWithMetaSingle
@@ -442,7 +460,10 @@ public class WithAttributeFilterTestFixture
             Logger = logger;
         }
 
-        public Meta<ILogger, EmptyMetadata> Logger { get; set; }
+        public Meta<ILogger, EmptyMetadata> Logger
+        {
+            get; set;
+        }
     }
 
     private class ManagerWithOwnedSingle
@@ -452,7 +473,10 @@ public class WithAttributeFilterTestFixture
             Logger = logger;
         }
 
-        public Owned<ILogger> Logger { get; set; }
+        public Owned<ILogger> Logger
+        {
+            get; set;
+        }
     }
 
     private class ManagerWithLazyMany
@@ -462,7 +486,10 @@ public class WithAttributeFilterTestFixture
             Loggers = loggers;
         }
 
-        public IEnumerable<Lazy<ILogger>> Loggers { get; set; }
+        public IEnumerable<Lazy<ILogger>> Loggers
+        {
+            get; set;
+        }
     }
 
     private class ManagerWithMetaMany
@@ -472,7 +499,10 @@ public class WithAttributeFilterTestFixture
             Loggers = loggers;
         }
 
-        public IEnumerable<Meta<ILogger, EmptyMetadata>> Loggers { get; set; }
+        public IEnumerable<Meta<ILogger, EmptyMetadata>> Loggers
+        {
+            get; set;
+        }
     }
 
     private class ManagerWithOwnedMany
@@ -482,7 +512,10 @@ public class WithAttributeFilterTestFixture
             Loggers = loggers;
         }
 
-        public IEnumerable<Owned<ILogger>> Loggers { get; set; }
+        public IEnumerable<Owned<ILogger>> Loggers
+        {
+            get; set;
+        }
     }
 
     private class SolutionExplorerKeyed
@@ -495,9 +528,15 @@ public class WithAttributeFilterTestFixture
             Logger = logger;
         }
 
-        public List<IAdapter> Adapters { get; set; }
+        public List<IAdapter> Adapters
+        {
+            get; set;
+        }
 
-        public ILogger Logger { get; set; }
+        public ILogger Logger
+        {
+            get; set;
+        }
     }
 
     private class SolutionExplorerMetadata
@@ -510,9 +549,15 @@ public class WithAttributeFilterTestFixture
             Logger = logger;
         }
 
-        public List<IAdapter> Adapters { get; set; }
+        public List<IAdapter> Adapters
+        {
+            get; set;
+        }
 
-        public ILogger Logger { get; set; }
+        public ILogger Logger
+        {
+            get; set;
+        }
     }
 
     private class SolutionExplorerMixed
@@ -525,14 +570,23 @@ public class WithAttributeFilterTestFixture
             Logger = logger;
         }
 
-        public List<IAdapter> Adapters { get; set; }
+        public List<IAdapter> Adapters
+        {
+            get; set;
+        }
 
-        public ILogger Logger { get; set; }
+        public ILogger Logger
+        {
+            get; set;
+        }
     }
 
     private class AdapterMetadata
     {
-        public string Target { get; set; }
+        public string Target
+        {
+            get; set;
+        }
     }
 
     private class EmptyMetadata
@@ -541,7 +595,10 @@ public class WithAttributeFilterTestFixture
 
     private class RequiredParameterWithKeyFilter
     {
-        public int Parameter { get; set; }
+        public int Parameter
+        {
+            get; set;
+        }
 
         public RequiredParameterWithKeyFilter([KeyFilter(0)] int parameter)
         {
@@ -551,7 +608,10 @@ public class WithAttributeFilterTestFixture
 
     private class OptionalParameterWithKeyFilter
     {
-        public int Parameter { get; set; }
+        public int Parameter
+        {
+            get; set;
+        }
 
         public OptionalParameterWithKeyFilter([KeyFilter(0)] int parameter = 15)
         {

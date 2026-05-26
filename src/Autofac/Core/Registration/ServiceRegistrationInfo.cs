@@ -67,7 +67,10 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     /// <summary>
     /// Gets or sets a value representing the current initialization depth. Will always be zero for initialized service blocks.
     /// </summary>
-    public int InitializationDepth { get; set; }
+    public int InitializationDepth
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Gets the known implementations. The first implementation is a default one.
@@ -169,8 +172,8 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     /// <inheritdoc/>
     PipelineType IResolvePipelineBuilder.Type => PipelineType.Service;
 
-    private bool Any =>
-        _defaultImplementations.Count > 0 ||
+    private bool Any
+        => _defaultImplementations.Count > 0 ||
         _sourceImplementations is not null ||
         _preserveDefaultImplementations is not null;
 

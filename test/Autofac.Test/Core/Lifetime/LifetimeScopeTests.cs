@@ -61,13 +61,13 @@ public class LifetimeScopeTests
         var service = new TypedService(typeof(Person));
         using (var unconfigured = container.BeginLifetimeScope())
         {
-            Assert.True(unconfigured.ComponentRegistry.TryGetRegistration(service, out IComponentRegistration reg), "The registration should have been found in the unconfigured scope.");
+            Assert.True(unconfigured.ComponentRegistry.TryGetRegistration(service, out var reg), "The registration should have been found in the unconfigured scope.");
             Assert.Equal(typeof(Person), reg.Activator.LimitType);
         }
 
         using (var configured = container.BeginLifetimeScope(b => { }))
         {
-            Assert.True(configured.ComponentRegistry.TryGetRegistration(service, out IComponentRegistration reg), "The registration should have been found in the configured scope.");
+            Assert.True(configured.ComponentRegistry.TryGetRegistration(service, out var reg), "The registration should have been found in the configured scope.");
             Assert.Equal(typeof(Person), reg.Activator.LimitType);
         }
     }
@@ -163,7 +163,10 @@ public class LifetimeScopeTests
     {
         private readonly ITest _instance;
 
-        public bool IsAdapterForIndividualComponents { get; }
+        public bool IsAdapterForIndividualComponents
+        {
+            get;
+        }
 
         public SimplifiedRegistrationSource(ITest instance) => _instance = instance;
 
@@ -184,8 +187,8 @@ public class LifetimeScopeTests
         private static bool IsTestType(Type serviceType) => typeof(ITest).IsAssignableFrom(serviceType);
 
         [SuppressMessage("CA2000", "CA2000", Justification = "The registration disposes of the activator automatically.")]
-        private static ComponentRegistration CreateRegistration(Service service, Type serviceType, Func<IComponentContext, IEnumerable<Parameter>, object> factory) =>
-            new(
+        private static ComponentRegistration CreateRegistration(Service service, Type serviceType, Func<IComponentContext, IEnumerable<Parameter>, object> factory)
+            => new(
                 Guid.NewGuid(),
                 new DelegateActivator(serviceType, factory),
                 CurrentScopeLifetime.Instance,
@@ -202,7 +205,10 @@ public class LifetimeScopeTests
             Instance = instance;
         }
 
-        internal object Instance { get; set; }
+        internal object Instance
+        {
+            get; set;
+        }
     }
 
     private class Person

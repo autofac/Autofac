@@ -9,7 +9,10 @@ public class DecoratorTests
 {
     private interface IDecoratedService : IService
     {
-        IDecoratedService Decorated { get; }
+        IDecoratedService Decorated
+        {
+            get;
+        }
     }
 
     private interface IService
@@ -27,7 +30,10 @@ public class DecoratorTests
 
     private class AutoWiredService : IAutoWiredService
     {
-        public NestedService NestedService { get; set; }
+        public NestedService NestedService
+        {
+            get; set;
+        }
 
         public bool NestedServiceIsNotNull()
         {
@@ -226,7 +232,10 @@ public class DecoratorTests
             Decorated = decorated;
         }
 
-        public IDecoratedService Decorated { get; }
+        public IDecoratedService Decorated
+        {
+            get;
+        }
     }
 
     private class DecoratorA : Decorator

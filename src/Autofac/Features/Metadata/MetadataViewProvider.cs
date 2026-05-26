@@ -88,7 +88,7 @@ internal static class MetadataViewProvider
 
     private static TValue? GetMetadataValue<TValue>(IDictionary<string, object> metadata, string name, DefaultValueAttribute defaultValue)
     {
-        if (metadata.TryGetValue(name, out object? result))
+        if (metadata.TryGetValue(name, out var result))
         {
             return (TValue)result;
         }

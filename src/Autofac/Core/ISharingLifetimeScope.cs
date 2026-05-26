@@ -11,12 +11,18 @@ public interface ISharingLifetimeScope : ILifetimeScope
     /// <summary>
     /// Gets the root of the sharing hierarchy.
     /// </summary>
-    ISharingLifetimeScope RootLifetimeScope { get; }
+    ISharingLifetimeScope RootLifetimeScope
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the parent of this node of the hierarchy, or null.
     /// </summary>
-    ISharingLifetimeScope? ParentLifetimeScope { get; }
+    ISharingLifetimeScope? ParentLifetimeScope
+    {
+        get;
+    }
 
     /// <summary>
     /// Try to retrieve a shared instance based on a GUID key.

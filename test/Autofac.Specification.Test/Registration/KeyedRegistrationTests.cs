@@ -15,7 +15,7 @@ public class KeyedRegistrationTests
 
         var c = cb.Build();
 
-        Assert.True(c.TryResolveKeyed(key, typeof(object), out object o1));
+        Assert.True(c.TryResolveKeyed(key, typeof(object), out var o1));
         Assert.NotNull(o1);
         Assert.False(c.TryResolve(typeof(object), out _));
     }
@@ -30,7 +30,7 @@ public class KeyedRegistrationTests
 
         var c = cb.Build();
 
-        Assert.True(c.TryResolveNamed(name, typeof(object), out object o1));
+        Assert.True(c.TryResolveNamed(name, typeof(object), out var o1));
         Assert.NotNull(o1);
         Assert.False(c.TryResolve(typeof(object), out _));
     }

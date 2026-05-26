@@ -21,7 +21,10 @@ public sealed class TypedService : Service, IServiceWithType, IEquatable<TypedSe
     /// Gets the type of the service.
     /// </summary>
     /// <value>The type of the service.</value>
-    public Type ServiceType { get; }
+    public Type ServiceType
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a human-readable description of the service.

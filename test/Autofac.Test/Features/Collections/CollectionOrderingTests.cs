@@ -37,12 +37,18 @@ public class CollectionOrderingTests
             Decorated = decorated;
         }
 
-        public IService Decorated { get; }
+        public IService Decorated
+        {
+            get;
+        }
     }
 
     private class Command
     {
-        public string CommandId { get; }
+        public string CommandId
+        {
+            get;
+        }
 
         public Command(string commandId)
         {
@@ -52,12 +58,18 @@ public class CollectionOrderingTests
 
     private interface ICommandAdaptor
     {
-        Command Command { get; }
+        Command Command
+        {
+            get;
+        }
     }
 
     private class CommandAdaptor : ICommandAdaptor
     {
-        public Command Command { get; }
+        public Command Command
+        {
+            get;
+        }
 
         public CommandAdaptor(Command command)
         {

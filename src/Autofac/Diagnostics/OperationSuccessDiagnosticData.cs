@@ -24,10 +24,16 @@ public class OperationSuccessDiagnosticData
     /// <summary>
     /// Gets the resolve operation that succeeded.
     /// </summary>
-    public IResolveOperation Operation { get; private set; }
+    public IResolveOperation Operation
+    {
+        get; private set;
+    }
 
     /// <summary>
     /// Gets the resolved instance providing the requested service.
     /// </summary>
-    public object ResolvedInstance { get; private set; }
+    public object ResolvedInstance
+    {
+        get; private set;
+    }
 }

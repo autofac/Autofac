@@ -5,5 +5,8 @@ namespace Autofac.Test.Features.Metadata.TestTypes;
 
 public interface IMyMetaInterface
 {
-    int TheInt { get; }
+    int TheInt
+    {
+        get;
+    }
 }

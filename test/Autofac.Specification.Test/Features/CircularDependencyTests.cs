@@ -227,36 +227,60 @@ public class CircularDependencyTests
 
     private interface ICircularDependencyA
     {
-        ICircularDependencyB DependencyB { get; }
+        ICircularDependencyB DependencyB
+        {
+            get;
+        }
     }
 
     private interface ICircularDependencyB
     {
-        ICircularDependencyA DependencyA { get; }
+        ICircularDependencyA DependencyA
+        {
+            get;
+        }
     }
 
     private interface ICircularDependencyHost
     {
-        public ICircularDependencyB DependencyB { get; }
+        ICircularDependencyB DependencyB
+        {
+            get;
+        }
 
-        public ICircularDependencyA DependencyA { get; }
+        ICircularDependencyA DependencyA
+        {
+            get;
+        }
     }
 
     private class CircularDependencyA : ICircularDependencyA
     {
-        public ICircularDependencyB DependencyB { get; set; }
+        public ICircularDependencyB DependencyB
+        {
+            get; set;
+        }
     }
 
     private class CircularDependencyB : ICircularDependencyB
     {
-        public ICircularDependencyA DependencyA { get; set; }
+        public ICircularDependencyA DependencyA
+        {
+            get; set;
+        }
     }
 
     private class CircularDependencyHost : ICircularDependencyHost
     {
-        public ICircularDependencyB DependencyB { get; set; }
+        public ICircularDependencyB DependencyB
+        {
+            get; set;
+        }
 
-        public ICircularDependencyA DependencyA { get; set; }
+        public ICircularDependencyA DependencyA
+        {
+            get; set;
+        }
     }
 
     private static IPlugin SafeResolvePlugin(string pluginName, IComponentContext core)

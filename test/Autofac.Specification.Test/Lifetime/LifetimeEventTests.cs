@@ -611,7 +611,10 @@ public class LifetimeEventTests
 
     private class ReleasingClass : IReleasingService
     {
-        public bool Released { get; set; }
+        public bool Released
+        {
+            get; set;
+        }
 
         public void Release()
         {
@@ -625,7 +628,10 @@ public class LifetimeEventTests
 
     private class MethodInjection
     {
-        public int Param { get; private set; }
+        public int Param
+        {
+            get; private set;
+        }
 
         public void Method(int param)
         {

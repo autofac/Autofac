@@ -25,7 +25,10 @@ public class DefaultPropertySelector : IPropertySelector
     /// Gets a value indicating whether the value should be set if the value is already
     /// set (ie non-null).
     /// </summary>
-    public bool PreserveSetValues { get; }
+    public bool PreserveSetValues
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets an instance of DefaultPropertySelector that will cause values to be overwritten.

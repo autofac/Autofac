@@ -34,8 +34,15 @@ public class Container : Disposable, IContainer, IServiceProvider
     /// </summary>
     public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning
     {
-        add { _rootLifetimeScope.ChildLifetimeScopeBeginning += value; }
-        remove { _rootLifetimeScope.ChildLifetimeScopeBeginning -= value; }
+        add
+        {
+            _rootLifetimeScope.ChildLifetimeScopeBeginning += value;
+        }
+
+        remove
+        {
+            _rootLifetimeScope.ChildLifetimeScopeBeginning -= value;
+        }
     }
 
     /// <summary>
@@ -43,8 +50,15 @@ public class Container : Disposable, IContainer, IServiceProvider
     /// </summary>
     public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding
     {
-        add { _rootLifetimeScope.CurrentScopeEnding += value; }
-        remove { _rootLifetimeScope.CurrentScopeEnding -= value; }
+        add
+        {
+            _rootLifetimeScope.CurrentScopeEnding += value;
+        }
+
+        remove
+        {
+            _rootLifetimeScope.CurrentScopeEnding -= value;
+        }
     }
 
     /// <summary>
@@ -52,8 +66,15 @@ public class Container : Disposable, IContainer, IServiceProvider
     /// </summary>
     public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning
     {
-        add { _rootLifetimeScope.ResolveOperationBeginning += value; }
-        remove { _rootLifetimeScope.ResolveOperationBeginning -= value; }
+        add
+        {
+            _rootLifetimeScope.ResolveOperationBeginning += value;
+        }
+
+        remove
+        {
+            _rootLifetimeScope.ResolveOperationBeginning -= value;
+        }
     }
 
     /// <summary>
@@ -72,7 +93,10 @@ public class Container : Disposable, IContainer, IServiceProvider
     /// <summary>
     /// Gets associated services with the components that provide them.
     /// </summary>
-    public IComponentRegistry ComponentRegistry { get; }
+    public IComponentRegistry ComponentRegistry
+    {
+        get;
+    }
 
     /// <inheritdoc/>
     public DiagnosticListener DiagnosticSource => _rootLifetimeScope.DiagnosticSource;

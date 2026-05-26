@@ -38,7 +38,10 @@ internal class ComponentRegistry : Disposable, IComponentRegistry
     /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
     /// context across registrations.
     /// </value>
-    public IDictionary<string, object?> Properties { get; }
+    public IDictionary<string, object?> Properties
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the registered components.

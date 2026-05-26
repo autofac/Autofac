@@ -373,7 +373,10 @@ public class ReflectionActivatorTests
             I = i;
         }
 
-        public int I { get; private set; }
+        public int I
+        {
+            get; private set;
+        }
     }
 
     private class AcceptsObjectParameter
@@ -383,7 +386,10 @@ public class ReflectionActivatorTests
             P = p;
         }
 
-        public object P { get; private set; }
+        public object P
+        {
+            get; private set;
+        }
     }
 
     private class InternalDefaultConstructor
@@ -406,16 +412,28 @@ public class ReflectionActivatorTests
 
     private class PrivateSetProperty
     {
-        public int GetProperty { get; private set; }
+        public int GetProperty
+        {
+            get; private set;
+        }
 
-        public int P { get; set; }
+        public int P
+        {
+            get; set;
+        }
     }
 
     private class R
     {
-        public int P1 { get; set; }
+        public int P1
+        {
+            get; set;
+        }
 
-        public int P2 { get; set; }
+        public int P2
+        {
+            get; set;
+        }
     }
 
     private class ThreeConstructors
@@ -435,7 +453,10 @@ public class ReflectionActivatorTests
             CalledConstructorParameterCount = 2;
         }
 
-        public int CalledConstructorParameterCount { get; private set; }
+        public int CalledConstructorParameterCount
+        {
+            get; private set;
+        }
     }
 
     private class WithGenericCtor<T>

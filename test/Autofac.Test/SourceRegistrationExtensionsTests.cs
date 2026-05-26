@@ -39,7 +39,10 @@ public sealed class SourceRegistrationExtensionsTests
 
     private sealed class EmptyRegistrationSource : IRegistrationSource
     {
-        public bool RegistrationsForCalled { get; private set; }
+        public bool RegistrationsForCalled
+        {
+            get; private set;
+        }
 
         public bool IsAdapterForIndividualComponents => false;
 

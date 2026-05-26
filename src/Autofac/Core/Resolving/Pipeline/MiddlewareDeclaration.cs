@@ -21,20 +21,32 @@ internal sealed class MiddlewareDeclaration
     /// <summary>
     /// Gets or sets the next node in a pipeline set.
     /// </summary>
-    public MiddlewareDeclaration? Next { get; set; }
+    public MiddlewareDeclaration? Next
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Gets or sets the previous node in a pipeline set.
     /// </summary>
-    public MiddlewareDeclaration? Previous { get; set; }
+    public MiddlewareDeclaration? Previous
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Gets the middleware for this declaration.
     /// </summary>
-    public IResolveMiddleware Middleware { get; }
+    public IResolveMiddleware Middleware
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the declared phase of the middleware.
     /// </summary>
-    public PipelinePhase Phase { get; }
+    public PipelinePhase Phase
+    {
+        get;
+    }
 }

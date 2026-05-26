@@ -39,7 +39,7 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     {
         add
         {
-            foreach (IComponentRegistration registration in _registeredServicesTracker.Registrations)
+            foreach (var registration in _registeredServicesTracker.Registrations)
             {
                 value(this, new ComponentRegisteredEventArgs(this, registration));
             }
@@ -60,7 +60,7 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     {
         add
         {
-            foreach (IRegistrationSource source in _registeredServicesTracker.Sources)
+            foreach (var source in _registeredServicesTracker.Sources)
             {
                 value(this, new RegistrationSourceAddedEventArgs(this, source));
             }
@@ -81,7 +81,10 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
     /// context across registrations.
     /// </value>
-    public IDictionary<string, object?> Properties { get; }
+    public IDictionary<string, object?> Properties
+    {
+        get;
+    }
 
     /// <summary>
     /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.

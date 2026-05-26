@@ -12,6 +12,9 @@ namespace Autofac.Test.Scenarios.ScannedAssembly.MetadataAttributeScanningScenar
             Name = name ?? throw new ArgumentNullException("name");
         }
 
-        public string Name { get; }
+        public string Name
+        {
+            get;
+        }
     }
 }

@@ -79,6 +79,9 @@ public class KeyedServiceKeyParameterTests
             Key = key;
         }
 
-        public object Key { get; }
+        public object Key
+        {
+            get;
+        }
     }
 }

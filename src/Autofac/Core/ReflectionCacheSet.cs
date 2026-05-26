@@ -60,7 +60,10 @@ public sealed class ReflectionCacheSet
     /// <summary>
     /// Gets the instance of the known Internal caches defined in <see cref="InternalReflectionCaches"/>.
     /// </summary>
-    internal InternalReflectionCaches Internal { get; }
+    internal InternalReflectionCaches Internal
+    {
+        get;
+    }
 
     /// <summary>
     /// Get a typed cache store with a given name, that is held in this instance. An instance will be created if it does not already exist.

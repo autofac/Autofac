@@ -101,7 +101,10 @@ internal sealed class DynamicallyAccessedMembersAttribute : Attribute
     /// Gets the <see cref="DynamicallyAccessedMemberTypes"/> which specifies the type
     /// of members dynamically accessed.
     /// </summary>
-    public DynamicallyAccessedMemberTypes MemberTypes { get; }
+    public DynamicallyAccessedMemberTypes MemberTypes
+    {
+        get;
+    }
 }
 
 /// <summary>
@@ -130,13 +133,19 @@ internal sealed class RequiresUnreferencedCodeAttribute : Attribute
     /// <summary>
     /// Gets a message that contains information about the usage of unreferenced code.
     /// </summary>
-    public string Message { get; }
+    public string Message
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets or sets an optional URL that contains more information about the method,
     /// why it requries unreferenced code, and what options a consumer has to deal with it.
     /// </summary>
-    public string? Url { get; set; }
+    public string? Url
+    {
+        get; set;
+    }
 }
 
 #endif

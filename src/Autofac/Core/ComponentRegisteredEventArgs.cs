@@ -25,10 +25,16 @@ public class ComponentRegisteredEventArgs : EventArgs
     /// <summary>
     /// Gets the <see cref="IComponentRegistryBuilder" /> into which the registration was made.
     /// </summary>
-    public IComponentRegistryBuilder ComponentRegistryBuilder { get; }
+    public IComponentRegistryBuilder ComponentRegistryBuilder
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the component registration.
     /// </summary>
-    public IComponentRegistration ComponentRegistration { get; }
+    public IComponentRegistration ComponentRegistration
+    {
+        get;
+    }
 }

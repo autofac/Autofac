@@ -43,70 +43,112 @@ internal class InternalReflectionCaches
     /// <summary>
     /// Gets the cache used by <see cref="Features.Scanning.AssemblyExtensions.GetPermittedTypesForAssemblyScanning"/>.
     /// </summary>
-    public ReflectionCacheAssemblyDictionary<Assembly, IEnumerable<Type>> AssemblyScanAllowedTypes { get; }
+    public ReflectionCacheAssemblyDictionary<Assembly, IEnumerable<Type>> AssemblyScanAllowedTypes
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the cache used by <see cref="InternalTypeExtensions.IsGenericEnumerableInterfaceType"/>.
     /// </summary>
-    public ReflectionCacheDictionary<Type, bool> IsGenericEnumerableInterface { get; }
+    public ReflectionCacheDictionary<Type, bool> IsGenericEnumerableInterface
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the cache used by <see cref="InternalTypeExtensions.IsGenericListOrCollectionInterfaceType"/>.
     /// </summary>
-    public ReflectionCacheDictionary<Type, bool> IsGenericListOrCollectionInterfaceType { get; }
+    public ReflectionCacheDictionary<Type, bool> IsGenericListOrCollectionInterfaceType
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the cache used by <see cref="InternalTypeExtensions.IsGenericTypeDefinedBy"/>.
     /// </summary>
-    public ReflectionCacheTupleDictionary<Type, bool> IsGenericTypeDefinedBy { get; }
+    public ReflectionCacheTupleDictionary<Type, bool> IsGenericTypeDefinedBy
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the cache used by <see cref="InternalTypeExtensions.IsGenericTypeContainingType"/>.
     /// </summary>
-    public ReflectionCacheTupleDictionary<Type, bool> IsGenericTypeContainingType { get; }
+    public ReflectionCacheTupleDictionary<Type, bool> IsGenericTypeContainingType
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the cache used by <see cref="ConstructorBinder"/>.
     /// </summary>
-    public ReflectionCacheDictionary<ConstructorInfo, Func<object?[], object>> ConstructorBinderFactory { get; }
+    public ReflectionCacheDictionary<ConstructorInfo, Func<object?[], object>> ConstructorBinderFactory
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a cache used by <see cref="AutowiringPropertyInjector.InjectProperties"/>.
     /// </summary>
-    public ReflectionCacheDictionary<PropertyInfo, Action<object, object?>> AutowiringPropertySetters { get; }
+    public ReflectionCacheDictionary<PropertyInfo, Action<object, object?>> AutowiringPropertySetters
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a cache used by <see cref="AutowiringPropertyInjector.InjectProperties"/>.
     /// </summary>
-    public ReflectionCacheDictionary<Type, IReadOnlyList<PropertyInfo>> AutowiringInjectableProperties { get; }
+    public ReflectionCacheDictionary<Type, IReadOnlyList<PropertyInfo>> AutowiringInjectableProperties
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a cache used by <see cref="DefaultConstructorFinder"/>.
     /// </summary>
-    public ReflectionCacheDictionary<Type, ConstructorInfo[]> DefaultPublicConstructors { get; }
+    public ReflectionCacheDictionary<Type, ConstructorInfo[]> DefaultPublicConstructors
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a cache of memoized <see cref="Type.GetGenericTypeDefinition"/>.
     /// </summary>
-    public ReflectionCacheDictionary<Type, Type> GenericTypeDefinitionByType { get; }
+    public ReflectionCacheDictionary<Type, Type> GenericTypeDefinitionByType
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a cache used by <see cref="ReflectionActivator"/>.
     /// </summary>
-    public ReflectionCacheDictionary<Type, bool> HasRequiredMemberAttribute { get; }
+    public ReflectionCacheDictionary<Type, bool> HasRequiredMemberAttribute
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a cache used to track <see cref="ServiceKeyAttribute"/> usage on parameters.
     /// </summary>
-    public ReflectionCacheParameterDictionary<bool> ServiceKeyParameterAttributes { get; }
+    public ReflectionCacheParameterDictionary<bool> ServiceKeyParameterAttributes
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a cache used to track <see cref="ServiceKeyAttribute"/> usage on properties.
     /// </summary>
-    public ReflectionCacheDictionary<PropertyInfo, bool> ServiceKeyPropertyAttributes { get; }
+    public ReflectionCacheDictionary<PropertyInfo, bool> ServiceKeyPropertyAttributes
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a cache used to determine if a type uses <see cref="ServiceKeyAttribute"/>.
     /// </summary>
-    public ReflectionCacheDictionary<Type, bool> ServiceKeyUsageByType { get; }
+    public ReflectionCacheDictionary<Type, bool> ServiceKeyUsageByType
+    {
+        get;
+    }
 }

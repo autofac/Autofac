@@ -113,7 +113,10 @@ public class PropertyInjectionTests
         }
 
         [SuppressMessage("CA1819", "CA1819", Justification = "Handles specific test case of an array property.")]
-        public double?[] DoubleArray { get; set; }
+        public double?[] DoubleArray
+        {
+            get; set;
+        }
     }
 
     private class HasNullableValueTypeCollection
@@ -124,9 +127,15 @@ public class PropertyInjectionTests
             DoubleCollectionInterface = DoubleCollection;
         }
 
-        public ReadOnlyCollection<double?> DoubleCollection { get; set; }
+        public ReadOnlyCollection<double?> DoubleCollection
+        {
+            get; set;
+        }
 
-        public IReadOnlyCollection<double?> DoubleCollectionInterface { get; set; }
+        public IReadOnlyCollection<double?> DoubleCollectionInterface
+        {
+            get; set;
+        }
     }
 
     private class HasNullableValueTypeList
@@ -137,9 +146,15 @@ public class PropertyInjectionTests
             DoubleListInterface = DoubleList;
         }
 
-        public List<double?> DoubleList { get; set; }
+        public List<double?> DoubleList
+        {
+            get; set;
+        }
 
-        public IList<double?> DoubleListInterface { get; set; }
+        public IList<double?> DoubleListInterface
+        {
+            get; set;
+        }
     }
 
     private class HasValueTypeArray
@@ -149,7 +164,10 @@ public class PropertyInjectionTests
             ByteArray = new byte[] { 1, 2, 3 };
         }
 
-        public byte[] ByteArray { get; set; }
+        public byte[] ByteArray
+        {
+            get; set;
+        }
     }
 
     private class HasValueTypeCollection
@@ -160,9 +178,15 @@ public class PropertyInjectionTests
             ByteCollectionInterface = ByteCollection;
         }
 
-        public Collection<byte> ByteCollection { get; set; }
+        public Collection<byte> ByteCollection
+        {
+            get; set;
+        }
 
-        public ICollection<byte> ByteCollectionInterface { get; set; }
+        public ICollection<byte> ByteCollectionInterface
+        {
+            get; set;
+        }
     }
 
     private class HasValueTypeList
@@ -173,8 +197,14 @@ public class PropertyInjectionTests
             ByteListInterface = ByteList;
         }
 
-        public List<byte> ByteList { get; set; }
+        public List<byte> ByteList
+        {
+            get; set;
+        }
 
-        public IList<byte> ByteListInterface { get; set; }
+        public IList<byte> ByteListInterface
+        {
+            get; set;
+        }
     }
 }

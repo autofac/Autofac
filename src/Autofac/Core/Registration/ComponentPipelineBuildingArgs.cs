@@ -24,10 +24,16 @@ public class ComponentPipelineBuildingArgs
     /// <summary>
     /// Gets the component registration whose pipeline is being built.
     /// </summary>
-    public IComponentRegistration Registration { get; }
+    public IComponentRegistration Registration
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the pipeline builder for the registration. Add middleware to the builder to add to the component behaviour.
     /// </summary>
-    public IResolvePipelineBuilder PipelineBuilder { get; }
+    public IResolvePipelineBuilder PipelineBuilder
+    {
+        get;
+    }
 }

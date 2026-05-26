@@ -29,17 +29,26 @@ public class PreparingEventArgs : EventArgs
     /// <summary>
     /// Gets the service being resolved.
     /// </summary>
-    public Service Service { get; }
+    public Service Service
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the context in which the activation is occurring.
     /// </summary>
-    public IComponentContext Context { get; }
+    public IComponentContext Context
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the component providing the instance being activated.
     /// </summary>
-    public IComponentRegistration Component { get; }
+    public IComponentRegistration Component
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets or sets the parameters supplied to the activator.

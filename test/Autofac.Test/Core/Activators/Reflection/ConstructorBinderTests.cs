@@ -28,7 +28,10 @@ public class ConstructorBinderTests
 
     private class CtorWithDoubleParam
     {
-        public double Value { get; }
+        public double Value
+        {
+            get;
+        }
 
         public CtorWithDoubleParam(double value)
         {
@@ -44,7 +47,10 @@ public class ConstructorBinderTests
 
     private class CtorWithInt
     {
-        public int Value { get; }
+        public int Value
+        {
+            get;
+        }
 
         public CtorWithInt(int value)
         {

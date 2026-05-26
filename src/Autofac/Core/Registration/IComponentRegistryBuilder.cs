@@ -28,7 +28,10 @@ public interface IComponentRegistryBuilder : IDisposable, IAsyncDisposable
     /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
     /// context across registrations.
     /// </value>
-    IDictionary<string, object?> Properties { get; }
+    IDictionary<string, object?> Properties
+    {
+        get;
+    }
 
     /// <summary>
     /// Create a new <see cref="IComponentRegistry" /> with all the component registrations that have been made.

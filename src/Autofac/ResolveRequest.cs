@@ -35,27 +35,42 @@ public readonly struct ResolveRequest : IEquatable<ResolveRequest>
     /// <summary>
     /// Gets the service being resolved.
     /// </summary>
-    public Service Service { get; }
+    public Service Service
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the component registration for the service being resolved. This may be null if a service is being supplied without registrations.
     /// </summary>
-    public IComponentRegistration Registration { get; }
+    public IComponentRegistration Registration
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the resolve pipeline for the request.
     /// </summary>
-    public IResolvePipeline ResolvePipeline { get; }
+    public IResolvePipeline ResolvePipeline
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the parameters used when resolving the service.
     /// </summary>
-    public IEnumerable<Parameter> Parameters { get; }
+    public IEnumerable<Parameter> Parameters
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the component registration for the decorator target if configured.
     /// </summary>
-    public IComponentRegistration? DecoratorTarget { get; }
+    public IComponentRegistration? DecoratorTarget
+    {
+        get;
+    }
 
     /// <summary>
     /// Implements the operator ==.
@@ -71,18 +86,18 @@ public readonly struct ResolveRequest : IEquatable<ResolveRequest>
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the operator.</returns>
-    public static bool operator !=(ResolveRequest left, ResolveRequest right) =>
-        !(left == right);
+    public static bool operator !=(ResolveRequest left, ResolveRequest right)
+        => !(left == right);
 
     /// <inheritdoc/>
-    public override bool Equals(object? obj) =>
-        obj is ResolveRequest other && Equals(other);
+    public override bool Equals(object? obj)
+        => obj is ResolveRequest other && Equals(other);
 
     /// <inheritdoc/>
-    public bool Equals(ResolveRequest other) =>
-        Service == other.Service && Registration == other.Registration && ResolvePipeline == other.ResolvePipeline && Parameters == other.Parameters && DecoratorTarget == other.DecoratorTarget;
+    public bool Equals(ResolveRequest other)
+        => Service == other.Service && Registration == other.Registration && ResolvePipeline == other.ResolvePipeline && Parameters == other.Parameters && DecoratorTarget == other.DecoratorTarget;
 
     /// <inheritdoc/>
-    public override int GetHashCode() =>
-        Service.GetHashCode() ^ Registration.GetHashCode() ^ ResolvePipeline.GetHashCode() ^ Parameters.GetHashCode() ^ (DecoratorTarget?.GetHashCode() ?? 0);
+    public override int GetHashCode()
+        => Service.GetHashCode() ^ Registration.GetHashCode() ^ ResolvePipeline.GetHashCode() ^ Parameters.GetHashCode() ^ (DecoratorTarget?.GetHashCode() ?? 0);
 }

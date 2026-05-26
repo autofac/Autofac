@@ -13,25 +13,40 @@ public interface IActivatedEventArgs<out T>
     /// <summary>
     /// Gets the service being resolved.
     /// </summary>
-    Service Service { get; }
+    Service Service
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the context in which the activation occurred.
     /// </summary>
-    IComponentContext Context { get; }
+    IComponentContext Context
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the component providing the instance.
     /// </summary>
-    IComponentRegistration Component { get; }
+    IComponentRegistration Component
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the parameters provided when resolved.
     /// </summary>
-    IEnumerable<Parameter> Parameters { get; }
+    IEnumerable<Parameter> Parameters
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the instance that will be used to satisfy the request.
     /// </summary>
-    T Instance { get; }
+    T Instance
+    {
+        get;
+    }
 }

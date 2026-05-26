@@ -38,7 +38,10 @@ public class TypeRegistrationTests
             Service = service;
         }
 
-        public IMyService Service { get; }
+        public IMyService Service
+        {
+            get;
+        }
     }
 
     [Fact]
@@ -146,7 +149,7 @@ public class TypeRegistrationTests
                 .AssignableTo(typeof(IMyService)));
 
         Assert.Single(container.ComponentRegistry.Registrations);
-        Assert.True(container.TryResolve(typeof(MyComponent), out object obj));
+        Assert.True(container.TryResolve(typeof(MyComponent), out var obj));
         Assert.False(container.TryResolve(typeof(MyComponent2), out obj));
     }
 
@@ -164,8 +167,8 @@ public class TypeRegistrationTests
                 typeof(MyComponent)));
 
         Assert.Equal(2, container.ComponentRegistry.Registrations.Count());
-        Assert.True(container.TryResolve(typeof(MyComponent), out object _));
-        Assert.True(container.TryResolve(typeof(MyOpenGeneric<int>), out object _));
+        Assert.True(container.TryResolve(typeof(MyComponent), out var _));
+        Assert.True(container.TryResolve(typeof(MyOpenGeneric<int>), out var _));
         Assert.False(container.TryResolve(typeof(IMyService), out _));
         Assert.False(container.TryResolve(typeof(MyDelegateType), out _));
         Assert.False(container.TryResolve(typeof(MyAbstractClass), out _));
@@ -179,7 +182,7 @@ public class TypeRegistrationTests
             b.RegisterTypes(null, typeof(MyComponent), null));
 
         Assert.Single(container.ComponentRegistry.Registrations);
-        Assert.True(container.TryResolve(typeof(MyComponent), out object _));
+        Assert.True(container.TryResolve(typeof(MyComponent), out var _));
     }
 
     [Fact]

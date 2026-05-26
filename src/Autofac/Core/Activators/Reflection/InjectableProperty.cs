@@ -33,12 +33,18 @@ internal class InjectableProperty
     /// <summary>
     /// Gets the underlying property.
     /// </summary>
-    public PropertyInfo Property { get; }
+    public PropertyInfo Property
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a value indicating whether this field is marked as required.
     /// </summary>
-    public bool IsRequired { get; }
+    public bool IsRequired
+    {
+        get;
+    }
 
     /// <summary>
     /// Try and supply a value for this property using the given parameter.

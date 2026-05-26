@@ -107,7 +107,10 @@ public class LightweightAdapterRegistrationExtensionsTests
             Decorated = decorated;
         }
 
-        public IService Decorated { get; }
+        public IService Decorated
+        {
+            get;
+        }
     }
 
     [SuppressMessage("CA1034", "CA1034", Justification = "Type is used as a test scenario/context holder.")]
@@ -138,7 +141,10 @@ public class LightweightAdapterRegistrationExtensionsTests
 
         public interface IParameterizedService
         {
-            IEnumerable<Parameter> Parameters { get; }
+            IEnumerable<Parameter> Parameters
+            {
+                get;
+            }
         }
 
         public class ParameterizedImplementer : IParameterizedService
@@ -148,7 +154,10 @@ public class LightweightAdapterRegistrationExtensionsTests
                 Parameters = parameters;
             }
 
-            public IEnumerable<Parameter> Parameters { get; }
+            public IEnumerable<Parameter> Parameters
+            {
+                get;
+            }
         }
 
         public class ParameterizedDecorator1 : IParameterizedService
@@ -159,9 +168,15 @@ public class LightweightAdapterRegistrationExtensionsTests
                 Parameters = parameters;
             }
 
-            public IParameterizedService Implementer { get; }
+            public IParameterizedService Implementer
+            {
+                get;
+            }
 
-            public IEnumerable<Parameter> Parameters { get; }
+            public IEnumerable<Parameter> Parameters
+            {
+                get;
+            }
         }
 
         public class ParameterizedDecorator2 : IParameterizedService
@@ -172,9 +187,15 @@ public class LightweightAdapterRegistrationExtensionsTests
                 Parameters = parameters;
             }
 
-            public IParameterizedService Implementer { get; }
+            public IParameterizedService Implementer
+            {
+                get;
+            }
 
-            public IEnumerable<Parameter> Parameters { get; }
+            public IEnumerable<Parameter> Parameters
+            {
+                get;
+            }
         }
     }
 

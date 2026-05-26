@@ -12,7 +12,10 @@ public class GeneratedFactoriesTests
 {
     private class A<T>
     {
-        public T P { get; private set; }
+        public T P
+        {
+            get; private set;
+        }
 
         public delegate A<T> Factory(T p);
 
@@ -81,9 +84,15 @@ public class GeneratedFactoriesTests
 
         private readonly QuoteService _qs;
 
-        public string Symbol { get; private set; }
+        public string Symbol
+        {
+            get; private set;
+        }
 
-        public uint Holding { get; set; }
+        public uint Holding
+        {
+            get; set;
+        }
 
         public decimal Quote()
         {
@@ -141,7 +150,10 @@ public class GeneratedFactoriesTests
     {
         public delegate StringHolder Factory();
 
-        public string S { get; set; }
+        public string S
+        {
+            get; set;
+        }
     }
 
     [Fact]
@@ -210,7 +222,10 @@ public class GeneratedFactoriesTests
     // is chosen in the presence of implicit collection support.
     private class HasCharIntCtor
     {
-        public string Str { get; private set; }
+        public string Str
+        {
+            get; private set;
+        }
 
         public HasCharIntCtor(char c, int i)
         {
@@ -375,11 +390,20 @@ public class GeneratedFactoriesTests
     {
         public delegate DuplicateConstructorParameterTypes Factory(int a, int b, string c);
 
-        public int A { get; set; }
+        public int A
+        {
+            get; set;
+        }
 
-        public int B { get; set; }
+        public int B
+        {
+            get; set;
+        }
 
-        public string C { get; set; }
+        public string C
+        {
+            get; set;
+        }
 
         // This constructor should not be able to be resolved into a Func<int, int, string, DuplicateConstructorParameterTypes>
         // because of the redundant types in the constructor.

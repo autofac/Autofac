@@ -70,7 +70,7 @@ public class ComponentRegistryTests
 
         var registry = registryBuilder.Build();
 
-        Assert.True(registry.TryGetRegistration(new TypedService(typeof(object)), out IComponentRegistration defaultRegistration));
+        Assert.True(registry.TryGetRegistration(new TypedService(typeof(object)), out var defaultRegistration));
         Assert.Same(r2, defaultRegistration);
     }
 
@@ -101,7 +101,7 @@ public class ComponentRegistryTests
         registryBuilder.AddRegistrationSource(new ObjectRegistrationSource());
         var registry = registryBuilder.Build();
 
-        registry.TryGetRegistration(new TypedService(typeof(object)), out IComponentRegistration defaultForObject);
+        registry.TryGetRegistration(new TypedService(typeof(object)), out var defaultForObject);
 
         Assert.Same(r, defaultForObject);
     }
@@ -178,7 +178,10 @@ public class ComponentRegistryTests
 
         public bool IsAdapterForIndividualComponents
         {
-            get { return false; }
+            get
+            {
+                return false;
+            }
         }
     }
 
@@ -220,7 +223,7 @@ public class ComponentRegistryTests
         registryBuilder.AddRegistrationSource(new ObjectRegistrationSource(second));
         var registry = registryBuilder.Build();
 
-        registry.TryGetRegistration(new TypedService(typeof(object)), out IComponentRegistration def);
+        registry.TryGetRegistration(new TypedService(typeof(object)), out var def);
 
         var invoker = def.Activator.GetPipelineInvoker(registry);
 

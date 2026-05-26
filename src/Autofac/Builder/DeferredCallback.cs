@@ -59,5 +59,8 @@ public class DeferredCallback
     /// A <see cref="Guid"/> that uniquely identifies the callback action
     /// in a set of callbacks.
     /// </value>
-    public Guid Id { get; }
+    public Guid Id
+    {
+        get;
+    }
 }

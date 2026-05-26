@@ -27,7 +27,10 @@ internal class DelegateMiddleware : IResolveMiddleware
     }
 
     /// <inheritdoc />
-    public PipelinePhase Phase { get; }
+    public PipelinePhase Phase
+    {
+        get;
+    }
 
     /// <inheritdoc />
     public void Execute(ResolveRequestContext context, Action<ResolveRequestContext> next)

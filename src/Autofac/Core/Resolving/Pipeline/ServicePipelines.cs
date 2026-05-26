@@ -13,7 +13,11 @@ public static class ServicePipelines
     /// <summary>
     /// Gets the set of default middleware added to each service pipeline.
     /// </summary>
-    public static IReadOnlyList<IResolveMiddleware> DefaultMiddleware { get; } = new IResolveMiddleware[]
+    public static IReadOnlyList<IResolveMiddleware> DefaultMiddleware
+    {
+        get;
+    }
+= new IResolveMiddleware[]
     {
             CircularDependencyDetectorMiddleware.Default,
             ScopeSelectionMiddleware.Instance,
@@ -24,7 +28,11 @@ public static class ServicePipelines
     /// <summary>
     /// Gets a default pre-built service pipeline that contains only the <see cref="DefaultMiddleware"/>.
     /// </summary>
-    public static IResolvePipeline DefaultServicePipeline { get; } = new ResolvePipelineBuilder(PipelineType.Service)
+    public static IResolvePipeline DefaultServicePipeline
+    {
+        get;
+    }
+= new ResolvePipelineBuilder(PipelineType.Service)
                                                                         .UseRange(DefaultMiddleware)
                                                                         .Build();
 

@@ -134,7 +134,7 @@ internal class FallbackDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     {
         get
         {
-            if (_localValues.TryGetValue(key, out TValue? value))
+            if (_localValues.TryGetValue(key, out var value))
             {
                 return value;
             }

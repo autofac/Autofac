@@ -101,9 +101,15 @@ public class LambdaGenericOverloadRegistrationTests
             Arg2 = arg2;
         }
 
-        public string Arg1 { get; }
+        public string Arg1
+        {
+            get;
+        }
 
-        public string Arg2 { get; }
+        public string Arg2
+        {
+            get;
+        }
     }
 
     private static readonly Type[] AllDeps = new[]

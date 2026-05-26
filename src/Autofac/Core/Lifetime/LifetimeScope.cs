@@ -102,7 +102,10 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// <summary>
     /// Gets the root of the sharing hierarchy.
     /// </summary>
-    public ISharingLifetimeScope RootLifetimeScope { get; }
+    public ISharingLifetimeScope RootLifetimeScope
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the disposer associated with this container. Instances can be associated
@@ -115,12 +118,18 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// </summary>
     /// <remarks>The tag applied to this scope and the contexts generated when
     /// it resolves component dependencies.</remarks>
-    public object Tag { get; }
+    public object Tag
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the services associated with the components that provide them.
     /// </summary>
-    public IComponentRegistry ComponentRegistry { get; }
+    public IComponentRegistry ComponentRegistry
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the id of the lifetime scope self-registration.
@@ -131,7 +140,10 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// Gets the <see cref="DiagnosticListener"/> to which
     /// trace events should be written.
     /// </summary>
-    internal DiagnosticListener DiagnosticSource { get; }
+    internal DiagnosticListener DiagnosticSource
+    {
+        get;
+    }
 
     /// <summary>
     /// Begin a new anonymous sub-scope. Instances created via the sub-scope

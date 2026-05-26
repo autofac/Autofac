@@ -14,5 +14,8 @@ public class B1 : DisposeTracker
         A = a;
     }
 
-    public A1 A { get; private set; }
+    public A1 A
+    {
+        get; private set;
+    }
 }

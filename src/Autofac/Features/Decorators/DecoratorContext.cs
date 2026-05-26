@@ -29,19 +29,34 @@ public sealed class DecoratorContext : IDecoratorContext
     }
 
     /// <inheritdoc />
-    public Type ImplementationType { get; private set; }
+    public Type ImplementationType
+    {
+        get; private set;
+    }
 
     /// <inheritdoc />
-    public Type ServiceType { get; private set; }
+    public Type ServiceType
+    {
+        get; private set;
+    }
 
     /// <inheritdoc />
-    public IReadOnlyList<Type> AppliedDecoratorTypes { get; private set; }
+    public IReadOnlyList<Type> AppliedDecoratorTypes
+    {
+        get; private set;
+    }
 
     /// <inheritdoc />
-    public IReadOnlyList<object> AppliedDecorators { get; private set; }
+    public IReadOnlyList<object> AppliedDecorators
+    {
+        get; private set;
+    }
 
     /// <inheritdoc />
-    public object CurrentInstance { get; private set; }
+    public object CurrentInstance
+    {
+        get; private set;
+    }
 
     /// <inheritdoc />
     public IComponentRegistry ComponentRegistry => _componentContext.ComponentRegistry;

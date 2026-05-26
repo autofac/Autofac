@@ -274,6 +274,9 @@ public class ResolveAnythingTests
             StringParam = stringParam;
         }
 
-        public string StringParam { get; }
+        public string StringParam
+        {
+            get;
+        }
     }
 }

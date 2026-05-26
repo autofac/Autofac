@@ -20,5 +20,8 @@ public class LifetimeScopeBeginningEventArgs : EventArgs
     /// <summary>
     /// Gets the lifetime scope that is beginning.
     /// </summary>
-    public ILifetimeScope LifetimeScope { get; }
+    public ILifetimeScope LifetimeScope
+    {
+        get;
+    }
 }

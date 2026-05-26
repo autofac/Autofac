@@ -30,7 +30,7 @@ public class NamedParameterTests
         var namedParam = new NamedParameter("a", new A());
 
         using var container = Factory.CreateEmptyContainer();
-        Assert.True(namedParam.CanSupplyValue(param, container, out Func<object> vp));
+        Assert.True(namedParam.CanSupplyValue(param, container, out var vp));
     }
 
     private static ParameterInfo AParamOfCConstructor()
@@ -52,6 +52,6 @@ public class NamedParameterTests
         var namedParam = new NamedParameter("b", new B());
 
         using var container = Factory.CreateEmptyContainer();
-        Assert.False(namedParam.CanSupplyValue(param, container, out Func<object> vp));
+        Assert.False(namedParam.CanSupplyValue(param, container, out var vp));
     }
 }

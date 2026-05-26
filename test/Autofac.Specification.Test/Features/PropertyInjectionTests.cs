@@ -440,19 +440,31 @@ public class PropertyInjectionTests
             _id = id;
         }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get; set;
+        }
     }
 
     private class EnumProperty
     {
-        public SimpleEnumeration Value { get; set; }
+        public SimpleEnumeration Value
+        {
+            get; set;
+        }
     }
 
     private class SplitAccess
     {
-        public bool GetterCalled { get; set; }
+        public bool GetterCalled
+        {
+            get; set;
+        }
 
-        public bool SetterCalled { get; set; }
+        public bool SetterCalled
+        {
+            get; set;
+        }
 
         public string Value
         {
@@ -476,7 +488,10 @@ public class PropertyInjectionTests
 
     private sealed class DecoratedService : IMyService
     {
-        public string Prop { get; set; }
+        public string Prop
+        {
+            get; set;
+        }
 
         public void AssertProp()
         {

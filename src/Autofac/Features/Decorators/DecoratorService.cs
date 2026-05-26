@@ -25,12 +25,18 @@ public sealed class DecoratorService : Service, IServiceWithType, IEquatable<Dec
     }
 
     /// <inheritdoc />
-    public Type ServiceType { get; }
+    public Type ServiceType
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the condition that must be met for the decorator to be applied.
     /// </summary>
-    public Func<IDecoratorContext, bool> Condition { get; }
+    public Func<IDecoratorContext, bool> Condition
+    {
+        get;
+    }
 
     /// <inheritdoc />
     public override string Description => $"Decorator ({ServiceType.FullName})";

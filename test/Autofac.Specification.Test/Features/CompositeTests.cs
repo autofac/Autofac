@@ -744,7 +744,10 @@ public class CompositeTests
             Implementations = implementations;
         }
 
-        public IList<TSetElement> Implementations { get; }
+        public IList<TSetElement> Implementations
+        {
+            get;
+        }
     }
 
     private class MultiComposite : I1, I2
@@ -755,9 +758,15 @@ public class CompositeTests
             Composite2 = composite2;
         }
 
-        public IEnumerable<I1> Composite1 { get; }
+        public IEnumerable<I1> Composite1
+        {
+            get;
+        }
 
-        public IEnumerable<I2> Composite2 { get; }
+        public IEnumerable<I2> Composite2
+        {
+            get;
+        }
     }
 
     private class MyLazyComposite : I1
@@ -767,7 +776,10 @@ public class CompositeTests
             Implementations = implementations;
         }
 
-        public Lazy<IEnumerable<I1>> Implementations { get; }
+        public Lazy<IEnumerable<I1>> Implementations
+        {
+            get;
+        }
     }
 
     private class CircularComposite : I1
@@ -784,7 +796,10 @@ public class CompositeTests
             Instance = instance;
         }
 
-        public I1 Instance { get; }
+        public I1 Instance
+        {
+            get;
+        }
     }
 
     private interface IGenericService<TValue>
@@ -810,7 +825,10 @@ public class CompositeTests
             Implementations = implementations;
         }
 
-        public IList<IGenericService<TValue>> Implementations { get; }
+        public IList<IGenericService<TValue>> Implementations
+        {
+            get;
+        }
     }
 
     private interface I1

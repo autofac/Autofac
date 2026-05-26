@@ -24,7 +24,10 @@ public class OpenGenericRegistrationExtensionsTests
             I = i;
         }
 
-        public int I { get; private set; }
+        public int I
+        {
+            get; private set;
+        }
     }
 
     [Fact]
@@ -39,8 +42,8 @@ public class OpenGenericRegistrationExtensionsTests
             .As(serviceType);
         var c = cb.Build();
 
-        object g1 = c.Resolve(concreteServiceType);
-        object g2 = c.Resolve(concreteServiceType);
+        var g1 = c.Resolve(concreteServiceType);
+        var g2 = c.Resolve(concreteServiceType);
 
         Assert.NotNull(g1);
         Assert.NotNull(g2);
@@ -55,14 +58,14 @@ public class OpenGenericRegistrationExtensionsTests
         cb.RegisterGeneric(typeof(G<>)).As(typeof(IG<>));
         var container = cb.Build();
         Assert.True(container.ComponentRegistry.TryGetRegistration(
-            new TypedService(typeof(IG<int>)), out IComponentRegistration cr));
+            new TypedService(typeof(IG<int>)), out var cr));
         Assert.Equal(typeof(G<int>), cr.Activator.LimitType);
     }
 
     [Fact]
     public void FiresPreparing()
     {
-        int preparingFired = 0;
+        var preparingFired = 0;
         var cb = new ContainerBuilder();
         cb.RegisterGeneric(typeof(G<>))
             .As(typeof(IG<>))

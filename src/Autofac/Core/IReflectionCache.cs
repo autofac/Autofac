@@ -30,7 +30,10 @@ public interface IReflectionCache
     /// <summary>
     /// Gets a value indicating when the cache is used.
     /// </summary>
-    ReflectionCacheUsage Usage { get; }
+    ReflectionCacheUsage Usage
+    {
+        get;
+    }
 
     /// <summary>
     /// Clear the cache.

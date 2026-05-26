@@ -22,10 +22,16 @@ public sealed class ResolveOperationEndingEventArgs : EventArgs
     /// <summary>
     /// Gets the exception causing the operation to end, or null.
     /// </summary>
-    public Exception? Exception { get; }
+    public Exception? Exception
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the resolve operation that is ending.
     /// </summary>
-    public IResolveOperation ResolveOperation { get; }
+    public IResolveOperation ResolveOperation
+    {
+        get;
+    }
 }

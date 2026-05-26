@@ -139,9 +139,15 @@ public class InstancePerOwnedTests
             LifetimeScope = lifetimeScope;
         }
 
-        public ServiceForHandler DependentService { get; set; }
+        public ServiceForHandler DependentService
+        {
+            get; set;
+        }
 
-        public ILifetimeScope LifetimeScope { get; set; }
+        public ILifetimeScope LifetimeScope
+        {
+            get; set;
+        }
     }
 
     private class ServiceForHandler
@@ -151,7 +157,10 @@ public class InstancePerOwnedTests
             LifetimeScope = lifetimeScope;
         }
 
-        public ILifetimeScope LifetimeScope { get; set; }
+        public ILifetimeScope LifetimeScope
+        {
+            get; set;
+        }
     }
 
     private class Service
@@ -160,7 +169,10 @@ public class InstancePerOwnedTests
 
     private interface IRoot
     {
-        Service Dependency { get; }
+        Service Dependency
+        {
+            get;
+        }
     }
 
     private class RootA : IRoot
@@ -170,7 +182,10 @@ public class InstancePerOwnedTests
             Dependency = dependency;
         }
 
-        public Service Dependency { get; }
+        public Service Dependency
+        {
+            get;
+        }
     }
 
     private class RootB : IRoot
@@ -180,6 +195,9 @@ public class InstancePerOwnedTests
             Dependency = dependency;
         }
 
-        public Service Dependency { get; }
+        public Service Dependency
+        {
+            get;
+        }
     }
 }

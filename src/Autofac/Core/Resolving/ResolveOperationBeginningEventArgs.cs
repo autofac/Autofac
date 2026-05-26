@@ -20,5 +20,8 @@ public sealed class ResolveOperationBeginningEventArgs : EventArgs
     /// <summary>
     /// Gets the resolve operation that is beginning.
     /// </summary>
-    public IResolveOperation ResolveOperation { get; }
+    public IResolveOperation ResolveOperation
+    {
+        get;
+    }
 }

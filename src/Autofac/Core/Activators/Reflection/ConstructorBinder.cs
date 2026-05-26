@@ -46,13 +46,19 @@ public class ConstructorBinder
     /// <summary>
     /// Gets the constructor this binder is responsible for binding.
     /// </summary>
-    public ConstructorInfo Constructor { get; }
+    public ConstructorInfo Constructor
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a value indicating whether the constructor has the SetsRequiredMembers attribute,
     /// indicating we can skip population of required properties.
     /// </summary>
-    public bool SetsRequiredMembers { get; }
+    public bool SetsRequiredMembers
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the set of parameters to bind against.
@@ -141,7 +147,7 @@ public class ConstructorBinder
         var parametersExpression = Expression.Parameter(typeof(object[]), "args");
         var argumentsExpression = new Expression[paramsInfo.Length];
 
-        for (int paramIndex = 0; paramIndex < paramsInfo.Length; paramIndex++)
+        for (var paramIndex = 0; paramIndex < paramsInfo.Length; paramIndex++)
         {
             var indexExpression = Expression.Constant(paramIndex);
             var parameterType = paramsInfo[paramIndex].ParameterType;

@@ -34,7 +34,10 @@ internal class ExternalComponentRegistration : ComponentRegistration
             LimitType = limitType;
         }
 
-        public Type LimitType { get; }
+        public Type LimitType
+        {
+            get;
+        }
 
         public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)
         {

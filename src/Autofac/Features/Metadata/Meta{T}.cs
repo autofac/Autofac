@@ -23,10 +23,16 @@ public class Meta<T>
     /// <summary>
     /// Gets the value described by <see cref="Metadata"/>.
     /// </summary>
-    public T Value { get; }
+    public T Value
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the metadata describing the value.
     /// </summary>
-    public IDictionary<string, object?> Metadata { get; }
+    public IDictionary<string, object?> Metadata
+    {
+        get;
+    }
 }

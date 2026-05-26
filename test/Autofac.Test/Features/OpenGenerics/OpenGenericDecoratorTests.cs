@@ -7,14 +7,20 @@ public class OpenGenericDecoratorTests
 {
     private interface IService<T>
     {
-        IService<T> Decorated { get; }
+        IService<T> Decorated
+        {
+            get;
+        }
     }
 
     private class ImplementorA<T> : IService<T>
     {
         public IService<T> Decorated
         {
-            get { return this; }
+            get
+            {
+                return this;
+            }
         }
     }
 
@@ -22,7 +28,10 @@ public class OpenGenericDecoratorTests
     {
         public IService<T> Decorated
         {
-            get { return this; }
+            get
+            {
+                return this;
+            }
         }
     }
 
@@ -30,7 +39,10 @@ public class OpenGenericDecoratorTests
     {
         public IService<string> Decorated
         {
-            get { return this; }
+            get
+            {
+                return this;
+            }
         }
     }
 
@@ -41,7 +53,10 @@ public class OpenGenericDecoratorTests
             Decorated = decorated;
         }
 
-        public IService<T> Decorated { get; }
+        public IService<T> Decorated
+        {
+            get;
+        }
     }
 
     private class DecoratorA<T> : Decorator<T>
@@ -60,7 +75,10 @@ public class OpenGenericDecoratorTests
             Parameter = parameter;
         }
 
-        public string Parameter { get; }
+        public string Parameter
+        {
+            get;
+        }
     }
 
     private const string ParameterValue = "Abc";

@@ -23,7 +23,10 @@ public abstract class InstanceActivator : Disposable
     /// <summary>
     /// Gets the most specific type that the component instances are known to be castable to.
     /// </summary>
-    public Type LimitType { get; }
+    public Type LimitType
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a string representation of the activator.

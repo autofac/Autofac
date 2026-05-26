@@ -13,5 +13,8 @@ public interface IConcreteActivatorData
     /// <summary>
     /// Gets the instance activator based on the provided data.
     /// </summary>
-    IInstanceActivator Activator { get; }
+    IInstanceActivator Activator
+    {
+        get;
+    }
 }

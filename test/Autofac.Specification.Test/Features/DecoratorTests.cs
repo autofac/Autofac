@@ -12,17 +12,26 @@ public class DecoratorTests
 {
     private interface IDecoratedService : IService
     {
-        IDecoratedService Decorated { get; }
+        IDecoratedService Decorated
+        {
+            get;
+        }
     }
 
     private interface IDecoratorWithContext
     {
-        IDecoratorContext Context { get; }
+        IDecoratorContext Context
+        {
+            get;
+        }
     }
 
     private interface IDecoratorWithParameter
     {
-        string Parameter { get; }
+        string Parameter
+        {
+            get;
+        }
     }
 
     private interface IService
@@ -1289,7 +1298,10 @@ public class DecoratorTests
 
     private class MyMetadata
     {
-        public int A { get; set; }
+        public int A
+        {
+            get; set;
+        }
     }
 
     private abstract class Decorator : IDecoratedService
@@ -1299,7 +1311,10 @@ public class DecoratorTests
             Decorated = decorated;
         }
 
-        public IDecoratedService Decorated { get; }
+        public IDecoratedService Decorated
+        {
+            get;
+        }
     }
 
     private class DecoratorA : Decorator
@@ -1326,7 +1341,10 @@ public class DecoratorTests
             Context = context;
         }
 
-        public IDecoratorContext Context { get; }
+        public IDecoratorContext Context
+        {
+            get;
+        }
     }
 
     // ReSharper disable once ClassNeverInstantiated.Local
@@ -1338,7 +1356,10 @@ public class DecoratorTests
             Context = context;
         }
 
-        public IDecoratorContext Context { get; }
+        public IDecoratorContext Context
+        {
+            get;
+        }
     }
 
     private class DecoratorWithFunc : IDecoratedService
@@ -1348,7 +1369,10 @@ public class DecoratorTests
             Decorated = decorated();
         }
 
-        public IDecoratedService Decorated { get; }
+        public IDecoratedService Decorated
+        {
+            get;
+        }
     }
 
     private class DecoratorWithLazy : IDecoratedService
@@ -1358,7 +1382,10 @@ public class DecoratorTests
             Decorated = decorated.Value;
         }
 
-        public IDecoratedService Decorated { get; }
+        public IDecoratedService Decorated
+        {
+            get;
+        }
     }
 
     private class DecoratorWithParameter : Decorator, IDecoratorWithParameter
@@ -1369,7 +1396,10 @@ public class DecoratorTests
             Parameter = parameter;
         }
 
-        public string Parameter { get; }
+        public string Parameter
+        {
+            get;
+        }
     }
 
     // ReSharper disable once ClassNeverInstantiated.Local
@@ -1380,7 +1410,10 @@ public class DecoratorTests
         {
         }
 
-        public int DisposeCallCount { get; private set; }
+        public int DisposeCallCount
+        {
+            get; private set;
+        }
 
         public void Dispose()
         {
@@ -1393,7 +1426,10 @@ public class DecoratorTests
     {
         public IDecoratedService Decorated => this;
 
-        public int DisposeCallCount { get; private set; }
+        public int DisposeCallCount
+        {
+            get; private set;
+        }
 
         public void Dispose()
         {
@@ -1422,7 +1458,10 @@ public class DecoratorTests
 
         public IDecoratedService Decorated => this;
 
-        public string Parameter { get; }
+        public string Parameter
+        {
+            get;
+        }
     }
 
     // ReSharper disable once ClassNeverInstantiated.Local
@@ -1436,7 +1475,10 @@ public class DecoratorTests
     {
         public IStartable Decorated => this;
 
-        public bool Started { get; private set; }
+        public bool Started
+        {
+            get; private set;
+        }
 
         public void Start()
         {
@@ -1447,7 +1489,10 @@ public class DecoratorTests
     // ReSharper disable once ClassNeverInstantiated.Local
     private class StartableDecorator : IStartable
     {
-        public IStartable Decorated { get; }
+        public IStartable Decorated
+        {
+            get;
+        }
 
         public StartableDecorator(IStartable startable)
         {
@@ -1490,11 +1535,17 @@ public class DecoratorTests
             Decorated = decorated;
         }
 
-        public IGenericService<T> Decorated { get; }
+        public IGenericService<T> Decorated
+        {
+            get;
+        }
     }
 
     private class ConditionalShouldDecorate
     {
-        public bool ShouldDecorate { get; set; }
+        public bool ShouldDecorate
+        {
+            get; set;
+        }
     }
 }

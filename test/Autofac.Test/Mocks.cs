@@ -78,33 +78,66 @@ internal static class Mocks
             return default;
         }
 
-        public bool IsDisposed { get; private set; }
+        public bool IsDisposed
+        {
+            get; private set;
+        }
 
-        public Guid Id { get; }
+        public Guid Id
+        {
+            get;
+        }
 
-        public IInstanceActivator Activator { get; }
+        public IInstanceActivator Activator
+        {
+            get;
+        }
 
-        public IComponentLifetime Lifetime { get; }
+        public IComponentLifetime Lifetime
+        {
+            get;
+        }
 
-        public InstanceSharing Sharing { get; }
+        public InstanceSharing Sharing
+        {
+            get;
+        }
 
-        public InstanceOwnership Ownership { get; }
+        public InstanceOwnership Ownership
+        {
+            get;
+        }
 
         public IEnumerable<Service> Services { get; } = Array.Empty<Service>();
 
-        public IDictionary<string, object> Metadata { get; }
+        public IDictionary<string, object> Metadata
+        {
+            get;
+        }
 
-        public IComponentRegistration Target { get; }
+        public IComponentRegistration Target
+        {
+            get;
+        }
 
-        public bool IsAdapterForIndividualComponent { get; }
+        public bool IsAdapterForIndividualComponent
+        {
+            get;
+        }
 
         public event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
 
         public IResolvePipeline ResolvePipeline { get; } = new ResolvePipelineBuilder(PipelineType.Registration).Build();
 
-        public bool IsServiceOverride { get; set; }
+        public bool IsServiceOverride
+        {
+            get; set;
+        }
 
-        public RegistrationOptions Options { get; set; }
+        public RegistrationOptions Options
+        {
+            get; set;
+        }
 
         public void BuildResolvePipeline(IComponentRegistryServices registryServices)
         {

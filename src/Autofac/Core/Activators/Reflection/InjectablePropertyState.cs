@@ -21,10 +21,16 @@ internal struct InjectablePropertyState
     /// <summary>
     /// Gets the property.
     /// </summary>
-    public InjectableProperty Property { get; }
+    public InjectableProperty Property
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether this property has already been set.
     /// </summary>
-    public bool Set { get; set; }
+    public bool Set
+    {
+        get; set;
+    }
 }

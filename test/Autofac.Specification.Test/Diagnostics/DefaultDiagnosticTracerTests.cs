@@ -114,7 +114,10 @@ public class DefaultDiagnosticTracerTests
             Decorated = decorated;
         }
 
-        public IService Decorated { get; }
+        public IService Decorated
+        {
+            get;
+        }
     }
 
     private class Implementor : IService

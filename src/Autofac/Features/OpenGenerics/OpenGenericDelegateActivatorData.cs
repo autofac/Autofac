@@ -22,5 +22,8 @@ public class OpenGenericDelegateActivatorData
     /// <summary>
     /// Gets the factory method that will create a closed generic instance.
     /// </summary>
-    public Func<IComponentContext, Type[], IEnumerable<Parameter>, object> Factory { get; }
+    public Func<IComponentContext, Type[], IEnumerable<Parameter>, object> Factory
+    {
+        get;
+    }
 }

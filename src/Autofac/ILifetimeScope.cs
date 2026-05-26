@@ -85,7 +85,10 @@ public interface ILifetimeScope : IComponentContext, IDisposable, IAsyncDisposab
     /// </summary>
     /// <remarks>Typical usage does not require interaction with this member- it
     /// is used when extending the container.</remarks>
-    IDisposer Disposer { get; }
+    IDisposer Disposer
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the tag applied to the <see cref="ILifetimeScope"/>.
@@ -93,7 +96,10 @@ public interface ILifetimeScope : IComponentContext, IDisposable, IAsyncDisposab
     /// <remarks>Tags allow a level in the lifetime hierarchy to be identified.
     /// In most applications, tags are not necessary.</remarks>
     /// <seealso cref="IRegistrationBuilder{TLimit,TActivatorData,TRegistrationStyle}.InstancePerMatchingLifetimeScope"/>
-    object Tag { get; }
+    object Tag
+    {
+        get;
+    }
 
     /// <summary>
     /// Begin a new nested scope. Component instances created via the new scope

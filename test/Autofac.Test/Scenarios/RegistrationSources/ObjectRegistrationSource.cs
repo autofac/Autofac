@@ -30,6 +30,9 @@ public class ObjectRegistrationSource : IRegistrationSource
 
     public bool IsAdapterForIndividualComponents
     {
-        get { return false; }
+        get
+        {
+            return false;
+        }
     }
 }

@@ -6,9 +6,9 @@ namespace Autofac.BenchmarkProfiling;
 /// <summary>
 /// Simple command-line tool to invoke a benchmark manually in a way that helps with profiling each of the benchmarks.
 /// </summary>
-class Program
+internal class Program
 {
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         // Pick a benchmark.
         var availableBenchmarks = Benchmarks.BenchmarkSet.All;
@@ -124,7 +124,7 @@ class Program
 
     private static void PrintCases(BenchmarkRunInfo benchRunInfo)
     {
-        for (int idx = 0; idx < benchRunInfo.BenchmarksCases.Length; idx++)
+        for (var idx = 0; idx < benchRunInfo.BenchmarksCases.Length; idx++)
         {
             var benchCase = benchRunInfo.BenchmarksCases[idx];
             if (benchCase.HasParameters)

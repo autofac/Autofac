@@ -7,7 +7,10 @@ public class AsyncOnlyDisposeTracker : IAsyncDisposable
 {
     public event EventHandler<EventArgs> Disposing;
 
-    public bool IsAsyncDisposed { get; set; }
+    public bool IsAsyncDisposed
+    {
+        get; set;
+    }
 
     public async ValueTask DisposeAsync()
     {

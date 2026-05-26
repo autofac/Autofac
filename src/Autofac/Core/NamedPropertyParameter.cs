@@ -20,7 +20,7 @@ public class NamedPropertyParameter : ConstantParameter
     public NamedPropertyParameter(string name, object? value)
         : base(value, pi =>
         {
-            return pi.TryGetDeclaringProperty(out PropertyInfo? prop) &&
+            return pi.TryGetDeclaringProperty(out var prop) &&
                 prop.Name == name;
         })
     {
@@ -30,5 +30,8 @@ public class NamedPropertyParameter : ConstantParameter
     /// <summary>
     /// Gets the name of the property.
     /// </summary>
-    public string Name { get; private set; }
+    public string Name
+    {
+        get; private set;
+    }
 }

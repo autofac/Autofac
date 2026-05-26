@@ -28,7 +28,7 @@ internal class LazyRegistrationSource : ImplicitRegistrationSource
     protected override object ResolveInstance<T>(IComponentContext context, in ResolveRequest request)
     {
         var capturedContext = context.Resolve<IComponentContext>();
-        ResolveRequest requestCopy = request;
+        var requestCopy = request;
         return new Lazy<T>(() => (T)capturedContext.ResolveComponent(requestCopy));
     }
 }

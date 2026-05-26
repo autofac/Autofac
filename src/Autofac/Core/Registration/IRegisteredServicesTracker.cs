@@ -23,17 +23,26 @@ internal interface IRegisteredServicesTracker : IDisposable, IAsyncDisposable, I
     /// <summary>
     /// Gets the registered components.
     /// </summary>
-    IEnumerable<IComponentRegistration> Registrations { get; }
+    IEnumerable<IComponentRegistration> Registrations
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the registration sources that are used by the registry.
     /// </summary>
-    IEnumerable<IRegistrationSource> Sources { get; }
+    IEnumerable<IRegistrationSource> Sources
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the set of registered service middleware sources.
     /// </summary>
-    IEnumerable<IServiceMiddlewareSource> ServiceMiddlewareSources { get; }
+    IEnumerable<IServiceMiddlewareSource> ServiceMiddlewareSources
+    {
+        get;
+    }
 
     /// <summary>
     /// Adds a registration to the list of registered services.

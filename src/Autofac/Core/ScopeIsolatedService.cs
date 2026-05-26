@@ -22,7 +22,10 @@ internal class ScopeIsolatedService : Service
     /// <summary>
     /// Gets the actual service that has been isolated.
     /// </summary>
-    public Service Service { get; }
+    public Service Service
+    {
+        get;
+    }
 
     /// <inheritdoc />
     public override string Description => Service.Description;

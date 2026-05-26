@@ -22,10 +22,16 @@ public class ConcurrencyNestedScopeBenchmark
     }
 
     [Params(100 /*, 100, 1_000 */)]
-    public int ConcurrentRequests { get; set; }
+    public int ConcurrentRequests
+    {
+        get; set;
+    }
 
     [Params(10)]
-    public int RepeatCount { get; set; }
+    public int RepeatCount
+    {
+        get; set;
+    }
 
     [Benchmark]
     public async Task MultipleResolvesOnMultipleTasks()
@@ -41,25 +47,13 @@ public class ConcurrencyNestedScopeBenchmark
                     // Start request
                     using (var requestScope = _container.BeginLifetimeScope("request"))
                     {
-                        var service1 = requestScope.Resolve<MockRequestScopeService1>();
-                        if (service1 == null)
-                        {
-                            throw new InvalidOperationException("Service1 is null");
-                        }
+                        var service1 = requestScope.Resolve<MockRequestScopeService1>() ?? throw new InvalidOperationException("Service1 is null");
 
                         using (var unitOfWorkScope = requestScope.BeginLifetimeScope())
                         {
-                            var nestedRequestService2 = unitOfWorkScope.Resolve<MockRequestScopeService2>();
-                            if (nestedRequestService2 == null)
-                            {
-                                throw new InvalidOperationException("Nested request service is null");
-                            }
+                            var nestedRequestService2 = unitOfWorkScope.Resolve<MockRequestScopeService2>() ?? throw new InvalidOperationException("Nested request service is null");
 
-                            var unitOfWork = unitOfWorkScope.Resolve<MockUnitOfWork>();
-                            if (unitOfWork == null)
-                            {
-                                throw new InvalidOperationException("Unit of work is null");
-                            }
+                            var unitOfWork = unitOfWorkScope.Resolve<MockUnitOfWork>() ?? throw new InvalidOperationException("Unit of work is null");
                         }
                     }
                 }

@@ -208,7 +208,7 @@ public static class ResolutionValueExtensions
         }
 
         // Null annotation attributes only work if placed directly in an if statement.
-        if (context.TryResolve(typeof(T), out object? component))
+        if (context.TryResolve(typeof(T), out var component))
         {
             instance = (T)component;
 

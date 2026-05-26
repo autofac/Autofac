@@ -9,9 +9,15 @@ public sealed class AsyncDisposeTracker : IDisposable, IAsyncDisposable
 
     public event EventHandler<EventArgs> Disposing;
 
-    public bool IsSyncDisposed { get; set; }
+    public bool IsSyncDisposed
+    {
+        get; set;
+    }
 
-    public bool IsAsyncDisposed { get; set; }
+    public bool IsAsyncDisposed
+    {
+        get; set;
+    }
 
     public AsyncDisposeTracker()
         : this(null)

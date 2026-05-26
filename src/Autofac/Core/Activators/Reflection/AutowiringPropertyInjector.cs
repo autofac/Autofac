@@ -171,6 +171,6 @@ internal static class AutowiringPropertyInjector
     }
 
     private static void CallPropertySetter<TDeclaringType, TValue>(
-        Action<TDeclaringType, TValue> setter, object target, object value) =>
-            setter((TDeclaringType)target, (TValue)value);
+        Action<TDeclaringType, TValue> setter, object target, object value)
+            => setter((TDeclaringType)target, (TValue)value);
 }

@@ -93,7 +93,7 @@ public class LoadContextScopeTests
 
         using var rootContainer = builder.Build();
 
-        bool callbackInvoked = false;
+        var callbackInvoked = false;
 
         LoadAssemblyAndTest(
             rootContainer,

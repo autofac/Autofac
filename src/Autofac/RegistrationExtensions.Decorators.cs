@@ -258,7 +258,7 @@ public static partial class RegistrationExtensions
 
         var rb = RegistrationBuilder.ForDelegate((c, p) =>
         {
-            TService? instance = (TService?)p
+            var instance = (TService?)p
                 .OfType<TypedParameter>()
                 .FirstOrDefault(tp => tp.Type == typeof(TService))
                 ?.Value ?? throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));

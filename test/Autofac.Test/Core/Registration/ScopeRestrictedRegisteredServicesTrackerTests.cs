@@ -37,7 +37,7 @@ public sealed class ScopeRestrictedRegisteredServicesTrackerTests
 
         var typedService = new TypedService(typeof(object));
         var registry = builder.Build();
-        registry.TryGetRegistration(typedService, out IComponentRegistration registration);
+        registry.TryGetRegistration(typedService, out var registration);
 
         Assert.IsType<ComponentRegistrationLifetimeDecorator>(registration);
     }
@@ -55,7 +55,7 @@ public sealed class ScopeRestrictedRegisteredServicesTrackerTests
         var registry = builder.Build();
 
         var typedService = new TypedService(typeof(object));
-        registry.TryGetRegistration(typedService, out IComponentRegistration registration);
+        registry.TryGetRegistration(typedService, out var registration);
 
         Assert.IsType<ComponentRegistrationLifetimeDecorator>(registration);
     }

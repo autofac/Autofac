@@ -319,7 +319,10 @@ public class RegistrationOnlyIfTests
             Decorated = decorated;
         }
 
-        public IService<T> Decorated { get; }
+        public IService<T> Decorated
+        {
+            get;
+        }
     }
 
     private class Decorator : IService
@@ -329,7 +332,10 @@ public class RegistrationOnlyIfTests
             Decorated = decorated;
         }
 
-        public IService Decorated { get; }
+        public IService Decorated
+        {
+            get;
+        }
     }
 
     private class ServiceA : IService

@@ -45,7 +45,10 @@ public class ServiceKeyAttributeCacheTests
             Key = key;
         }
 
-        public object Key { get; }
+        public object Key
+        {
+            get;
+        }
     }
 
     private sealed class NeedsPropertyKey

@@ -11,12 +11,18 @@ public interface IResolvePipelineBuilder
     /// <summary>
     /// Gets the set of middleware currently registered.
     /// </summary>
-    IEnumerable<IResolveMiddleware> Middleware { get; }
+    IEnumerable<IResolveMiddleware> Middleware
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the type of the pipeline this instance will build.
     /// </summary>
-    PipelineType Type { get; }
+    PipelineType Type
+    {
+        get;
+    }
 
     /// <summary>
     /// Construct a concrete resolve pipeline from this builder.

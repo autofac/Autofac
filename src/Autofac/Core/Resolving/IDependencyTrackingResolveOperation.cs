@@ -19,7 +19,10 @@ public interface IDependencyTrackingResolveOperation : IResolveOperation
     /// <see cref="CircularDependencyDetectorMiddleware" />,
     /// hence it's internal.
     /// </remarks>
-    SegmentedStack<ResolveRequestContext> RequestStack { get; }
+    SegmentedStack<ResolveRequestContext> RequestStack
+    {
+        get;
+    }
 
     /// <summary>
     /// Enter a new dependency chain block where subsequent requests inside the operation are allowed to repeat

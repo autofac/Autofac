@@ -39,7 +39,10 @@ internal class ComponentRegistrationLifetimeDecorator : Disposable, IComponentRe
     public IInstanceActivator Activator => _inner.Activator;
 
     /// <inheritdoc/>
-    public IComponentLifetime Lifetime { get; }
+    public IComponentLifetime Lifetime
+    {
+        get;
+    }
 
     /// <inheritdoc/>
     public InstanceSharing Sharing => _inner.Sharing;

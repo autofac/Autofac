@@ -266,8 +266,8 @@ public class KeyedServiceTests
 
         void DoAnyKeyQuery()
         {
-            IEnumerable<TestServiceA> allA = provider.ResolveKeyed<IEnumerable<TestServiceA>>(KeyedService.AnyKey);
-            IEnumerable<TestServiceB> allB = provider.ResolveKeyed<IEnumerable<TestServiceB>>(KeyedService.AnyKey);
+            var allA = provider.ResolveKeyed<IEnumerable<TestServiceA>>(KeyedService.AnyKey);
+            var allB = provider.ResolveKeyed<IEnumerable<TestServiceB>>(KeyedService.AnyKey);
 
             // Verify caching returns the same IEnumerable<> instance.
             Assert.Same(allA, provider.ResolveKeyed<IEnumerable<TestServiceA>>(KeyedService.AnyKey));
@@ -333,8 +333,8 @@ public class KeyedServiceTests
 
         void DoAnyKeyQuery()
         {
-            IEnumerable<TestServiceA> allA = provider.ResolveKeyed<IEnumerable<TestServiceA>>(KeyedService.AnyKey);
-            IEnumerable<TestServiceB> allB = provider.ResolveKeyed<IEnumerable<TestServiceB>>(KeyedService.AnyKey);
+            var allA = provider.ResolveKeyed<IEnumerable<TestServiceA>>(KeyedService.AnyKey);
+            var allB = provider.ResolveKeyed<IEnumerable<TestServiceB>>(KeyedService.AnyKey);
 
             // Verify caching returns the same IEnumerable<> instances.
             Assert.Same(allA, provider.ResolveKeyed<IEnumerable<TestServiceA>>(KeyedService.AnyKey));
@@ -409,8 +409,8 @@ public class KeyedServiceTests
 
         void DoAnyKeyQuery()
         {
-            IEnumerable<TestServiceA> allA = provider.ResolveKeyed<IEnumerable<TestServiceA>>(KeyedService.AnyKey);
-            IEnumerable<TestServiceB> allB = provider.ResolveKeyed<IEnumerable<TestServiceB>>(KeyedService.AnyKey);
+            var allA = provider.ResolveKeyed<IEnumerable<TestServiceA>>(KeyedService.AnyKey);
+            var allB = provider.ResolveKeyed<IEnumerable<TestServiceB>>(KeyedService.AnyKey);
 
             // Verify caching returns the same items.
             Assert.Equal(allA, provider.ResolveKeyed<IEnumerable<TestServiceA>>(KeyedService.AnyKey));
@@ -475,8 +475,8 @@ public class KeyedServiceTests
 
         void DoAnyKeyQuery()
         {
-            IEnumerable<TestServiceA> allA = provider.ResolveKeyed<IEnumerable<TestServiceA>>(KeyedService.AnyKey);
-            IEnumerable<TestServiceB> allB = provider.ResolveKeyed<IEnumerable<TestServiceB>>(KeyedService.AnyKey);
+            var allA = provider.ResolveKeyed<IEnumerable<TestServiceA>>(KeyedService.AnyKey);
+            var allB = provider.ResolveKeyed<IEnumerable<TestServiceB>>(KeyedService.AnyKey);
 
             // Verify caching returns the same items.
             Assert.Equal(allA, provider.ResolveKeyed<IEnumerable<TestServiceA>>(KeyedService.AnyKey));
@@ -729,7 +729,7 @@ public class KeyedServiceTests
 
         Assert.Throws<ComponentNotRegisteredException>(() => provider.Resolve<IService>());
 
-        for (int i = 0; i < 3; i++)
+        for (var i = 0; i < 3; i++)
         {
             var key = "service" + i;
             var s1 = provider.ResolveKeyed<IService>(key);
@@ -940,9 +940,15 @@ public class KeyedServiceTests
             Service2 = service2;
         }
 
-        public IService Service1 { get; }
+        public IService Service1
+        {
+            get;
+        }
 
-        public IService Service2 { get; }
+        public IService Service2
+        {
+            get;
+        }
     }
 
     private class OtherServiceWithDefaultCtorArgs
@@ -955,9 +961,15 @@ public class KeyedServiceTests
             Service2 = service2;
         }
 
-        public IService Service1 { get; }
+        public IService Service1
+        {
+            get;
+        }
 
-        public IService Service2 { get; }
+        public IService Service2
+        {
+            get;
+        }
     }
 
     [Fact]
@@ -1023,7 +1035,10 @@ public class KeyedServiceTests
 
     private class FakeService : IFakeSingletonService, IFakeOpenGenericService<PocoClass>
     {
-        public PocoClass Value { get; set; }
+        public PocoClass Value
+        {
+            get; set;
+        }
     }
 
     private interface IFakeSingletonService
@@ -1032,7 +1047,10 @@ public class KeyedServiceTests
 
     private interface IFakeOpenGenericService<out TValue>
     {
-        TValue Value { get; }
+        TValue Value
+        {
+            get;
+        }
     }
 
     private class PocoClass
@@ -1046,6 +1064,9 @@ public class KeyedServiceTests
             Value = value;
         }
 
-        public TVal Value { get; }
+        public TVal Value
+        {
+            get;
+        }
     }
 }

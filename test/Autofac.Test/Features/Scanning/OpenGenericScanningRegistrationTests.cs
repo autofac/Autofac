@@ -270,9 +270,9 @@ public class OpenGenericScanningRegistrationTests
 
         var c = cb.Build();
 
-        c.ComponentRegistry.TryGetRegistration(new TypedService(typeof(OpenGenericScannedComponentWithName<string>)), out IComponentRegistration r);
+        c.ComponentRegistry.TryGetRegistration(new TypedService(typeof(OpenGenericScannedComponentWithName<string>)), out var r);
 
-        r.Metadata.TryGetValue("Name", out object name);
+        r.Metadata.TryGetValue("Name", out var name);
 
         Assert.Equal("My Name", name);
     }

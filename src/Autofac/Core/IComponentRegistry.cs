@@ -18,22 +18,34 @@ public interface IComponentRegistry : IDisposable, IAsyncDisposable
     /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
     /// context across registrations.
     /// </value>
-    IDictionary<string, object?> Properties { get; }
+    IDictionary<string, object?> Properties
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the set of registered components.
     /// </summary>
-    IEnumerable<IComponentRegistration> Registrations { get; }
+    IEnumerable<IComponentRegistration> Registrations
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the registration sources that are used by the registry.
     /// </summary>
-    IEnumerable<IRegistrationSource> Sources { get; }
+    IEnumerable<IRegistrationSource> Sources
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the set of service middleware sources that are used by the registry.
     /// </summary>
-    IEnumerable<IServiceMiddlewareSource> ServiceMiddlewareSources { get; }
+    IEnumerable<IServiceMiddlewareSource> ServiceMiddlewareSources
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a value indicating whether the registry contains its own components.
@@ -42,7 +54,10 @@ public interface IComponentRegistry : IDisposable, IAsyncDisposable
     /// </summary>
     /// <remarks>This property is used when walking up the scope tree looking for
     /// registrations for a new customized scope.</remarks>
-    bool HasLocalComponents { get; }
+    bool HasLocalComponents
+    {
+        get;
+    }
 
     /// <summary>
     /// Attempts to find a default registration for the specified service.

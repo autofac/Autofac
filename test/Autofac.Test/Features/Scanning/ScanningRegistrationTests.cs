@@ -415,9 +415,9 @@ public class ScanningRegistrationTests
             .Where(t => t == typeof(ScannedComponentWithName))
             .WithMetadataFrom<IHaveName>());
 
-        c.ComponentRegistry.TryGetRegistration(new TypedService(typeof(ScannedComponentWithName)), out IComponentRegistration r);
+        c.ComponentRegistry.TryGetRegistration(new TypedService(typeof(ScannedComponentWithName)), out var r);
 
-        r.Metadata.TryGetValue("Name", out object name);
+        r.Metadata.TryGetValue("Name", out var name);
 
         Assert.Equal("My Name", name);
     }

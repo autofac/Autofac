@@ -5,6 +5,9 @@ namespace Autofac.Test.Scenarios.ScannedAssembly.MetadataAttributeScanningScenar
 {
     public interface IHaveName
     {
-        string Name { get; }
+        string Name
+        {
+            get;
+        }
     }
 }

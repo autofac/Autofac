@@ -31,7 +31,7 @@ public class TypedParameterTests
 
         using var container = Factory.CreateEmptyContainer();
 
-        Assert.True(typedParam.CanSupplyValue(param, container, out Func<object> vp));
+        Assert.True(typedParam.CanSupplyValue(param, container, out var vp));
     }
 
     private static ParameterInfo AParamOfCConstructor()
@@ -53,7 +53,7 @@ public class TypedParameterTests
         var typedParam = new TypedParameter(typeof(B), new B());
 
         using var container = Factory.CreateEmptyContainer();
-        Assert.False(typedParam.CanSupplyValue(param, container, out Func<object> vp));
+        Assert.False(typedParam.CanSupplyValue(param, container, out var vp));
     }
 
     [Fact]
@@ -64,7 +64,7 @@ public class TypedParameterTests
         var typedParam = new TypedParameter(typeof(string), "Yo!");
 
         using var container = Factory.CreateEmptyContainer();
-        Assert.False(typedParam.CanSupplyValue(param, container, out Func<object> vp));
+        Assert.False(typedParam.CanSupplyValue(param, container, out var vp));
     }
 
     [Fact]

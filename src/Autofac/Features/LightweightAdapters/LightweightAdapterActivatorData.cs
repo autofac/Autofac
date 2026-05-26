@@ -26,10 +26,16 @@ public class LightweightAdapterActivatorData
     /// <summary>
     /// Gets the adapter function.
     /// </summary>
-    public Func<IComponentContext, IEnumerable<Parameter>, object, object> Adapter { get; }
+    public Func<IComponentContext, IEnumerable<Parameter>, object, object> Adapter
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the service to be adapted from.
     /// </summary>
-    public Service FromService { get; }
+    public Service FromService
+    {
+        get;
+    }
 }

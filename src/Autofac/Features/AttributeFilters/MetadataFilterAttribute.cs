@@ -100,7 +100,10 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
     /// key on a component. Resolved components must have this metadata key to
     /// satisfy the filter.
     /// </value>
-    public string Key { get; }
+    public string Key
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the value the dependency is expected to have to satisfy the parameter.
@@ -111,7 +114,10 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
     /// <see cref="Key"/> with
     /// this value to satisfy the filter.
     /// </value>
-    public object Value { get; private set; }
+    public object Value
+    {
+        get; private set;
+    }
 
     /// <summary>
     /// Resolves a constructor parameter based on metadata requirements.

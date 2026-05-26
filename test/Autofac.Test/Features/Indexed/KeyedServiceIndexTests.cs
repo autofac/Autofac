@@ -26,7 +26,7 @@ public class KeyedServiceIndexTests
 
         var idx = CreateTarget(cpt, key);
 
-        Assert.True(idx.TryGetValue(key, out string val));
+        Assert.True(idx.TryGetValue(key, out var val));
         Assert.Same(cpt, val);
     }
 

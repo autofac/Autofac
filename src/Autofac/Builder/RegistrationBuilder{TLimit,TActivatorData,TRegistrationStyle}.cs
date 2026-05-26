@@ -54,25 +54,37 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
     /// Gets the activator data.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public TActivatorData ActivatorData { get; }
+    public TActivatorData ActivatorData
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the registration style.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public TRegistrationStyle RegistrationStyle { get; }
+    public TRegistrationStyle RegistrationStyle
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the registration data.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public RegistrationData RegistrationData { get; }
+    public RegistrationData RegistrationData
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the resolve pipeline builder, that can be used to add middleware to the pipeline.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public IResolvePipelineBuilder ResolvePipeline { get; }
+    public IResolvePipelineBuilder ResolvePipeline
+    {
+        get;
+    }
 
     /// <summary>
     /// Configure the component so that instances are never disposed by the container.
@@ -273,7 +285,7 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
     {
         // Issue #919: Use arrays and iteration rather than LINQ to reduce memory allocation.
         Service[] argArray = new Service[services.Length];
-        for (int i = 0; i < services.Length; i++)
+        for (var i = 0; i < services.Length; i++)
         {
             var service = services[i];
             if (service.FullName is not null)

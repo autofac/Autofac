@@ -24,10 +24,16 @@ public class OperationStartDiagnosticData
     /// <summary>
     /// Gets the pipeline resolve operation that is about to run.
     /// </summary>
-    public IResolveOperation Operation { get; private set; }
+    public IResolveOperation Operation
+    {
+        get; private set;
+    }
 
     /// <summary>
     /// Gets the request that is responsible for starting this operation.
     /// </summary>
-    public ResolveRequest InitiatingRequest { get; private set; }
+    public ResolveRequest InitiatingRequest
+    {
+        get; private set;
+    }
 }

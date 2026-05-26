@@ -25,12 +25,18 @@ public readonly struct ServiceRegistration : IEquatable<ServiceRegistration>
     /// <summary>
     /// Gets the pipeline to invoke that will resolve the associated <see cref="Registration"/>.
     /// </summary>
-    public IResolvePipeline Pipeline { get; }
+    public IResolvePipeline Pipeline
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the registration that will be resolved when a resolve request runs.
     /// </summary>
-    public IComponentRegistration Registration { get; }
+    public IComponentRegistration Registration
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets additional data associated with the component.

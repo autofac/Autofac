@@ -25,33 +25,51 @@ public interface IResolveOperation
     /// <summary>
     /// Gets the active resolve request.
     /// </summary>
-    ResolveRequestContext? ActiveRequestContext { get; }
+    ResolveRequestContext? ActiveRequestContext
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the current lifetime scope of the operation; based on the most recently executed request.
     /// </summary>
-    ISharingLifetimeScope CurrentScope { get; }
+    ISharingLifetimeScope CurrentScope
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the set of all in-progress requests on the request stack.
     /// </summary>
-    IEnumerable<ResolveRequestContext> InProgressRequests { get; }
+    IEnumerable<ResolveRequestContext> InProgressRequests
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the <see cref="DiagnosticListener" /> for the operation.
     /// </summary>
-    DiagnosticListener DiagnosticSource { get; }
+    DiagnosticListener DiagnosticSource
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the current request depth.
     /// </summary>
-    int RequestDepth { get; }
+    int RequestDepth
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the <see cref="ResolveRequest" /> that initiated the operation. Other nested requests may have been
     /// issued as a result of this one.
     /// </summary>
-    ResolveRequest? InitiatingRequest { get; }
+    ResolveRequest? InitiatingRequest
+    {
+        get;
+    }
 
     /// <summary>
     /// Get or create and share an instance of the requested service in the <paramref name="currentOperationScope"/>.

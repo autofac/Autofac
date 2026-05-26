@@ -10,5 +10,8 @@ public class DependsByCtor
         Dep = o;
     }
 
-    public DependsByProp Dep { get; private set; }
+    public DependsByProp Dep
+    {
+        get; private set;
+    }
 }

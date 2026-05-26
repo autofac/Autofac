@@ -20,8 +20,8 @@ internal static class ActivatorExtensions
     public static string DisplayName(this IInstanceActivator activator)
     {
         var fullName = activator?.LimitType.FullName ?? "";
-        return activator is DelegateActivator ?
-            $"λ:{fullName}" :
-            fullName;
+        return activator is DelegateActivator
+            ? $"λ:{fullName}"
+            : fullName;
     }
 }

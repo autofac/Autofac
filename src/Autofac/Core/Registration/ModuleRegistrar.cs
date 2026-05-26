@@ -38,7 +38,10 @@ internal class ModuleRegistrar : IModuleRegistrar
     }
 
     /// <inheritdoc />
-    public ModuleRegistrarData RegistrarData { get; }
+    public ModuleRegistrarData RegistrarData
+    {
+        get;
+    }
 
     /// <summary>
     /// Add a module to the container.

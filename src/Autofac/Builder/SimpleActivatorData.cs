@@ -22,5 +22,8 @@ public class SimpleActivatorData : IConcreteActivatorData
     /// <summary>
     /// Gets the activator.
     /// </summary>
-    public IInstanceActivator Activator { get; }
+    public IInstanceActivator Activator
+    {
+        get;
+    }
 }

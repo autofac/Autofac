@@ -178,7 +178,10 @@ public class ContainerBuilderTests
 
     private class BuildCallbackModule : Module
     {
-        public int Called { get; private set; }
+        public int Called
+        {
+            get; private set;
+        }
 
         protected override void Load(ContainerBuilder builder)
         {
@@ -195,9 +198,15 @@ public class ContainerBuilderTests
 
     private class NestingModule : Module
     {
-        public bool OuterBuildCallback { get; set; }
+        public bool OuterBuildCallback
+        {
+            get; set;
+        }
 
-        public bool InnerBuildCallback { get; set; }
+        public bool InnerBuildCallback
+        {
+            get; set;
+        }
 
         protected override void Load(ContainerBuilder containerBuilder)
         {

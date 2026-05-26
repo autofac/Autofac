@@ -20,5 +20,8 @@ public class LifetimeScopeEndingEventArgs : EventArgs
     /// <summary>
     /// Gets the lifetime scope that is ending.
     /// </summary>
-    public ILifetimeScope LifetimeScope { get; }
+    public ILifetimeScope LifetimeScope
+    {
+        get;
+    }
 }

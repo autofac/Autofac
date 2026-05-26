@@ -35,14 +35,22 @@ public class DefaultPropertySelectorTests
 
     private class HasProperties
     {
-        public Test PublicPropertyNoDefault { get; set; }
+        public Test PublicPropertyNoDefault
+        {
+            get; set;
+        }
 
         public Test PublicPropertyNoGet
         {
-            set { }
+            set
+            {
+            }
         }
 
-        public Test PublicPropertyNoSet { get; }
+        public Test PublicPropertyNoSet
+        {
+            get;
+        }
 
         public Test PublicPropertyThrowsOnGet
         {
@@ -57,13 +65,19 @@ public class DefaultPropertySelectorTests
             }
         }
 
-        public required Test PublicRequiredProperty { get; set; }
+        public required Test PublicRequiredProperty
+        {
+            get; set;
+        }
 
         public Test PublicPropertyWithDefault { get; set; } = new Test();
 
         private Test PrivatePropertyWithDefault { get; set; } = new Test();
 
-        private Test PrivatePropertyWithSet { get; set; }
+        private Test PrivatePropertyWithSet
+        {
+            get; set;
+        }
     }
 
     private class Test
