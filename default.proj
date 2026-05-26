@@ -63,8 +63,8 @@
     <Exec Command="dotnet build &quot;%(SolutionFile.FullPath)&quot; -c $(Configuration) /p:Version=$(Version)" />
   </Target>
   <Target Name="Package">
-    <MakeDir Directories="$([System.IO.Path]::Combine($(PackageDirectory),%(PublishProject.Filename)))" />
-    <Exec Command="dotnet pack &quot;%(SolutionFile.FullPath)&quot; -c $(Configuration) --output &quot;$(PackageDirectory)&quot; /p:Version=$(Version)" />
+    <MakeDir Directories="$(PackageDirectory)" />
+    <Exec Command="dotnet pack &quot;%(SourceProject.Identity)&quot; -c $(Configuration) --no-build --output &quot;$(PackageDirectory)&quot; /p:Version=$(Version)" />
   </Target>
   <Target Name="Test">
     <MakeDir Directories="$(LogDirectory)" />
