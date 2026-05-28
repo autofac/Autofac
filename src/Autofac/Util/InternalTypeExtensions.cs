@@ -80,31 +80,25 @@ internal static class InternalTypeExtensions
             var specialConstraints = genericArg.GenericParameterAttributes;
 
             if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
-                != GenericParameterAttributes.None)
+                != GenericParameterAttributes.None &&
+                !parameter.IsValueType && parameter.GetDeclaredPublicConstructors().All(c => c.GetParameters().Length > 0))
             {
-                if (!parameter.IsValueType && parameter.GetDeclaredPublicConstructors().All(c => c.GetParameters().Length > 0))
-                {
-                    return false;
-                }
+                return false;
             }
 
             if ((specialConstraints & GenericParameterAttributes.ReferenceTypeConstraint)
-                != GenericParameterAttributes.None)
+                != GenericParameterAttributes.None &&
+                parameter.IsValueType)
             {
-                if (parameter.IsValueType)
-                {
-                    return false;
-                }
+                return false;
             }
 
             if ((specialConstraints & GenericParameterAttributes.NotNullableValueTypeConstraint)
-                != GenericParameterAttributes.None)
+                != GenericParameterAttributes.None &&
+                (!parameter.IsValueType ||
+                    (parameter.IsGenericType && IsGenericTypeDefinedBy(parameter, typeof(Nullable<>)))))
             {
-                if (!parameter.IsValueType ||
-                    (parameter.IsGenericType && IsGenericTypeDefinedBy(parameter, typeof(Nullable<>))))
-                {
-                    return false;
-                }
+                return false;
             }
         }
 
