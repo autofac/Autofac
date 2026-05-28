@@ -55,5 +55,8 @@ public class PositionalParameter : ConstantParameter
     /// <summary>
     /// Gets the zero-based position of the parameter.
     /// </summary>
-    public int Position { get; private set; }
+    public int Position
+    {
+        get; private set;
+    }
 }

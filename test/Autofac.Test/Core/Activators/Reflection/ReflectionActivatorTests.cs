@@ -30,11 +30,11 @@ public class ReflectionActivatorTests
     public void Pipeline_ResolvesConstructorDependencies()
     {
         var o = new object();
-        const string s = "s";
+        const string S = "s";
 
         var builder = new ContainerBuilder();
         builder.RegisterInstance(o);
-        builder.RegisterInstance(s);
+        builder.RegisterInstance(S);
         var container = builder.Build();
 
         using var target = Factory.CreateReflectionActivator(typeof(Dependent));
@@ -47,7 +47,7 @@ public class ReflectionActivatorTests
         var dependent = (Dependent)instance;
 
         Assert.Same(o, dependent.TheObject);
-        Assert.Same(s, dependent.TheString);
+        Assert.Same(S, dependent.TheString);
     }
 
     [Fact]
@@ -78,7 +78,7 @@ public class ReflectionActivatorTests
     }
 
     [Fact]
-    public void ByDefault_ChoosesMostParameterisedConstructor()
+    public void ByDefault_ChoosesMostParameterizedConstructor()
     {
         var parameters = new Parameter[]
         {
@@ -220,12 +220,12 @@ public class ReflectionActivatorTests
     [Fact]
     public void SetsMultipleConfiguredProperties()
     {
-        const int p1 = 1;
-        const int p2 = 2;
+        const int P1 = 1;
+        const int P2 = 2;
         var properties = new[]
         {
-            new NamedPropertyParameter("P1", p1),
-            new NamedPropertyParameter("P2", p2),
+            new NamedPropertyParameter("P1", P1),
+            new NamedPropertyParameter("P2", P2),
         };
         using var target = Factory.CreateReflectionActivator(typeof(R), Enumerable.Empty<Parameter>(), properties);
         using var container = Factory.CreateEmptyContainer();
@@ -310,8 +310,8 @@ public class ReflectionActivatorTests
     [Fact]
     public void WhenValueTypeParameterSupplied_ItIsPassedToTheComponent()
     {
-        const int i = 42;
-        var parameters = new Parameter[] { new NamedParameter("i", i) };
+        const int I = 42;
+        var parameters = new Parameter[] { new NamedParameter("i", I) };
 
         using var target = Factory.CreateReflectionActivator(typeof(AcceptsIntParameter), parameters);
 
@@ -325,7 +325,7 @@ public class ReflectionActivatorTests
 
         var typedInstance = (AcceptsIntParameter)instance;
 
-        Assert.Equal(i, typedInstance.I);
+        Assert.Equal(I, typedInstance.I);
     }
 
     [Fact]
@@ -373,7 +373,10 @@ public class ReflectionActivatorTests
             I = i;
         }
 
-        public int I { get; private set; }
+        public int I
+        {
+            get; private set;
+        }
     }
 
     private class AcceptsObjectParameter
@@ -383,7 +386,10 @@ public class ReflectionActivatorTests
             P = p;
         }
 
-        public object P { get; private set; }
+        public object P
+        {
+            get; private set;
+        }
     }
 
     private class InternalDefaultConstructor
@@ -406,16 +412,28 @@ public class ReflectionActivatorTests
 
     private class PrivateSetProperty
     {
-        public int GetProperty { get; private set; }
+        public int GetProperty
+        {
+            get; private set;
+        }
 
-        public int P { get; set; }
+        public int P
+        {
+            get; set;
+        }
     }
 
     private class R
     {
-        public int P1 { get; set; }
+        public int P1
+        {
+            get; set;
+        }
 
-        public int P2 { get; set; }
+        public int P2
+        {
+            get; set;
+        }
     }
 
     private class ThreeConstructors
@@ -435,7 +453,10 @@ public class ReflectionActivatorTests
             CalledConstructorParameterCount = 2;
         }
 
-        public int CalledConstructorParameterCount { get; private set; }
+        public int CalledConstructorParameterCount
+        {
+            get; private set;
+        }
     }
 
     private class WithGenericCtor<T>

@@ -12,7 +12,10 @@ public abstract class Service
     /// Gets a human-readable description of the service.
     /// </summary>
     /// <value>The description.</value>
-    public abstract string Description { get; }
+    public abstract string Description
+    {
+        get;
+    }
 
     /// <summary>
     /// Implements the operator ==.

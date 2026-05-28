@@ -12,5 +12,8 @@ public class MyMetaWithDictionary
         TheName = (string)metadata["Name"];
     }
 
-    public string TheName { get; set; }
+    public string TheName
+    {
+        get; set;
+    }
 }

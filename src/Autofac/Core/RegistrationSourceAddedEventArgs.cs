@@ -24,10 +24,16 @@ public class RegistrationSourceAddedEventArgs : EventArgs
     /// <summary>
     /// Gets the registry to which the source was added.
     /// </summary>
-    public IRegistrationSource RegistrationSource { get; }
+    public IRegistrationSource RegistrationSource
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the source that was added.
     /// </summary>
-    public IComponentRegistryBuilder ComponentRegistry { get; }
+    public IComponentRegistryBuilder ComponentRegistry
+    {
+        get;
+    }
 }

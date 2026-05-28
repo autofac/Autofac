@@ -80,7 +80,10 @@ public class Owned<T> : Disposable
     /// <summary>
     /// Gets or sets the owned value.
     /// </summary>
-    public T Value { get; set; }
+    public T Value
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Releases unmanaged and - optionally - managed resources.

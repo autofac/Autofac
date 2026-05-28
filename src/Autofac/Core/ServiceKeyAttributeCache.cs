@@ -38,7 +38,7 @@ internal static class ServiceKeyAttributeCache
                     return true;
                 }
 
-                return p.TryGetDeclaringProperty(out PropertyInfo? property) && PropertyHasServiceKey(property);
+                return p.TryGetDeclaringProperty(out var property) && PropertyHasServiceKey(property);
             });
     }
 

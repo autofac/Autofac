@@ -22,5 +22,8 @@ public sealed class ResolveRequestBeginningEventArgs : EventArgs
     /// <summary>
     /// Gets the resolve request that is beginning.
     /// </summary>
-    public ResolveRequestContext RequestContext { get; }
+    public ResolveRequestContext RequestContext
+    {
+        get;
+    }
 }

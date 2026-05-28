@@ -41,11 +41,14 @@ public class NamedParameter : ConstantParameter
     /// <param name="name">The name of the parameter.</param>
     /// <param name="value">The parameter value.</param>
     public NamedParameter(string name, object? value)
-        : base(value, pi => pi.Name == name) =>
-            Name = Enforce.ArgumentNotNullOrEmpty(name, "name");
+        : base(value, pi => pi.Name == name)
+            => Name = Enforce.ArgumentNotNullOrEmpty(name, "name");
 
     /// <summary>
     /// Gets the name of the parameter.
     /// </summary>
-    public string Name { get; }
+    public string Name
+    {
+        get;
+    }
 }

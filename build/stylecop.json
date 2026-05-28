@@ -9,6 +9,9 @@
         "licenseName": "MIT"
       },
       "xmlHeader": false
+    },
+    "orderingRules": {
+      "usingDirectivesPlacement": "outsideNamespace"
     }
   }
 }

@@ -12,5 +12,8 @@ public class F1
         AList = aList;
     }
 
-    public IList<A1> AList { get; private set; }
+    public IList<A1> AList
+    {
+        get; private set;
+    }
 }

@@ -151,8 +151,8 @@ public class RegistrationOnlyIfTests
 
         builder.RegisterType<ServiceA>().As<IService>().IfNotRegistered(typeof(IService));
 
-        const string descriptor = "custom-middleware";
-        builder.RegisterServiceMiddleware(typeof(IService), descriptor, PipelinePhase.ResolveRequestStart, (context, next) =>
+        const string Descriptor = "custom-middleware";
+        builder.RegisterServiceMiddleware(typeof(IService), Descriptor, PipelinePhase.ResolveRequestStart, (context, next) =>
             {
                 next(context);
                 middlewareInvoked = true;
@@ -319,7 +319,10 @@ public class RegistrationOnlyIfTests
             Decorated = decorated;
         }
 
-        public IService<T> Decorated { get; }
+        public IService<T> Decorated
+        {
+            get;
+        }
     }
 
     private class Decorator : IService
@@ -329,7 +332,10 @@ public class RegistrationOnlyIfTests
             Decorated = decorated;
         }
 
-        public IService Decorated { get; }
+        public IService Decorated
+        {
+            get;
+        }
     }
 
     private class ServiceA : IService

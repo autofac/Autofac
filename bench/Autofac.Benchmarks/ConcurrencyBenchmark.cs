@@ -24,10 +24,16 @@ public class ConcurrencyBenchmark
     }
 
     [Params(100 /*, 100, 1_000 */)]
-    public int ResolveTaskCount { get; set; }
+    public int ResolveTaskCount
+    {
+        get; set;
+    }
 
     [Params(100 /*, 1_000, 10_000 */)]
-    public int ResolvesPerTask { get; set; }
+    public int ResolvesPerTask
+    {
+        get; set;
+    }
 
     [Benchmark]
     public async Task MultipleResolvesOnMultipleTasks()
@@ -40,11 +46,7 @@ public class ConcurrencyBenchmark
             {
                 for (var j = 0; j < ResolvesPerTask; j++)
                 {
-                    var instance = _container.Resolve<A>();
-                    if (instance is null)
-                    {
-                        throw new InvalidOperationException("Instance is null");
-                    }
+                    var instance = _container.Resolve<A>() ?? throw new InvalidOperationException("Instance is null");
                 }
             });
             tasks.Add(task);

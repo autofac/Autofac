@@ -49,7 +49,7 @@ public class MatchingScopeLifetime : IComponentLifetime
             throw new ArgumentNullException(nameof(mostNestedVisibleScope));
         }
 
-        ISharingLifetimeScope? next = mostNestedVisibleScope;
+        var next = mostNestedVisibleScope;
         while (next is not null)
         {
             if (_tagsToMatch.Contains(next.Tag))

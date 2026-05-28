@@ -8,5 +8,8 @@ namespace Autofac.Test.Features.Metadata.TestTypes;
 public class MyMetaWithDefault
 {
     [DefaultValue(42)]
-    public int TheInt { get; set; }
+    public int TheInt
+    {
+        get; set;
+    }
 }

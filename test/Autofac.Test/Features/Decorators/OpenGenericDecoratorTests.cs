@@ -29,7 +29,10 @@ public class OpenGenericDecoratorTests
 
     private interface IDecoratedService<T> : IService<T>
     {
-        IDecoratedService<T> Decorated { get; }
+        IDecoratedService<T> Decorated
+        {
+            get;
+        }
     }
 
     private class ImplementorA<T> : IDecoratedService<T>
@@ -46,7 +49,10 @@ public class OpenGenericDecoratorTests
     {
         public IDecoratedService<T> Decorated => this;
 
-        public string Parameter { get; }
+        public string Parameter
+        {
+            get;
+        }
 
         public ImplementorWithParameters(string parameter)
         {
@@ -66,7 +72,10 @@ public class OpenGenericDecoratorTests
             Decorated = decorated;
         }
 
-        public IDecoratedService<T> Decorated { get; }
+        public IDecoratedService<T> Decorated
+        {
+            get;
+        }
     }
 
     private class DecoratorA<T> : Decorator<T>
@@ -95,7 +104,10 @@ public class OpenGenericDecoratorTests
 
     private interface IDecoratorWithParameter
     {
-        string Parameter { get; }
+        string Parameter
+        {
+            get;
+        }
     }
 
     private class DecoratorWithParameter<T> : Decorator<T>, IDecoratorWithParameter
@@ -106,12 +118,18 @@ public class OpenGenericDecoratorTests
             Parameter = parameter;
         }
 
-        public string Parameter { get; }
+        public string Parameter
+        {
+            get;
+        }
     }
 
     private interface IDecoratorWithContext
     {
-        IDecoratorContext Context { get; }
+        IDecoratorContext Context
+        {
+            get;
+        }
     }
 
     private class DecoratorWithContextA<T> : Decorator<T>, IDecoratorWithContext
@@ -122,7 +140,10 @@ public class OpenGenericDecoratorTests
             Context = context;
         }
 
-        public IDecoratorContext Context { get; }
+        public IDecoratorContext Context
+        {
+            get;
+        }
     }
 
     private class DecoratorWithContextB<T> : Decorator<T>, IDecoratorWithContext
@@ -133,12 +154,18 @@ public class OpenGenericDecoratorTests
             Context = context;
         }
 
-        public IDecoratorContext Context { get; }
+        public IDecoratorContext Context
+        {
+            get;
+        }
     }
 
     private class DisposableImplementor<T> : IDecoratedService<T>, IDisposable
     {
-        public int DisposeCallCount { get; private set; }
+        public int DisposeCallCount
+        {
+            get; private set;
+        }
 
         public IDecoratedService<T> Decorated => this;
 
@@ -150,7 +177,10 @@ public class OpenGenericDecoratorTests
 
     private class DisposableDecorator<T> : Decorator<T>, IDisposable
     {
-        public int DisposeCallCount { get; private set; }
+        public int DisposeCallCount
+        {
+            get; private set;
+        }
 
         public DisposableDecorator(IDecoratedService<T> decorated)
             : base(decorated)
@@ -550,17 +580,17 @@ public class OpenGenericDecoratorTests
     [Fact]
     public void DecoratorInheritsDecoratedLifetimeWhenInstancePerMatchingLifetimeScope()
     {
-        const string tag = "foo";
+        const string Tag = "foo";
 
         var builder = new ContainerBuilder();
         builder.RegisterGeneric(typeof(ImplementorA<>))
             .As(typeof(IDecoratedService<>))
-            .InstancePerMatchingLifetimeScope(tag);
+            .InstancePerMatchingLifetimeScope(Tag);
         builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IDecoratedService<>));
 
         var container = builder.Build();
 
-        using (var scope = container.BeginLifetimeScope(tag))
+        using (var scope = container.BeginLifetimeScope(Tag))
         {
             var first = scope.Resolve<IDecoratedService<int>>();
             var second = scope.Resolve<IDecoratedService<int>>();
@@ -773,20 +803,20 @@ public class OpenGenericDecoratorTests
     [Fact]
     public void DecoratorAndDecoratedBothDisposedWhenInstancePerMatchingLifetimeScope()
     {
-        const string tag = "foo";
+        const string Tag = "foo";
 
         var builder = new ContainerBuilder();
 
         builder.RegisterGeneric(typeof(DisposableImplementor<>))
             .As(typeof(IDecoratedService<>))
-            .InstancePerMatchingLifetimeScope(tag);
+            .InstancePerMatchingLifetimeScope(Tag);
         builder.RegisterGenericDecorator(typeof(DisposableDecorator<>), typeof(IDecoratedService<>));
         var container = builder.Build();
 
         DisposableDecorator<int> decorator;
         DisposableImplementor<int> decorated;
 
-        using (var scope = container.BeginLifetimeScope(tag))
+        using (var scope = container.BeginLifetimeScope(Tag))
         {
             var instance = scope.Resolve<IDecoratedService<int>>();
             decorator = (DisposableDecorator<int>)instance;
@@ -900,7 +930,10 @@ public class OpenGenericDecoratorTests
 
     private class TransactionalCommandHandlerDecorator<T> : ICommandHandler<T>
     {
-        public ICommandHandler<T> Handler { get; }
+        public ICommandHandler<T> Handler
+        {
+            get;
+        }
 
         public TransactionalCommandHandlerDecorator(ICommandHandler<T> handler)
         {

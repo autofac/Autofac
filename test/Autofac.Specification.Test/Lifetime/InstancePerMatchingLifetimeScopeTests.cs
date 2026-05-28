@@ -27,16 +27,16 @@ public class InstancePerMatchingLifetimeScopeTests
     public void InstancePerRequest_AdditionalLifetimeScopeTagsCanBeProvided()
     {
         var builder = new ContainerBuilder();
-        const string tag1 = "Tag1";
-        const string tag2 = "Tag2";
-        builder.Register(c => new object()).InstancePerRequest(tag1, tag2);
+        const string Tag1 = "Tag1";
+        const string Tag2 = "Tag2";
+        builder.Register(c => new object()).InstancePerRequest(Tag1, Tag2);
 
         var container = builder.Build();
 
-        var scope1 = container.BeginLifetimeScope(tag1);
+        var scope1 = container.BeginLifetimeScope(Tag1);
         Assert.NotNull(scope1.Resolve<object>());
 
-        var scope2 = container.BeginLifetimeScope(tag2);
+        var scope2 = container.BeginLifetimeScope(Tag2);
         Assert.NotNull(scope2.Resolve<object>());
 
         var requestScope = container.BeginLifetimeScope(MatchingScopeLifetimeTags.RequestLifetimeScopeTag);

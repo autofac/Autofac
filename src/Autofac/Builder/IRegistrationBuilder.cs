@@ -19,25 +19,37 @@ public interface IRegistrationBuilder<out TLimit, out TActivatorData, out TRegis
     /// Gets the registration data.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    RegistrationData RegistrationData { get; }
+    RegistrationData RegistrationData
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the activator data.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    TActivatorData ActivatorData { get; }
+    TActivatorData ActivatorData
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the registration style.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    TRegistrationStyle RegistrationStyle { get; }
+    TRegistrationStyle RegistrationStyle
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the resolve pipeline for this registration.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    IResolvePipelineBuilder ResolvePipeline { get; }
+    IResolvePipelineBuilder ResolvePipeline
+    {
+        get;
+    }
 
     /// <summary>
     /// Configure the component so that instances are never disposed by the container.

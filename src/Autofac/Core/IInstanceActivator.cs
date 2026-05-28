@@ -13,7 +13,10 @@ public interface IInstanceActivator : IDisposable
     /// <summary>
     /// Gets the most specific type that the component instances are known to be castable to.
     /// </summary>
-    Type LimitType { get; }
+    Type LimitType
+    {
+        get;
+    }
 
     /// <summary>
     /// Allows an implementation to add middleware to a registration's resolve pipeline.

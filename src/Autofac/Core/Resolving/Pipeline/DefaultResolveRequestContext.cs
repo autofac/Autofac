@@ -41,10 +41,16 @@ internal sealed class DefaultResolveRequestContext : ResolveRequestContext
     public override event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting;
 
     /// <inheritdoc />
-    public override IResolveOperation Operation { get; }
+    public override IResolveOperation Operation
+    {
+        get;
+    }
 
     /// <inheritdoc />
-    public override ISharingLifetimeScope ActivationScope { get; protected set; }
+    public override ISharingLifetimeScope ActivationScope
+    {
+        get; protected set;
+    }
 
     /// <inheritdoc />
     public override IComponentRegistration Registration => _resolveRequest.Registration;
@@ -67,38 +73,50 @@ internal sealed class DefaultResolveRequestContext : ResolveRequestContext
     public override bool NewInstanceActivated => Instance is not null && PhaseReached == PipelinePhase.Activation;
 
     /// <inheritdoc />
-    public override DiagnosticListener DiagnosticSource { get; }
+    public override DiagnosticListener DiagnosticSource
+    {
+        get;
+    }
 
     /// <inheritdoc />
-    public override IEnumerable<Parameter> Parameters { get; protected set; }
+    public override IEnumerable<Parameter> Parameters
+    {
+        get; protected set;
+    }
 
     /// <inheritdoc />
-    public override PipelinePhase PhaseReached { get; set; }
+    public override PipelinePhase PhaseReached
+    {
+        get; set;
+    }
 
     /// <inheritdoc />
     public override IComponentRegistry ComponentRegistry => ActivationScope.ComponentRegistry;
 
     /// <inheritdoc />
-    public override DecoratorContext? DecoratorContext { get; set; }
+    public override DecoratorContext? DecoratorContext
+    {
+        get; set;
+    }
 
     /// <inheritdoc />
-    public override void ChangeScope(ISharingLifetimeScope newScope) =>
-        ActivationScope = newScope ?? throw new ArgumentNullException(nameof(newScope));
+    public override void ChangeScope(ISharingLifetimeScope newScope)
+        => ActivationScope = newScope ?? throw new ArgumentNullException(nameof(newScope));
 
     /// <inheritdoc />
-    public override void ChangeParameters(IEnumerable<Parameter> newParameters) =>
-        Parameters = KeyedServiceParameterInjector.AddKeyedServiceParameter(Service, newParameters ?? throw new ArgumentNullException(nameof(newParameters)), Registration);
+    public override void ChangeParameters(IEnumerable<Parameter> newParameters)
+        => Parameters = KeyedServiceParameterInjector.AddKeyedServiceParameter(Service, newParameters ?? throw new ArgumentNullException(nameof(newParameters)), Registration);
 
     /// <inheritdoc />
-    public override object ResolveComponent(in ResolveRequest request) =>
-        Operation.GetOrCreateInstance(ActivationScope, request);
+    public override object ResolveComponent(in ResolveRequest request)
+        => Operation.GetOrCreateInstance(ActivationScope, request);
 
     /// <summary>
     /// Complete the request, raising any appropriate events.
     /// </summary>
     public void CompleteRequest()
     {
-        EventHandler<ResolveRequestCompletingEventArgs>? handler = RequestCompleting;
+        var handler = RequestCompleting;
         handler?.Invoke(this, new ResolveRequestCompletingEventArgs(this));
     }
 }

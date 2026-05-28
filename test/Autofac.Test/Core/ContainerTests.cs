@@ -14,7 +14,7 @@ public class ContainerTests
     [Fact]
     public void ResolveByName()
     {
-        string name = "name";
+        var name = "name";
 
         using var activator = Factory.CreateProvidedInstanceActivator(new object());
         using var r = Factory.CreateSingletonRegistration(
@@ -26,7 +26,7 @@ public class ContainerTests
 
         var c = new ContainerBuilder(builder).Build();
 
-        Assert.True(c.TryResolveNamed(name, typeof(string), out object o));
+        Assert.True(c.TryResolveNamed(name, typeof(string), out var o));
         Assert.NotNull(o);
 
         Assert.False(c.IsRegistered<object>());
@@ -215,6 +215,9 @@ public class ContainerTests
 
     private class ReplaceableComponent
     {
-        public bool IsReplaced { get; set; }
+        public bool IsReplaced
+        {
+            get; set;
+        }
     }
 }

@@ -8,8 +8,8 @@ namespace Autofac.Test.Core.Registration;
 
 public sealed class SourceRegistrarTests
 {
-    private static readonly object O1 = new();
-    private static readonly object O2 = new();
+    private static readonly object _o1 = new();
+    private static readonly object _o2 = new();
 
     [Fact]
     public void Ctor_RequiresContainerBuilder()
@@ -24,12 +24,12 @@ public sealed class SourceRegistrarTests
         var registrar = new SourceRegistrar(builder);
 
         registrar.RegisterSource<SourceA>()
-            .RegisterSource(new ObjectRegistrationSource(O2));
+            .RegisterSource(new ObjectRegistrationSource(_o2));
 
         var container = builder.Build();
         var objects = container.Resolve<IEnumerable<object>>();
-        Assert.Contains(O1, objects);
-        Assert.Contains(O2, objects);
+        Assert.Contains(_o1, objects);
+        Assert.Contains(_o2, objects);
     }
 
     [Fact]
@@ -42,7 +42,7 @@ public sealed class SourceRegistrarTests
     private class SourceA : ObjectRegistrationSource
     {
         public SourceA()
-            : base(O1)
+            : base(_o1)
         {
         }
     }

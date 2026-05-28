@@ -45,24 +45,24 @@ public class PropertyInjectionTests
     [Fact]
     public void InjectPropertiesOverwritesSetProperties()
     {
-        const string str = "test";
+        const string Str = "test";
 
         var cb = new ContainerBuilder();
-        cb.RegisterInstance(str);
+        cb.RegisterInstance(Str);
         var c = cb.Build();
 
         var obj = new HasPublicSetterWithDefaultValue();
         c.InjectProperties(obj);
-        Assert.Equal(str, obj.Val);
+        Assert.Equal(Str, obj.Val);
     }
 
     [Fact]
     public void InjectPropertiesWithDelegateSelectorAllowsPrivateSet()
     {
-        const string str = "test";
+        const string Str = "test";
 
         var cb = new ContainerBuilder();
-        cb.RegisterInstance(str);
+        cb.RegisterInstance(Str);
         var c = cb.Build();
 
         var obj = new HasMixedVisibilityProperties();
@@ -71,16 +71,16 @@ public class PropertyInjectionTests
         Assert.Null(obj.PrivateStringAccessor());
         c.InjectProperties(obj, new DelegatePropertySelector((p, _) => p.GetCustomAttributes<InjectAttribute>().Any()));
         Assert.Null(obj.PublicString);
-        Assert.Equal(str, obj.PrivateStringAccessor());
+        Assert.Equal(Str, obj.PrivateStringAccessor());
     }
 
     [Fact]
     public void InjectPropertiesWithPropertySelectorAllowsPrivateSet()
     {
-        const string str = "test";
+        const string Str = "test";
 
         var cb = new ContainerBuilder();
-        cb.RegisterInstance(str);
+        cb.RegisterInstance(Str);
         var c = cb.Build();
 
         var obj = new HasMixedVisibilityProperties();
@@ -89,16 +89,16 @@ public class PropertyInjectionTests
         Assert.Null(obj.PrivateStringAccessor());
         c.InjectProperties(obj, new InjectAttributePropertySelector());
         Assert.Null(obj.PublicString);
-        Assert.Equal(str, obj.PrivateStringAccessor());
+        Assert.Equal(Str, obj.PrivateStringAccessor());
     }
 
     [Fact]
     public void InjectUnsetPropertiesSkipsSetProperties()
     {
-        const string str = "test";
+        const string Str = "test";
 
         var cb = new ContainerBuilder();
-        cb.RegisterInstance(str);
+        cb.RegisterInstance(Str);
         var c = cb.Build();
 
         var obj = new HasPublicSetter()
@@ -113,10 +113,10 @@ public class PropertyInjectionTests
     [Fact]
     public void InjectUnsetPropertiesUsesPublicOnly()
     {
-        const string str = "test";
+        const string Str = "test";
 
         var cb = new ContainerBuilder();
-        cb.RegisterInstance(str);
+        cb.RegisterInstance(Str);
         var c = cb.Build();
 
         var obj = new HasMixedVisibilityProperties();
@@ -124,7 +124,7 @@ public class PropertyInjectionTests
         Assert.Null(obj.PublicString);
         Assert.Null(obj.PrivateStringAccessor());
         c.InjectUnsetProperties(obj);
-        Assert.Equal(str, obj.PublicString);
+        Assert.Equal(Str, obj.PublicString);
         Assert.Null(obj.PrivateStringAccessor());
     }
 
@@ -247,50 +247,50 @@ public class PropertyInjectionTests
     [Fact]
     public void PropertiesAutowiredUsingDelegateSelector()
     {
-        const string str = "test";
+        const string Str = "test";
 
         var cb = new ContainerBuilder();
         cb.Register(_ => new HasMixedVisibilityProperties())
             .PropertiesAutowired(new DelegatePropertySelector((p, _) => p.GetCustomAttributes<InjectAttribute>().Any()));
-        cb.RegisterInstance(str);
+        cb.RegisterInstance(Str);
 
         var c = cb.Build();
         var obj = c.Resolve<HasMixedVisibilityProperties>();
         Assert.Null(obj.PublicString);
-        Assert.Equal(str, obj.PrivateStringAccessor());
+        Assert.Equal(Str, obj.PrivateStringAccessor());
     }
 
     [Fact]
     public void PropertiesAutowiredUsingInlineDelegate()
     {
-        const string str = "test";
+        const string Str = "test";
 
         var cb = new ContainerBuilder();
         cb.RegisterType<HasMixedVisibilityProperties>()
             .PropertiesAutowired((propInfo, instance) => true);
-        cb.RegisterInstance(str); // Must register, otherwise delegate won't be called
+        cb.RegisterInstance(Str); // Must register, otherwise delegate won't be called
 
         var c = cb.Build();
         var obj = c.Resolve<HasMixedVisibilityProperties>();
 
-        Assert.Equal(str, obj.PublicString);
-        Assert.Equal(str, obj.PrivateStringAccessor());
+        Assert.Equal(Str, obj.PublicString);
+        Assert.Equal(Str, obj.PrivateStringAccessor());
     }
 
     [Fact]
     public void PropertiesAutowiredUsingPropertySelector()
     {
-        const string str = "test";
+        const string Str = "test";
 
         var cb = new ContainerBuilder();
         cb.Register(_ => new HasMixedVisibilityProperties())
             .PropertiesAutowired(new InjectAttributePropertySelector());
-        cb.RegisterInstance(str);
+        cb.RegisterInstance(Str);
 
         var c = cb.Build();
         var obj = c.Resolve<HasMixedVisibilityProperties>();
         Assert.Null(obj.PublicString);
-        Assert.Equal(str, obj.PrivateStringAccessor());
+        Assert.Equal(Str, obj.PrivateStringAccessor());
     }
 
     [Fact]
@@ -440,19 +440,31 @@ public class PropertyInjectionTests
             _id = id;
         }
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get; set;
+        }
     }
 
     private class EnumProperty
     {
-        public SimpleEnumeration Value { get; set; }
+        public SimpleEnumeration Value
+        {
+            get; set;
+        }
     }
 
     private class SplitAccess
     {
-        public bool GetterCalled { get; set; }
+        public bool GetterCalled
+        {
+            get; set;
+        }
 
-        public bool SetterCalled { get; set; }
+        public bool SetterCalled
+        {
+            get; set;
+        }
 
         public string Value
         {
@@ -476,7 +488,10 @@ public class PropertyInjectionTests
 
     private sealed class DecoratedService : IMyService
     {
-        public string Prop { get; set; }
+        public string Prop
+        {
+            get; set;
+        }
 
         public void AssertProp()
         {

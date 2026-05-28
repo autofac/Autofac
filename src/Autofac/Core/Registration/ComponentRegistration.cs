@@ -179,42 +179,66 @@ public class ComponentRegistration : Disposable, IComponentRegistration
     /// Gets a unique identifier for this component (shared in all sub-contexts.)
     /// This value also appears in Services.
     /// </summary>
-    public Guid Id { get; }
+    public Guid Id
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the activator for the registration.
     /// </summary>
-    public IInstanceActivator Activator { get; }
+    public IInstanceActivator Activator
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the lifetime associated with the component.
     /// </summary>
-    public IComponentLifetime Lifetime { get; }
+    public IComponentLifetime Lifetime
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets information about whether the component instances are shared or not.
     /// </summary>
-    public InstanceSharing Sharing { get; }
+    public InstanceSharing Sharing
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets information about whether the instances of the component should be disposed by the container.
     /// </summary>
-    public InstanceOwnership Ownership { get; }
+    public InstanceOwnership Ownership
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the services provided by the component.
     /// </summary>
-    public IEnumerable<Service> Services { get; }
+    public IEnumerable<Service> Services
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets additional data associated with the component.
     /// </summary>
-    public IDictionary<string, object?> Metadata { get; }
+    public IDictionary<string, object?> Metadata
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the options for the registration.
     /// </summary>
-    public RegistrationOptions Options { get; }
+    public RegistrationOptions Options
+    {
+        get;
+    }
 
     /// <inheritdoc />
     public IResolvePipeline ResolvePipeline
@@ -232,14 +256,11 @@ public class ComponentRegistration : Disposable, IComponentRegistration
             return;
         }
 
-        if (_pipelineBuildEvent is not null)
-        {
-            _pipelineBuildEvent.Invoke(this, _lateBuildPipeline);
+        _pipelineBuildEvent?.Invoke(this, _lateBuildPipeline);
 
-            // Reset the PipelineBuilding event so we don't accidentally retain
-            // references we don't need to.
-            _pipelineBuildEvent = null;
-        }
+        // Reset the PipelineBuilding event so we don't accidentally retain
+        // references we don't need to.
+        _pipelineBuildEvent = null;
 
         ResolvePipeline = BuildResolvePipeline(registryServices, _lateBuildPipeline);
     }

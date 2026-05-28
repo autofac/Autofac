@@ -41,7 +41,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     {
         // No null check for item here; internally called method only, known to never be null, and is a very hot path.
         var next = _next;
-        T[] arr = _array;
+        var arr = _array;
 
         // Array bounds checking cast.
         if ((uint)next < (uint)arr.Length)
@@ -61,7 +61,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     /// <returns>The item that has just been popped.</returns>
     public T Pop()
     {
-        int next = _next - 1;
+        var next = _next - 1;
         var array = _array;
 
         // Array bounds checking cast.

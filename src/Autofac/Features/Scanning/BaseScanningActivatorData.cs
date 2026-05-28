@@ -28,7 +28,10 @@ public abstract class BaseScanningActivatorData<TActivatorData, TRegistrationSty
     /// <summary>
     /// Gets the additional actions to be performed on the concrete type registrations.
     /// </summary>
-    public ICollection<Action<Type, IRegistrationBuilder<object, TActivatorData, TRegistrationStyle>>> ConfigurationActions { get; }
+    public ICollection<Action<Type, IRegistrationBuilder<object, TActivatorData, TRegistrationStyle>>> ConfigurationActions
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the filters applied to the types from the scanned assembly.

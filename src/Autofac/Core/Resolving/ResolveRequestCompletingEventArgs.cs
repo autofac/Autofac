@@ -27,5 +27,8 @@ public class ResolveRequestCompletingEventArgs : EventArgs
     /// <summary>
     /// Gets the instance lookup operation that is beginning.
     /// </summary>
-    public ResolveRequestContext RequestContext { get; }
+    public ResolveRequestContext RequestContext
+    {
+        get;
+    }
 }

@@ -12,7 +12,10 @@ public interface IServiceWithType
     /// Gets the type of the service.
     /// </summary>
     /// <value>The type of the service.</value>
-    Type ServiceType { get; }
+    Type ServiceType
+    {
+        get;
+    }
 
     /// <summary>
     /// Return a new service of the same kind, but carrying

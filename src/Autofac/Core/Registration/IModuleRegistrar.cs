@@ -14,7 +14,10 @@ public interface IModuleRegistrar
     /// Gets the registrar data.
     /// </summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public ModuleRegistrarData RegistrarData { get; }
+    ModuleRegistrarData RegistrarData
+    {
+        get;
+    }
 
     /// <summary>
     /// Add a module to the container.

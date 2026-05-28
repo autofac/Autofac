@@ -90,7 +90,10 @@ public sealed class ContainerBuilder
     /// <summary>
     /// Gets the builder to use for building the underlying <see cref="IComponentRegistry" />.
     /// </summary>
-    public IComponentRegistryBuilder ComponentRegistryBuilder { get; }
+    public IComponentRegistryBuilder ComponentRegistryBuilder
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the set of properties used during component registration.
@@ -99,7 +102,10 @@ public sealed class ContainerBuilder
     /// An <see cref="IDictionary{TKey, TValue}"/> that can be used to share
     /// context across registrations.
     /// </value>
-    public IDictionary<string, object?> Properties { get; }
+    public IDictionary<string, object?> Properties
+    {
+        get;
+    }
 
     /// <summary>
     /// Register a callback that will be invoked when the container is configured.

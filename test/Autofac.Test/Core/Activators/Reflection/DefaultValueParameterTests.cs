@@ -50,7 +50,7 @@ public class DefaultValueParameterTests
     {
         var dvp = new DefaultValueParameter();
         var dp = GetTestParameter("s").DefaultValue;
-        Assert.False(dvp.CanSupplyValue(GetTestParameter("s"), new ContainerBuilder().Build(), out Func<object> vp));
+        Assert.False(dvp.CanSupplyValue(GetTestParameter("s"), new ContainerBuilder().Build(), out var vp));
     }
 
     [Fact]
@@ -59,7 +59,7 @@ public class DefaultValueParameterTests
         var dvp = new DefaultValueParameter();
         var u = GetTestParameter("t");
         var dp = u.DefaultValue;
-        Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out Func<object> vp));
+        Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out var vp));
         Assert.Equal("Hello", vp());
     }
 
@@ -68,7 +68,7 @@ public class DefaultValueParameterTests
     {
         var dvp = new DefaultValueParameter();
         var u = GetTestParameter("guid");
-        Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out Func<object> vp));
+        Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out var vp));
         Assert.Equal(default(Guid), vp());
     }
 
@@ -77,7 +77,7 @@ public class DefaultValueParameterTests
     {
         var dvp = new DefaultValueParameter();
         var u = GetTestParameter("dt");
-        Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out Func<object> vp));
+        Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out var vp));
         Assert.Equal(default(DateTime), vp());
     }
 
@@ -86,7 +86,7 @@ public class DefaultValueParameterTests
     {
         var dvp = new DefaultValueParameter();
 
-        Assert.False(dvp.CanSupplyValue(GetDynamicBuildParameter(0), new ContainerBuilder().Build(), out Func<object> vp));
+        Assert.False(dvp.CanSupplyValue(GetDynamicBuildParameter(0), new ContainerBuilder().Build(), out var vp));
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public class DefaultValueParameterTests
     {
         var dvp = new DefaultValueParameter();
 
-        Assert.True(dvp.CanSupplyValue(GetDynamicBuildParameter(1), new ContainerBuilder().Build(), out Func<object> vp));
+        Assert.True(dvp.CanSupplyValue(GetDynamicBuildParameter(1), new ContainerBuilder().Build(), out var vp));
         Assert.Equal("Hello", vp());
     }
 
@@ -103,6 +103,6 @@ public class DefaultValueParameterTests
     {
         var dvp = new DefaultValueParameter();
 
-        Assert.False(dvp.CanSupplyValue(GetDynamicMethodParameter(), new ContainerBuilder().Build(), out Func<object> vp));
+        Assert.False(dvp.CanSupplyValue(GetDynamicMethodParameter(), new ContainerBuilder().Build(), out var vp));
     }
 }

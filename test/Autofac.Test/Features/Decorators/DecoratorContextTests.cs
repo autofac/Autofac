@@ -10,13 +10,13 @@ public class DecoratorContextTests
     [Fact]
     public void CreateSetsContextToPreDecoratedState()
     {
-        const string implementationInstance = "Initial";
+        const string ImplementationInstance = "Initial";
 
-        var context = DecoratorContext.Create(Factory.CreateEmptyContext(), typeof(string), typeof(string), implementationInstance);
+        var context = DecoratorContext.Create(Factory.CreateEmptyContext(), typeof(string), typeof(string), ImplementationInstance);
 
         Assert.Equal(typeof(string), context.ServiceType);
         Assert.Equal(typeof(string), context.ImplementationType);
-        Assert.Equal(implementationInstance, context.CurrentInstance);
+        Assert.Equal(ImplementationInstance, context.CurrentInstance);
         Assert.Empty(context.AppliedDecoratorTypes);
         Assert.Empty(context.AppliedDecorators);
     }
@@ -24,21 +24,21 @@ public class DecoratorContextTests
     [Fact]
     public void UpdateAddsDecoratorStateToContext()
     {
-        const string implementationInstance = "Initial";
-        var context = DecoratorContext.Create(Factory.CreateEmptyContext(), typeof(string), typeof(string), implementationInstance);
+        const string ImplementationInstance = "Initial";
+        var context = DecoratorContext.Create(Factory.CreateEmptyContext(), typeof(string), typeof(string), ImplementationInstance);
 
-        const string decoratorA = "DecoratorA";
-        context = context.UpdateContext(decoratorA);
+        const string DecoratorA = "DecoratorA";
+        context = context.UpdateContext(DecoratorA);
 
-        Assert.Equal(decoratorA, context.CurrentInstance);
+        Assert.Equal(DecoratorA, context.CurrentInstance);
         Assert.Equal(context.AppliedDecoratorTypes, new[] { typeof(string) });
-        Assert.Equal(context.AppliedDecorators, new[] { decoratorA });
+        Assert.Equal(context.AppliedDecorators, new[] { DecoratorA });
 
-        const string decoratorB = "DecoratorB";
-        context = context.UpdateContext(decoratorB);
+        const string DecoratorB = "DecoratorB";
+        context = context.UpdateContext(DecoratorB);
 
-        Assert.Equal(decoratorB, context.CurrentInstance);
+        Assert.Equal(DecoratorB, context.CurrentInstance);
         Assert.Equal(context.AppliedDecoratorTypes, new[] { typeof(string), typeof(string) });
-        Assert.Equal(context.AppliedDecorators, new[] { decoratorA, decoratorB });
+        Assert.Equal(context.AppliedDecorators, new[] { DecoratorA, DecoratorB });
     }
 }

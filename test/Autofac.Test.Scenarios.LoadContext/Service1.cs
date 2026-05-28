@@ -5,5 +5,8 @@ namespace A;
 
 public class Service1
 {
-    public int Value { get; set; }
+    public int Value
+    {
+        get; set;
+    }
 }

@@ -6,5 +6,8 @@ namespace Autofac.Specification.Test.Features.PropertyInjection;
 [SuppressMessage("CA1052", "CA1052", Justification = "Handles a specific test scenario of a non-static class with a static property.")]
 public class HasStaticSetter
 {
-    public static string Val { get; set; }
+    public static string Val
+    {
+        get; set;
+    }
 }

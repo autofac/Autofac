@@ -29,15 +29,24 @@ public sealed class OperationTraceCompletedArgs<TContent>
     /// <summary>
     /// Gets the operation for which a trace is available.
     /// </summary>
-    public IResolveOperation Operation { get; }
+    public IResolveOperation Operation
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a value indicating whether the operation this trace represents succeeded (if true), or failed with an exception (if false).
     /// </summary>
-    public bool OperationSucceeded { get; }
+    public bool OperationSucceeded
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the content of the trace.
     /// </summary>
-    public TContent TraceContent { get; }
+    public TContent TraceContent
+    {
+        get;
+    }
 }

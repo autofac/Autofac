@@ -25,10 +25,16 @@ public class SingleRegistrationStyle
     /// By default, new registrations override existing registrations as defaults.
     /// If set to true, new registrations will not change existing defaults.
     /// </summary>
-    public bool PreserveDefaults { get; set; }
+    public bool PreserveDefaults
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Gets or sets the component upon which this registration is based.
     /// </summary>
-    public IComponentRegistration? Target { get; set; }
+    public IComponentRegistration? Target
+    {
+        get; set;
+    }
 }

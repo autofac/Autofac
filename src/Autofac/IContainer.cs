@@ -34,5 +34,8 @@ public interface IContainer : ILifetimeScope
     /// Gets the <see cref="DiagnosticListener"/> to which
     /// trace events should be written.
     /// </summary>
-    DiagnosticListener DiagnosticSource { get; }
+    DiagnosticListener DiagnosticSource
+    {
+        get;
+    }
 }

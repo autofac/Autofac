@@ -21,7 +21,7 @@ public class DelegateRegistrationBuilderTests
         cb.Register(c => "Hello").As<object>();
         var container = cb.Build();
         Assert.True(container.ComponentRegistry.TryGetRegistration(
-            new TypedService(typeof(object)), out IComponentRegistration cr));
+            new TypedService(typeof(object)), out var cr));
         Assert.Equal(typeof(string), cr.Activator.LimitType);
     }
 }

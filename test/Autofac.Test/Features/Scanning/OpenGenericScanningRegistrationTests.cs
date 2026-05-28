@@ -14,7 +14,7 @@ namespace Autofac.Test.Features.Scanning;
 
 public class OpenGenericScanningRegistrationTests
 {
-    private static readonly Assembly ScenarioAssembly = typeof(AComponent).GetTypeInfo().Assembly;
+    private static readonly Assembly _scenarioAssembly = typeof(AComponent).GetTypeInfo().Assembly;
 
     [Fact]
     public void WhenAssemblyIsScannedOpenGenericTypesCanBeResolved()
@@ -88,7 +88,7 @@ public class OpenGenericScanningRegistrationTests
     public void WhenExceptionsProvideConfigurationComponentConfiguredAppropriately()
     {
         var cb = new ContainerBuilder();
-        cb.RegisterAssemblyOpenGenericTypes(ScenarioAssembly)
+        cb.RegisterAssemblyOpenGenericTypes(_scenarioAssembly)
             .Except(typeof(RedoOpenGenericCommand<>), ac => ac.SingleInstance());
         var c = cb.Build();
 
@@ -270,9 +270,9 @@ public class OpenGenericScanningRegistrationTests
 
         var c = cb.Build();
 
-        c.ComponentRegistry.TryGetRegistration(new TypedService(typeof(OpenGenericScannedComponentWithName<string>)), out IComponentRegistration r);
+        c.ComponentRegistry.TryGetRegistration(new TypedService(typeof(OpenGenericScannedComponentWithName<string>)), out var r);
 
-        r.Metadata.TryGetValue("Name", out object name);
+        r.Metadata.TryGetValue("Name", out var name);
 
         Assert.Equal("My Name", name);
     }

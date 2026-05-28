@@ -15,7 +15,13 @@ public class E1 : DisposeTracker
         C = c;
     }
 
-    public B1 B { get; private set; }
+    public B1 B
+    {
+        get; private set;
+    }
 
-    public IC1 C { get; private set; }
+    public IC1 C
+    {
+        get; private set;
+    }
 }

@@ -10,23 +10,29 @@ namespace Autofac.Core.Resolving.Pipeline;
 /// </summary>
 public static class ServicePipelines
 {
+    private static readonly IReadOnlyList<IResolveMiddleware> _defaultMiddleware =
+    [
+        CircularDependencyDetectorMiddleware.Default,
+        ScopeSelectionMiddleware.Instance,
+        SharingMiddleware.Instance,
+        RegistrationPipelineInvokeMiddleware.Instance,
+    ];
+
     /// <summary>
     /// Gets the set of default middleware added to each service pipeline.
     /// </summary>
-    public static IReadOnlyList<IResolveMiddleware> DefaultMiddleware { get; } = new IResolveMiddleware[]
+    public static IReadOnlyList<IResolveMiddleware> DefaultMiddleware
     {
-            CircularDependencyDetectorMiddleware.Default,
-            ScopeSelectionMiddleware.Instance,
-            SharingMiddleware.Instance,
-            RegistrationPipelineInvokeMiddleware.Instance,
-    };
+        get
+        {
+            return _defaultMiddleware;
+        }
+    }
 
     /// <summary>
     /// Gets a default pre-built service pipeline that contains only the <see cref="DefaultMiddleware"/>.
     /// </summary>
-    public static IResolvePipeline DefaultServicePipeline { get; } = new ResolvePipelineBuilder(PipelineType.Service)
-                                                                        .UseRange(DefaultMiddleware)
-                                                                        .Build();
+    public static IResolvePipeline DefaultServicePipeline { get; } = new ResolvePipelineBuilder(PipelineType.Service).UseRange(DefaultMiddleware).Build();
 
     /// <summary>
     /// Checks whether a given resolve middleware is one of the default middleware in <see cref="DefaultMiddleware"/>.

@@ -31,7 +31,10 @@ public class ProvidedInstanceActivator : InstanceActivator, IInstanceActivator
     /// Necessary because otherwise instances that are never resolved will never be
     /// disposed.
     /// </summary>
-    public bool DisposeInstance { get; set; }
+    public bool DisposeInstance
+    {
+        get; set;
+    }
 
     /// <inheritdoc/>
     public void ConfigurePipeline(IComponentRegistryServices componentRegistryServices, IResolvePipelineBuilder pipelineBuilder)

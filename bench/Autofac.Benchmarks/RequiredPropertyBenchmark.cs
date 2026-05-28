@@ -48,15 +48,27 @@ public class RequiredPropertyBenchmark
             ServiceB = serviceB;
         }
 
-        public ServiceA ServiceA { get; }
+        public ServiceA ServiceA
+        {
+            get;
+        }
 
-        public ServiceB ServiceB { get; }
+        public ServiceB ServiceB
+        {
+            get;
+        }
     }
 
     private class RequiredPropertyComponent
     {
-        public required ServiceA ServiceA { get; set; }
+        public required ServiceA ServiceA
+        {
+            get; set;
+        }
 
-        public required ServiceA ServiceB { get; set; }
+        public required ServiceA ServiceB
+        {
+            get; set;
+        }
     }
 }

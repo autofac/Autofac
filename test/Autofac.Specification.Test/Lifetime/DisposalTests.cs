@@ -213,6 +213,9 @@ public class DisposalTests
             A = a;
         }
 
-        public A A { get; private set; }
+        public A A
+        {
+            get; private set;
+        }
     }
 }

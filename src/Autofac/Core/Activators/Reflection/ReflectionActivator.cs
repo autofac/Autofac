@@ -63,12 +63,18 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     /// <summary>
     /// Gets the constructor finder.
     /// </summary>
-    public IConstructorFinder ConstructorFinder { get; }
+    public IConstructorFinder ConstructorFinder
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the constructor selector.
     /// </summary>
-    public IConstructorSelector ConstructorSelector { get; }
+    public IConstructorSelector ConstructorSelector
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a value indicating whether the activation pipeline needs a keyed service parameter for this type.
@@ -116,7 +122,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
             _defaultFoundPropertySet = new InjectablePropertyState[actualProperties.Count];
 
-            for (int idx = 0; idx < actualProperties.Count; idx++)
+            for (var idx = 0; idx < actualProperties.Count; idx++)
             {
                 _defaultFoundPropertySet[idx] = new InjectablePropertyState(new InjectableProperty(actualProperties[idx]));
             }

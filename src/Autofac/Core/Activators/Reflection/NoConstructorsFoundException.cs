@@ -65,7 +65,10 @@ public class NoConstructorsFoundException : Exception
     /// An <see cref="IConstructorFinder"/> that was used when scanning the
     /// <see cref="OffendingType"/> to find constructors.
     /// </value>
-    public IConstructorFinder ConstructorFinder { get; private set; }
+    public IConstructorFinder ConstructorFinder
+    {
+        get; private set;
+    }
 
     /// <summary>
     /// Gets the type without found constructors.
@@ -75,7 +78,10 @@ public class NoConstructorsFoundException : Exception
     /// <see cref="ConstructorFinder"/> and was determined to have no available
     /// constructors.
     /// </value>
-    public Type OffendingType { get; private set; }
+    public Type OffendingType
+    {
+        get; private set;
+    }
 
     private static string FormatMessage(Type offendingType, IConstructorFinder constructorFinder)
     {

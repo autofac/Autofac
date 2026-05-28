@@ -10,9 +10,15 @@ public class RegistrationBuilderTests
 {
     internal class TestMetadata
     {
-        public int A { get; set; }
+        public int A
+        {
+            get; set;
+        }
 
-        public string B { get; set; }
+        public string B
+        {
+            get; set;
+        }
     }
 
     [Fact]

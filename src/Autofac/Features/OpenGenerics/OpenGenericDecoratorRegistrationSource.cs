@@ -72,7 +72,7 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
             return Enumerable.Empty<IComponentRegistration>();
         }
 
-        if (OpenGenericServiceBinder.TryBindOpenGenericTypedService(swt, _registrationData.Services, _activatorData.ImplementationType, out Type? constructedImplementationType, out Service[]? services))
+        if (OpenGenericServiceBinder.TryBindOpenGenericTypedService(swt, _registrationData.Services, _activatorData.ImplementationType, out var constructedImplementationType, out var services))
         {
             var fromService = _activatorData.FromService.ChangeType(swt.ServiceType);
 
@@ -107,7 +107,7 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
 
         var resultArray = new Parameter[configuredParameters.Count + 1];
         resultArray[0] = parameter;
-        for (int i = 0; i < configuredParameters.Count; i++)
+        for (var i = 0; i < configuredParameters.Count; i++)
         {
             resultArray[i + 1] = configuredParameters[i];
         }

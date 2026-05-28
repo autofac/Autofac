@@ -26,52 +26,82 @@ public interface IComponentRegistration : IDisposable, IAsyncDisposable
     /// Gets a unique identifier for this component (shared in all sub-contexts.)
     /// This value also appears in Services.
     /// </summary>
-    Guid Id { get; }
+    Guid Id
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the activator used to create instances.
     /// </summary>
-    IInstanceActivator Activator { get; }
+    IInstanceActivator Activator
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the lifetime associated with the component.
     /// </summary>
-    IComponentLifetime Lifetime { get; }
+    IComponentLifetime Lifetime
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a value indicating whether the component instances are shared or not.
     /// </summary>
-    InstanceSharing Sharing { get; }
+    InstanceSharing Sharing
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a value indicating whether the instances of the component should be disposed by the container.
     /// </summary>
-    InstanceOwnership Ownership { get; }
+    InstanceOwnership Ownership
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the services provided by the component.
     /// </summary>
-    IEnumerable<Service> Services { get; }
+    IEnumerable<Service> Services
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets additional data associated with the component.
     /// </summary>
-    IDictionary<string, object?> Metadata { get; }
+    IDictionary<string, object?> Metadata
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the component registration upon which this registration is based.
     /// </summary>
-    IComponentRegistration Target { get; }
+    IComponentRegistration Target
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the resolve pipeline for the component.
     /// </summary>
-    IResolvePipeline ResolvePipeline { get; }
+    IResolvePipeline ResolvePipeline
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the options for the registration.
     /// </summary>
-    RegistrationOptions Options { get; }
+    RegistrationOptions Options
+    {
+        get;
+    }
 
     /// <summary>
     /// Builds the resolve pipeline.

@@ -294,7 +294,10 @@ public class ModuleRegistrationTests
 
     internal class ObjectModule : Module
     {
-        public bool ConfigureCalled { get; private set; }
+        public bool ConfigureCalled
+        {
+            get; private set;
+        }
 
         protected override void Load(ContainerBuilder builder)
         {
@@ -310,7 +313,10 @@ public class ModuleRegistrationTests
 
     internal class StringModule : Module
     {
-        public bool ConfigureCalled { get; private set; }
+        public bool ConfigureCalled
+        {
+            get; private set;
+        }
 
         protected override void Load(ContainerBuilder builder)
         {

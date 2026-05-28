@@ -32,7 +32,7 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
     /// <summary>
     /// Termination action for the end of pipelines.
     /// </summary>
-    private static readonly Action<ResolveRequestContext> TerminateAction = context => { };
+    private static readonly Action<ResolveRequestContext> _terminateAction = context => { };
 
     private MiddlewareDeclaration? _first;
     private MiddlewareDeclaration? _last;
@@ -50,7 +50,10 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
     public IEnumerable<IResolveMiddleware> Middleware => this;
 
     /// <inheritdoc/>
-    public PipelineType Type { get; }
+    public PipelineType Type
+    {
+        get;
+    }
 
     /// <inheritdoc/>
     public IResolvePipelineBuilder Use(IResolveMiddleware stage, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
@@ -90,9 +93,9 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
 
         while (currentStage is not null)
         {
-            if (insertionMode == MiddlewareInsertionMode.StartOfPhase ?
-                    currentStage.Middleware.Phase >= nextNewStage.Phase :
-                    currentStage.Middleware.Phase > nextNewStage.Phase)
+            if (insertionMode == MiddlewareInsertionMode.StartOfPhase
+                    ? currentStage.Middleware.Phase >= nextNewStage.Phase
+                    : currentStage.Middleware.Phase > nextNewStage.Phase)
             {
                 var newDecl = new MiddlewareDeclaration(enumerator.Current);
 
@@ -204,7 +207,7 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
     {
         // When we build, we go through the set and construct a single call stack, starting from the end.
         var current = lastDecl;
-        Action<ResolveRequestContext>? currentInvoke = TerminateAction;
+        var currentInvoke = _terminateAction;
 
         Action<ResolveRequestContext> Chain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
         {

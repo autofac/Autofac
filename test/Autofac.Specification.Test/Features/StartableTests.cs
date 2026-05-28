@@ -210,7 +210,10 @@ public class StartableTests
 
     private class Startable : IStartable
     {
-        public int StartCount { get; private set; }
+        public int StartCount
+        {
+            get; private set;
+        }
 
         public void Start()
         {
@@ -255,7 +258,10 @@ public class StartableTests
             Count++;
         }
 
-        public static int Count { get; set; }
+        public static int Count
+        {
+            get; set;
+        }
     }
 
     private class StartableTakesDependency : IStartable
@@ -264,7 +270,10 @@ public class StartableTests
         {
         }
 
-        public bool WasStarted { get; private set; }
+        public bool WasStarted
+        {
+            get; private set;
+        }
 
         public void Start()
         {

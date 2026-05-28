@@ -11,8 +11,8 @@ namespace Autofac.Builder;
 /// </summary>
 public class ReflectionActivatorData
 {
-    private static readonly IConstructorFinder DefaultConstructorFinder = new DefaultConstructorFinder();
-    private static readonly IConstructorSelector DefaultConstructorSelector = new MostParametersConstructorSelector();
+    private static readonly IConstructorFinder _defaultConstructorFinder = new DefaultConstructorFinder();
+    private static readonly IConstructorSelector _defaultConstructorSelector = new MostParametersConstructorSelector();
 
     private Type _implementer = default!;
     private IConstructorFinder _constructorFinder;
@@ -26,8 +26,8 @@ public class ReflectionActivatorData
     {
         ImplementationType = implementer;
 
-        _constructorFinder = DefaultConstructorFinder;
-        _constructorSelector = DefaultConstructorSelector;
+        _constructorFinder = _defaultConstructorFinder;
+        _constructorSelector = _defaultConstructorSelector;
     }
 
     /// <summary>

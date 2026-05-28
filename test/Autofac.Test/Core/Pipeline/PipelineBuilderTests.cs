@@ -445,7 +445,10 @@ public class PipelineBuilderTests
             Operation = new ResolveOperation(new LifetimeScopeStub(), _diagnosticSource);
         }
 
-        public override IResolveOperation Operation { get; }
+        public override IResolveOperation Operation
+        {
+            get;
+        }
 
         public override ISharingLifetimeScope ActivationScope { get; protected set; } = null!;
 
@@ -455,7 +458,10 @@ public class PipelineBuilderTests
 
         public override IComponentRegistration DecoratorTarget => _resolveRequest.DecoratorTarget;
 
-        public override object Instance { get; set; }
+        public override object Instance
+        {
+            get; set;
+        }
 
         public override bool NewInstanceActivated => Instance is { } && PhaseReached == PipelinePhase.Activation;
 
@@ -469,14 +475,25 @@ public class PipelineBuilderTests
             }
         }
 
-        public override PipelinePhase PhaseReached { get; set; }
+        public override PipelinePhase PhaseReached
+        {
+            get; set;
+        }
 
-        public override DecoratorContext DecoratorContext { get; set; }
+        public override DecoratorContext DecoratorContext
+        {
+            get; set;
+        }
 
         public override event EventHandler<ResolveRequestCompletingEventArgs> RequestCompleting
         {
-            add { }
-            remove { }
+            add
+            {
+            }
+
+            remove
+            {
+            }
         }
 
         public override void ChangeScope(ISharingLifetimeScope newScope) => throw new NotImplementedException();
@@ -502,20 +519,35 @@ public class PipelineBuilderTests
 
         public event EventHandler<LifetimeScopeBeginningEventArgs> ChildLifetimeScopeBeginning
         {
-            add { }
-            remove { }
+            add
+            {
+            }
+
+            remove
+            {
+            }
         }
 
         public event EventHandler<LifetimeScopeEndingEventArgs> CurrentScopeEnding
         {
-            add { }
-            remove { }
+            add
+            {
+            }
+
+            remove
+            {
+            }
         }
 
         public event EventHandler<ResolveOperationBeginningEventArgs> ResolveOperationBeginning
         {
-            add { }
-            remove { }
+            add
+            {
+            }
+
+            remove
+            {
+            }
         }
 
         public ILifetimeScope BeginLifetimeScope()

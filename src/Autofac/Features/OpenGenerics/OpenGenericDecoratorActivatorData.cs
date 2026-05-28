@@ -36,5 +36,8 @@ public class OpenGenericDecoratorActivatorData : ReflectionActivatorData
     /// <summary>
     /// Gets the open generic service type to decorate.
     /// </summary>
-    public IServiceWithType FromService { get; }
+    public IServiceWithType FromService
+    {
+        get;
+    }
 }

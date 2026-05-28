@@ -63,7 +63,7 @@ public class AutofacCompile
         return this;
     }
 
-    private static readonly CSharpCompilationOptions DefaultCompilationOptions =
+    private static readonly CSharpCompilationOptions _defaultCompilationOptions =
         new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
                 .WithNullableContextOptions(NullableContextOptions.Enable);
 
@@ -73,7 +73,7 @@ public class AutofacCompile
 
         var syntaxTree = SyntaxFactory.ParseSyntaxTree(Render(), parseOptions);
 
-        var compilation = CSharpCompilation.Create("test.dll", new[] { syntaxTree }, _references, DefaultCompilationOptions);
+        var compilation = CSharpCompilation.Create("test.dll", new[] { syntaxTree }, _references, _defaultCompilationOptions);
 
         return compilation.GetDiagnostics();
     }

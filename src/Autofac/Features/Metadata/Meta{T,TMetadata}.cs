@@ -24,10 +24,16 @@ public class Meta<T, TMetadata>
     /// <summary>
     /// Gets the value described by <see cref="Metadata"/>.
     /// </summary>
-    public T Value { get; }
+    public T Value
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets metadata describing the value.
     /// </summary>
-    public TMetadata Metadata { get; }
+    public TMetadata Metadata
+    {
+        get;
+    }
 }

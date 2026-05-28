@@ -26,7 +26,7 @@ public class DelegateRegisterGenerator : IIncrementalGenerator
     {
         // Set up an incremental generator that regenerates when the 'RegistrationExtensions' class changes.
         // Capture the INamedTypeSymbol when it does.
-        IncrementalValuesProvider<INamedTypeSymbol> classDeclarations = context.SyntaxProvider
+        var classDeclarations = context.SyntaxProvider
             .CreateSyntaxProvider(
                 predicate: static (s, _) => s is ClassDeclarationSyntax classSyn && classSyn.Modifiers.Any(static m => m.IsKind(SyntaxKind.PartialKeyword)),
                 transform: static (context, cancelToken) =>
@@ -47,7 +47,7 @@ public class DelegateRegisterGenerator : IIncrementalGenerator
                 .Where(static m => m is not null)!;
 
         // Just get our first one (will only be one instance anyway, we just need to convert to a single value provider).
-        IncrementalValueProvider<INamedTypeSymbol?> firstSyntax
+        var firstSyntax
             = classDeclarations.Collect().Select((all, _) => all.FirstOrDefault());
 
         context.RegisterSourceOutput(
@@ -74,9 +74,9 @@ public class DelegateRegisterGenerator : IIncrementalGenerator
             spc,
             "RegistrationExtensions",
             "Register",
-            static (int argCount, bool hasComponentContext) => hasComponentContext ?
-                $"DelegateInvokers.DelegateInvoker{argCount}WithComponentContext" :
-                $"DelegateInvokers.DelegateInvoker{argCount}",
+            static (int argCount, bool hasComponentContext) => hasComponentContext
+                ? $"DelegateInvokers.DelegateInvoker{argCount}WithComponentContext"
+                : $"DelegateInvokers.DelegateInvoker{argCount}",
             NumberOfGenericArgs);
     }
 

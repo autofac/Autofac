@@ -116,7 +116,10 @@ public class ConstructorFinderTests
 
     private class CustomConstructorFinder : IConstructorFinder
     {
-        public bool FindConstructorsCalled { get; private set; }
+        public bool FindConstructorsCalled
+        {
+            get; private set;
+        }
 
         public ConstructorInfo[] FindConstructors(Type targetType)
         {
@@ -142,7 +145,10 @@ public class ConstructorFinderTests
             CalledCtor = 3;
         }
 
-        public int CalledCtor { get; private set; }
+        public int CalledCtor
+        {
+            get; private set;
+        }
     }
 
     private class PrivateConstructor
@@ -152,6 +158,9 @@ public class ConstructorFinderTests
             A1 = a1;
         }
 
-        public A1 A1 { get; set; }
+        public A1 A1
+        {
+            get; set;
+        }
     }
 }

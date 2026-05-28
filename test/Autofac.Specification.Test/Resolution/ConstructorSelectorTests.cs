@@ -100,6 +100,9 @@ public class ConstructorSelectorTests
             CalledCtor = 3;
         }
 
-        public int CalledCtor { get; private set; }
+        public int CalledCtor
+        {
+            get; private set;
+        }
     }
 }

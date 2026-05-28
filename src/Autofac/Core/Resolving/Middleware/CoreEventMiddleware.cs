@@ -26,12 +26,18 @@ public class CoreEventMiddleware : IResolveMiddleware
     }
 
     /// <inheritdoc/>
-    public PipelinePhase Phase { get; }
+    public PipelinePhase Phase
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the event type represented by this middleware.
     /// </summary>
-    public ResolveEventType EventType { get; }
+    public ResolveEventType EventType
+    {
+        get;
+    }
 
     /// <inheritdoc/>
     public override string ToString() => EventType.ToString();

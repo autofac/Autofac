@@ -23,7 +23,10 @@ internal sealed class KeyedServiceKeyParameter : Parameter
     /// <summary>
     /// Gets the keyed service key value.
     /// </summary>
-    public object ServiceKey { get; }
+    public object ServiceKey
+    {
+        get;
+    }
 
     /// <inheritdoc/>
     public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, [NotNullWhen(returnValue: true)] out Func<object?>? valueProvider)

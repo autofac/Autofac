@@ -6,9 +6,9 @@ namespace Autofac.BenchmarkProfiling;
 /// <summary>
 /// Simple command-line tool to invoke a benchmark manually in a way that helps with profiling each of the benchmarks.
 /// </summary>
-class Program
+internal class Program
 {
-    static void Main(string[] args)
+    private static void Main(string[] args)
     {
         // Pick a benchmark.
         var availableBenchmarks = Benchmarks.BenchmarkSet.All;
@@ -84,7 +84,7 @@ class Program
 
         // Workload method is generated differently when BenchmarkDotNet actually runs; we'll need to wrap it in the set of parameters.
         // It's way slower than they way they do it, but it should still give us good profiler results.
-        void workloadAction(int repeat)
+        void WorkloadAction(int repeat)
         {
             while (repeat > 0)
             {
@@ -96,13 +96,13 @@ class Program
         setupAction.InvokeSingle();
 
         // Warmup.
-        workloadAction(100);
+        WorkloadAction(100);
 
         // Now start a new thread.
         var runThread = new Thread(new ThreadStart(() =>
         {
             // Do a lot.
-            workloadAction(10000);
+            WorkloadAction(10000);
         }))
         {
             Name = "Workload Thread"
@@ -124,7 +124,7 @@ class Program
 
     private static void PrintCases(BenchmarkRunInfo benchRunInfo)
     {
-        for (int idx = 0; idx < benchRunInfo.BenchmarksCases.Length; idx++)
+        for (var idx = 0; idx < benchRunInfo.BenchmarksCases.Length; idx++)
         {
             var benchCase = benchRunInfo.BenchmarksCases[idx];
             if (benchCase.HasParameters)

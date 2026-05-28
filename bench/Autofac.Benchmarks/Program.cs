@@ -78,8 +78,8 @@ internal static class Program
     {
         valueFromAssignment = null;
 
-        static bool Matches(string candidate) =>
-            candidate.Equals("--baseline-version", StringComparison.OrdinalIgnoreCase) ||
+        static bool Matches(string candidate)
+            => candidate.Equals("--baseline-version", StringComparison.OrdinalIgnoreCase) ||
             candidate.Equals("--baselineVersion", StringComparison.OrdinalIgnoreCase);
 
         var equalsIndex = arg.AsSpan().IndexOf('=');

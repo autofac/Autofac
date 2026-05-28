@@ -75,72 +75,114 @@ internal static class AutofacMetrics
     /// <summary>
     /// Gets a value indicating whether diagnostics metrics are enabled.
     /// </summary>
-    public static bool MetricsEnabled { get; }
+    public static bool MetricsEnabled
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the underlying diagnostics meter.
     /// </summary>
-    public static Meter? DiagnosticsMeter { get; }
+    public static Meter? DiagnosticsMeter
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the histogram tracking lock contention duration.
     /// </summary>
-    public static Histogram<double>? LockContentionDuration { get; }
+    public static Histogram<double>? LockContentionDuration
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the counter tracking the number of lock contention events.
     /// </summary>
-    public static Counter<long>? LockContentionCount { get; }
+    public static Counter<long>? LockContentionCount
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the counter accumulating total lock wait time.
     /// </summary>
-    public static Counter<double>? LockContentionTotalTime { get; }
+    public static Counter<double>? LockContentionTotalTime
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the histogram tracking implicit collection build durations.
     /// </summary>
-    public static Histogram<double>? CollectionBuildDuration { get; }
+    public static Histogram<double>? CollectionBuildDuration
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the counter measuring how many collections were materialized.
     /// </summary>
-    public static Counter<long>? CollectionBuildCount { get; }
+    public static Counter<long>? CollectionBuildCount
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the counter measuring how many items were added across all collections.
     /// </summary>
-    public static Counter<long>? CollectionItemCount { get; }
+    public static Counter<long>? CollectionItemCount
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the histogram tracking property injection durations.
     /// </summary>
-    public static Histogram<double>? PropertyInjectionDuration { get; }
+    public static Histogram<double>? PropertyInjectionDuration
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the counter measuring how many instances had property injection.
     /// </summary>
-    public static Counter<long>? PropertyInjectionCount { get; }
+    public static Counter<long>? PropertyInjectionCount
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the counter tracking the number of property assignments performed.
     /// </summary>
-    public static Counter<long>? PropertyInjectionAssignments { get; }
+    public static Counter<long>? PropertyInjectionAssignments
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the histogram tracking reflection activator durations.
     /// </summary>
-    public static Histogram<double>? ReflectionActivationDuration { get; }
+    public static Histogram<double>? ReflectionActivationDuration
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the histogram tracking middleware execution duration.
     /// </summary>
-    public static Histogram<double>? MiddlewareExecutionDuration { get; }
+    public static Histogram<double>? MiddlewareExecutionDuration
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the counter tracking how many middleware executions occurred.
     /// </summary>
-    public static Counter<long>? MiddlewareExecutionCount { get; }
+    public static Counter<long>? MiddlewareExecutionCount
+    {
+        get;
+    }
 
     /// <summary>
     /// Records a collection build event.

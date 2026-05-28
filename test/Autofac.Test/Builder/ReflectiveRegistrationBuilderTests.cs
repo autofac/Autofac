@@ -16,7 +16,7 @@ public class ReflectiveRegistrationBuilderTests
         var cb = new ContainerBuilder();
         cb.RegisterType(typeof(A1)).As<object>();
         var container = cb.Build();
-        Assert.True(container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(object)), out IComponentRegistration cr));
+        Assert.True(container.ComponentRegistry.TryGetRegistration(new TypedService(typeof(object)), out var cr));
         Assert.Equal(typeof(A1), cr.Activator.LimitType);
     }
 
@@ -101,6 +101,9 @@ public class ReflectiveRegistrationBuilderTests
             CalledCtor = 3;
         }
 
-        public int CalledCtor { get; private set; }
+        public int CalledCtor
+        {
+            get; private set;
+        }
     }
 }

@@ -27,6 +27,9 @@ public class ParameterTests
             Value = i + j;
         }
 
-        public int Value { get; private set; }
+        public int Value
+        {
+            get; private set;
+        }
     }
 }

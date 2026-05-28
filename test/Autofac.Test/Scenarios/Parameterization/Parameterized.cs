@@ -5,9 +5,15 @@ namespace Autofac.Test.Scenarios.Parameterization;
 
 public class Parameterized
 {
-    public string A { get; private set; }
+    public string A
+    {
+        get; private set;
+    }
 
-    public int B { get; private set; }
+    public int B
+    {
+        get; private set;
+    }
 
     public Parameterized(string a, int b)
     {

@@ -33,17 +33,26 @@ public class ActivatingEventArgs<T> : EventArgs, IActivatingEventArgs<T>
     /// <summary>
     /// Gets the service being resolved.
     /// </summary>
-    public Service Service { get; }
+    public Service Service
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the context in which the activation occurred.
     /// </summary>
-    public IComponentContext Context { get; }
+    public IComponentContext Context
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the component providing the instance.
     /// </summary>
-    public IComponentRegistration Component { get; }
+    public IComponentRegistration Component
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets or sets the instance that will be used to satisfy the request.
@@ -72,7 +81,10 @@ public class ActivatingEventArgs<T> : EventArgs, IActivatingEventArgs<T>
     /// <summary>
     /// Gets the parameters supplied to the activator.
     /// </summary>
-    public IEnumerable<Parameter> Parameters { get; }
+    public IEnumerable<Parameter> Parameters
+    {
+        get;
+    }
 
     /// <summary>
     /// The instance can be replaced if needed, e.g. by an interface proxy.

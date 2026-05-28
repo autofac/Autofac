@@ -13,7 +13,10 @@ public interface IRegistrationSource
     /// Gets a value indicating whether the registrations provided by this source are 1:1 adapters on top
     /// of other components (e.g., Meta, Func, or Owned).
     /// </summary>
-    bool IsAdapterForIndividualComponents { get; }
+    bool IsAdapterForIndividualComponents
+    {
+        get;
+    }
 
     /// <summary>
     /// Retrieve registrations for an unregistered service, to be used

@@ -133,14 +133,14 @@ public class TypeExtensionsTests
     {
         // Values here to ensure constructors get used and not
         // optimized out by the compiler.
-        private static readonly Guid StaticValue;
+        private static readonly Guid _staticValue;
 
         private readonly Guid _instanceValue;
 
         [SuppressMessage("CA1810", "CA1810", Justification = "Static constructor for test purposes.")]
         static DeclaredConstructorType()
         {
-            StaticValue = Guid.NewGuid();
+            _staticValue = Guid.NewGuid();
         }
 
         public DeclaredConstructorType()
@@ -192,16 +192,34 @@ public class TypeExtensionsTests
 
     private class DeclaredPropertyType
     {
-        public string PublicInstanceProperty { get; set; }
+        public string PublicInstanceProperty
+        {
+            get; set;
+        }
 
-        protected string ProtectedInstanceProperty { get; set; }
+        protected string ProtectedInstanceProperty
+        {
+            get; set;
+        }
 
-        private string PrivateInstanceProperty { get; set; }
+        private string PrivateInstanceProperty
+        {
+            get; set;
+        }
 
-        public static string PublicStaticProperty { get; set; }
+        public static string PublicStaticProperty
+        {
+            get; set;
+        }
 
-        protected static string ProtectedStaticProperty { get; set; }
+        protected static string ProtectedStaticProperty
+        {
+            get; set;
+        }
 
-        private static string PrivateStaticProperty { get; set; }
+        private static string PrivateStaticProperty
+        {
+            get; set;
+        }
     }
 }

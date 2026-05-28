@@ -45,12 +45,18 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     /// <summary>
     /// Gets the active resolve request.
     /// </summary>
-    public ResolveRequestContext? ActiveRequestContext { get; private set; }
+    public ResolveRequestContext? ActiveRequestContext
+    {
+        get; private set;
+    }
 
     /// <summary>
     /// Gets the current lifetime scope of the operation; based on the most recently executed request.
     /// </summary>
-    public ISharingLifetimeScope CurrentScope { get; private set; }
+    public ISharingLifetimeScope CurrentScope
+    {
+        get; private set;
+    }
 
     /// <inheritdoc/>
     public IEnumerable<ResolveRequestContext> InProgressRequests => RequestStack;
@@ -58,12 +64,18 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     /// <summary>
     /// Gets the <see cref="DiagnosticListener" /> for the operation.
     /// </summary>
-    public DiagnosticListener DiagnosticSource { get; }
+    public DiagnosticListener DiagnosticSource
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets the current request depth.
     /// </summary>
-    public int RequestDepth { get; private set; }
+    public int RequestDepth
+    {
+        get; private set;
+    }
 
     /// <inheritdoc/>
     public SegmentedStack<ResolveRequestContext> RequestStack { get; } = new SegmentedStack<ResolveRequestContext>();
@@ -72,7 +84,10 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
     /// Gets the <see cref="ResolveRequest" /> that initiated the operation. Other nested requests may have been
     /// issued as a result of this one.
     /// </summary>
-    public ResolveRequest? InitiatingRequest { get; private set; }
+    public ResolveRequest? InitiatingRequest
+    {
+        get; private set;
+    }
 
     /// <summary>
     /// Execute the complete resolve operation.
@@ -122,7 +137,7 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
         RequestDepth++;
 
         // Track the last active request and scope in the call stack.
-        ResolveRequestContext? lastActiveRequest = ActiveRequestContext;
+        var lastActiveRequest = ActiveRequestContext;
         var lastScope = CurrentScope;
 
         ActiveRequestContext = requestContext;

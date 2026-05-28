@@ -19,7 +19,7 @@ public class AssemblyScanningTests
                 .AssignableTo(typeof(IMyService)));
 
         Assert.Single(container.ComponentRegistry.Registrations);
-        Assert.True(container.TryResolve(typeof(MyComponent), out object obj));
+        Assert.True(container.TryResolve(typeof(MyComponent), out var obj));
         Assert.False(container.TryResolve(typeof(MyComponent2), out obj));
     }
 

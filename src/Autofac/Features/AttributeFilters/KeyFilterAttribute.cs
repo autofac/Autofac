@@ -91,7 +91,10 @@ public sealed class KeyFilterAttribute : ParameterFilterAttribute
     /// The <see cref="object"/> corresponding to a registered service key on a component.
     /// Resolved components must be keyed with this value to satisfy the filter.
     /// </value>
-    public object Key { get; }
+    public object Key
+    {
+        get;
+    }
 
     /// <summary>
     /// Resolves a constructor parameter based on keyed service requirements.

@@ -15,7 +15,13 @@ public class CD1 : DisposeTracker, IC1, ID1
         B = b;
     }
 
-    public A1 A { get; private set; }
+    public A1 A
+    {
+        get; private set;
+    }
 
-    public B1 B { get; private set; }
+    public B1 B
+    {
+        get; private set;
+    }
 }

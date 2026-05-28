@@ -47,7 +47,10 @@ internal sealed class MaybeNullWhenAttribute : Attribute
     /// <summary>
     /// Gets a value indicating whether the return value is required to be true or false.
     /// </summary>
-    public bool ReturnValue { get; }
+    public bool ReturnValue
+    {
+        get;
+    }
 }
 
 /// <summary>Specifies that when a method returns <see cref="ReturnValue"/>, the parameter will not be null even if the corresponding type allows it.</summary>
@@ -64,7 +67,10 @@ internal sealed class NotNullWhenAttribute : Attribute
     /// <summary>
     /// Gets a value indicating whether the return value is required to be true or false.
     /// </summary>
-    public bool ReturnValue { get; }
+    public bool ReturnValue
+    {
+        get;
+    }
 }
 
 /// <summary>Specifies that the output will be non-null if the named parameter is non-null.</summary>
@@ -81,7 +87,10 @@ internal sealed class NotNullIfNotNullAttribute : Attribute
     /// <summary>
     /// Gets the name of the parameter.
     /// </summary>
-    public string ParameterName { get; }
+    public string ParameterName
+    {
+        get;
+    }
 }
 
 /// <summary>Applied to a method that will never return under any circumstance.</summary>
@@ -105,6 +114,9 @@ internal sealed class DoesNotReturnIfAttribute : Attribute
     /// <summary>
     /// Gets a value indicating whether the parameter value is expected to be true or false.
     /// </summary>
-    public bool ParameterValue { get; }
+    public bool ParameterValue
+    {
+        get;
+    }
 }
 #endif

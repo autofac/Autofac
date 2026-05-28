@@ -16,11 +16,20 @@ public class DelegatePropertySelectorTests
     private class HasProperties
     {
         [InjectProperty]
-        public int PublicProperty { get; set; }
+        public int PublicProperty
+        {
+            get; set;
+        }
 
-        public int PropNoSetter { get; }
+        public int PropNoSetter
+        {
+            get;
+        }
 
-        private int PrivateProperty { get; set; }
+        private int PrivateProperty
+        {
+            get; set;
+        }
     }
 
     [Fact]

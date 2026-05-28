@@ -51,7 +51,10 @@ public class BoundConstructor
     /// <summary>
     /// Gets the binder that created this binding.
     /// </summary>
-    public ConstructorBinder Binder { get; }
+    public ConstructorBinder Binder
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a value indicating whether the constructor has the SetsRequiredMembers attribute,
@@ -73,7 +76,10 @@ public class BoundConstructor
     /// <summary>
     /// Gets a value indicating whether the binding is valid.
     /// </summary>
-    public bool CanInstantiate { get; }
+    public bool CanInstantiate
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets a description of the constructor parameter binding.
@@ -99,8 +105,8 @@ public class BoundConstructor
     /// <param name="binder">The binder that generated this binding.</param>
     /// <param name="firstNonBindableParameter">The first parameter that prevented binding.</param>
     /// <returns>A <see cref="BoundConstructor"/> with details about the unsuccessful bind.</returns>
-    public static BoundConstructor ForBindFailure(ConstructorBinder binder, ParameterInfo firstNonBindableParameter) =>
-        new(binder, firstNonBindableParameter);
+    public static BoundConstructor ForBindFailure(ConstructorBinder binder, ParameterInfo firstNonBindableParameter)
+        => new(binder, firstNonBindableParameter);
 
     /// <summary>
     /// Invoke the constructor with the parameter bindings.

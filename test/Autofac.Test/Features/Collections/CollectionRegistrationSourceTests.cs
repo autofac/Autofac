@@ -115,17 +115,17 @@ public class CollectionRegistrationSourceTests
     public void ResolvesAllAvailableElementsWhenCollectionIsRequested()
     {
         var cb = new ContainerBuilder();
-        const string s1 = "Hello";
-        const string s2 = "World";
-        cb.RegisterInstance(s1);
-        cb.RegisterInstance(s2);
+        const string S1 = "Hello";
+        const string S2 = "World";
+        cb.RegisterInstance(S1);
+        cb.RegisterInstance(S2);
         var c = cb.Build();
 
         var strings = c.Resolve<ICollection<string>>();
 
         Assert.Equal(2, strings.Count);
-        Assert.Contains(s1, strings);
-        Assert.Contains(s2, strings);
+        Assert.Contains(S1, strings);
+        Assert.Contains(S2, strings);
         Assert.IsType<List<string>>(strings);
     }
 
@@ -149,17 +149,17 @@ public class CollectionRegistrationSourceTests
     public void ResolvesAllAvailableElementsWhenListIsRequested()
     {
         var cb = new ContainerBuilder();
-        const string s1 = "Hello";
-        const string s2 = "World";
-        cb.RegisterInstance(s1);
-        cb.RegisterInstance(s2);
+        const string S1 = "Hello";
+        const string S2 = "World";
+        cb.RegisterInstance(S1);
+        cb.RegisterInstance(S2);
         var c = cb.Build();
 
         var strings = c.Resolve<IList<string>>();
 
         Assert.Equal(2, strings.Count);
-        Assert.Contains(s1, strings);
-        Assert.Contains(s2, strings);
+        Assert.Contains(S1, strings);
+        Assert.Contains(S2, strings);
         Assert.IsType<List<string>>(strings);
     }
 
@@ -167,34 +167,34 @@ public class CollectionRegistrationSourceTests
     public void ResolvesAllAvailableElementsWhenReadOnlyCollectionIsRequested()
     {
         var cb = new ContainerBuilder();
-        const string s1 = "Hello";
-        const string s2 = "World";
-        cb.RegisterInstance(s1);
-        cb.RegisterInstance(s2);
+        const string S1 = "Hello";
+        const string S2 = "World";
+        cb.RegisterInstance(S1);
+        cb.RegisterInstance(S2);
         var c = cb.Build();
 
         var strings = c.Resolve<IReadOnlyCollection<string>>();
 
         Assert.Equal(2, strings.Count);
-        Assert.Contains(s1, strings);
-        Assert.Contains(s2, strings);
+        Assert.Contains(S1, strings);
+        Assert.Contains(S2, strings);
     }
 
     [Fact]
     public void ResolvesAllAvailableElementsWhenReadOnlyListIsRequested()
     {
         var cb = new ContainerBuilder();
-        const string s1 = "Hello";
-        const string s2 = "World";
-        cb.RegisterInstance(s1);
-        cb.RegisterInstance(s2);
+        const string S1 = "Hello";
+        const string S2 = "World";
+        cb.RegisterInstance(S1);
+        cb.RegisterInstance(S2);
         var c = cb.Build();
 
         var strings = c.Resolve<IReadOnlyList<string>>();
 
         Assert.Equal(2, strings.Count);
-        Assert.Contains(s1, strings);
-        Assert.Contains(s2, strings);
+        Assert.Contains(S1, strings);
+        Assert.Contains(S2, strings);
     }
 
     [Fact]
@@ -217,10 +217,10 @@ public class CollectionRegistrationSourceTests
     public void ResolvingClosedCollectionTypeThrowsException()
     {
         var cb = new ContainerBuilder();
-        const string s1 = "Hello";
-        const string s2 = "World";
-        cb.RegisterInstance(s1);
-        cb.RegisterInstance(s2);
+        const string S1 = "Hello";
+        const string S2 = "World";
+        cb.RegisterInstance(S1);
+        cb.RegisterInstance(S2);
         var c = cb.Build();
 
         Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<Collection<string>>());
@@ -230,10 +230,10 @@ public class CollectionRegistrationSourceTests
     public void ResolvingClosedListTypeThrowsException()
     {
         var cb = new ContainerBuilder();
-        const string s1 = "Hello";
-        const string s2 = "World";
-        cb.RegisterInstance(s1);
-        cb.RegisterInstance(s2);
+        const string S1 = "Hello";
+        const string S2 = "World";
+        cb.RegisterInstance(S1);
+        cb.RegisterInstance(S2);
         var c = cb.Build();
 
         Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<List<string>>());
@@ -243,10 +243,10 @@ public class CollectionRegistrationSourceTests
     public void ResolvingClosedReadOnlyCollectionTypeThrowsException()
     {
         var cb = new ContainerBuilder();
-        const string s1 = "Hello";
-        const string s2 = "World";
-        cb.RegisterInstance(s1);
-        cb.RegisterInstance(s2);
+        const string S1 = "Hello";
+        const string S2 = "World";
+        cb.RegisterInstance(S1);
+        cb.RegisterInstance(S2);
         var c = cb.Build();
 
         Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<ReadOnlyCollection<string>>());

@@ -17,7 +17,7 @@ internal static class RegistrationOrderExtensions
     /// <returns>The original registration order value.</returns>
     internal static long GetRegistrationOrder(this IComponentRegistration registration)
     {
-        return registration.Metadata.TryGetValue(MetadataKeys.RegistrationOrderMetadataKey, out object? value) ? (long)value! : long.MaxValue;
+        return registration.Metadata.TryGetValue(MetadataKeys.RegistrationOrderMetadataKey, out var value) ? (long)value! : long.MaxValue;
     }
 
     /// <summary>

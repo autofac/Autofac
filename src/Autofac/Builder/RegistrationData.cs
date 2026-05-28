@@ -82,12 +82,18 @@ public class RegistrationData
     /// <summary>
     /// Gets the extended properties assigned to the component.
     /// </summary>
-    public IDictionary<string, object?> Metadata { get; }
+    public IDictionary<string, object?> Metadata
+    {
+        get;
+    }
 
     /// <summary>
     /// Gets or sets the options for the registration.
     /// </summary>
-    public RegistrationOptions Options { get; set; }
+    public RegistrationOptions Options
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Gets or sets the callback used to register this component.
@@ -96,7 +102,10 @@ public class RegistrationData
     /// A <see cref="Builder.DeferredCallback"/> that contains the delegate
     /// used to register this component with an <see cref="IComponentRegistry"/>.
     /// </value>
-    public DeferredCallback? DeferredCallback { get; set; }
+    public DeferredCallback? DeferredCallback
+    {
+        get; set;
+    }
 
     /// <summary>
     /// Add multiple services for the registration, overriding the default.

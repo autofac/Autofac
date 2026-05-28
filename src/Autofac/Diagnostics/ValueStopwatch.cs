@@ -15,7 +15,7 @@ namespace Autofac.Diagnostics;
 internal struct ValueStopwatch
 {
 #if !NET7_0_OR_GREATER
-    private static readonly double TimestampToTicks = TimeSpan.TicksPerSecond / (double)Stopwatch.Frequency;
+    private static readonly double _timestampToTicks = TimeSpan.TicksPerSecond / (double)Stopwatch.Frequency;
 #endif
 
     private readonly long _startTimestamp;
@@ -46,7 +46,7 @@ internal struct ValueStopwatch
     {
 #if !NET7_0_OR_GREATER
         var timestampDelta = endingTimestamp - startingTimestamp;
-        var ticks = (long)(TimestampToTicks * timestampDelta);
+        var ticks = (long)(_timestampToTicks * timestampDelta);
         return new TimeSpan(ticks);
 #else
         return Stopwatch.GetElapsedTime(startingTimestamp, endingTimestamp);

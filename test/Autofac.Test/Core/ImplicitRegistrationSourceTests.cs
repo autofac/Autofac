@@ -119,7 +119,10 @@ public class ImplicitRegistrationSourceTests
             Instance = instance;
         }
 
-        public T Instance { get; }
+        public T Instance
+        {
+            get;
+        }
     }
 
     private class MappedImplicitRegistrationSource : ImplicitRegistrationSource

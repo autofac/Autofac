@@ -109,7 +109,10 @@ public class OwnedInstanceRegistrationSourceTests
 
         public delegate Owned<ClassWithFactory> OwnedFactory(string name);
 
-        public string Name { get; set; }
+        public string Name
+        {
+            get; set;
+        }
     }
 
     private class ExposesScopeTag

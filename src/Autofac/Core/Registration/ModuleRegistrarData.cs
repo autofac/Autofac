@@ -22,5 +22,8 @@ public class ModuleRegistrarData
     /// <summary>
     /// Gets the callback invoked when the collection of modules attached to this registrar are registered.
     /// </summary>
-    public DeferredCallback Callback { get; }
+    public DeferredCallback Callback
+    {
+        get;
+    }
 }

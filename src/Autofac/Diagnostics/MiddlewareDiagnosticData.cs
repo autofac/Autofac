@@ -24,10 +24,16 @@ public class MiddlewareDiagnosticData
     /// <summary>
     /// Gets the context for the resolve request that is running.
     /// </summary>
-    public ResolveRequestContext RequestContext { get; private set; }
+    public ResolveRequestContext RequestContext
+    {
+        get; private set;
+    }
 
     /// <summary>
     /// Gets the middleware that is running.
     /// </summary>
-    public IResolveMiddleware Middleware { get; private set; }
+    public IResolveMiddleware Middleware
+    {
+        get; private set;
+    }
 }

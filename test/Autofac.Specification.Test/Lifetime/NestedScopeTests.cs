@@ -15,11 +15,11 @@ public class NestedScopeTests
     public void BeginLifetimeScopeCannotBeCalledWithDuplicateTag()
     {
         var rootScope = new ContainerBuilder().Build();
-        const string duplicateTagName = "ABC";
-        var taggedScope = rootScope.BeginLifetimeScope(duplicateTagName);
+        const string DuplicateTagName = "ABC";
+        var taggedScope = rootScope.BeginLifetimeScope(DuplicateTagName);
         var differentTaggedScope = taggedScope.BeginLifetimeScope("DEF");
 
-        Assert.Throws<InvalidOperationException>(() => differentTaggedScope.BeginLifetimeScope(duplicateTagName));
-        Assert.Throws<InvalidOperationException>(() => differentTaggedScope.BeginLifetimeScope(duplicateTagName, builder => builder.RegisterType<object>()));
+        Assert.Throws<InvalidOperationException>(() => differentTaggedScope.BeginLifetimeScope(DuplicateTagName));
+        Assert.Throws<InvalidOperationException>(() => differentTaggedScope.BeginLifetimeScope(DuplicateTagName, builder => builder.RegisterType<object>()));
     }
 }

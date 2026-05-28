@@ -13,25 +13,25 @@ public class MatchingScopeLifetimeTests
     public void WhenNoMatchingScopeIsPresent_TheExceptionMessageIncludesTheTag()
     {
         using var container = Factory.CreateEmptyContainer();
-        const string tag = "abcdefg";
-        var msl = new MatchingScopeLifetime(tag);
+        const string Tag = "abcdefg";
+        var msl = new MatchingScopeLifetime(Tag);
         var rootScope = (ISharingLifetimeScope)container.Resolve<ILifetimeScope>();
 
         var ex = Assert.Throws<DependencyResolutionException>(() => msl.FindScope(rootScope));
-        Assert.Contains(tag, ex.Message, StringComparison.Ordinal);
+        Assert.Contains(Tag, ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]
     public void WhenNoMatchingScopeIsPresent_TheExceptionMessageIncludesTheTags()
     {
         using var container = Factory.CreateEmptyContainer();
-        const string tag1 = "abc";
-        const string tag2 = "def";
-        var msl = new MatchingScopeLifetime(tag1, tag2);
+        const string Tag1 = "abc";
+        const string Tag2 = "def";
+        var msl = new MatchingScopeLifetime(Tag1, Tag2);
         var rootScope = (ISharingLifetimeScope)container.Resolve<ILifetimeScope>();
 
         var ex = Assert.Throws<DependencyResolutionException>(() => msl.FindScope(rootScope));
-        Assert.Contains(string.Format(CultureInfo.InvariantCulture, "{0}, {1}", tag1, tag2), ex.Message, StringComparison.Ordinal);
+        Assert.Contains(string.Format(CultureInfo.InvariantCulture, "{0}, {1}", Tag1, Tag2), ex.Message, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -46,10 +46,10 @@ public class MatchingScopeLifetimeTests
     [Fact]
     public void MatchesAgainstSingleTaggedScope()
     {
-        const string tag = "Tag";
-        var msl = new MatchingScopeLifetime(tag);
+        const string Tag = "Tag";
+        var msl = new MatchingScopeLifetime(Tag);
         using var container = Factory.CreateEmptyContainer();
-        var lifetimeScope = (ISharingLifetimeScope)container.BeginLifetimeScope(tag);
+        var lifetimeScope = (ISharingLifetimeScope)container.BeginLifetimeScope(Tag);
 
         Assert.Equal(lifetimeScope, msl.FindScope(lifetimeScope));
     }
@@ -57,16 +57,16 @@ public class MatchingScopeLifetimeTests
     [Fact]
     public void MatchesAgainstMultipleTaggedScopes()
     {
-        const string tag1 = "Tag1";
-        const string tag2 = "Tag2";
+        const string Tag1 = "Tag1";
+        const string Tag2 = "Tag2";
 
-        var msl = new MatchingScopeLifetime(tag1, tag2);
+        var msl = new MatchingScopeLifetime(Tag1, Tag2);
         using var container = Factory.CreateEmptyContainer();
 
-        var tag1Scope = (ISharingLifetimeScope)container.BeginLifetimeScope(tag1);
+        var tag1Scope = (ISharingLifetimeScope)container.BeginLifetimeScope(Tag1);
         Assert.Equal(tag1Scope, msl.FindScope(tag1Scope));
 
-        var tag2Scope = (ISharingLifetimeScope)container.BeginLifetimeScope(tag2);
+        var tag2Scope = (ISharingLifetimeScope)container.BeginLifetimeScope(Tag2);
         Assert.Equal(tag2Scope, msl.FindScope(tag2Scope));
     }
 }

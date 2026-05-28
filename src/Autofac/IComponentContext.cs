@@ -16,7 +16,10 @@ public interface IComponentContext
     /// <summary>
     /// Gets the associated services with the components that provide them.
     /// </summary>
-    IComponentRegistry ComponentRegistry { get; }
+    IComponentRegistry ComponentRegistry
+    {
+        get;
+    }
 
     /// <summary>
     /// Resolve an instance of the provided registration within the context.

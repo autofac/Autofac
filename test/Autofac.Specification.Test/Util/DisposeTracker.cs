@@ -7,7 +7,10 @@ public class DisposeTracker : IDisposable
 {
     public event EventHandler<EventArgs> Disposing;
 
-    public bool IsDisposed { get; set; }
+    public bool IsDisposed
+    {
+        get; set;
+    }
 
     protected virtual void Dispose(bool disposing)
     {

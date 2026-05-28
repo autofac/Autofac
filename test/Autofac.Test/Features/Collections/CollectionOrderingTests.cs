@@ -37,12 +37,18 @@ public class CollectionOrderingTests
             Decorated = decorated;
         }
 
-        public IService Decorated { get; }
+        public IService Decorated
+        {
+            get;
+        }
     }
 
     private class Command
     {
-        public string CommandId { get; }
+        public string CommandId
+        {
+            get;
+        }
 
         public Command(string commandId)
         {
@@ -52,12 +58,18 @@ public class CollectionOrderingTests
 
     private interface ICommandAdaptor
     {
-        Command Command { get; }
+        Command Command
+        {
+            get;
+        }
     }
 
     private class CommandAdaptor : ICommandAdaptor
     {
-        public Command Command { get; }
+        public Command Command
+        {
+            get;
+        }
 
         public CommandAdaptor(Command command)
         {
@@ -403,12 +415,12 @@ public class CollectionOrderingTests
     [Fact]
     public void WhenResolvedWithDecorator()
     {
-        const string from = "from";
+        const string From = "from";
         var cb = new ContainerBuilder();
-        cb.RegisterType<Implementer1>().Named<IService>(from);
-        cb.RegisterType<Implementer2>().Named<IService>(from);
-        cb.RegisterType<Implementer3>().Named<IService>(from);
-        cb.RegisterDecorator<IService>(s => new Decorator(s), from);
+        cb.RegisterType<Implementer1>().Named<IService>(From);
+        cb.RegisterType<Implementer2>().Named<IService>(From);
+        cb.RegisterType<Implementer3>().Named<IService>(From);
+        cb.RegisterDecorator<IService>(s => new Decorator(s), From);
         var container = cb.Build();
 
         var services = container.Resolve<IEnumerable<IService>>().Cast<Decorator>().ToArray();

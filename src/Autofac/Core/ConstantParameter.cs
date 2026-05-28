@@ -30,7 +30,10 @@ public abstract class ConstantParameter : Parameter
     /// <summary>
     /// Gets the value of the parameter.
     /// </summary>
-    public object? Value { get; }
+    public object? Value
+    {
+        get;
+    }
 
     /// <summary>
     /// Returns true if the parameter is able to provide a value to a particular site.

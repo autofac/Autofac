@@ -34,7 +34,10 @@ public class ResolvedParameterTests
 
     private class SomethingDecorator<T> : ISomething<T>
     {
-        public ISomething<T> Decorated { get; private set; }
+        public ISomething<T> Decorated
+        {
+            get; private set;
+        }
 
         public SomethingDecorator(ISomething<T> decorated)
         {
@@ -89,7 +92,7 @@ public class ResolvedParameterTests
         var container = builder.Build();
         var rp = ResolvedParameter.ForKeyed<char>(k);
         var cp = GetCharParameter();
-        Assert.True(rp.CanSupplyValue(cp, container, out Func<object> vp));
+        Assert.True(rp.CanSupplyValue(cp, container, out var vp));
     }
 
     [Fact]
@@ -97,7 +100,7 @@ public class ResolvedParameterTests
     {
         var rp = ResolvedParameter.ForKeyed<char>(new object());
         var cp = GetCharParameter();
-        var canSupply = rp.CanSupplyValue(cp, new ContainerBuilder().Build(), out Func<object> vp);
+        var canSupply = rp.CanSupplyValue(cp, new ContainerBuilder().Build(), out var vp);
         Assert.False(canSupply);
     }
 

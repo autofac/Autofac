@@ -60,7 +60,10 @@ public abstract class OperationDiagnosticTracerBase<TContent> : DiagnosticTracer
     /// An <see cref="int"/> with the number of trace IDs associated
     /// with in-progress operations being traced by this tracer.
     /// </value>
-    public abstract int OperationsInProgress { get; }
+    public abstract int OperationsInProgress
+    {
+        get;
+    }
 
     /// <inheritdoc/>
     public override void Enable(string diagnosticName)

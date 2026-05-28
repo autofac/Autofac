@@ -27,15 +27,24 @@ public class RequestFailureDiagnosticData
     /// <summary>
     /// Gets the pipeline resolve operation that this request is running within.
     /// </summary>
-    public IResolveOperation Operation { get; private set; }
+    public IResolveOperation Operation
+    {
+        get; private set;
+    }
 
     /// <summary>
     /// Gets the context for the resolve request that failed.
     /// </summary>
-    public ResolveRequestContext RequestContext { get; private set; }
+    public ResolveRequestContext RequestContext
+    {
+        get; private set;
+    }
 
     /// <summary>
     /// Gets the exception that caused the failure.
     /// </summary>
-    public Exception RequestException { get; private set; }
+    public Exception RequestException
+    {
+        get; private set;
+    }
 }
