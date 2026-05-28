@@ -230,6 +230,32 @@ public static partial class RegistrationExtensions
     }
 
     /// <summary>
+    /// Specify how a type from a scanned assembly provides metadata.
+    /// </summary>
+    /// <typeparam name="TLimit">Registration limit type.</typeparam>
+    /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
+    /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
+    /// <param name="registration">Registration to set service mapping on.</param>
+    /// <param name="metadataKey">Key of the metadata item.</param>
+    /// <param name="metadataValueMapping">A function retrieving the value of the item from the component type.</param>
+    /// <returns>Registration builder allowing the registration to be configured.</returns>
+    public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
+        WithMetadata<TLimit, TScanningActivatorData, TRegistrationStyle>(
+            this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
+            string metadataKey,
+            Func<Type, object> metadataValueMapping)
+        where TScanningActivatorData : ScanningActivatorData
+    {
+        if (registration == null)
+        {
+            throw new ArgumentNullException(nameof(registration));
+        }
+
+        return registration.WithMetadata(t =>
+            new[] { new KeyValuePair<string, object?>(metadataKey, metadataValueMapping(t)) });
+    }
+
+    /// <summary>
     /// Use the properties of an attribute (or interface implemented by an attribute) on the scanned type
     /// to provide metadata values.
     /// </summary>
@@ -264,32 +290,6 @@ public static partial class RegistrationExtensions
             var attr = attrs[0];
             return metadataProperties.Select(p => new KeyValuePair<string, object?>(p.Name, p.GetValue(attr, null)));
         });
-    }
-
-    /// <summary>
-    /// Specify how a type from a scanned assembly provides metadata.
-    /// </summary>
-    /// <typeparam name="TLimit">Registration limit type.</typeparam>
-    /// <typeparam name="TScanningActivatorData">Activator data type.</typeparam>
-    /// <typeparam name="TRegistrationStyle">Registration style.</typeparam>
-    /// <param name="registration">Registration to set service mapping on.</param>
-    /// <param name="metadataKey">Key of the metadata item.</param>
-    /// <param name="metadataValueMapping">A function retrieving the value of the item from the component type.</param>
-    /// <returns>Registration builder allowing the registration to be configured.</returns>
-    public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
-        WithMetadata<TLimit, TScanningActivatorData, TRegistrationStyle>(
-            this IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
-            string metadataKey,
-            Func<Type, object> metadataValueMapping)
-        where TScanningActivatorData : ScanningActivatorData
-    {
-        if (registration == null)
-        {
-            throw new ArgumentNullException(nameof(registration));
-        }
-
-        return registration.WithMetadata(t =>
-            new[] { new KeyValuePair<string, object?>(metadataKey, metadataValueMapping(t)) });
     }
 
     /// <summary>

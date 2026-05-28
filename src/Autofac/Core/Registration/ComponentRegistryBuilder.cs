@@ -130,22 +130,6 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
         _registeredServicesTracker.AddRegistration(registration, false);
     }
 
-    /// <inheritdoc/>
-    public void RegisterServiceMiddleware(Service service, IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
-    {
-        if (service is null)
-        {
-            throw new ArgumentNullException(nameof(service));
-        }
-
-        if (middleware is null)
-        {
-            throw new ArgumentNullException(nameof(middleware));
-        }
-
-        _registeredServicesTracker.AddServiceMiddleware(service, middleware, insertionMode);
-    }
-
     /// <summary>
     /// Register a component.
     /// </summary>
@@ -160,6 +144,22 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
         }
 
         _registeredServicesTracker.AddRegistration(registration, preserveDefaults);
+    }
+
+    /// <inheritdoc/>
+    public void RegisterServiceMiddleware(Service service, IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+    {
+        if (service is null)
+        {
+            throw new ArgumentNullException(nameof(service));
+        }
+
+        if (middleware is null)
+        {
+            throw new ArgumentNullException(nameof(middleware));
+        }
+
+        _registeredServicesTracker.AddServiceMiddleware(service, middleware, insertionMode);
     }
 
     /// <summary>
