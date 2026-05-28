@@ -48,51 +48,59 @@ public class TypeRegistrationTests
     public void AsImplementedInterfacesGeneric()
     {
         var builder = new ContainerBuilder();
-        builder.RegisterType<ABC>().AsImplementedInterfaces();
+        builder.RegisterType<Abc>().AsImplementedInterfaces();
         var context = builder.Build();
 
-        context.Resolve<IA>();
-        context.Resolve<IB>();
-        context.Resolve<IC>();
+        var resultA = context.Resolve<IA>();
+        var resultB = context.Resolve<IB>();
+        var resultC = context.Resolve<IC>();
+        Assert.NotNull(resultA);
+        Assert.NotNull(resultB);
+        Assert.NotNull(resultC);
     }
 
     [Fact]
     public void AsImplementedInterfacesNonGeneric()
     {
         var builder = new ContainerBuilder();
-        builder.RegisterType(typeof(ABC)).AsImplementedInterfaces();
+        builder.RegisterType(typeof(Abc)).AsImplementedInterfaces();
         var context = builder.Build();
 
-        context.Resolve<IA>();
-        context.Resolve<IB>();
-        context.Resolve<IC>();
+        var resultA = context.Resolve<IA>();
+        var resultB = context.Resolve<IB>();
+        var resultC = context.Resolve<IC>();
+        Assert.NotNull(resultA);
+        Assert.NotNull(resultB);
+        Assert.NotNull(resultC);
     }
 
     [Fact]
     public void AsSelfGeneric()
     {
         var builder = new ContainerBuilder();
-        builder.RegisterType<ABC>().AsSelf();
+        builder.RegisterType<Abc>().AsSelf();
         var context = builder.Build();
 
-        context.Resolve<ABC>();
+        var result = context.Resolve<Abc>();
+        Assert.NotNull(result);
     }
 
     [Fact]
     public void AsSelfNonGeneric()
     {
         var builder = new ContainerBuilder();
-        builder.RegisterType(typeof(ABC)).AsSelf();
+        builder.RegisterType(typeof(Abc)).AsSelf();
         var context = builder.Build();
 
-        context.Resolve<ABC>();
+        var result = context.Resolve<Abc>();
+        Assert.NotNull(result);
     }
 
     [Fact]
     public void OneTypeImplementMultipleInterfaces_OtherObjectsImplementingOneOfThoseInterfaces_CanBeResolved()
     {
         var builder = new ContainerBuilder();
-        builder.RegisterType(typeof(ABC)).As(typeof(IA), typeof(IB));
+        builder.RegisterType(typeof(Abc)).As(typeof(IA), typeof(IB));
         builder.RegisterType(typeof(A)).As(typeof(IA));
 
         var container = builder.Build();
@@ -198,7 +206,7 @@ public class TypeRegistrationTests
     public void TypeRegisteredWithMultipleServicesCanBeResolved()
     {
         var target = new ContainerBuilder();
-        target.RegisterType<ABC>()
+        target.RegisterType<Abc>()
             .As<IA, IB, IC>()
             .SingleInstance();
         var container = target.Build();
@@ -236,7 +244,7 @@ public class TypeRegistrationTests
     {
     }
 
-    private class ABC : IA, IB, IC
+    private class Abc : IA, IB, IC
     {
     }
 

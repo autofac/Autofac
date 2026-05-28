@@ -57,7 +57,8 @@ public class CircularDependencyTests
 
         // This throws a circular dependency exception if the activation stack
         // doesn't get reset.
-        container.Resolve<ComponentConsumer>();
+        var result = container.Resolve<ComponentConsumer>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -99,7 +100,7 @@ public class CircularDependencyTests
         cb.RegisterType<DependsByProp>().PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
 
         var c = cb.Build();
-        var de = Assert.Throws<DependencyResolutionException>(() => c.Resolve<DependsByProp>());
+        _ = Assert.Throws<DependencyResolutionException>(() => c.Resolve<DependsByProp>());
     }
 
     [Fact]
@@ -133,7 +134,7 @@ public class CircularDependencyTests
         builder.RegisterType<BThatCreatesA>().InstancePerLifetimeScope();
         var container = builder.Build();
 
-        var ex = Assert.Throws<DependencyResolutionException>(() => container.Resolve<AThatDependsOnB>());
+        _ = Assert.Throws<DependencyResolutionException>(() => container.Resolve<AThatDependsOnB>());
     }
 
     [Fact]

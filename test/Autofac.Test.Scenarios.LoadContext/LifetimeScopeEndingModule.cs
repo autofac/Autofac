@@ -16,10 +16,7 @@ public class LifetimeScopeEndingModule : Module
 
     protected override void Load(ContainerBuilder builder)
     {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
+        ArgumentNullException.ThrowIfNull(builder);
 
         builder.RegisterType<Service1>();
 

@@ -51,7 +51,7 @@ public class ContainerBuilderTests
         var builder = new ContainerBuilder();
         var container = builder.Build();
 
-        var scope = container.BeginLifetimeScope(cfg =>
+        using var scope = container.BeginLifetimeScope(cfg =>
         {
             cfg.RegisterBuildCallback(BuildCallback);
             cfg.RegisterBuildCallback(BuildCallback);
@@ -208,12 +208,12 @@ public class ContainerBuilderTests
             get; set;
         }
 
-        protected override void Load(ContainerBuilder containerBuilder)
+        protected override void Load(ContainerBuilder builder)
         {
-            containerBuilder.RegisterBuildCallback(container =>
+            builder.RegisterBuildCallback(container =>
             {
                 OuterBuildCallback = true;
-                var appScope = container.BeginLifetimeScope(nestedBuilder =>
+                using var appScope = container.BeginLifetimeScope(nestedBuilder =>
                 {
                     nestedBuilder.RegisterBuildCallback(c => InnerBuildCallback = true);
                 });

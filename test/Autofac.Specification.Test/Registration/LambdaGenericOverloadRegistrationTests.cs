@@ -144,7 +144,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -156,7 +157,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -168,7 +170,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -180,7 +183,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -192,7 +196,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -204,7 +209,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -221,7 +227,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -237,7 +244,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -255,7 +263,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -272,7 +281,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -291,7 +301,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -309,7 +320,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -329,7 +341,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -348,7 +361,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -369,7 +383,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -389,7 +404,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -411,7 +427,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -432,7 +449,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -455,7 +473,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -477,7 +496,8 @@ public class LambdaGenericOverloadRegistrationTests
 
         var context = builder.Build();
 
-        context.Resolve<MyComponent>();
+        var result = context.Resolve<MyComponent>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -570,13 +590,16 @@ public class LambdaGenericOverloadRegistrationTests
     private MethodInfo GetRegisterMethod(Type[] types, bool withComponentContext)
     {
         static bool MethodDelegateFuncHasIComponentContext(MethodInfo method)
-            => method.GetParameters().Last().ParameterType.GetGenericArguments().FirstOrDefault() == typeof(IComponentContext);
+        {
+            var parameters = method.GetParameters();
+            var genericArgs = parameters[^1].ParameterType.GetGenericArguments();
+            return genericArgs.Length > 0 && genericArgs[0] == typeof(IComponentContext);
+        }
 
         var genericMethod = typeof(RegistrationExtensions).GetMethods(BindingFlags.Static | BindingFlags.Public)
-                                                          .Where(x => x.Name == nameof(RegistrationExtensions.Register) &&
+                                                          .FirstOrDefault(x => x.Name == nameof(RegistrationExtensions.Register) &&
                                                                       x.GetGenericArguments().Length == types.Length + 1 &&
-                                                                      MethodDelegateFuncHasIComponentContext(x) == withComponentContext)
-                                                          .FirstOrDefault();
+                                                                      MethodDelegateFuncHasIComponentContext(x) == withComponentContext);
 
         var actualMethod = genericMethod!.MakeGenericMethod(types.Append(typeof(MyComponent)).ToArray());
 

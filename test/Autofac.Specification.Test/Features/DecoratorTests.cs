@@ -1189,8 +1189,6 @@ public class DecoratorTests
     [Fact]
     public void OpenGenericCanBeDecoratedFromInsideAModuleDecoratorRegisteredFirst()
     {
-        var activatedInstances = new List<object>();
-
         var builder = new ContainerBuilder();
 
         builder.RegisterModule(new MyModule(b => b.RegisterGenericDecorator(typeof(GenericDecorator<>), typeof(IGenericService<>))));
@@ -1208,8 +1206,6 @@ public class DecoratorTests
     [Fact]
     public void OpenGenericCanBeDecoratedFromInsideAModuleDecoratorRegisteredSecond()
     {
-        var activatedInstances = new List<object>();
-
         var builder = new ContainerBuilder();
 
         builder.RegisterGeneric(typeof(GenericComponent<>)).As(typeof(IGenericService<>));
@@ -1227,8 +1223,6 @@ public class DecoratorTests
     [Fact]
     public void OpenGenericInModuleCanBeDecoratedByDecoratorOutsideModuleWhereModuleRegisteredFirst()
     {
-        var activatedInstances = new List<object>();
-
         var builder = new ContainerBuilder();
 
         builder.RegisterModule(new MyModule(b => b.RegisterGeneric(typeof(GenericComponent<>)).As(typeof(IGenericService<>))));
@@ -1246,8 +1240,6 @@ public class DecoratorTests
     [Fact]
     public void OpenGenericInModuleCanBeDecoratedByDecoratorOutsideModuleWhereModuleRegisteredSecond()
     {
-        var activatedInstances = new List<object>();
-
         var builder = new ContainerBuilder();
 
         builder.RegisterGenericDecorator(typeof(GenericDecorator<>), typeof(IGenericService<>));
@@ -1403,7 +1395,7 @@ public class DecoratorTests
     }
 
     // ReSharper disable once ClassNeverInstantiated.Local
-    private class DisposableDecorator : Decorator, IDisposable
+    private sealed class DisposableDecorator : Decorator, IDisposable
     {
         public DisposableDecorator(IDecoratedService decorated)
             : base(decorated)
@@ -1422,7 +1414,7 @@ public class DecoratorTests
     }
 
     // ReSharper disable once ClassNeverInstantiated.Local
-    private class DisposableImplementor : IDecoratedService, IDisposable
+    private sealed class DisposableImplementor : IDecoratedService, IDisposable
     {
         public IDecoratedService Decorated => this;
 

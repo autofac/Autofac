@@ -34,7 +34,7 @@ public static class ModuleInitializer
 
         if (exceptions.Count == 1)
         {
-            throw exceptions.First();
+            throw exceptions[0];
         }
 
         if (exceptions.Count > 1)

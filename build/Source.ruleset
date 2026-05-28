@@ -42,6 +42,8 @@
     <!-- Loops should use LINQ - DI container hot paths intentionally avoid LINQ allocations. -->
     <Rule Id="S3267" Action="None" />
     <Rule Id="S3776" Action="Warning" />
+    <!-- Split method for params check + iterator - overly prescriptive for our patterns. -->
+    <Rule Id="S4456" Action="None" />
     <Rule Id="S6418" Action="Warning" />
     <Rule Id="S6444" Action="Warning" />
   </Rules>

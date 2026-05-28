@@ -8,7 +8,7 @@ namespace Autofac.Core.Activators.Reflection;
 /// <summary>
 /// Selects a constructor based on its signature.
 /// </summary>
-public class MatchingSignatureConstructorSelector : IConstructorSelector, IConstructorSelectorWithEarlyBinding
+public class MatchingSignatureConstructorSelector : IConstructorSelectorWithEarlyBinding
 {
     private readonly Type[] _signature;
 

@@ -24,7 +24,9 @@ public class AssemblyScanningPerformanceTests
         }
 
         var stopwatch = Stopwatch.StartNew();
-        builder.Build().Dispose();
+        var container = builder.Build();
+        Assert.NotNull(container);
+        container.Dispose();
 
         // After fix drops from ~500ms to ~100ms
         _output.WriteLine(stopwatch.Elapsed.TotalMilliseconds.ToString(CultureInfo.InvariantCulture));

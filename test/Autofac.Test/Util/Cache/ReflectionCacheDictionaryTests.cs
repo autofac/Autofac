@@ -30,12 +30,14 @@ public class ReflectionCacheDictionaryTests
 
         cacheDict.Clear((member, assemblies) =>
         {
-            Assert.Collection(assemblies, a => Assert.Equal(typeof(string).Assembly, a));
+            var a = Assert.Single(assemblies);
+            Assert.Equal(typeof(string).Assembly, a);
 
             return member == typeof(string);
         });
 
-        Assert.Collection(cacheDict, (kvp) => Assert.Equal(typeof(int), kvp.Key));
+        var kvp = Assert.Single(cacheDict);
+        Assert.Equal(typeof(int), kvp.Key);
     }
 
     [Fact]
@@ -47,7 +49,8 @@ public class ReflectionCacheDictionaryTests
 
         cacheDict.Clear((member, assemblies) =>
         {
-            Assert.Collection(assemblies, a => Assert.Equal(typeof(string).Assembly, a));
+            var a = Assert.Single(assemblies);
+            Assert.Equal(typeof(string).Assembly, a);
 
             return member == typeof(string).GetMethod("IsNullOrEmpty");
         });

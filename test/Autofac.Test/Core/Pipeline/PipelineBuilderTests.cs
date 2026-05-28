@@ -29,9 +29,8 @@ public class PipelineBuilderTests
 
         built.Invoke(new PipelineRequestContextStub());
 
-        Assert.Collection(
-            order,
-            e => Assert.Equal("1", e));
+        var e = Assert.Single(order);
+        Assert.Equal("1", e);
     }
 
     [Fact]
@@ -372,7 +371,6 @@ public class PipelineBuilderTests
     public void CannotAddServiceMiddlewareToRegistrationPipeline()
     {
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Registration);
-        var order = new List<string>();
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.Use(PipelinePhase.ResolveRequestStart, (context, next) => { }));
     }
 
@@ -380,7 +378,6 @@ public class PipelineBuilderTests
     public void CannotAddRegistrationMiddlewareToServicePipeline()
     {
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
-        var order = new List<string>();
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.Use(PipelinePhase.RegistrationPipelineStart, (context, next) => { }));
     }
 
@@ -388,7 +385,6 @@ public class PipelineBuilderTests
     public void CannotAddBadPhaseToPipelineInUseRange()
     {
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
-        var order = new List<string>();
         Assert.Throws<InvalidOperationException>(() => pipelineBuilder.UseRange(new[]
         {
             new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (context, next) => { }),
@@ -401,7 +397,6 @@ public class PipelineBuilderTests
     public void ExceptionForAddingServiceMiddlewareToRegistrationPipelineContainsCorrectPhases()
     {
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Registration);
-        var order = new List<string>();
 
         var ex = Assert.Throws<InvalidOperationException>(() => pipelineBuilder.Use(
                         new DelegateMiddleware("1", PipelinePhase.ResolveRequestStart, (context, next) => { })));
@@ -414,7 +409,6 @@ public class PipelineBuilderTests
     public void CannotAddBadPhaseToPipelineInUseRangeExistingMiddleware()
     {
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
-        var order = new List<string>();
 
         pipelineBuilder.UseRange(new[]
         {
@@ -472,6 +466,8 @@ public class PipelineBuilderTests
             get => _resolveRequest.Parameters;
             protected set
             {
+                // Intentionally empty - property setter stub for test mock.
+                _ = value;
             }
         }
 
@@ -489,10 +485,14 @@ public class PipelineBuilderTests
         {
             add
             {
+                // Intentionally empty - event stub for test mock.
+                _ = value;
             }
 
             remove
             {
+                // Intentionally empty - event stub for test mock.
+                _ = value;
             }
         }
 
@@ -505,7 +505,7 @@ public class PipelineBuilderTests
         public override object ResolveComponent(in ResolveRequest request) => throw new NotImplementedException();
     }
 
-    private class LifetimeScopeStub : ISharingLifetimeScope
+    private sealed class LifetimeScopeStub : ISharingLifetimeScope
     {
         public ISharingLifetimeScope RootLifetimeScope => throw new NotImplementedException();
 
@@ -521,10 +521,14 @@ public class PipelineBuilderTests
         {
             add
             {
+                // Intentionally empty - event stub for test mock.
+                _ = value;
             }
 
             remove
             {
+                // Intentionally empty - event stub for test mock.
+                _ = value;
             }
         }
 
@@ -532,10 +536,14 @@ public class PipelineBuilderTests
         {
             add
             {
+                // Intentionally empty - event stub for test mock.
+                _ = value;
             }
 
             remove
             {
+                // Intentionally empty - event stub for test mock.
+                _ = value;
             }
         }
 
@@ -543,10 +551,14 @@ public class PipelineBuilderTests
         {
             add
             {
+                // Intentionally empty - event stub for test mock.
+                _ = value;
             }
 
             remove
             {
+                // Intentionally empty - event stub for test mock.
+                _ = value;
             }
         }
 

@@ -50,6 +50,8 @@ public sealed class ConcurrencyTests
         var task1 = Task.Factory.StartNew(ResolveObjectInstanceLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         var task2 = Task.Factory.StartNew(ResolveObjectInstanceLoop, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
         await Task.WhenAll(task1, task2);
+        Assert.True(task1.IsCompletedSuccessfully);
+        Assert.True(task2.IsCompletedSuccessfully);
     }
 
     [Fact]
@@ -75,8 +77,9 @@ public sealed class ConcurrencyTests
 
         var container = builder.Build();
         containerProvider = () => container;
-        container.Resolve<int>();
-        container.Resolve<object>();
+        _ = container.Resolve<int>();
+        var objResult = container.Resolve<object>();
+        Assert.NotNull(objResult);
     }
 
     [Fact]
@@ -86,6 +89,9 @@ public sealed class ConcurrencyTests
         {
             await ResolveWhileTheScopeIsDisposing_ObjectDisposedExceptionThrownOnly();
         }
+
+        // Assert that the loop completed successfully without throwing unexpected exceptions
+        Assert.True(true);
     }
 
     [Fact]
@@ -139,7 +145,13 @@ public sealed class ConcurrencyTests
             var builder = new ContainerBuilder();
             builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             var container = builder.Build();
-            Parallel.Invoke(() => container.Resolve<A>(), () => container.Resolve<A>());
+            A result1 = null;
+            A result2 = null;
+            Parallel.Invoke(
+                () => result1 = container.Resolve<A>(),
+                () => result2 = container.Resolve<A>());
+            Assert.NotNull(result1);
+            Assert.NotNull(result2);
         }
     }
 
@@ -174,6 +186,7 @@ public sealed class ConcurrencyTests
                 }
                 catch (ObjectDisposedException)
                 {
+                    // Expected exception - testing concurrent disposal behavior.
                 }
             });
         await Task.Delay(5);

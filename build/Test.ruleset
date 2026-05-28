@@ -48,6 +48,10 @@
   <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
     <!-- Don't use hardcoded paths or URIs - needed in several test cases. -->
     <Rule Id="S1075" Action="None" />
+    <!-- Utility class should not be instantiated - test fixture classes with nested tests can't be static. -->
+    <Rule Id="S1118" Action="None" />
+    <!-- Don't call GC.Collect - required for weak reference and disposal tests. -->
+    <Rule Id="S1215" Action="None" />
     <!-- Remove unused private members - reflection tests need non-public members. -->
     <Rule Id="S1144" Action="None" />
     <!-- Empty method bodies - test stubs often have no-op implementations. -->
@@ -72,8 +76,18 @@
     <Rule Id="S2335" Action="None" />
     <!-- Cognitive complexity (must be explicitly enabled). -->
     <Rule Id="S3776" Action="Warning" />
+    <!-- Split method for params check + iterator - overly prescriptive for our patterns. -->
+    <Rule Id="S4456" Action="None" />
+    <!-- Don't use Thread.Sleep - required for concurrency and timing tests. -->
+    <Rule Id="S2925" Action="None" />
+    <!-- NSubstitute mock verification is complete without property access. -->
+    <Rule Id="S2970" Action="None" />
+    <!-- Fields only assigned in constructor - needed to prevent optimization in reflection tests. -->
+    <Rule Id="S4487" Action="None" />
     <!-- Set route attributes at top of controller - false positive. -->
     <Rule Id="S6934" Action="None" />
+    <!-- Use async dispose - sync dispose tests are intentional. -->
+    <Rule Id="S6966" Action="None" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <!-- Prefix local calls with this. -->

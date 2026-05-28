@@ -180,7 +180,7 @@ internal class FallbackDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     /// </exception>
     public void Add(TKey key, TValue value)
     {
-        if (key == null)
+        if (object.Equals(key, default(TKey)))
         {
             throw new ArgumentNullException(nameof(key));
         }

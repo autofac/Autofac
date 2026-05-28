@@ -26,6 +26,14 @@ internal static class Factory
             CreateReflectionActivator(implementation));
     }
 
+    public static IComponentRegistration CreateSingletonRegistration<T>(T instance)
+    {
+        return RegistrationBuilder
+            .ForDelegate((c, p) => instance)
+            .SingleInstance()
+            .CreateRegistration();
+    }
+
     public static IComponentRegistration CreateRegistration(IEnumerable<Service> services, IInstanceActivator activator, IComponentLifetime lifetime, InstanceSharing sharing)
     {
         return new ComponentRegistration(
@@ -36,14 +44,6 @@ internal static class Factory
             InstanceOwnership.OwnedByLifetimeScope,
             services,
             GetDefaultMetadata());
-    }
-
-    public static IComponentRegistration CreateSingletonRegistration<T>(T instance)
-    {
-        return RegistrationBuilder
-            .ForDelegate((c, p) => instance)
-            .SingleInstance()
-            .CreateRegistration();
     }
 
     public static IComponentRegistration CreateSingletonObjectRegistration(object instance)

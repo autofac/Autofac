@@ -160,7 +160,7 @@ public class OpenGenericDecoratorTests
         }
     }
 
-    private class DisposableImplementor<T> : IDecoratedService<T>, IDisposable
+    private sealed class DisposableImplementor<T> : IDecoratedService<T>, IDisposable
     {
         public int DisposeCallCount
         {
@@ -175,7 +175,7 @@ public class OpenGenericDecoratorTests
         }
     }
 
-    private class DisposableDecorator<T> : Decorator<T>, IDisposable
+    private sealed class DisposableDecorator<T> : Decorator<T>, IDisposable
     {
         public int DisposeCallCount
         {

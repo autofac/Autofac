@@ -35,6 +35,7 @@ public class ReflectionCacheAssemblyDictionaryTests
             return assemblies.Contains(typeof(string).Assembly);
         });
 
-        Assert.Collection(cacheDict, (kvp) => Assert.Equal(typeof(ContainerBuilder).Assembly, kvp.Key));
+        var kvp = Assert.Single(cacheDict);
+        Assert.Equal(typeof(ContainerBuilder).Assembly, kvp.Key);
     }
 }

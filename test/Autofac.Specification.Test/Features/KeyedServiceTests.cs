@@ -1004,9 +1004,15 @@ public class KeyedServiceTests
             Value = value;
         }
 
-        public string Key { get; set; } = default!;
+        public string Key
+        {
+            get; set;
+        }
 
-        public T Value { get; set; } = default!;
+        public T Value
+        {
+            get; set;
+        }
     }
 
     private class SimpleParentWithDynamicKeyedService

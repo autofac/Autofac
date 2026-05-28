@@ -13,7 +13,7 @@ namespace Autofac.Core.Resolving.Pipeline;
 /// As a general principle, order between phases is strict, and always executes in the same order, but order within a phase should
 /// not be important for most cases, and handlers should be able to run in any order.
 /// </remarks>
-public enum PipelinePhase : int
+public enum PipelinePhase
 {
     /// <summary>
     /// The start of a resolve request. Custom middleware added to this phase executes before circular dependency detection.

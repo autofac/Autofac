@@ -69,7 +69,7 @@ public class ActivatingEventArgs<T> : EventArgs, IActivatingEventArgs<T>
 
         set
         {
-            if (value == null)
+            if (object.Equals(value, default(T)))
             {
                 throw new ArgumentNullException(nameof(value));
             }

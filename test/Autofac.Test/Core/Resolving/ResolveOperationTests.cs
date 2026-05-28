@@ -155,6 +155,7 @@ public class ResolveOperationTests
         }
         catch
         {
+            // Expected exception - testing event order during failed resolution.
         }
 
         Assert.Equal(new[] { "op-start", "req-start", "req-fail", "op-fail" }, raisedEvents);

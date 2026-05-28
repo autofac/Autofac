@@ -29,6 +29,8 @@ public class NamedPropertyParameterTests
         {
             set
             {
+                // Intentionally empty - write-only property for testing property parameter matching.
+                _ = value;
             }
         }
 
@@ -37,6 +39,8 @@ public class NamedPropertyParameterTests
         {
             set
             {
+                // Intentionally empty - write-only property for testing property parameter matching.
+                _ = value;
             }
         }
     }
@@ -44,10 +48,8 @@ public class NamedPropertyParameterTests
     private ParameterInfo GetSetAccessorParameter(PropertyInfo pi)
     {
         return pi
-            .GetAccessors()
-            .First()
-            .GetParameters()
-            .First();
+            .GetAccessors()[0]
+            .GetParameters()[0];
     }
 
     private ParameterInfo PropertySetValueParameter()
@@ -67,45 +69,42 @@ public class NamedPropertyParameterTests
     private ParameterInfo ConstructorParameter()
     {
         return typeof(HasInjectionPoints)
-            .GetConstructors()
-            .First()
-            .GetParameters()
-            .First();
+            .GetConstructors()[0]
+            .GetParameters()[0];
     }
 
     private ParameterInfo MethodParameter()
     {
         return typeof(HasInjectionPoints)
             .GetMethod(HasInjectionPoints.MethodName)
-            .GetParameters()
-            .First();
+            .GetParameters()[0];
     }
 
     [Fact]
     public void MatchesPropertySetterByName()
     {
         var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
-        Assert.True(cp.CanSupplyValue(PropertySetValueParameter(), new ContainerBuilder().Build(), out var vp));
+        Assert.True(cp.CanSupplyValue(PropertySetValueParameter(), new ContainerBuilder().Build(), out _));
     }
 
     [Fact]
     public void DoesNotMatchePropertySetterWithDifferentName()
     {
         var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
-        Assert.False(cp.CanSupplyValue(WrongPropertySetValueParameter(), new ContainerBuilder().Build(), out var vp));
+        Assert.False(cp.CanSupplyValue(WrongPropertySetValueParameter(), new ContainerBuilder().Build(), out _));
     }
 
     [Fact]
     public void DoesNotMatchConstructorParameters()
     {
         var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
-        Assert.False(cp.CanSupplyValue(ConstructorParameter(), new ContainerBuilder().Build(), out var vp));
+        Assert.False(cp.CanSupplyValue(ConstructorParameter(), new ContainerBuilder().Build(), out _));
     }
 
     [Fact]
     public void DoesNotMatchRegularMethodParameters()
     {
         var cp = new NamedPropertyParameter(HasInjectionPoints.PropertyName, "");
-        Assert.False(cp.CanSupplyValue(MethodParameter(), new ContainerBuilder().Build(), out var vp));
+        Assert.False(cp.CanSupplyValue(MethodParameter(), new ContainerBuilder().Build(), out _));
     }
 }

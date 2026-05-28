@@ -92,7 +92,7 @@ public class ResolvedParameterTests
         var container = builder.Build();
         var rp = ResolvedParameter.ForKeyed<char>(k);
         var cp = GetCharParameter();
-        Assert.True(rp.CanSupplyValue(cp, container, out var vp));
+        Assert.True(rp.CanSupplyValue(cp, container, out _));
     }
 
     [Fact]
@@ -100,7 +100,7 @@ public class ResolvedParameterTests
     {
         var rp = ResolvedParameter.ForKeyed<char>(new object());
         var cp = GetCharParameter();
-        var canSupply = rp.CanSupplyValue(cp, new ContainerBuilder().Build(), out var vp);
+        var canSupply = rp.CanSupplyValue(cp, new ContainerBuilder().Build(), out _);
         Assert.False(canSupply);
     }
 
@@ -108,7 +108,6 @@ public class ResolvedParameterTests
     {
         return typeof(string)
             .GetConstructor(new[] { typeof(char), typeof(int) })
-            .GetParameters()
-            .First();
+            .GetParameters()[0];
     }
 }

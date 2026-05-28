@@ -117,11 +117,10 @@ public class OpenGenericDelegateTests
 
         var container = builder.Build();
 
-        var instance = container.Resolve<IInterfaceA<int>>(new TypedParameter(typeof(bool), true));
+        _ = container.Resolve<IInterfaceA<int>>(new TypedParameter(typeof(bool), true));
 
-        Assert.Collection(
-            passedParameters,
-            p => Assert.IsType<TypedParameter>(p));
+        var p = Assert.Single(passedParameters);
+        Assert.IsType<TypedParameter>(p);
     }
 
     [Fact]

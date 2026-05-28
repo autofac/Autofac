@@ -136,8 +136,8 @@ public class ModuleRegistrationTests
     [Fact]
     public void OnlyIf_RequiresRegistrar()
     {
-        var mod = new ObjectModule();
-        var builder = new ContainerBuilder();
+        _ = new ObjectModule();
+        _ = new ContainerBuilder();
         Assert.Throws<ArgumentNullException>(() => ModuleRegistrationExtensions.OnlyIf(null, reg => true));
     }
 
@@ -147,7 +147,7 @@ public class ModuleRegistrationTests
         var mod = new ObjectModule();
         var builder = new ContainerBuilder();
         builder.RegisterModule(mod).OnlyIf(reg => false);
-        var container = builder.Build();
+        using var container = builder.Build();
         Assert.False(mod.ConfigureCalled);
     }
 
@@ -157,7 +157,7 @@ public class ModuleRegistrationTests
         var mod = new ObjectModule();
         var builder = new ContainerBuilder();
         builder.RegisterModule(mod).OnlyIf(reg => true);
-        var container = builder.Build();
+        using var container = builder.Build();
         Assert.True(mod.ConfigureCalled);
     }
 
@@ -172,7 +172,7 @@ public class ModuleRegistrationTests
                .RegisterModule(objModule2)
                .OnlyIf(regBuilder => counter++ == 1)
                .OnlyIf(regBuilder => counter++ == 0);
-        var container = builder.Build();
+        using var container = builder.Build();
         Assert.True(objModule1.ConfigureCalled);
         Assert.True(objModule2.ConfigureCalled);
         Assert.Equal(2, counter);
@@ -191,7 +191,7 @@ public class ModuleRegistrationTests
                .OnlyIf(regBuilder => counter++ != 1)
                .RegisterModule(objModule2)
                .OnlyIf(regBuilder => counter++ != 0);
-        var container = builder.Build();
+        using var container = builder.Build();
         Assert.False(objModule1.ConfigureCalled);
         Assert.False(objModule2.ConfigureCalled);
         Assert.Equal(1, counter);
@@ -212,8 +212,8 @@ public class ModuleRegistrationTests
     [Fact]
     public void IfNotRegistered_RequiresRegistrar()
     {
-        var mod = new ObjectModule();
-        var builder = new ContainerBuilder();
+        _ = new ObjectModule();
+        _ = new ContainerBuilder();
         Assert.Throws<ArgumentNullException>(() => ModuleRegistrationExtensions.IfNotRegistered(null, typeof(object)));
     }
 
@@ -301,10 +301,7 @@ public class ModuleRegistrationTests
 
         protected override void Load(ContainerBuilder builder)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
+            ArgumentNullException.ThrowIfNull(builder);
 
             ConfigureCalled = true;
             builder.RegisterType<object>().SingleInstance();
@@ -320,10 +317,7 @@ public class ModuleRegistrationTests
 
         protected override void Load(ContainerBuilder builder)
         {
-            if (builder == null)
-            {
-                throw new ArgumentNullException(nameof(builder));
-            }
+            ArgumentNullException.ThrowIfNull(builder);
 
             ConfigureCalled = true;
             builder.RegisterInstance("foo");

@@ -135,7 +135,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         }
     }
 
-    private struct Enumerator : IEnumerator<T>, IEnumerator
+    private struct Enumerator : IEnumerator<T>
     {
         private readonly SegmentedStack<T> _stack;
         private readonly int _activeSegmentBase;
