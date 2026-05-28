@@ -2,8 +2,6 @@
 <RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac source assemblies." ToolsVersion="16.0">
   <IncludeAll Action="Warning" />
   <Rules AnalyzerId="Microsoft.CodeAnalysis.Analyzers" RuleNamespace="Microsoft.CodeAnalysis.Analyzers">
-    <!-- Avoid excessive parameters on generic types (must be explicitly enabled). -->
-    <Rule Id="CA1005" Action="Warning" />
     <!-- Implement standard exception constructors - not all of the exception constructors are desired. -->
     <Rule Id="CA1032" Action="None" />
     <!-- Avoid excessive inheritance (must be explicitly enabled). -->
@@ -39,6 +37,8 @@
     <Rule Id="S2259" Action="Warning" />
     <Rule Id="S2583" Action="Warning" />
     <Rule Id="S2589" Action="Warning" />
+    <!-- Verify reflection accessibility bypass - DI containers do extensive reflection by design. -->
+    <Rule Id="S3011" Action="None" />
     <!-- Loops should use LINQ - DI container hot paths intentionally avoid LINQ allocations. -->
     <Rule Id="S3267" Action="None" />
     <Rule Id="S3776" Action="Warning" />

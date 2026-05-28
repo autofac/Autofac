@@ -2,8 +2,6 @@
 <RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac test assemblies." ToolsVersion="16.0">
   <IncludeAll Action="Warning" />
   <Rules AnalyzerId="Microsoft.CodeAnalysis.Analyzers" RuleNamespace="Microsoft.CodeAnalysis.Analyzers">
-    <!-- Avoid excessive parameters on generic types (must be explicitly enabled). -->
-    <Rule Id="CA1005" Action="Warning" />
     <!-- Don't catch general exceptions - test scenarios sometimes require it. -->
     <Rule Id="CA1031" Action="None" />
     <!-- Avoid empty interfaces - happens a lot in unit tests for service resolution. -->
@@ -50,6 +48,24 @@
   <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
     <!-- Don't use hardcoded paths or URIs - needed in several test cases. -->
     <Rule Id="S1075" Action="None" />
+    <!-- Remove unused private members - reflection tests need non-public members. -->
+    <Rule Id="S1144" Action="None" />
+    <!-- Empty method bodies - test stubs often have no-op implementations. -->
+    <Rule Id="S1186" Action="None" />
+    <!-- Remove unused method parameters - reflection tests declare parameters not used in the body. -->
+    <Rule Id="S1172" Action="None" />
+    <!-- Remove empty class - test stubs for DI resolution don't need implementation. -->
+    <Rule Id="S2094" Action="None" />
+    <!-- Make member static - test fixture members may not access instance data. -->
+    <Rule Id="S2325" Action="None" />
+    <!-- Remove unused type parameters - used in reflection testing. -->
+    <Rule Id="S2326" Action="None" />
+    <!-- Write-only properties - reflection tests verify property setter behavior. -->
+    <Rule Id="S2376" Action="None" />
+    <!-- Classes with only private constructors - reflection tests verify inaccessible constructors. -->
+    <Rule Id="S3453" Action="None" />
+    <!-- Remove unassigned auto-property - reflection tests verify non-public property behavior. -->
+    <Rule Id="S3459" Action="None" />
     <!-- Complete the TODO - acceptable in tests for backlog items. -->
     <Rule Id="S1135" Action="None" />
     <!-- Make instance property static - false positives in data/document types. -->
