@@ -26,7 +26,7 @@ public class DefaultDiagnosticTracer : OperationDiagnosticTracerBase<string>
 {
     private const string RequestExceptionTraced = "__RequestException";
 
-    private static readonly string[] NewLineSplit = new[] { Environment.NewLine };
+    private static readonly string[] _newLineSplit = new[] { Environment.NewLine };
 
     private readonly ConcurrentDictionary<IResolveOperation, IndentingStringBuilder> _operationBuilders = new();
 
@@ -273,7 +273,7 @@ public class DefaultDiagnosticTracer : OperationDiagnosticTracerBase<string>
             AppendIndent();
             _builder.AppendLine(message);
 
-            var exceptionBody = ex.ToString().Split(NewLineSplit, StringSplitOptions.None);
+            var exceptionBody = ex.ToString().Split(_newLineSplit, StringSplitOptions.None);
 
             Indent();
 

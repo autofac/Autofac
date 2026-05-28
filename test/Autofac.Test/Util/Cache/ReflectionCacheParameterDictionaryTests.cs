@@ -9,7 +9,7 @@ namespace Autofac.Test.Util.Cache;
 
 public class ReflectionCacheParameterDictionaryTests
 {
-    private static readonly ParameterInfo SampleParameter = typeof(ParameterOwner)
+    private static readonly ParameterInfo _sampleParameter = typeof(ParameterOwner)
         .GetMethod(nameof(ParameterOwner.Method), BindingFlags.Public | BindingFlags.Static)!
         .GetParameters()
         .Single();
@@ -46,12 +46,12 @@ public class ReflectionCacheParameterDictionaryTests
     {
         var cache = new ReflectionCacheParameterDictionary<bool>
         {
-            [SampleParameter] = true,
+            [_sampleParameter] = true,
         };
 
         cache.Clear((_, _) => false);
 
-        Assert.True(cache.ContainsKey(SampleParameter));
+        Assert.True(cache.ContainsKey(_sampleParameter));
     }
 
     [Fact]
@@ -59,12 +59,12 @@ public class ReflectionCacheParameterDictionaryTests
     {
         var cache = new ReflectionCacheParameterDictionary<bool>
         {
-            [SampleParameter] = true,
+            [_sampleParameter] = true,
         };
 
-        cache.Clear((member, _) => member == SampleParameter.Member);
+        cache.Clear((member, _) => member == _sampleParameter.Member);
 
-        Assert.False(cache.ContainsKey(SampleParameter));
+        Assert.False(cache.ContainsKey(_sampleParameter));
     }
 
     private static class ParameterOwner

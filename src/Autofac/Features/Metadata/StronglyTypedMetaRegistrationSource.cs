@@ -18,7 +18,7 @@ internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
 {
     private const string ReflectionCacheName = $"{nameof(StronglyTypedMetaRegistrationSource)}.Cache";
 
-    private static readonly MethodInfo CreateMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetDeclaredMethod(nameof(CreateMetaRegistration));
+    private static readonly MethodInfo _createMetaRegistrationMethod = typeof(StronglyTypedMetaRegistrationSource).GetDeclaredMethod(nameof(CreateMetaRegistration));
 
     private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration valueRegistration);
 
@@ -54,7 +54,7 @@ internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
 
         var registrationCreator = methodCache.GetOrAdd((valueType, metaType), t =>
         {
-            return CreateMetaRegistrationMethod.MakeGenericMethod(t.Item1, t.Item2).CreateDelegate<RegistrationCreator>(null);
+            return _createMetaRegistrationMethod.MakeGenericMethod(t.Item1, t.Item2).CreateDelegate<RegistrationCreator>(null);
         });
 
         return registrationAccessor(valueService)

@@ -14,7 +14,7 @@ namespace Autofac.Test.Features.Scanning;
 
 public class ScanningRegistrationTests
 {
-    private static readonly Assembly ScenarioAssembly = typeof(AComponent).GetTypeInfo().Assembly;
+    private static readonly Assembly _scenarioAssembly = typeof(AComponent).GetTypeInfo().Assembly;
 
     [Fact]
     public void WhenAssemblyIsScannedTypesRegisteredByDefault()
@@ -292,7 +292,7 @@ public class ScanningRegistrationTests
     public void WhenExceptionsProvideConfigurationComponentConfiguredAppropriately()
     {
         var cb = new ContainerBuilder();
-        cb.RegisterAssemblyTypes(ScenarioAssembly)
+        cb.RegisterAssemblyTypes(_scenarioAssembly)
             .Except<AComponent>(ac => ac.SingleInstance());
         var c = cb.Build();
         var a1 = c.Resolve<AComponent>();
@@ -332,7 +332,7 @@ public class ScanningRegistrationTests
     {
         var cb = new ContainerBuilder();
 
-        cb.RegisterAssemblyTypes(ScenarioAssembly)
+        cb.RegisterAssemblyTypes(_scenarioAssembly)
             .As(t => new KeyedService("foo", typeof(ScanningRegistrationTests)));
 
         var c = cb.Build();
@@ -345,7 +345,7 @@ public class ScanningRegistrationTests
     {
         var cb = new ContainerBuilder();
 
-        cb.RegisterAssemblyTypes(ScenarioAssembly)
+        cb.RegisterAssemblyTypes(_scenarioAssembly)
             .As(t => new KeyedService("foo", typeof(ScanningRegistrationTests)));
 
         var c = cb.Build();
@@ -373,9 +373,9 @@ public class ScanningRegistrationTests
     [Fact]
     public void WhenDerivingKeysDynamically_TheCorrectOverloadIsChosen()
     {
-        const string key = "a-key";
-        var c = RegisterScenarioAssembly(a => a.Keyed<IAService>(t => key));
-        Assert.True(c.IsRegisteredWithKey<IAService>(key));
+        const string Key = "a-key";
+        var c = RegisterScenarioAssembly(a => a.Keyed<IAService>(t => Key));
+        Assert.True(c.IsRegisteredWithKey<IAService>(Key));
     }
 
     [Fact]
@@ -383,7 +383,7 @@ public class ScanningRegistrationTests
     {
         var cb = new ContainerBuilder();
         cb.RegisterType<AnExistingComponent>().As<IAService>();
-        cb.RegisterAssemblyTypes(ScenarioAssembly)
+        cb.RegisterAssemblyTypes(_scenarioAssembly)
             .As<IAService>()
             .PreserveExistingDefaults();
 
@@ -395,7 +395,7 @@ public class ScanningRegistrationTests
     public static IContainer RegisterScenarioAssembly(Action<IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>> configuration = null)
     {
         var cb = new ContainerBuilder();
-        var config = cb.RegisterAssemblyTypes(ScenarioAssembly);
+        var config = cb.RegisterAssemblyTypes(_scenarioAssembly);
         configuration?.Invoke(config);
 
         return cb.Build();
@@ -425,13 +425,13 @@ public class ScanningRegistrationTests
     [Fact]
     public void ScanningKeyedRegistrationsFilterByAssignabilityBeforeMappingKey()
     {
-        const string k = "key";
+        const string K = "key";
         var c = RegisterScenarioAssembly(a => a.Keyed<IAService>(t =>
         {
             Assert.True(typeof(IAService).IsAssignableFrom(t));
-            return k;
+            return K;
         }));
-        Assert.True(c.IsRegisteredWithKey<IAService>(k));
+        Assert.True(c.IsRegisteredWithKey<IAService>(K));
     }
 
     [Fact]
@@ -449,7 +449,7 @@ public class ScanningRegistrationTests
     {
         // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
         var c = RegisterScenarioAssembly();
-        var internalType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.InternalComponent", true);
+        var internalType = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.InternalComponent", true);
         Assert.True(c.IsRegistered(internalType));
     }
 
@@ -458,7 +458,7 @@ public class ScanningRegistrationTests
     {
         // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
         var c = RegisterScenarioAssembly(conf => conf.PublicOnly());
-        var internalType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.InternalComponent", true);
+        var internalType = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.InternalComponent", true);
         Assert.False(c.IsRegistered(internalType));
     }
 
@@ -467,8 +467,8 @@ public class ScanningRegistrationTests
     {
         // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
         var c = RegisterScenarioAssembly();
-        var privateType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+PrivateComponent", true);
-        _ = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
+        var privateType = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+PrivateComponent", true);
+        _ = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
         c.AssertRegistered<NestedComponent>();
         Assert.True(c.IsRegistered(privateType));
     }
@@ -478,8 +478,8 @@ public class ScanningRegistrationTests
     {
         // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
         var c = RegisterScenarioAssembly(conf => conf.PublicOnly());
-        var privateType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+PrivateComponent", true);
-        var internalType = ScenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
+        var privateType = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+PrivateComponent", true);
+        var internalType = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
         c.AssertRegistered<NestedComponent>();
         Assert.False(c.IsRegistered(privateType));
     }

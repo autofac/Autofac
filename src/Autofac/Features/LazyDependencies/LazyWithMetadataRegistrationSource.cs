@@ -21,7 +21,7 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 {
     private const string ReflectionCacheName = $"{nameof(LazyWithMetadataRegistrationSource)}.Cache";
 
-    private static readonly MethodInfo CreateLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetDeclaredMethod(nameof(CreateLazyRegistration));
+    private static readonly MethodInfo _createLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetDeclaredMethod(nameof(CreateLazyRegistration));
 
     private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo);
 
@@ -59,7 +59,7 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 
         var registrationCreator = methodCache.GetOrAdd((valueType, metaType), types =>
         {
-            return CreateLazyRegistrationMethod.MakeGenericMethod(types.Item1, types.Item2).CreateDelegate<RegistrationCreator>(null);
+            return _createLazyRegistrationMethod.MakeGenericMethod(types.Item1, types.Item2).CreateDelegate<RegistrationCreator>(null);
         });
 
         return registrationAccessor(valueService)

@@ -97,13 +97,13 @@ public class OpenGenericRegistrationExtensionsTests
     [Fact]
     public void WhenRegistrationNamedGenericRegistrationsSuppliedViaName()
     {
-        const string name = "n";
+        const string Name = "n";
         var cb = new ContainerBuilder();
         cb.RegisterGeneric(typeof(G<>))
-            .Named(name, typeof(IG<>));
+            .Named(Name, typeof(IG<>));
         var c = cb.Build();
-        Assert.True(c.IsRegisteredWithName<IG<int>>(name));
-        Assert.True(c.IsRegisteredWithName<IG<string>>(name));
+        Assert.True(c.IsRegisteredWithName<IG<int>>(Name));
+        Assert.True(c.IsRegisteredWithName<IG<string>>(Name));
     }
 
     [Fact]

@@ -206,11 +206,11 @@ public class LightweightAdapterRegistrationExtensionsTests
 
         public DecoratingANamedService()
         {
-            const string from = "from";
+            const string From = "from";
             var builder = new ContainerBuilder();
-            builder.RegisterType<Implementer1>().Named<IService>(from);
-            builder.RegisterType<Implementer2>().Named<IService>(from);
-            builder.RegisterDecorator<IService>(s => new Decorator(s), from);
+            builder.RegisterType<Implementer1>().Named<IService>(From);
+            builder.RegisterType<Implementer2>().Named<IService>(From);
+            builder.RegisterDecorator<IService>(s => new Decorator(s), From);
             _container = builder.Build();
         }
 

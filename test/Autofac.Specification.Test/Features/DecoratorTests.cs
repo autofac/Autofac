@@ -617,20 +617,20 @@ public class DecoratorTests
     [Fact]
     public void DecoratorAndDecoratedBothDisposedWhenInstancePerMatchingLifetimeScope()
     {
-        const string tag = "foo";
+        const string Tag = "foo";
 
         var builder = new ContainerBuilder();
 
         builder.RegisterType<DisposableImplementor>()
             .As<IDecoratedService>()
-            .InstancePerMatchingLifetimeScope(tag);
+            .InstancePerMatchingLifetimeScope(Tag);
         builder.RegisterDecorator<DisposableDecorator, IDecoratedService>();
         var container = builder.Build();
 
         DisposableDecorator decorator;
         DisposableImplementor decorated;
 
-        using (var scope = container.BeginLifetimeScope(tag))
+        using (var scope = container.BeginLifetimeScope(Tag))
         {
             var instance = scope.Resolve<IDecoratedService>();
             decorator = (DisposableDecorator)instance;
@@ -827,17 +827,17 @@ public class DecoratorTests
     [Fact]
     public void DecoratorInheritsDecoratedLifetimeWhenInstancePerMatchingLifetimeScope()
     {
-        const string tag = "foo";
+        const string Tag = "foo";
 
         var builder = new ContainerBuilder();
         builder.RegisterType<ImplementorA>()
             .As<IDecoratedService>()
-            .InstancePerMatchingLifetimeScope(tag);
+            .InstancePerMatchingLifetimeScope(Tag);
         builder.RegisterDecorator<DecoratorA, IDecoratedService>();
 
         var container = builder.Build();
 
-        using (var scope = container.BeginLifetimeScope(tag))
+        using (var scope = container.BeginLifetimeScope(Tag))
         {
             var first = scope.Resolve<IDecoratedService>();
             var second = scope.Resolve<IDecoratedService>();
@@ -872,8 +872,8 @@ public class DecoratorTests
     [Fact]
     public void DecoratorRegisteredAsLambdaCanAcceptAdditionalParameters()
     {
-        const string parameterName = "parameter";
-        const string parameterValue = "ABC";
+        const string ParameterName = "parameter";
+        const string ParameterValue = "ABC";
 
         var builder = new ContainerBuilder();
         builder.RegisterType<ImplementorA>().As<IDecoratedService>();
@@ -881,17 +881,17 @@ public class DecoratorTests
         {
             var stringParameter = (string)p
                 .OfType<NamedParameter>()
-                .FirstOrDefault(np => np.Name == parameterName)?.Value;
+                .FirstOrDefault(np => np.Name == ParameterName)?.Value;
 
             return new DecoratorWithParameter(i, stringParameter);
         });
         builder.RegisterDecorator<DecoratorA, IDecoratedService>();
         var container = builder.Build();
 
-        var parameter = new NamedParameter(parameterName, parameterValue);
+        var parameter = new NamedParameter(ParameterName, ParameterValue);
         var instance = container.Resolve<IDecoratedService>(parameter);
 
-        Assert.Equal(parameterValue, ((DecoratorWithParameter)instance.Decorated).Parameter);
+        Assert.Equal(ParameterValue, ((DecoratorWithParameter)instance.Decorated).Parameter);
     }
 
     [Fact]
@@ -1225,7 +1225,7 @@ public class DecoratorTests
     }
 
     [Fact]
-    public void OpenGenericInModuleCanBeDecoratoredByDecoratorOutsideModuleWhereModuleRegisteredFirst()
+    public void OpenGenericInModuleCanBeDecoratedByDecoratorOutsideModuleWhereModuleRegisteredFirst()
     {
         var activatedInstances = new List<object>();
 
@@ -1244,7 +1244,7 @@ public class DecoratorTests
     }
 
     [Fact]
-    public void OpenGenericInModuleCanBeDecoratoredByDecoratorOutsideModuleWhereModuleRegisteredSecond()
+    public void OpenGenericInModuleCanBeDecoratedByDecoratorOutsideModuleWhereModuleRegisteredSecond()
     {
         var activatedInstances = new List<object>();
 

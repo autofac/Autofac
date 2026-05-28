@@ -12,40 +12,40 @@ public class LifetimeEventTests
     [Fact]
     public void ActivatedAllowsMethodInjection()
     {
-        var pval = 12;
+        var pVal = 12;
         var builder = new ContainerBuilder();
         builder.RegisterType<MethodInjection>()
             .InstancePerLifetimeScope()
-            .OnActivated(e => e.Instance.Method(pval));
+            .OnActivated(e => e.Instance.Method(pVal));
         var container = builder.Build();
         var scope = container.BeginLifetimeScope();
         var invokee = scope.Resolve<MethodInjection>();
-        Assert.Equal(pval, invokee.Param);
+        Assert.Equal(pVal, invokee.Param);
     }
 
     [Fact]
     public void ActivatedAllowsTaskReturningHandler()
     {
-        var pval = 12;
+        var pVal = 12;
         var builder = new ContainerBuilder();
         builder.RegisterType<MethodInjection>()
             .InstancePerLifetimeScope()
             .OnActivated(async e =>
             {
                 await Task.Delay(1);
-                e.Instance.Method(pval);
+                e.Instance.Method(pVal);
             });
 
         var container = builder.Build();
         var scope = container.BeginLifetimeScope();
         var invokee = scope.Resolve<MethodInjection>();
-        Assert.Equal(pval, invokee.Param);
+        Assert.Equal(pVal, invokee.Param);
     }
 
     [Fact]
     public void ActivatedCanReceiveParameters()
     {
-        const int provided = 12;
+        const int Provided = 12;
         var passed = 0;
 
         var builder = new ContainerBuilder();
@@ -53,14 +53,14 @@ public class LifetimeEventTests
             .OnActivated(e => passed = e.Parameters.TypedAs<int>());
         var container = builder.Build();
 
-        container.Resolve<object>(TypedParameter.From(provided));
-        Assert.Equal(provided, passed);
+        container.Resolve<object>(TypedParameter.From(Provided));
+        Assert.Equal(Provided, passed);
     }
 
     [Fact]
     public void ActivatingCanReceiveParameters()
     {
-        const int provided = 12;
+        const int Provided = 12;
         var passed = 0;
 
         var builder = new ContainerBuilder();
@@ -68,8 +68,8 @@ public class LifetimeEventTests
             .OnActivating(e => passed = e.Parameters.TypedAs<int>());
         var container = builder.Build();
 
-        container.Resolve<object>(TypedParameter.From(provided));
-        Assert.Equal(provided, passed);
+        container.Resolve<object>(TypedParameter.From(Provided));
+        Assert.Equal(Provided, passed);
     }
 
     [Fact]

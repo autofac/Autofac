@@ -16,17 +16,17 @@ public class LifetimeScopeTests
     [Fact]
     public void AdaptersInNestedScopeOverrideAdaptersInParent()
     {
-        const string parentInstance = "p";
-        const string childInstance = "c";
+        const string ParentInstance = "p";
+        const string ChildInstance = "c";
 
         var builder = new ContainerBuilder();
-        builder.ComponentRegistryBuilder.AddRegistrationSource(new ObjectRegistrationSource(parentInstance));
+        builder.ComponentRegistryBuilder.AddRegistrationSource(new ObjectRegistrationSource(ParentInstance));
 
         var parent = builder.Build();
         var child = parent.BeginLifetimeScope(lifetimeScopeBuilder =>
-                lifetimeScopeBuilder.RegisterSource(new ObjectRegistrationSource(childInstance)));
+                lifetimeScopeBuilder.RegisterSource(new ObjectRegistrationSource(ChildInstance)));
         var fromChild = child.Resolve<object>();
-        Assert.Same(childInstance, fromChild);
+        Assert.Same(ChildInstance, fromChild);
     }
 
     [Fact]

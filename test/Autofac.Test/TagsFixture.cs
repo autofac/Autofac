@@ -117,17 +117,17 @@ public class TagsFixture
     [Fact]
     public void MatchesAgainstMultipleScopes()
     {
-        const string tag1 = "Tag1";
-        const string tag2 = "Tag2";
+        const string Tag1 = "Tag1";
+        const string Tag2 = "Tag2";
 
         var builder = new ContainerBuilder();
-        builder.Register(c => new object()).InstancePerMatchingLifetimeScope(tag1, tag2);
+        builder.Register(c => new object()).InstancePerMatchingLifetimeScope(Tag1, Tag2);
         var container = builder.Build();
 
-        var lifetimeScope = container.BeginLifetimeScope(tag1);
+        var lifetimeScope = container.BeginLifetimeScope(Tag1);
         Assert.NotNull(lifetimeScope.Resolve<object>());
 
-        lifetimeScope = container.BeginLifetimeScope(tag2);
+        lifetimeScope = container.BeginLifetimeScope(Tag2);
         Assert.NotNull(lifetimeScope.Resolve<object>());
     }
 

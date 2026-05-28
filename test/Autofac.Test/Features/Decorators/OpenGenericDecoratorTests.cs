@@ -580,17 +580,17 @@ public class OpenGenericDecoratorTests
     [Fact]
     public void DecoratorInheritsDecoratedLifetimeWhenInstancePerMatchingLifetimeScope()
     {
-        const string tag = "foo";
+        const string Tag = "foo";
 
         var builder = new ContainerBuilder();
         builder.RegisterGeneric(typeof(ImplementorA<>))
             .As(typeof(IDecoratedService<>))
-            .InstancePerMatchingLifetimeScope(tag);
+            .InstancePerMatchingLifetimeScope(Tag);
         builder.RegisterGenericDecorator(typeof(DecoratorA<>), typeof(IDecoratedService<>));
 
         var container = builder.Build();
 
-        using (var scope = container.BeginLifetimeScope(tag))
+        using (var scope = container.BeginLifetimeScope(Tag))
         {
             var first = scope.Resolve<IDecoratedService<int>>();
             var second = scope.Resolve<IDecoratedService<int>>();
@@ -803,20 +803,20 @@ public class OpenGenericDecoratorTests
     [Fact]
     public void DecoratorAndDecoratedBothDisposedWhenInstancePerMatchingLifetimeScope()
     {
-        const string tag = "foo";
+        const string Tag = "foo";
 
         var builder = new ContainerBuilder();
 
         builder.RegisterGeneric(typeof(DisposableImplementor<>))
             .As(typeof(IDecoratedService<>))
-            .InstancePerMatchingLifetimeScope(tag);
+            .InstancePerMatchingLifetimeScope(Tag);
         builder.RegisterGenericDecorator(typeof(DisposableDecorator<>), typeof(IDecoratedService<>));
         var container = builder.Build();
 
         DisposableDecorator<int> decorator;
         DisposableImplementor<int> decorated;
 
-        using (var scope = container.BeginLifetimeScope(tag))
+        using (var scope = container.BeginLifetimeScope(Tag))
         {
             var instance = scope.Resolve<IDecoratedService<int>>();
             decorator = (DisposableDecorator<int>)instance;

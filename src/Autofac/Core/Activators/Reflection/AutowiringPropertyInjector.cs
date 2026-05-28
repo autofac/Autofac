@@ -17,7 +17,7 @@ internal static class AutowiringPropertyInjector
     /// </summary>
     internal const string InstanceTypeNamedParameter = "Autofac.AutowiringPropertyInjector.InstanceType";
 
-    private static readonly MethodInfo CallPropertySetterOpenGenericMethod =
+    private static readonly MethodInfo _callPropertySetterOpenGenericMethod =
         typeof(AutowiringPropertyInjector).GetDeclaredMethod(nameof(CallPropertySetter));
 
     /// <summary>
@@ -164,7 +164,7 @@ internal static class AutowiringPropertyInjector
 
         // Create a delegate TDeclaringType -> { TDeclaringType.Property = TValue; }
         var propertySetterAsAction = setMethod.CreateDelegate(typeof(Action<,>).MakeGenericType(typeInput, parameterType));
-        var callPropertySetterClosedGenericMethod = CallPropertySetterOpenGenericMethod.MakeGenericMethod(typeInput, parameterType);
+        var callPropertySetterClosedGenericMethod = _callPropertySetterOpenGenericMethod.MakeGenericMethod(typeInput, parameterType);
         var callPropertySetterDelegate = callPropertySetterClosedGenericMethod.CreateDelegate<Action<object, object?>>(propertySetterAsAction);
 
         return callPropertySetterDelegate;

@@ -44,11 +44,11 @@ public class InstancePerOwnedTests
     public void InstancePerOwnedWithKeyResolvesToOwnedScope_GenericMethodSignature()
     {
         var cb = new ContainerBuilder();
-        const string serviceKey = "ServiceKey";
-        cb.RegisterType<MessageHandler>().Keyed<MessageHandler>(serviceKey);
-        cb.RegisterType<ServiceForHandler>().InstancePerOwned<MessageHandler>(serviceKey);
+        const string ServiceKey = "ServiceKey";
+        cb.RegisterType<MessageHandler>().Keyed<MessageHandler>(ServiceKey);
+        cb.RegisterType<ServiceForHandler>().InstancePerOwned<MessageHandler>(ServiceKey);
         var container = cb.Build();
-        var owned = container.ResolveKeyed<Owned<MessageHandler>>(serviceKey);
+        var owned = container.ResolveKeyed<Owned<MessageHandler>>(ServiceKey);
         Assert.Same(owned.Value.LifetimeScope.Tag, owned.Value.DependentService.LifetimeScope.Tag);
     }
 
@@ -56,11 +56,11 @@ public class InstancePerOwnedTests
     public void InstancePerOwnedWithKeyResolvesToOwnedScope_NonGenericMethodSignature()
     {
         var cb = new ContainerBuilder();
-        const string serviceKey = "ServiceKey";
-        cb.RegisterType<MessageHandler>().Keyed<MessageHandler>(serviceKey);
-        cb.RegisterType<ServiceForHandler>().InstancePerOwned(serviceKey, typeof(MessageHandler));
+        const string ServiceKey = "ServiceKey";
+        cb.RegisterType<MessageHandler>().Keyed<MessageHandler>(ServiceKey);
+        cb.RegisterType<ServiceForHandler>().InstancePerOwned(ServiceKey, typeof(MessageHandler));
         var container = cb.Build();
-        var owned = container.ResolveKeyed<Owned<MessageHandler>>(serviceKey);
+        var owned = container.ResolveKeyed<Owned<MessageHandler>>(ServiceKey);
         Assert.Same(owned.Value.LifetimeScope.Tag, owned.Value.DependentService.LifetimeScope.Tag);
     }
 
@@ -68,17 +68,17 @@ public class InstancePerOwnedTests
     public void InstancePerOwnedWithoutKeysResolvesForOwnedServicesWithKeys()
     {
         var builder = new ContainerBuilder();
-        const string serviceKeyA = "A";
-        const string serviceKeyB = "B";
+        const string ServiceKeyA = "A";
+        const string ServiceKeyB = "B";
         builder.RegisterType<Service>().AsSelf().InstancePerOwned<IRoot>();
-        builder.RegisterType<RootA>().Keyed<IRoot>(serviceKeyA);
-        builder.RegisterType<RootB>().Keyed<IRoot>(serviceKeyB);
+        builder.RegisterType<RootA>().Keyed<IRoot>(ServiceKeyA);
+        builder.RegisterType<RootB>().Keyed<IRoot>(ServiceKeyB);
         var container = builder.Build();
 
-        var ownedRoot = container.ResolveKeyed<Owned<IRoot>>(serviceKeyA);
+        var ownedRoot = container.ResolveKeyed<Owned<IRoot>>(ServiceKeyA);
         Assert.NotNull(ownedRoot.Value.Dependency);
 
-        ownedRoot = container.ResolveKeyed<Owned<IRoot>>(serviceKeyB);
+        ownedRoot = container.ResolveKeyed<Owned<IRoot>>(ServiceKeyB);
         Assert.NotNull(ownedRoot.Value.Dependency);
     }
 
@@ -86,17 +86,17 @@ public class InstancePerOwnedTests
     public void InstancePerOwnedWithMultipleKeysResolvesForOwnedServicesWithMatchingKeys()
     {
         var builder = new ContainerBuilder();
-        const string serviceKeyA = "A";
-        const string serviceKeyB = "B";
-        builder.RegisterType<Service>().AsSelf().InstancePerOwned<IRoot>(serviceKeyA, serviceKeyB);
-        builder.RegisterType<RootA>().Keyed<IRoot>(serviceKeyA);
-        builder.RegisterType<RootB>().Keyed<IRoot>(serviceKeyB);
+        const string ServiceKeyA = "A";
+        const string ServiceKeyB = "B";
+        builder.RegisterType<Service>().AsSelf().InstancePerOwned<IRoot>(ServiceKeyA, ServiceKeyB);
+        builder.RegisterType<RootA>().Keyed<IRoot>(ServiceKeyA);
+        builder.RegisterType<RootB>().Keyed<IRoot>(ServiceKeyB);
         var container = builder.Build();
 
-        var ownedRoot = container.ResolveKeyed<Owned<IRoot>>(serviceKeyA);
+        var ownedRoot = container.ResolveKeyed<Owned<IRoot>>(ServiceKeyA);
         Assert.NotNull(ownedRoot.Value.Dependency);
 
-        ownedRoot = container.ResolveKeyed<Owned<IRoot>>(serviceKeyB);
+        ownedRoot = container.ResolveKeyed<Owned<IRoot>>(ServiceKeyB);
         Assert.NotNull(ownedRoot.Value.Dependency);
     }
 
@@ -104,17 +104,17 @@ public class InstancePerOwnedTests
     public void InstancePerOwnedThrowsWhenKeyMissingForOwnedServiceWithKey()
     {
         var builder = new ContainerBuilder();
-        const string serviceKeyA = "A";
-        const string serviceKeyB = "B";
-        builder.RegisterType<Service>().AsSelf().InstancePerOwned<IRoot>(serviceKeyA);
-        builder.RegisterType<RootA>().Keyed<IRoot>(serviceKeyA);
-        builder.RegisterType<RootB>().Keyed<IRoot>(serviceKeyB);
+        const string ServiceKeyA = "A";
+        const string ServiceKeyB = "B";
+        builder.RegisterType<Service>().AsSelf().InstancePerOwned<IRoot>(ServiceKeyA);
+        builder.RegisterType<RootA>().Keyed<IRoot>(ServiceKeyA);
+        builder.RegisterType<RootB>().Keyed<IRoot>(ServiceKeyB);
         var container = builder.Build();
 
-        var ownedRoot = container.ResolveKeyed<Owned<IRoot>>(serviceKeyA);
+        var ownedRoot = container.ResolveKeyed<Owned<IRoot>>(ServiceKeyA);
         Assert.NotNull(ownedRoot.Value.Dependency);
 
-        void Resolve() => container.ResolveKeyed<Owned<IRoot>>(serviceKeyB);
+        void Resolve() => container.ResolveKeyed<Owned<IRoot>>(ServiceKeyB);
         Assert.Throws<DependencyResolutionException>(Resolve);
     }
 
@@ -122,8 +122,8 @@ public class InstancePerOwnedTests
     public void InstancePerOwnedWithKeyThrowsWhenOwnedServiceHasNoKey()
     {
         var builder = new ContainerBuilder();
-        const string serviceKey = "A";
-        builder.RegisterType<Service>().AsSelf().InstancePerOwned<IRoot>(serviceKey);
+        const string ServiceKey = "A";
+        builder.RegisterType<Service>().AsSelf().InstancePerOwned<IRoot>(ServiceKey);
         builder.RegisterType<RootA>().As<IRoot>();
         var container = builder.Build();
 

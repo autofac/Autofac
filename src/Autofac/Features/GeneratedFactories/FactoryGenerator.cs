@@ -17,7 +17,7 @@ public class FactoryGenerator
 {
     // The explicit '!' default is ok because the code is never executed, it's just used by
     // the expression tree.
-    private static readonly ConstructorInfo RequestConstructor
+    private static readonly ConstructorInfo _requestConstructor
         = ReflectionExtensions.GetConstructor(() => new ResolveRequest(default!, default!, default!, default));
 
     private readonly Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
@@ -77,7 +77,7 @@ public class FactoryGenerator
             {
                 // new ResolveRequest(service, productRegistration, [new Parameter(name, (object)dps)])*)
                 var newExpression = Expression.New(
-                RequestConstructor,
+                _requestConstructor,
                 Expression.Constant(service, typeof(Service)),
                 Expression.Constant(productRegistration, typeof(ServiceRegistration)),
                 Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),

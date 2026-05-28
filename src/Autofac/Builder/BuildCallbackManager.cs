@@ -12,7 +12,7 @@ internal static class BuildCallbackManager
 {
     private const string BuildCallbacksExecutedKey = nameof(BuildCallbacksExecutedKey);
 
-    private static readonly TypedService CallbackServiceType = new(typeof(BuildCallbackService));
+    private static readonly TypedService _callbackServiceType = new(typeof(BuildCallbackService));
 
     /// <summary>
     /// Executes the newly-registered build callbacks for a given scope/container..
@@ -20,7 +20,7 @@ internal static class BuildCallbackManager
     /// <param name="scope">The new scope/container.</param>
     internal static void RunBuildCallbacks(ILifetimeScope scope)
     {
-        var buildCallbackServices = scope.ComponentRegistry.ServiceRegistrationsFor(CallbackServiceType);
+        var buildCallbackServices = scope.ComponentRegistry.ServiceRegistrationsFor(_callbackServiceType);
 
         foreach (var srv in buildCallbackServices)
         {
@@ -30,7 +30,7 @@ internal static class BuildCallbackManager
                 continue;
             }
 
-            var request = new ResolveRequest(CallbackServiceType, srv, Enumerable.Empty<Parameter>());
+            var request = new ResolveRequest(_callbackServiceType, srv, Enumerable.Empty<Parameter>());
             var component = (BuildCallbackService)scope.ResolveComponent(request);
             srv.Registration.Metadata[BuildCallbacksExecutedKey] = true;
 

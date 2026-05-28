@@ -13,7 +13,7 @@ namespace Autofac.Core;
 /// </summary>
 public abstract class ImplicitRegistrationSource : IRegistrationSource
 {
-    private static readonly MethodInfo CreateRegistrationMethod = typeof(ImplicitRegistrationSource).GetDeclaredMethod(nameof(CreateRegistration));
+    private static readonly MethodInfo _createRegistrationMethod = typeof(ImplicitRegistrationSource).GetDeclaredMethod(nameof(CreateRegistration));
 
     private readonly Type _type;
 
@@ -69,7 +69,7 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
 
         var registrationCreator = methodCache.GetOrAdd(valueType, t =>
         {
-            return CreateRegistrationMethod.MakeGenericMethod(t).CreateDelegate<RegistrationCreator>(this);
+            return _createRegistrationMethod.MakeGenericMethod(t).CreateDelegate<RegistrationCreator>(this);
         });
 
         return registrationAccessor(valueService)

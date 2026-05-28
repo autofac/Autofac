@@ -75,11 +75,11 @@ namespace Autofac.Features.AttributeFilters;
 [SuppressMessage("Microsoft.Design", "CA1018:MarkAttributesWithAttributeUsage", Justification = "Allowing the inherited AttributeUsageAttribute to be used avoids accidental override or conflict at this level.")]
 public sealed class MetadataFilterAttribute : ParameterFilterAttribute
 {
-    private static readonly MethodInfo FilterOneMethod = typeof(MetadataFilterAttribute).GetDeclaredMethod(nameof(FilterOne));
+    private static readonly MethodInfo _filterOneMethod = typeof(MetadataFilterAttribute).GetDeclaredMethod(nameof(FilterOne));
 
-    private static readonly MethodInfo FilterAllMethod = typeof(MetadataFilterAttribute).GetDeclaredMethod(nameof(FilterAll));
+    private static readonly MethodInfo _filterAllMethod = typeof(MetadataFilterAttribute).GetDeclaredMethod(nameof(FilterAll));
 
-    private static readonly MethodInfo CanResolveMethod = typeof(MetadataFilterAttribute).GetDeclaredMethod(nameof(CanResolve));
+    private static readonly MethodInfo _canResolveMethod = typeof(MetadataFilterAttribute).GetDeclaredMethod(nameof(CanResolve));
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MetadataFilterAttribute"/> class.
@@ -150,8 +150,8 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
         var hasMany = elementType != parameter.ParameterType;
 
         return hasMany
-            ? FilterAllMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value })
-            : FilterOneMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value });
+            ? _filterAllMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value })
+            : _filterOneMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value });
     }
 
     /// <summary>
@@ -179,7 +179,7 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
         var elementType = GetElementType(parameter.ParameterType);
 
         // CanResolveMethod always returns a value.
-        return (bool)CanResolveMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value })!;
+        return (bool)_canResolveMethod.MakeGenericMethod(elementType).Invoke(null, new[] { context, Key, Value })!;
     }
 
     private static Type GetElementType(Type type)

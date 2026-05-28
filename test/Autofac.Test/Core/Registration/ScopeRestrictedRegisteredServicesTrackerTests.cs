@@ -10,7 +10,7 @@ namespace Autofac.Test.Core.Registration;
 
 public sealed class ScopeRestrictedRegisteredServicesTrackerTests
 {
-    private static readonly IComponentRegistration ObjectRegistration =
+    private static readonly IComponentRegistration _objectRegistration =
         RegistrationBuilder.ForType<object>().SingleInstance().CreateRegistration();
 
     private class ObjectRegistrationSource : IRegistrationSource
@@ -19,7 +19,7 @@ public sealed class ScopeRestrictedRegisteredServicesTrackerTests
             Service service,
             Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
         {
-            yield return ObjectRegistration;
+            yield return _objectRegistration;
         }
 
         public bool IsAdapterForIndividualComponents => false;
@@ -50,7 +50,7 @@ public sealed class ScopeRestrictedRegisteredServicesTrackerTests
 
         using var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
 
-        builder.Register(ObjectRegistration);
+        builder.Register(_objectRegistration);
 
         var registry = builder.Build();
 

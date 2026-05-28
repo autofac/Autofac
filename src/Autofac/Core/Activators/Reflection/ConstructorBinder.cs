@@ -13,7 +13,7 @@ namespace Autofac.Core.Activators.Reflection;
 /// </summary>
 public class ConstructorBinder
 {
-    private static readonly Func<ConstructorInfo, Func<object?[], object>> FactoryBuilder = GetConstructorInvoker;
+    private static readonly Func<ConstructorInfo, Func<object?[], object>> _factoryBuilder = GetConstructorInvoker;
 
     private readonly ParameterInfo[] _constructorArgs;
     private readonly Func<object?[], object>? _factory;
@@ -39,7 +39,7 @@ public class ConstructorBinder
             var factoryCache = ReflectionCacheSet.Shared.Internal.ConstructorBinderFactory;
 
             // Build the invoker.
-            _factory = factoryCache.GetOrAdd(constructorInfo, FactoryBuilder);
+            _factory = factoryCache.GetOrAdd(constructorInfo, _factoryBuilder);
         }
     }
 

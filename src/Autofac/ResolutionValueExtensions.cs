@@ -11,7 +11,7 @@ namespace Autofac;
 /// </summary>
 public static class ResolutionValueExtensions
 {
-    private static readonly IEnumerable<Parameter> NoParameters = Enumerable.Empty<Parameter>();
+    private static readonly IEnumerable<Parameter> _noParameters = Enumerable.Empty<Parameter>();
 
     /// <summary>
     /// Retrieve a service from the context, or null if the service is not
@@ -28,7 +28,7 @@ public static class ResolutionValueExtensions
     public static TService? ResolveOptional<TService>(this IComponentContext context)
         where TService : struct
     {
-        return ResolveOptional<TService>(context, NoParameters);
+        return ResolveOptional<TService>(context, _noParameters);
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public static class ResolutionValueExtensions
     public static TService? ResolveOptionalKeyed<TService>(this IComponentContext context, object serviceKey)
         where TService : struct
     {
-        return context.ResolveOptionalKeyed<TService>(serviceKey, NoParameters);
+        return context.ResolveOptionalKeyed<TService>(serviceKey, _noParameters);
     }
 
     /// <summary>

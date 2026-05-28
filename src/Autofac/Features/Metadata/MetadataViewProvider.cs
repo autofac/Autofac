@@ -10,11 +10,11 @@ using Autofac.Core;
 namespace Autofac.Features.Metadata;
 
 /// <summary>
-/// Helper methods for creating a metadata access function that retrieves typed metdata from a dictionary.
+/// Helper methods for creating a metadata access function that retrieves typed metadata from a dictionary.
 /// </summary>
 internal static class MetadataViewProvider
 {
-    private static readonly MethodInfo GetMetadataValueMethod = typeof(MetadataViewProvider).GetDeclaredMethod(nameof(GetMetadataValue));
+    private static readonly MethodInfo _getMetadataValueMethod = typeof(MetadataViewProvider).GetDeclaredMethod(nameof(GetMetadataValue));
 
     /// <summary>
     /// Generate a provider function that takes a dictionary of metadata, and outputs a typed metadata object.
@@ -68,7 +68,7 @@ internal static class MetadataViewProvider
             {
                 var dva = Expression.Constant(prop.GetCustomAttribute<DefaultValueAttribute>(false), typeof(DefaultValueAttribute));
                 var name = Expression.Constant(prop.Name, typeof(string));
-                var m = GetMetadataValueMethod.MakeGenericMethod(prop.PropertyType);
+                var m = _getMetadataValueMethod.MakeGenericMethod(prop.PropertyType);
                 var assign = Expression.Assign(
                     Expression.Property(resultVar, prop),
                     Expression.Call(null, m, providerArg, name, dva));

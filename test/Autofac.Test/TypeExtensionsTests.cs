@@ -133,14 +133,14 @@ public class TypeExtensionsTests
     {
         // Values here to ensure constructors get used and not
         // optimized out by the compiler.
-        private static readonly Guid StaticValue;
+        private static readonly Guid _staticValue;
 
         private readonly Guid _instanceValue;
 
         [SuppressMessage("CA1810", "CA1810", Justification = "Static constructor for test purposes.")]
         static DeclaredConstructorType()
         {
-            StaticValue = Guid.NewGuid();
+            _staticValue = Guid.NewGuid();
         }
 
         public DeclaredConstructorType()

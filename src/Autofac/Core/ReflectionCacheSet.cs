@@ -12,7 +12,7 @@ namespace Autofac.Core;
 /// </summary>
 public sealed class ReflectionCacheSet
 {
-    private static readonly object CacheAllocationLock = new();
+    private static readonly object _cacheAllocationLock = new();
 
     private static WeakReference<ReflectionCacheSet>? _sharedSet;
 
@@ -42,7 +42,7 @@ public sealed class ReflectionCacheSet
         {
             if (!TryGetSharedCache(out var sharedCache))
             {
-                lock (CacheAllocationLock)
+                lock (_cacheAllocationLock)
                 {
                     // Check the cache again inside the lock, another thread may have updated it.
                     if (!TryGetSharedCache(out sharedCache))

@@ -66,77 +66,77 @@ public class ResolutionExtensionsTests
         var cb = new ContainerBuilder();
         cb.RegisterType<Parameterized>();
         var container = cb.Build();
-        const string param1 = "Hello";
-        const int param2 = 42;
+        const string Param1 = "Hello";
+        const int Param2 = 42;
         var result = container.ResolveOptional<Parameterized>(
-            new NamedParameter("a", param1),
-            new NamedParameter("b", param2));
+            new NamedParameter("a", Param1),
+            new NamedParameter("b", Param2));
         Assert.NotNull(result);
-        Assert.Equal(param1, result.A);
-        Assert.Equal(param2, result.B);
+        Assert.Equal(Param1, result.A);
+        Assert.Equal(Param2, result.B);
     }
 
     [Fact]
     public void WhenPredicateAndValueParameterSupplied_PassedToComponent()
     {
-        const string a = "Hello";
-        const int b = 42;
+        const string A = "Hello";
+        const int B = 42;
         var builder = new ContainerBuilder();
 
         builder.RegisterType<Parameterized>()
             .WithParameter(
                 (pi, c) => pi.Name == "a",
-                (pi, c) => a)
+                (pi, c) => A)
             .WithParameter(
                 (pi, c) => pi.Name == "b",
-                (pi, c) => b);
+                (pi, c) => B);
 
         var container = builder.Build();
         var result = container.Resolve<Parameterized>();
 
-        Assert.Equal(a, result.A);
-        Assert.Equal(b, result.B);
+        Assert.Equal(A, result.A);
+        Assert.Equal(B, result.B);
     }
 
     [Fact]
     public void RegisterPropertyWithExpression()
     {
-        const string a = "Hello";
-        const bool b = true;
+        const string A = "Hello";
+        const bool B = true;
         var builder = new ContainerBuilder();
 
         builder.RegisterType<WithProps>()
-            .WithProperty(x => x.A, a)
-            .WithProperty(x => x.B, b);
+            .WithProperty(x => x.A, A)
+            .WithProperty(x => x.B, B);
 
         var container = builder.Build();
         var result = container.Resolve<WithProps>();
 
-        Assert.Equal(a, result.A);
-        Assert.Equal(b, result.B);
+        Assert.Equal(A, result.A);
+        Assert.Equal(B, result.B);
     }
 
     [Fact]
     public void RegisterPropertyWithExpressionFieldExceptions()
     {
-        const string a = "Hello";
+        const string A = "Hello";
         var builder = new ContainerBuilder();
 
         Assert.Throws<ArgumentOutOfRangeException>(() =>
-            builder.RegisterType<WithProps>().WithProperty(x => x._field, a));
+            builder.RegisterType<WithProps>().WithProperty(x => x._field, A));
     }
 
     [Fact]
     public void WhenServiceIsRegistered_TryResolveNamedReturnsTrue()
     {
-        const string name = "name";
+        const string Name = "name";
 
         var cb = new ContainerBuilder();
-        cb.RegisterType<object>().Named<object>(name);
+        cb.RegisterType<object>().Named<object>(Name);
 
         var container = cb.Build();
 
-        Assert.True(container.TryResolveNamed<object>(name, out var o));
+        Assert.True(container.TryResolveNamed<object>(Name, out var o));
         Assert.NotNull(o);
     }
 

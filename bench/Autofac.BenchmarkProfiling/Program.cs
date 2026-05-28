@@ -84,7 +84,7 @@ internal class Program
 
         // Workload method is generated differently when BenchmarkDotNet actually runs; we'll need to wrap it in the set of parameters.
         // It's way slower than they way they do it, but it should still give us good profiler results.
-        void workloadAction(int repeat)
+        void WorkloadAction(int repeat)
         {
             while (repeat > 0)
             {
@@ -96,13 +96,13 @@ internal class Program
         setupAction.InvokeSingle();
 
         // Warmup.
-        workloadAction(100);
+        WorkloadAction(100);
 
         // Now start a new thread.
         var runThread = new Thread(new ThreadStart(() =>
         {
             // Do a lot.
-            workloadAction(10000);
+            WorkloadAction(10000);
         }))
         {
             Name = "Workload Thread"
