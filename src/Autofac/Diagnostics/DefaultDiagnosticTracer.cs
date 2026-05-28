@@ -234,7 +234,7 @@ public class DefaultDiagnosticTracer : OperationDiagnosticTracerBase<string>
     /// <summary>
     /// Provides a string builder that auto-indents lines.
     /// </summary>
-    private class IndentingStringBuilder
+    private sealed class IndentingStringBuilder
     {
         private const int IndentSize = 2;
 

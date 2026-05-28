@@ -27,7 +27,7 @@ internal class ExternalComponentRegistration : ComponentRegistration
         return Target.ResolvePipeline;
     }
 
-    private class NoOpActivator : IInstanceActivator
+    private sealed class NoOpActivator : IInstanceActivator
     {
         public NoOpActivator(Type limitType)
         {
