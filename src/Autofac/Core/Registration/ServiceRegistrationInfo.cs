@@ -256,8 +256,8 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
 
         registration = _defaultImplementation ??= _fixedRegistration ??
                                                   _defaultImplementations.LastOrDefault() ??
-                                                  _sourceImplementations?.First() ??
-                                                  _preserveDefaultImplementations?.First();
+                                                  (_sourceImplementations?.Count > 0 ? _sourceImplementations[0] : null) ??
+                                                  (_preserveDefaultImplementations?.Count > 0 ? _preserveDefaultImplementations[0] : null);
 
         return registration is not null;
     }
