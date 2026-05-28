@@ -1,16 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac assemblies." ToolsVersion="16.0">
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac test assemblies." ToolsVersion="16.0">
   <IncludeAll Action="Warning" />
-  <Rules AnalyzerId="Microsoft.Usage" RuleNamespace="Microsoft.Usage">
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.Analyzers" RuleNamespace="Microsoft.CodeAnalysis.Analyzers">
     <!-- Avoid excessive parameters on generic types (must be explicitly enabled). -->
     <Rule Id="CA1005" Action="Warning" />
-    <!-- Don't catch general exceptions - test scenarios sometimes require general exception handling. -->
+    <!-- Don't catch general exceptions - test scenarios sometimes require it. -->
     <Rule Id="CA1031" Action="None" />
-    <!-- Implement standard exception constructors - not all of the exception constructors (e.g., parameterless) are desired in our system. -->
-    <Rule Id="CA1032" Action="None" />
-    <!-- Avoid empty interfaces - in unit tests for service resolution, this happens a lot. -->
+    <!-- Avoid empty interfaces - happens a lot in unit tests for service resolution. -->
     <Rule Id="CA1040" Action="None" />
-    <!-- Do not pass literals as localized parameters  - tests don't need to localize. -->
+    <!-- Do not pass literals as localized parameters - tests don't need to localize. -->
     <Rule Id="CA1303" Action="None" />
     <!-- Avoid excessive inheritance (must be explicitly enabled). -->
     <Rule Id="CA1501" Action="Warning" />
@@ -20,36 +18,46 @@
     <Rule Id="CA1505" Action="Warning" />
     <!-- Avoid excessive class coupling (must be explicitly enabled). -->
     <Rule Id="CA1506" Action="Warning" />
-    <!-- Use ArgumentNullException.ThrowIfNull - this isn't available until we stop targeting netstandard. -->
-    <Rule Id="CA1510" Action="None" />
-    <!-- Make API types internal - causes problems with tests and test assemblies. -->
+    <!-- Make API types internal - causes problems with tests. -->
     <Rule Id="CA1515" Action="None" />
-    <!-- Remove the underscores from member name - unit test scenarios may use underscores. -->
+    <!-- Remove underscores from member name - test naming conventions use underscore. -->
     <Rule Id="CA1707" Action="None" />
-    <!-- Change names to avoid reserved word overlaps (e.g., Delegate, GetType, etc.) - too many of these in the public API, we'd break if we fixed it. -->
-    <Rule Id="CA1716" Action="None" />
-    <!-- Internal class that appears to never be instantiated - lots of false positives here because they're test stubs created by Autofac registrations. -->
+    <!-- Internal class that appears to never be instantiated - false positives from DI. -->
     <Rule Id="CA1812" Action="None" />
-    <!-- Change Dispose() to call GC.SuppressFinalize - in tests we don't really care and it can impact readability. -->
+    <!-- Change Dispose() to call GC.SuppressFinalize - unimportant in tests. -->
     <Rule Id="CA1816" Action="None" />
-    <!-- Mark members static - test methods may not access member data but also can't be static. -->
+    <!-- Mark members static - test methods may not access member data. -->
     <Rule Id="CA1822" Action="None" />
-    <!-- Seal internal types for performance - in tests we don't really care and it gets painful to enforce. -->
+    <!-- Use the LoggerMessage delegates - noise in tests, performance irrelevant. -->
+    <Rule Id="CA1848" Action="None" />
+    <!-- Seal internal types - unimportant in tests. -->
     <Rule Id="CA1852" Action="None" />
-    <!-- Prefer static readonly fields over constant array arguments - constant array arguments happen a lot in unit tests for assertions and test setup. -->
+    <!-- Prefer static readonly fields over constant arrays - happens in test setup. -->
     <Rule Id="CA1861" Action="None" />
-    <!-- Cache a CompositeFormat object for use in String.Format - this makes unit tests harder to read, and performance isn't an issue. -->
+    <!-- Cache a CompositeFormat - makes tests harder to read. -->
     <Rule Id="CA1863" Action="None" />
-    <!-- Call ConfigureAwait on tasks - you shouldn't do this in unit test libraries; XUnit has an opposite analyzer. -->
+    <!-- Call ConfigureAwait - shouldn't in test libraries; XUnit has opposing analyzer. -->
     <Rule Id="CA2007" Action="None" />
-    <!-- Implement serialization constructors - false positive when building .NET Core. -->
+    <!-- Implement serialization constructors - false positive in .NET Core. -->
     <Rule Id="CA2229" Action="None" />
     <!-- Use Uri instead of string parameters - strings are easier for testing. -->
     <Rule Id="CA2234" Action="None" />
-    <!-- Mark ISerializable types with SerializableAttribute - false positive when building .NET Core. -->
+    <!-- Mark ISerializable types with SerializableAttribute - false positive in .NET Core. -->
     <Rule Id="CA2237" Action="None" />
-    <!-- Prefer generic overloads to using Type parameters - we do a lot of reflection work in Autofac that needs to be tested. -->
+    <!-- Prefer generic overloads - reflection work in Autofac needs to be tested. -->
     <Rule Id="CA2263" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
+    <!-- Don't use hardcoded paths or URIs - needed in several test cases. -->
+    <Rule Id="S1075" Action="None" />
+    <!-- Complete the TODO - acceptable in tests for backlog items. -->
+    <Rule Id="S1135" Action="None" />
+    <!-- Make instance property static - false positives in data/document types. -->
+    <Rule Id="S2335" Action="None" />
+    <!-- Cognitive complexity (must be explicitly enabled). -->
+    <Rule Id="S3776" Action="Warning" />
+    <!-- Set route attributes at top of controller - false positive. -->
+    <Rule Id="S6934" Action="None" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <!-- Prefix local calls with this. -->
@@ -58,11 +66,11 @@
     <Rule Id="SA1121" Action="None" />
     <!-- Use String.Empty instead of "". -->
     <Rule Id="SA1122" Action="None" />
-    <!-- Enforce order of class members by member type - sometimes putting test classes/data by the test helps. -->
+    <!-- Enforce order of class members by member type. -->
     <Rule Id="SA1201" Action="None" />
-    <!-- Enforce order of class members by member visibility - sometimes putting test classes/data by the test helps. -->
+    <!-- Enforce order of class members by visibility. -->
     <Rule Id="SA1202" Action="None" />
-    <!-- Enforce order of static vs. non-static members - sometimes putting test classes/data by the test helps. -->
+    <!-- Enforce order of static vs. non-static members. -->
     <Rule Id="SA1204" Action="None" />
     <!-- Fields can't start with underscore. -->
     <Rule Id="SA1309" Action="None" />
@@ -82,6 +90,13 @@
     <Rule Id="SA1618" Action="None" />
     <!-- Don't copy/paste documentation. -->
     <Rule Id="SA1625" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="xUnit" RuleNamespace="xUnit">
+    <!-- Use Assert.Single when there's only one collection entry. -->
+    <Rule Id="xUnit2023" Action="Warning" />
+  </Rules>
+  <!-- IDE rules for test assemblies. -->
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp" RuleNamespace="Microsoft.CodeAnalysis.CSharp">
     <!-- Private member is unused - tests for reflection require members that may not get used. -->
     <Rule Id="IDE0051" Action="None" />
     <!-- Private member assigned value never read - tests for reflection require values that may not get used. -->
