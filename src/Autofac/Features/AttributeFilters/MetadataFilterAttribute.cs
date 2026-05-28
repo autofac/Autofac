@@ -72,7 +72,7 @@ namespace Autofac.Features.AttributeFilters;
 /// var explorer = container.Resolve&lt;SolutionExplorer&gt;();
 /// </code>
 /// </example>
-[SuppressMessage("Microsoft.Design", "CA1018:MarkAttributesWithAttributeUsage", Justification = "Allowing the inherited AttributeUsageAttribute to be used avoids accidental override or conflict at this level.")]
+[AttributeUsage(AttributeTargets.Parameter)]
 public sealed class MetadataFilterAttribute : ParameterFilterAttribute
 {
     private static readonly MethodInfo _filterOneMethod = typeof(MetadataFilterAttribute).GetDeclaredMethod(nameof(FilterOne));
