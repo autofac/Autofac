@@ -42,6 +42,8 @@
     <Rule Id="CA2234" Action="None" />
     <!-- Mark ISerializable types with SerializableAttribute - false positive in .NET Core. -->
     <Rule Id="CA2237" Action="None" />
+    <!-- Nested types should not be visible - test scenario classes use nested types extensively. -->
+    <Rule Id="CA1034" Action="None" />
     <!-- Prefer generic overloads - reflection work in Autofac needs to be tested. -->
     <Rule Id="CA2263" Action="None" />
   </Rules>
