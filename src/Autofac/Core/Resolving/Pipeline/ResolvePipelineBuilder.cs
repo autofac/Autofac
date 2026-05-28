@@ -56,30 +56,30 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
     }
 
     /// <inheritdoc/>
-    public IResolvePipelineBuilder Use(IResolveMiddleware stage, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+    public IResolvePipelineBuilder Use(IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
     {
-        if (stage is null)
+        if (middleware is null)
         {
-            throw new ArgumentNullException(nameof(stage));
+            throw new ArgumentNullException(nameof(middleware));
         }
 
-        AddStage(stage, insertionMode);
+        AddStage(middleware, insertionMode);
 
         return this;
     }
 
     /// <inheritdoc/>
-    public IResolvePipelineBuilder UseRange(IEnumerable<IResolveMiddleware> stages, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+    public IResolvePipelineBuilder UseRange(IEnumerable<IResolveMiddleware> middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
     {
-        if (stages is null)
+        if (middleware is null)
         {
-            throw new ArgumentNullException(nameof(stages));
+            throw new ArgumentNullException(nameof(middleware));
         }
 
         // Use multiple stages.
         // Start at the beginning.
         var currentStage = _first;
-        using var enumerator = stages.GetEnumerator();
+        using var enumerator = middleware.GetEnumerator();
 
         if (!enumerator.MoveNext())
         {

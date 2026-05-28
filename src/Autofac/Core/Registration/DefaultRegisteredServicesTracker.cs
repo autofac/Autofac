@@ -174,7 +174,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     }
 
     /// <inheritdoc/>
-    public bool TryGetServiceRegistration(Service service, out ServiceRegistration serviceData)
+    public bool TryGetServiceRegistration(Service service, out ServiceRegistration serviceRegistration)
     {
         if (service == null)
         {
@@ -185,11 +185,11 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
 
         if (info.TryGetRegistration(out var registration))
         {
-            serviceData = new ServiceRegistration(info.ServicePipeline, registration);
+            serviceRegistration = new ServiceRegistration(info.ServicePipeline, registration);
             return true;
         }
 
-        serviceData = default;
+        serviceRegistration = default;
         return false;
     }
 

@@ -172,8 +172,8 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     }
 
     /// <inheritdoc/>
-    public void AddServiceMiddlewareSource(IServiceMiddlewareSource servicePipelineSource)
-        => _registeredServicesTracker.AddServiceMiddlewareSource(servicePipelineSource);
+    public void AddServiceMiddlewareSource(IServiceMiddlewareSource serviceMiddlewareSource)
+        => _registeredServicesTracker.AddServiceMiddlewareSource(serviceMiddlewareSource);
 
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
