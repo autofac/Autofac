@@ -17,7 +17,6 @@ namespace Autofac;
 [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "RegistrationBuilder is where all registration syntax lives.")]
 public static partial class RegistrationExtensions
 {
-
     /// <summary>
     /// Decorate all components implementing service <typeparamref name="TService"/>
     /// using the provided <paramref name="decorator"/> function.
