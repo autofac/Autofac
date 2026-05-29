@@ -32,6 +32,8 @@
   <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
     <!-- "Sonar Way" rules to match SonarQube scans. -->
     <Rule Id="S107" Action="Warning" />
+    <!-- Do not use obsolete members - Autofac maintains deprecated APIs for backward compat. -->
+    <Rule Id="S1133" Action="None" />
     <Rule Id="S1192" Action="Warning" />
     <Rule Id="S1313" Action="Warning" />
     <Rule Id="S2259" Action="Warning" />

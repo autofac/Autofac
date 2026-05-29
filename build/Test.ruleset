@@ -55,6 +55,8 @@
     <!-- Don't call GC.Collect - required for weak reference and disposal tests. -->
     <Rule Id="S1215" Action="None" />
     <!-- Remove unused private members - reflection tests need non-public members. -->
+    <!-- Do not use obsolete members - tests exercise deprecated APIs to verify backward compat. -->
+    <Rule Id="S1133" Action="None" />
     <Rule Id="S1144" Action="None" />
     <!-- Empty method bodies - test stubs often have no-op implementations. -->
     <Rule Id="S1186" Action="None" />
