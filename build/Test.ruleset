@@ -23,6 +23,10 @@
     <!-- Remove underscores from member name - test naming conventions use underscore. -->
     <Rule Id="CA1707" Action="None" />
     <!-- Internal class that appears to never be instantiated - false positives from DI. -->
+    <!-- Identifiers should not have incorrect suffix - test classes use Impl, Handler, etc. -->
+    <Rule Id="CA1711" Action="None" />
+    <!-- Property names should not match get methods - aggregate service tests intentionally test both. -->
+    <Rule Id="CA1721" Action="None" />
     <Rule Id="CA1812" Action="None" />
     <!-- Change Dispose() to call GC.SuppressFinalize - unimportant in tests. -->
     <Rule Id="CA1816" Action="None" />
@@ -55,6 +59,8 @@
     <!-- Don't use hardcoded paths or URIs - needed in several test cases. -->
     <Rule Id="S1075" Action="None" />
     <!-- Utility class should not be instantiated - test fixture classes with nested tests can't be static. -->
+    <!-- Sections of code should not be commented out - test files may retain commented examples. -->
+    <Rule Id="S125" Action="None" />
     <Rule Id="S1118" Action="None" />
     <!-- Don't call GC.Collect - required for weak reference and disposal tests. -->
     <Rule Id="S1215" Action="None" />
