@@ -152,6 +152,7 @@ internal static class AutowiringPropertyInjector
         }
     }
 
+    [SuppressMessage("S125", "S125", Justification = "Commented code explains the code generation output.")]
     private static Action<object, object?> MakeFastPropertySetter(PropertyInfo propertyInfo)
     {
         // SetMethod will be non-null if we're trying to make a setter for it.
