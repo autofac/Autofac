@@ -4,6 +4,8 @@
   <Rules AnalyzerId="Microsoft.CodeAnalysis.Analyzers" RuleNamespace="Microsoft.CodeAnalysis.Analyzers">
     <!-- Implement standard exception constructors - not all of the exception constructors are desired. -->
     <Rule Id="CA1032" Action="None" />
+    <!-- Implement IDisposable correctly (must be explicitly enabled). -->
+    <Rule Id="CA1063" Action="Warning" />
     <!-- Avoid excessive inheritance (must be explicitly enabled). -->
     <Rule Id="CA1501" Action="Warning" />
     <!-- Avoid excessive complexity (must be explicitly enabled). -->
@@ -44,6 +46,8 @@
     <!-- Loops should use LINQ - DI container hot paths intentionally avoid LINQ allocations. -->
     <Rule Id="S3267" Action="None" />
     <Rule Id="S3776" Action="Warning" />
+    <!-- IDisposable pattern - Autofac uses non-standard dispose patterns for container lifecycle. -->
+    <Rule Id="S3881" Action="None" />
     <!-- Split method for params check + iterator - overly prescriptive for our patterns. -->
     <Rule Id="S4456" Action="None" />
     <Rule Id="S6418" Action="Warning" />
