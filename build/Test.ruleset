@@ -39,6 +39,8 @@
     <!-- Call ConfigureAwait - shouldn't in test libraries; XUnit has opposing analyzer. -->
     <Rule Id="CA2007" Action="None" />
     <!-- Implement serialization constructors - false positive in .NET Core. -->
+    <!-- Do not raise reserved exception types - tests use generic exceptions for simulation. -->
+    <Rule Id="CA2201" Action="None" />
     <Rule Id="CA2229" Action="None" />
     <!-- Use Uri instead of string parameters - strings are easier for testing. -->
     <Rule Id="CA2234" Action="None" />
