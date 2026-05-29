@@ -122,6 +122,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
             _resetPosition = resetPosition;
         }
 
+        [SuppressMessage("S3877", "S3877", Justification = "The intent of this class is to manage a maximum stack depth, so throwing an exception if the stack is not empty when exiting the segment is appropriate.")]
         public void Dispose()
         {
             // If the stack 'next' is not just above the active segment base, then

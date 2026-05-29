@@ -23,6 +23,7 @@ public abstract class Service
     /// <param name="left">The left operand.</param>
     /// <param name="right">The right operand.</param>
     /// <returns>The result of the operator.</returns>
+    [SuppressMessage("S3875", "S3875", Justification = "Changing this is a breaking behavior change.")]
     public static bool operator ==(Service? left, Service? right)
     {
         return Equals(left, right);
