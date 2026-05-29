@@ -56,114 +56,45 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
     }
 
     /// <inheritdoc/>
-    public IResolvePipelineBuilder Use(IResolveMiddleware stage, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+    public IResolvePipelineBuilder Use(IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
     {
-        if (stage is null)
+        if (middleware is null)
         {
-            throw new ArgumentNullException(nameof(stage));
+            throw new ArgumentNullException(nameof(middleware));
         }
 
-        AddStage(stage, insertionMode);
+        AddStage(middleware, insertionMode);
 
         return this;
     }
 
     /// <inheritdoc/>
-    public IResolvePipelineBuilder UseRange(IEnumerable<IResolveMiddleware> stages, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
+    public IResolvePipelineBuilder UseRange(IEnumerable<IResolveMiddleware> middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
     {
-        if (stages is null)
+        if (middleware is null)
         {
-            throw new ArgumentNullException(nameof(stages));
+            throw new ArgumentNullException(nameof(middleware));
         }
 
         // Use multiple stages.
         // Start at the beginning.
         var currentStage = _first;
-        using var enumerator = stages.GetEnumerator();
+        using var enumerator = middleware.GetEnumerator();
 
         if (!enumerator.MoveNext())
         {
             return this;
         }
 
-        var nextNewStage = enumerator.Current;
-        var lastPhase = nextNewStage.Phase;
+        var lastPhase = enumerator.Current.Phase;
+        VerifyPhase(lastPhase);
 
-        VerifyPhase(nextNewStage.Phase);
-
-        while (currentStage is not null)
+        if (InsertRangeWithinExistingStages(enumerator, insertionMode, ref currentStage, ref lastPhase))
         {
-            if (insertionMode == MiddlewareInsertionMode.StartOfPhase
-                    ? currentStage.Middleware.Phase >= nextNewStage.Phase
-                    : currentStage.Middleware.Phase > nextNewStage.Phase)
-            {
-                var newDecl = new MiddlewareDeclaration(enumerator.Current);
-
-                if (currentStage.Previous is not null)
-                {
-                    // Insert the node.
-                    currentStage.Previous.Next = newDecl;
-                    newDecl.Next = currentStage;
-                    newDecl.Previous = currentStage.Previous;
-                    currentStage.Previous = newDecl;
-                }
-                else
-                {
-                    _first!.Previous = newDecl;
-                    newDecl.Next = _first;
-                    _first = newDecl;
-                }
-
-                currentStage = newDecl;
-
-                if (!enumerator.MoveNext())
-                {
-                    // Done.
-                    return this;
-                }
-
-                nextNewStage = enumerator.Current;
-
-                VerifyPhase(nextNewStage.Phase);
-
-                if (nextNewStage.Phase < lastPhase)
-                {
-                    throw new InvalidOperationException(ResolvePipelineBuilderMessages.MiddlewareMustBeInPhaseOrder);
-                }
-
-                lastPhase = nextNewStage.Phase;
-            }
-
-            currentStage = currentStage.Next;
+            return this;
         }
 
-        do
-        {
-            nextNewStage = enumerator.Current;
-
-            VerifyPhase(nextNewStage.Phase);
-
-            if (nextNewStage.Phase < lastPhase)
-            {
-                throw new InvalidOperationException(ResolvePipelineBuilderMessages.MiddlewareMustBeInPhaseOrder);
-            }
-
-            lastPhase = nextNewStage.Phase;
-
-            var newStageDecl = new MiddlewareDeclaration(nextNewStage);
-
-            if (_last is null)
-            {
-                _first = _last = newStageDecl;
-            }
-            else
-            {
-                newStageDecl.Previous = _last;
-                _last.Next = newStageDecl;
-                _last = newStageDecl;
-            }
-        }
-        while (enumerator.MoveNext());
+        AppendRemainingStages(enumerator, ref lastPhase);
 
         return this;
     }
@@ -209,117 +140,188 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
         var current = lastDecl;
         var currentInvoke = _terminateAction;
 
-        Action<ResolveRequestContext> Chain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
+        Action<ResolveRequestContext> BuildMiddlewareChain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
+        {
+            // MetricsEnabled is static readonly (set once at startup), so checking here
+            // at pipeline build time avoids a per-invocation branch in every middleware.
+            return AutofacMetrics.MetricsEnabled
+                ? BuildMetricsMiddlewareChain(next, stage)
+                : BuildStandardMiddlewareChain(next, stage);
+        }
+
+        Action<ResolveRequestContext> BuildMetricsMiddlewareChain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
+        {
+            var stagePhase = stage.Phase;
+            var stageName = stage.ToString()!;
+
+            // Metrics are captured around each stage execution while preserving
+            // diagnostics callbacks (if enabled for the current request).
+            return context => ExecuteWithDiagnostics(context, stage, () =>
+            {
+                context.PhaseReached = stagePhase;
+                var timer = ValueStopwatch.StartNew();
+                try
+                {
+                    stage.Execute(context, next);
+                }
+                finally
+                {
+                    AutofacMetrics.RecordMiddlewareExecution(stageName, timer.GetElapsedTime());
+                }
+            });
+        }
+
+        Action<ResolveRequestContext> BuildStandardMiddlewareChain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
         {
             var stagePhase = stage.Phase;
 
-            // MetricsEnabled is static readonly (set once at startup), so checking here
-            // at pipeline build time avoids a per-invocation branch in every middleware.
-            if (AutofacMetrics.MetricsEnabled)
+            // Hot path when execution metrics are disabled.
+            return context => ExecuteWithDiagnostics(context, stage, () =>
             {
-                var stageName = stage.ToString()!;
+                context.PhaseReached = stagePhase;
+                stage.Execute(context, next);
+            });
+        }
 
-                return (context) =>
-                {
-                    if (context.DiagnosticSource.IsEnabled())
-                    {
-                        context.DiagnosticSource.MiddlewareStart(context, stage);
-                        var succeeded = false;
-                        try
-                        {
-                            context.PhaseReached = stagePhase;
-                            var timer = ValueStopwatch.StartNew();
-                            try
-                            {
-                                stage.Execute(context, next);
-                            }
-                            finally
-                            {
-                                AutofacMetrics.RecordMiddlewareExecution(stageName, timer.GetElapsedTime());
-                            }
-
-                            succeeded = true;
-                        }
-                        finally
-                        {
-                            if (succeeded)
-                            {
-                                context.DiagnosticSource.MiddlewareSuccess(context, stage);
-                            }
-                            else
-                            {
-                                context.DiagnosticSource.MiddlewareFailure(context, stage);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        context.PhaseReached = stagePhase;
-                        var timer = ValueStopwatch.StartNew();
-                        try
-                        {
-                            stage.Execute(context, next);
-                        }
-                        finally
-                        {
-                            AutofacMetrics.RecordMiddlewareExecution(stageName, timer.GetElapsedTime());
-                        }
-                    }
-                };
+        static void ExecuteWithDiagnostics(ResolveRequestContext context, IResolveMiddleware stage, Action action)
+        {
+            // Same basic flow in if/else, but doing a one-time check for diagnostics
+            // and choosing the "diagnostics enabled" version vs. the more common
+            // "no diagnostics enabled" path: hot-path optimization.
+            if (!context.DiagnosticSource.IsEnabled())
+            {
+                action();
+                return;
             }
 
-            return (context) =>
+            context.DiagnosticSource.MiddlewareStart(context, stage);
+            var succeeded = false;
+            try
             {
-                // Same basic flow in if/else, but doing a one-time check for diagnostics
-                // and choosing the "diagnostics enabled" version vs. the more common
-                // "no diagnostics enabled" path: hot-path optimization.
-                if (context.DiagnosticSource.IsEnabled())
+                action();
+                succeeded = true;
+            }
+            finally
+            {
+                if (succeeded)
                 {
-                    context.DiagnosticSource.MiddlewareStart(context, stage);
-                    var succeeded = false;
-                    try
-                    {
-                        context.PhaseReached = stagePhase;
-                        stage.Execute(context, next);
-                        succeeded = true;
-                    }
-                    finally
-                    {
-                        if (succeeded)
-                        {
-                            context.DiagnosticSource.MiddlewareSuccess(context, stage);
-                        }
-                        else
-                        {
-                            context.DiagnosticSource.MiddlewareFailure(context, stage);
-                        }
-                    }
+                    context.DiagnosticSource.MiddlewareSuccess(context, stage);
                 }
                 else
                 {
-                    context.PhaseReached = stagePhase;
-                    stage.Execute(context, next);
+                    context.DiagnosticSource.MiddlewareFailure(context, stage);
                 }
-            };
+            }
         }
 
         while (current is not null)
         {
             var stage = current.Middleware;
-            currentInvoke = Chain(currentInvoke, stage);
+            currentInvoke = BuildMiddlewareChain(currentInvoke, stage);
             current = current.Previous;
         }
 
         return new ResolvePipeline(currentInvoke);
     }
 
-    private static string DescribeValidEnumRange(PipelinePhase start, PipelinePhase end)
+    private bool InsertRangeWithinExistingStages(
+        IEnumerator<IResolveMiddleware> enumerator,
+        MiddlewareInsertionMode insertionMode,
+        ref MiddlewareDeclaration? currentStage,
+        ref PipelinePhase lastPhase)
     {
-        var enumValues = Enum.GetValues(typeof(PipelinePhase))
-                             .Cast<PipelinePhase>()
-                             .Where(value => value >= start && value <= end);
+        while (currentStage is not null)
+        {
+            var shouldInsertBeforeCurrent = insertionMode == MiddlewareInsertionMode.StartOfPhase
+                ? currentStage.Middleware.Phase >= enumerator.Current.Phase
+                : currentStage.Middleware.Phase > enumerator.Current.Phase;
 
-        return string.Join(", ", enumValues);
+            if (shouldInsertBeforeCurrent)
+            {
+                var newDecl = new MiddlewareDeclaration(enumerator.Current);
+                InsertBefore(currentStage, newDecl);
+                currentStage = newDecl;
+
+                if (!MoveToNextStageAndVerify(enumerator, ref lastPhase))
+                {
+                    return true;
+                }
+            }
+
+            currentStage = currentStage.Next;
+        }
+
+        return false;
+    }
+
+    private void AppendRemainingStages(IEnumerator<IResolveMiddleware> enumerator, ref PipelinePhase lastPhase)
+    {
+        do
+        {
+            var nextNewStage = enumerator.Current;
+
+            VerifyPhase(nextNewStage.Phase);
+
+            if (nextNewStage.Phase < lastPhase)
+            {
+                throw new InvalidOperationException(ResolvePipelineBuilderMessages.MiddlewareMustBeInPhaseOrder);
+            }
+
+            lastPhase = nextNewStage.Phase;
+
+            var newStageDecl = new MiddlewareDeclaration(nextNewStage);
+            AppendDeclaration(newStageDecl);
+        }
+        while (enumerator.MoveNext());
+    }
+
+    private bool MoveToNextStageAndVerify(IEnumerator<IResolveMiddleware> enumerator, ref PipelinePhase lastPhase)
+    {
+        if (!enumerator.MoveNext())
+        {
+            return false;
+        }
+
+        var nextPhase = enumerator.Current.Phase;
+        VerifyPhase(nextPhase);
+
+        if (nextPhase < lastPhase)
+        {
+            throw new InvalidOperationException(ResolvePipelineBuilderMessages.MiddlewareMustBeInPhaseOrder);
+        }
+
+        lastPhase = nextPhase;
+        return true;
+    }
+
+    private void InsertBefore(MiddlewareDeclaration currentStage, MiddlewareDeclaration newDecl)
+    {
+        if (currentStage.Previous is not null)
+        {
+            // Insert the node.
+            currentStage.Previous.Next = newDecl;
+            newDecl.Next = currentStage;
+            newDecl.Previous = currentStage.Previous;
+            currentStage.Previous = newDecl;
+            return;
+        }
+
+        _first!.Previous = newDecl;
+        newDecl.Next = _first;
+        _first = newDecl;
+    }
+
+    private void AppendDeclaration(MiddlewareDeclaration newStageDecl)
+    {
+        if (_last is null)
+        {
+            _first = _last = newStageDecl;
+            return;
+        }
+
+        newStageDecl.Previous = _last;
+        _last.Next = newStageDecl;
+        _last = newStageDecl;
     }
 
     private void AddStage(IResolveMiddleware stage, MiddlewareInsertionMode insertionLocation)
@@ -386,6 +388,15 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
 
     private void VerifyPhase(PipelinePhase middlewarePhase)
     {
+        static string DescribeValidEnumRange(PipelinePhase start, PipelinePhase end)
+        {
+            var enumValues = Enum.GetValues(typeof(PipelinePhase))
+                                 .Cast<PipelinePhase>()
+                                 .Where(value => value >= start && value <= end);
+
+            return string.Join(", ", enumValues);
+        }
+
         if (Type == PipelineType.Service)
         {
             if (middlewarePhase > PipelinePhase.ServicePipelineEnd)

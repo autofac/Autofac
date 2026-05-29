@@ -19,7 +19,7 @@ public class AutofacCompile
     private readonly List<MetadataReference> _references = new()
     {
         // Bring in the appropriate SDK package
-        MetadataReference.CreateFromFile(Assembly.Load(typeof(ContainerBuilder).Assembly.GetReferencedAssemblies().First()).Location),
+        MetadataReference.CreateFromFile(Assembly.Load(typeof(ContainerBuilder).Assembly.GetReferencedAssemblies()[0]).Location),
         MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
         MetadataReference.CreateFromFile(typeof(AssemblyTargetedPatchBandAttribute).Assembly.Location),
         MetadataReference.CreateFromFile(typeof(ContainerBuilder).Assembly.Location),
@@ -43,7 +43,7 @@ public class AutofacCompile
 
         Assert.True(warnings.Count > 0);
 
-        var firstWarning = warnings.First();
+        var firstWarning = warnings[0];
 
         foreach (var expected in expectedKeyWords)
         {

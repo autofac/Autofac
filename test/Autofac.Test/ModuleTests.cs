@@ -139,6 +139,7 @@ public class ModuleTests
                 c.RegisterType(typeof(Service1));
             }))
             {
+                // Intentionally empty - testing module registration behavior.
             }
         }
     }
@@ -169,7 +170,7 @@ public class ModuleTests
     public void IndirectlyDerivedModulesCannotUseThisAssembly()
     {
         var module = new ModuleIndirectlyExposingThisAssembly();
-        Assert.Throws<InvalidOperationException>(() => { var unused = module.ModuleThisAssembly; });
+        Assert.Throws<InvalidOperationException>(() => { _ = module.ModuleThisAssembly; });
     }
 
     internal class PropertySetModule : Module

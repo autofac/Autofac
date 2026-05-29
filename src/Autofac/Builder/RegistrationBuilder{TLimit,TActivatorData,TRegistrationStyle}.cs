@@ -34,12 +34,12 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
             throw new ArgumentNullException(nameof(defaultService));
         }
 
-        if (activatorData == null)
+        if (object.Equals(activatorData, default(TActivatorData)))
         {
             throw new ArgumentNullException(nameof(activatorData));
         }
 
-        if (style == null)
+        if (object.Equals(style, default(TRegistrationStyle)))
         {
             throw new ArgumentNullException(nameof(style));
         }
@@ -578,7 +578,7 @@ internal class RegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> :
     /// <param name="propertySelector">Selector to determine which properties should be injected.</param>
     /// <param name="allowCircularDependencies">Determine if circular dependencies should be allowed or not.</param>
     /// <returns>A registration builder allowing further configuration of the component.</returns>
-    public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(IPropertySelector propertySelector, bool allowCircularDependencies)
+    public IRegistrationBuilder<TLimit, TActivatorData, TRegistrationStyle> PropertiesAutowired(IPropertySelector propertySelector, bool allowCircularDependencies = false)
     {
         ResolvePipeline.Use(nameof(PropertiesAutowired), PipelinePhase.Activation, (context, next) =>
         {

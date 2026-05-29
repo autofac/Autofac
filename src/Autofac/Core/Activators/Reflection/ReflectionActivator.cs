@@ -94,71 +94,16 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             throw new ArgumentNullException(nameof(pipelineBuilder));
         }
 
-        // The RequiredMemberAttribute (may)* have Inherit = false on its AttributeUsage options,
-        // so walk the tree.
-        // (*): see `HasRequiredMemberAttribute` doc for why we dont really know much about the concrete attribute.
-        _anyRequiredMembers = ReflectionCacheSet.Shared.Internal.HasRequiredMemberAttribute.GetOrAdd(
-            _implementationType,
-            static t =>
-            {
-                for (var currentType = t; currentType is not null && currentType != typeof(object); currentType = currentType.BaseType)
-                {
-                    if (currentType.HasRequiredMemberAttribute())
-                    {
-                        return true;
-                    }
-                }
+        // Precompute required-member and settable-property metadata once at build time.
+        _anyRequiredMembers = HasAnyRequiredMembers();
+        InitializeInjectablePropertySet();
 
-                return false;
-            });
+        // Build constructor binders once; runtime activation reuses them.
+        var binders = CreateConstructorBinders();
 
-        if (_anyRequiredMembers || _configuredProperties.Length > 0)
+        if (TryConfigureSingleConstructorActivation(pipelineBuilder, binders))
         {
-            // Get the full set of properties.
-            var actualProperties = _implementationType
-                .GetRuntimeProperties()
-                .Where(pi => pi.CanWrite)
-                .ToList();
-
-            _defaultFoundPropertySet = new InjectablePropertyState[actualProperties.Count];
-
-            for (var idx = 0; idx < actualProperties.Count; idx++)
-            {
-                _defaultFoundPropertySet[idx] = new InjectablePropertyState(new InjectableProperty(actualProperties[idx]));
-            }
-        }
-
-        // Locate the possible constructors at container build time.
-        var availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
-
-        if (availableConstructors.Length == 0)
-        {
-            throw new NoConstructorsFoundException(_implementationType, ConstructorFinder);
-        }
-
-        var binders = new ConstructorBinder[availableConstructors.Length];
-
-        for (var idx = 0; idx < availableConstructors.Length; idx++)
-        {
-            binders[idx] = new ConstructorBinder(availableConstructors[idx]);
-        }
-
-        if (binders.Length == 1)
-        {
-            UseSingleConstructorActivation(pipelineBuilder, binders[0]);
-
             return;
-        }
-        else if (ConstructorSelector is IConstructorSelectorWithEarlyBinding earlyBindingSelector)
-        {
-            var matchedConstructor = earlyBindingSelector.SelectConstructorBinder(binders);
-
-            if (matchedConstructor is not null)
-            {
-                UseSingleConstructorActivation(pipelineBuilder, matchedConstructor);
-
-                return;
-            }
         }
 
         _constructorBinders = binders;
@@ -212,80 +157,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     {
         if (singleConstructor.ParameterCount == 0)
         {
-            var constructorInvoker = singleConstructor.GetConstructorInvoker() ?? throw new NoConstructorsFoundException(_implementationType, ConstructorFinder);
-
-            // If there are no arguments to the constructor, bypass all argument binding and pre-bind the constructor.
-            var boundConstructor = BoundConstructor.ForBindSuccess(
-                singleConstructor,
-                constructorInvoker,
-                Array.Empty<Func<object?>>());
-
-            // Fast-path to just create an instance.
-            pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (context, next) =>
-            {
-                CheckNotDisposed();
-
-                var recordMetrics = AutofacMetrics.MetricsEnabled;
-                ValueStopwatch instrumentationTimer = default;
-                if (recordMetrics)
-                {
-                    instrumentationTimer = ValueStopwatch.StartNew();
-                }
-
-                var instance = boundConstructor.Instantiate();
-
-                if (ShouldInjectProperties(boundConstructor))
-                {
-                    var prioritizedParameters = GetAllParameters(context.Parameters);
-                    InjectProperties(instance, context, boundConstructor, prioritizedParameters);
-                }
-
-                context.Instance = instance;
-
-                if (recordMetrics)
-                {
-                    AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.GetElapsedTime());
-                }
-
-                next(context);
-            });
+            ConfigureZeroParameterConstructorActivation(pipelineBuilder, singleConstructor);
+            return;
         }
-        else
-        {
-            pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (context, next) =>
-            {
-                CheckNotDisposed();
 
-                var recordMetrics = AutofacMetrics.MetricsEnabled;
-                ValueStopwatch instrumentationTimer = default;
-                if (recordMetrics)
-                {
-                    instrumentationTimer = ValueStopwatch.StartNew();
-                }
-
-                var prioritizedParameters = GetAllParameters(context.Parameters);
-
-                var bound = singleConstructor.Bind(prioritizedParameters, context);
-
-                if (!bound.CanInstantiate)
-                {
-                    throw new DependencyResolutionException(GetBindingFailureMessage(new[] { bound }));
-                }
-
-                var instance = bound.Instantiate();
-
-                InjectProperties(instance, context, bound, prioritizedParameters);
-
-                context.Instance = instance;
-
-                if (recordMetrics)
-                {
-                    AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.GetElapsedTime());
-                }
-
-                next(context);
-            });
-        }
+        ConfigureBoundSingleConstructorActivation(pipelineBuilder, singleConstructor);
     }
 
     /// <summary>
@@ -438,7 +314,183 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
 
         var workingSetOfProperties = (InjectablePropertyState[])_defaultFoundPropertySet!.Clone();
+        ApplyConfiguredProperties(instance, context, workingSetOfProperties);
 
+        if (!ShouldValidateRequiredProperties(constructor))
+        {
+            return;
+        }
+
+        ValidateRequiredProperties(instance, context, allParameters, workingSetOfProperties);
+    }
+
+    private bool HasAnyRequiredMembers()
+    {
+        var implementationType = _implementationType;
+
+        return ReflectionCacheSet.Shared.Internal.HasRequiredMemberAttribute.GetOrAdd(
+            implementationType,
+            static t =>
+            {
+                // The RequiredMemberAttribute (may)* have Inherit = false on its AttributeUsage options,
+                // so walk the tree.
+                // (*): see `HasRequiredMemberAttribute` doc for why we dont really know much about the concrete attribute.
+                for (var currentType = t; currentType is not null && currentType != typeof(object); currentType = currentType.BaseType)
+                {
+                    if (currentType.HasRequiredMemberAttribute())
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+    }
+
+    private void InitializeInjectablePropertySet()
+    {
+        if (!_anyRequiredMembers && _configuredProperties.Length == 0)
+        {
+            return;
+        }
+
+        // Get the full set of properties.
+        var actualProperties = _implementationType
+            .GetRuntimeProperties()
+            .Where(pi => pi.CanWrite)
+            .ToList();
+
+        _defaultFoundPropertySet = new InjectablePropertyState[actualProperties.Count];
+
+        for (var idx = 0; idx < actualProperties.Count; idx++)
+        {
+            _defaultFoundPropertySet[idx] = new InjectablePropertyState(new InjectableProperty(actualProperties[idx]));
+        }
+    }
+
+    private ConstructorBinder[] CreateConstructorBinders()
+    {
+        // Locate the possible constructors at container build time.
+        var availableConstructors = ConstructorFinder.FindConstructors(_implementationType);
+
+        if (availableConstructors.Length == 0)
+        {
+            throw new NoConstructorsFoundException(_implementationType, ConstructorFinder);
+        }
+
+        var binders = new ConstructorBinder[availableConstructors.Length];
+
+        for (var idx = 0; idx < availableConstructors.Length; idx++)
+        {
+            binders[idx] = new ConstructorBinder(availableConstructors[idx]);
+        }
+
+        return binders;
+    }
+
+    private bool TryConfigureSingleConstructorActivation(IResolvePipelineBuilder pipelineBuilder, ConstructorBinder[] binders)
+    {
+        if (binders.Length == 1)
+        {
+            UseSingleConstructorActivation(pipelineBuilder, binders[0]);
+            return true;
+        }
+
+        if (ConstructorSelector is not IConstructorSelectorWithEarlyBinding earlyBindingSelector)
+        {
+            return false;
+        }
+
+        var matchedConstructor = earlyBindingSelector.SelectConstructorBinder(binders);
+        if (matchedConstructor is null)
+        {
+            return false;
+        }
+
+        UseSingleConstructorActivation(pipelineBuilder, matchedConstructor);
+        return true;
+    }
+
+    private void ConfigureZeroParameterConstructorActivation(IResolvePipelineBuilder pipelineBuilder, ConstructorBinder singleConstructor)
+    {
+        var constructorInvoker = singleConstructor.GetConstructorInvoker() ?? throw new NoConstructorsFoundException(_implementationType, ConstructorFinder);
+
+        // If there are no arguments to the constructor, bypass all argument binding and pre-bind the constructor.
+        var boundConstructor = BoundConstructor.ForBindSuccess(
+            singleConstructor,
+            constructorInvoker,
+            Array.Empty<Func<object?>>());
+
+        // Fast-path to just create an instance.
+        pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (context, next) =>
+        {
+            CheckNotDisposed();
+
+            var recordMetrics = AutofacMetrics.MetricsEnabled;
+            ValueStopwatch instrumentationTimer = default;
+            if (recordMetrics)
+            {
+                instrumentationTimer = ValueStopwatch.StartNew();
+            }
+
+            var instance = boundConstructor.Instantiate();
+
+            if (ShouldInjectProperties(boundConstructor))
+            {
+                var prioritizedParameters = GetAllParameters(context.Parameters);
+                InjectProperties(instance, context, boundConstructor, prioritizedParameters);
+            }
+
+            context.Instance = instance;
+
+            if (recordMetrics)
+            {
+                AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.GetElapsedTime());
+            }
+
+            next(context);
+        });
+    }
+
+    private void ConfigureBoundSingleConstructorActivation(IResolvePipelineBuilder pipelineBuilder, ConstructorBinder singleConstructor)
+    {
+        pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (context, next) =>
+        {
+            CheckNotDisposed();
+
+            var recordMetrics = AutofacMetrics.MetricsEnabled;
+            ValueStopwatch instrumentationTimer = default;
+            if (recordMetrics)
+            {
+                instrumentationTimer = ValueStopwatch.StartNew();
+            }
+
+            var prioritizedParameters = GetAllParameters(context.Parameters);
+
+            var bound = singleConstructor.Bind(prioritizedParameters, context);
+
+            if (!bound.CanInstantiate)
+            {
+                throw new DependencyResolutionException(GetBindingFailureMessage(new[] { bound }));
+            }
+
+            var instance = bound.Instantiate();
+
+            InjectProperties(instance, context, bound, prioritizedParameters);
+
+            context.Instance = instance;
+
+            if (recordMetrics)
+            {
+                AutofacMetrics.RecordReflectionActivation(_implementationType, instrumentationTimer.GetElapsedTime());
+            }
+
+            next(context);
+        });
+    }
+
+    private void ApplyConfiguredProperties(object instance, IComponentContext context, InjectablePropertyState[] workingSetOfProperties)
+    {
         foreach (var configuredProperty in _configuredProperties)
         {
             for (var propIdx = 0; propIdx < workingSetOfProperties.Length; propIdx++)
@@ -458,57 +510,88 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
                 }
             }
         }
+    }
 
-        if (_anyRequiredMembers && !constructor.SetsRequiredMembers)
+    private bool ShouldValidateRequiredProperties(BoundConstructor constructor)
+        => _anyRequiredMembers && !constructor.SetsRequiredMembers;
+
+    private void ValidateRequiredProperties(
+        object instance,
+        IComponentContext context,
+        IEnumerable<Parameter> allParameters,
+        InjectablePropertyState[] workingSetOfProperties)
+    {
+        var failingRequiredProperties = FindUnresolvedRequiredProperties(instance, context, allParameters, workingSetOfProperties);
+
+        if (failingRequiredProperties is not null)
         {
-            List<InjectableProperty>? failingRequiredProperties = null;
+            throw new DependencyResolutionException(BuildRequiredPropertyResolutionMessage(failingRequiredProperties));
+        }
+    }
 
-            for (var propIdx = 0; propIdx < workingSetOfProperties.Length; propIdx++)
+    private List<InjectableProperty>? FindUnresolvedRequiredProperties(
+        object instance,
+        IComponentContext context,
+        IEnumerable<Parameter> allParameters,
+        InjectablePropertyState[] workingSetOfProperties)
+    {
+        List<InjectableProperty>? failingRequiredProperties = null;
+
+        for (var propIdx = 0; propIdx < workingSetOfProperties.Length; propIdx++)
+        {
+            ref var prop = ref workingSetOfProperties[propIdx];
+
+            if (!ShouldAttemptRequiredPropertyPopulation(prop))
             {
-                ref var prop = ref workingSetOfProperties[propIdx];
-
-                if (!prop.Property.IsRequired)
-                {
-                    // Only auto-populate required properties.
-                    continue;
-                }
-
-                if (prop.Set)
-                {
-                    // Only auto-populate things not already populated by a specific property
-                    // being set.
-                    continue;
-                }
-
-                foreach (var parameter in allParameters)
-                {
-                    if (parameter is NamedParameter || parameter is PositionalParameter)
-                    {
-                        // Skip Named and Positional parameters, because if someone uses 'value' as a
-                        // constructor parameter name, it would also match the property, and cause confusion.
-                        continue;
-                    }
-
-                    if (prop.Property.TrySupplyValue(instance, parameter, context))
-                    {
-                        prop.Set = true;
-
-                        break;
-                    }
-                }
-
-                if (!prop.Set)
-                {
-                    failingRequiredProperties ??= new();
-                    failingRequiredProperties.Add(prop.Property);
-                }
+                continue;
             }
 
-            if (failingRequiredProperties is not null)
+            if (TryPopulateRequiredProperty(instance, context, allParameters, ref prop))
             {
-                throw new DependencyResolutionException(BuildRequiredPropertyResolutionMessage(failingRequiredProperties));
+                continue;
+            }
+
+            failingRequiredProperties ??= new();
+            failingRequiredProperties.Add(prop.Property);
+        }
+
+        return failingRequiredProperties;
+    }
+
+    private bool ShouldAttemptRequiredPropertyPopulation(InjectablePropertyState prop)
+    {
+        // Only unresolved required members participate in this pass.
+        return _anyRequiredMembers && prop.Property.IsRequired && !prop.Set;
+    }
+
+    private bool TryPopulateRequiredProperty(
+        object instance,
+        IComponentContext context,
+        IEnumerable<Parameter> allParameters,
+        ref InjectablePropertyState prop)
+    {
+        if (!_anyRequiredMembers)
+        {
+            return false;
+        }
+
+        foreach (var parameter in allParameters)
+        {
+            if (parameter is NamedParameter || parameter is PositionalParameter)
+            {
+                // Skip Named and Positional parameters, because if someone uses 'value' as a
+                // constructor parameter name, it would also match the property, and cause confusion.
+                continue;
+            }
+
+            if (prop.Property.TrySupplyValue(instance, parameter, context))
+            {
+                prop.Set = true;
+                return true;
             }
         }
+
+        return false;
     }
 
     private bool ShouldInjectProperties(BoundConstructor constructor)

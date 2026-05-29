@@ -23,7 +23,7 @@ public class ComplexGraphTests
         var a = target.Resolve<A1>();
         var b = target.Resolve<B1>();
         var c = target.Resolve<IC1>();
-        var d = target.Resolve<ID1>();
+        _ = target.Resolve<ID1>();
 
         Assert.IsType<CD1>(c);
         var cd = (CD1)c;

@@ -499,10 +499,10 @@ public class CompositeTests
         var container = builder.Build();
 
         var comp = container.Resolve<I1>();
-
         Assert.IsType<MyComposite>(comp);
 
         comp = container.Resolve<I1>();
+        Assert.IsType<MyComposite>(comp);
 
         Assert.Equal(1, activatedCount);
     }

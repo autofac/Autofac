@@ -8,7 +8,7 @@ namespace Autofac.Core.Resolving.Pipeline;
 /// <summary>
 /// Enumerator for a pipeline builder.
 /// </summary>
-internal sealed class PipelineBuilderEnumerator : IEnumerator, IEnumerator<IResolveMiddleware>
+internal sealed class PipelineBuilderEnumerator : IEnumerator<IResolveMiddleware>
 {
     private readonly MiddlewareDeclaration? _first;
     private MiddlewareDeclaration? _current;

@@ -17,7 +17,6 @@ public class TypeExtensionsTests
     [Fact]
     public void IsClosedTypeOfClosedGenericTypeProvidedThrowsException()
     {
-        var cb = new ContainerBuilder();
         Assert.Throws<ArgumentException>(() =>
             typeof(object).IsClosedTypeOf(typeof(ICommand<SaveCommandData>)));
     }
@@ -131,17 +130,7 @@ public class TypeExtensionsTests
 
     private class DeclaredConstructorType
     {
-        // Values here to ensure constructors get used and not
-        // optimized out by the compiler.
-        private static readonly Guid _staticValue;
-
         private readonly Guid _instanceValue;
-
-        [SuppressMessage("CA1810", "CA1810", Justification = "Static constructor for test purposes.")]
-        static DeclaredConstructorType()
-        {
-            _staticValue = Guid.NewGuid();
-        }
 
         public DeclaredConstructorType()
         {

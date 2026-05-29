@@ -477,6 +477,7 @@ public class PropertyInjectionTests
             set
             {
                 SetterCalled = true;
+                _ = value;
             }
         }
     }

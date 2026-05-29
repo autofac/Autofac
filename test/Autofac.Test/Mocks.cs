@@ -64,7 +64,7 @@ internal static class Mocks
         }
     }
 
-    internal class MockComponentRegistration : IComponentRegistration
+    internal sealed class MockComponentRegistration : IComponentRegistration
     {
         public void Dispose()
         {

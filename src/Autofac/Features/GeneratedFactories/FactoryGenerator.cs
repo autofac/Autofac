@@ -167,7 +167,7 @@ public class FactoryGenerator
             // If we're resolving a Func<X1...XN>() and there are duplicate input parameter types
             // and the parameter mapping is by type, we shouldn't be able to resolve it.
             var arguments = delegateType.GenericTypeArguments;
-            var returnType = arguments.Last();
+            var returnType = arguments[arguments.Length - 1];
 
             // Remove the return type to check the list of input types only.
             Array.Resize(ref arguments, arguments.Length - 1);

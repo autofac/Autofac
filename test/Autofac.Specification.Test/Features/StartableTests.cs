@@ -84,7 +84,7 @@ public class StartableTests
         var startable = new Startable();
         var builder = new ContainerBuilder();
         var container = builder.Build();
-        var scope = container.BeginLifetimeScope(b => b.RegisterInstance(startable).As<IStartable>());
+        using var scope = container.BeginLifetimeScope(b => b.RegisterInstance(startable).As<IStartable>());
         Assert.True(startable.StartCount > 0);
     }
 
@@ -94,7 +94,7 @@ public class StartableTests
         var startable = new Startable();
         var builder = new ContainerBuilder();
         var container = builder.Build(ContainerBuildOptions.IgnoreStartableComponents);
-        var scope = container.BeginLifetimeScope(b => b.RegisterInstance(startable).As<IStartable>());
+        using var scope = container.BeginLifetimeScope(b => b.RegisterInstance(startable).As<IStartable>());
         Assert.False(startable.StartCount > 0);
     }
 
@@ -116,7 +116,8 @@ public class StartableTests
         builder.RegisterType<StartableCreatesLifetimeScope>().As<IStartable>().SingleInstance();
 
         // Assert.DoesNotThrow, basically.
-        builder.Build();
+        var container = builder.Build();
+        Assert.NotNull(container);
     }
 
     [Fact]
@@ -235,18 +236,22 @@ public class StartableTests
         {
             using (var nested = _scope.BeginLifetimeScope("tag", b => { }))
             {
+                // Intentionally empty - testing scope creation during Start.
             }
 
             using (var nested = _scope.BeginLifetimeScope(b => { }))
             {
+                // Intentionally empty - testing scope creation during Start.
             }
 
             using (var nested = _scope.BeginLifetimeScope("tag"))
             {
+                // Intentionally empty - testing scope creation during Start.
             }
 
             using (var nested = _scope.BeginLifetimeScope())
             {
+                // Intentionally empty - testing scope creation during Start.
             }
         }
     }

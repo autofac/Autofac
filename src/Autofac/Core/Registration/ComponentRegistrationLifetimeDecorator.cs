@@ -9,7 +9,8 @@ namespace Autofac.Core.Registration;
 /// <summary>
 /// Wraps a component registration, switching its lifetime.
 /// </summary>
-[SuppressMessage("Microsoft.ApiDesignGuidelines", "CA2215", Justification = "The creator of the inner registration is responsible for disposal.")]
+[SuppressMessage("CA2215", "CA2215", Justification = "The creator of the inner registration is responsible for disposal.")]
+[SuppressMessage("S3881", "S3881", Justification = "Base Disposable class takes care of disposable implementation.")]
 internal class ComponentRegistrationLifetimeDecorator : Disposable, IComponentRegistration
 {
     private readonly IComponentRegistration _inner;

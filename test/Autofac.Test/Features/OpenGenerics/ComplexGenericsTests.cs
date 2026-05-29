@@ -325,7 +325,8 @@ public class ComplexGenericsTests
         var cb = new ContainerBuilder();
         cb.RegisterGeneric(typeof(SelfReferenceConsumer<>)).As(typeof(IBaseGeneric<>));
         var container = cb.Build();
-        container.Resolve<IBaseGeneric<DerivedSelfReferencing>>();
+        var result = container.Resolve<IBaseGeneric<DerivedSelfReferencing>>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -335,7 +336,8 @@ public class ComplexGenericsTests
         cb.RegisterGeneric(typeof(CGenericNestedProvider<>)).AsImplementedInterfaces();
         cb.RegisterType<CNestedSimpleInterface>().AsImplementedInterfaces();
         var container = cb.Build();
-        container.Resolve<INested<ISimpleInterface>>();
+        var result = container.Resolve<INested<ISimpleInterface>>();
+        Assert.NotNull(result);
     }
 
     [Fact]

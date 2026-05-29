@@ -84,6 +84,7 @@ internal class FallbackDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     /// but it is guaranteed to be the same order as the corresponding values in the <see cref="ICollection{TKey}"/>
     /// returned by the <see cref="Values"/> property.
     /// </remarks>
+    [SuppressMessage("S2365", "S2365", Justification = "Keys is required for interface implementation and it must reflect the order of the keys.")]
     public ICollection<TKey> Keys
     {
         get
@@ -180,7 +181,7 @@ internal class FallbackDictionary<TKey, TValue> : IDictionary<TKey, TValue>
     /// </exception>
     public void Add(TKey key, TValue value)
     {
-        if (key == null)
+        if (object.Equals(key, default(TKey)))
         {
             throw new ArgumentNullException(nameof(key));
         }

@@ -453,7 +453,7 @@ public class LifetimeEventTests
         var registeredRaised = 0;
         var builder = new ContainerBuilder();
         builder.RegisterType<object>().OnRegistered(e => registeredRaised++);
-        var container = builder.Build();
+        using var container = builder.Build();
         Assert.Equal(1, registeredRaised);
     }
 
@@ -566,6 +566,7 @@ public class LifetimeEventTests
         {
             using (var scope = container.BeginLifetimeScope())
             {
+                // Intentionally empty - testing OnRelease fires even when component not resolved.
             }
         }
 
@@ -587,6 +588,7 @@ public class LifetimeEventTests
         {
             using (var scope = container.BeginLifetimeScope())
             {
+                // Intentionally empty - testing OnRelease fires even when component not resolved.
             }
         }
 

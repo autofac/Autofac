@@ -207,7 +207,7 @@ public class CollectionRegistrationSourceTests
         DisposeTracker tracker;
         using (var ls = container.BeginLifetimeScope())
         {
-            tracker = ls.Resolve<IEnumerable<DisposeTracker>>().First();
+            tracker = ls.Resolve<IEnumerable<DisposeTracker>>().ToArray()[0];
         }
 
         Assert.True(tracker.IsDisposed);

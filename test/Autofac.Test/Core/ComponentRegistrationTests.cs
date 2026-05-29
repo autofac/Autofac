@@ -56,6 +56,9 @@ public class ComponentRegistrationTests
         var registration = Factory.CreateSingletonRegistration(services, activator);
 
         await registration.DisposeAsync();
+
+        // Assert that disposal completed successfully without throwing
+        Assert.NotNull(registration);
     }
 
     [Fact]

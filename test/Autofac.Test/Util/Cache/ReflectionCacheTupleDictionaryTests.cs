@@ -59,7 +59,8 @@ public class ReflectionCacheTupleDictionaryTests
 
         cacheDict.Clear((member, assemblies) =>
         {
-            Assert.Collection(assemblies, a => Assert.Equal(typeof(string).Assembly, a));
+            var a = Assert.Single(assemblies);
+            Assert.Equal(typeof(string).Assembly, a);
 
             return true;
         });
@@ -76,7 +77,8 @@ public class ReflectionCacheTupleDictionaryTests
 
         cacheDict.Clear((member, assemblies) =>
         {
-            Assert.Collection(assemblies, a => Assert.Equal(typeof(string).Assembly, a));
+            var a = Assert.Single(assemblies);
+            Assert.Equal(typeof(string).Assembly, a);
 
             return true;
         });

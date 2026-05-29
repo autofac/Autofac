@@ -18,45 +18,6 @@ namespace Autofac;
 public static partial class RegistrationExtensions
 {
     /// <summary>
-    /// Decorate all components implementing open generic service <paramref name="decoratedServiceType"/>.
-    /// The <paramref name="fromKey"/> and <paramref name="toKey"/> parameters must be different values.
-    /// </summary>
-    /// <param name="builder">Container builder.</param>
-    /// <param name="decoratorType">
-    /// The type of the decorator. Must be an open generic type, and accept a parameter
-    /// of type <paramref name="decoratedServiceType"/>, which will be set to the instance being decorated.
-    /// </param>
-    /// <param name="decoratedServiceType">Service type being decorated. Must be an open generic type.</param>
-    /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
-    /// <param name="toKey">Service key or name given to the decorated components.</param>
-    /// <returns>The decorator registration for continued configuration.</returns>
-    public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
-        RegisterGenericDecorator(
-            this ContainerBuilder builder,
-            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type decoratorType,
-            Type decoratedServiceType,
-            object fromKey,
-            object? toKey = null)
-    {
-        if (builder == null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        if (decoratorType == null)
-        {
-            throw new ArgumentNullException(nameof(decoratorType));
-        }
-
-        if (decoratedServiceType == null)
-        {
-            throw new ArgumentNullException(nameof(decoratedServiceType));
-        }
-
-        return OpenGenericRegistrationExtensions.RegisterGenericDecorator(builder, decoratorType, decoratedServiceType, fromKey, toKey);
-    }
-
-    /// <summary>
     /// Decorate all components implementing service <typeparamref name="TService"/>
     /// using the provided <paramref name="decorator"/> function.
     /// The <paramref name="fromKey"/> and <paramref name="toKey"/> parameters must be different values.
@@ -273,6 +234,45 @@ public static partial class RegistrationExtensions
 
         // Add the decorator to the registry so the pipeline gets built.
         builder.RegisterCallback(crb => crb.Register(decoratorRegistration));
+    }
+
+    /// <summary>
+    /// Decorate all components implementing open generic service <paramref name="decoratedServiceType"/>.
+    /// The <paramref name="fromKey"/> and <paramref name="toKey"/> parameters must be different values.
+    /// </summary>
+    /// <param name="builder">Container builder.</param>
+    /// <param name="decoratorType">
+    /// The type of the decorator. Must be an open generic type, and accept a parameter
+    /// of type <paramref name="decoratedServiceType"/>, which will be set to the instance being decorated.
+    /// </param>
+    /// <param name="decoratedServiceType">Service type being decorated. Must be an open generic type.</param>
+    /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
+    /// <param name="toKey">Service key or name given to the decorated components.</param>
+    /// <returns>The decorator registration for continued configuration.</returns>
+    public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
+        RegisterGenericDecorator(
+            this ContainerBuilder builder,
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type decoratorType,
+            Type decoratedServiceType,
+            object fromKey,
+            object? toKey = null)
+    {
+        if (builder == null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        if (decoratorType == null)
+        {
+            throw new ArgumentNullException(nameof(decoratorType));
+        }
+
+        if (decoratedServiceType == null)
+        {
+            throw new ArgumentNullException(nameof(decoratedServiceType));
+        }
+
+        return OpenGenericRegistrationExtensions.RegisterGenericDecorator(builder, decoratorType, decoratedServiceType, fromKey, toKey);
     }
 
     /// <summary>

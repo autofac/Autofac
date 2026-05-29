@@ -137,13 +137,9 @@ public class LoadContextScopeTests
 
                 var resolved = (IEnumerable<object>)scope.Resolve(genericEnumerable);
 
-                Assert.Collection(
-                    resolved,
-                    item =>
-                    {
-                        Assert.Equal(item.GetType(), assembly.GetType("A.Service1"));
-                        Assert.Contains(item.GetType().Assembly, loadContext.Assemblies);
-                    });
+                var item = Assert.Single(resolved);
+                Assert.Equal(item.GetType(), assembly.GetType("A.Service1"));
+                Assert.Contains(item.GetType().Assembly, loadContext.Assemblies);
             });
 
         WaitForUnload(loadContextRef);

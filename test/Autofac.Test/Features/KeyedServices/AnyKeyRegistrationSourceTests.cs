@@ -64,7 +64,6 @@ public class AnyKeyRegistrationSourceTests
     public void RegistrationsFor_ServiceHasSpecificRegistration()
     {
         var service = new KeyedService("key", typeof(DummyService));
-        var anyKeyService = new KeyedService(KeyedService.AnyKey, typeof(DummyService));
 
         using var registration = CreateComponentRegistration<DummyService>();
         var serviceRegistration = CreateServiceRegistration(registration);
@@ -88,7 +87,6 @@ public class AnyKeyRegistrationSourceTests
     public void RegistrationsFor_NoAnyKeyRegistrations()
     {
         var service = new KeyedService("key", typeof(DummyService));
-        var anyKeyService = new KeyedService(KeyedService.AnyKey, typeof(DummyService));
 
         var registrations = _source.RegistrationsFor(
             service,

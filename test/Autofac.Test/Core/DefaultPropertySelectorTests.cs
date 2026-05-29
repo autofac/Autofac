@@ -44,6 +44,8 @@ public class DefaultPropertySelectorTests
         {
             set
             {
+                // Intentionally empty - write-only property for testing property injection.
+                _ = value;
             }
         }
 
@@ -62,6 +64,8 @@ public class DefaultPropertySelectorTests
 
             set
             {
+                // Intentionally empty - testing property injection with throwing getter.
+                _ = value;
             }
         }
 

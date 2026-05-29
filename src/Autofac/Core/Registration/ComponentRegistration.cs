@@ -89,6 +89,7 @@ public class ComponentRegistration : Disposable, IComponentRegistration
     /// <param name="services">Services the component provides.</param>
     /// <param name="metadata">Data associated with the component.</param>
     /// <param name="options">The additional registration options.</param>
+    [SuppressMessage("S107", "S107", Justification = "Changing this constructor would be a breaking API change.")]
     public ComponentRegistration(
         Guid id,
         IInstanceActivator activator,

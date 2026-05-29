@@ -130,6 +130,22 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
         _registeredServicesTracker.AddRegistration(registration, false);
     }
 
+    /// <summary>
+    /// Register a component.
+    /// </summary>
+    /// <param name="registration">The component registration.</param>
+    /// <param name="preserveDefaults">If true, existing defaults for the services provided by the
+    /// component will not be changed.</param>
+    public void Register(IComponentRegistration registration, bool preserveDefaults)
+    {
+        if (registration == null)
+        {
+            throw new ArgumentNullException(nameof(registration));
+        }
+
+        _registeredServicesTracker.AddRegistration(registration, preserveDefaults);
+    }
+
     /// <inheritdoc/>
     public void RegisterServiceMiddleware(Service service, IResolveMiddleware middleware, MiddlewareInsertionMode insertionMode = MiddlewareInsertionMode.EndOfPhase)
     {
@@ -147,22 +163,6 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     }
 
     /// <summary>
-    /// Register a component.
-    /// </summary>
-    /// <param name="registration">The component registration.</param>
-    /// <param name="preserveDefaults">If true, existing defaults for the services provided by the
-    /// component will not be changed.</param>
-    public void Register(IComponentRegistration registration, bool preserveDefaults)
-    {
-        if (registration == null)
-        {
-            throw new ArgumentNullException(nameof(registration));
-        }
-
-        _registeredServicesTracker.AddRegistration(registration, preserveDefaults);
-    }
-
-    /// <summary>
     /// Add a registration source that will provide registrations on-the-fly.
     /// </summary>
     /// <param name="source">The source to register.</param>
@@ -172,8 +172,8 @@ internal class ComponentRegistryBuilder : Disposable, IComponentRegistryBuilder
     }
 
     /// <inheritdoc/>
-    public void AddServiceMiddlewareSource(IServiceMiddlewareSource servicePipelineSource)
-        => _registeredServicesTracker.AddServiceMiddlewareSource(servicePipelineSource);
+    public void AddServiceMiddlewareSource(IServiceMiddlewareSource serviceMiddlewareSource)
+        => _registeredServicesTracker.AddServiceMiddlewareSource(serviceMiddlewareSource);
 
     /// <inheritdoc />
     protected override void Dispose(bool disposing)

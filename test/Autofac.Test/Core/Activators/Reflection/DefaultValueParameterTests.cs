@@ -19,7 +19,7 @@ public class DefaultValueParameterTests
     private static ParameterInfo GetTestParameter(string name)
     {
         return typeof(HasDefaultValues).GetConstructors().Single()
-            .GetParameters().Where(pi => pi.Name == name).Single();
+            .GetParameters().Single(pi => pi.Name == name);
     }
 
     private static ParameterInfo GetDynamicBuildParameter(int index)
@@ -49,8 +49,7 @@ public class DefaultValueParameterTests
     public void DoesNotProvideValueWhenNoDefaultAvailable()
     {
         var dvp = new DefaultValueParameter();
-        var dp = GetTestParameter("s").DefaultValue;
-        Assert.False(dvp.CanSupplyValue(GetTestParameter("s"), new ContainerBuilder().Build(), out var vp));
+        Assert.False(dvp.CanSupplyValue(GetTestParameter("s"), new ContainerBuilder().Build(), out _));
     }
 
     [Fact]
@@ -58,7 +57,7 @@ public class DefaultValueParameterTests
     {
         var dvp = new DefaultValueParameter();
         var u = GetTestParameter("t");
-        var dp = u.DefaultValue;
+        _ = u.DefaultValue;
         Assert.True(dvp.CanSupplyValue(u, new ContainerBuilder().Build(), out var vp));
         Assert.Equal("Hello", vp());
     }
@@ -86,7 +85,7 @@ public class DefaultValueParameterTests
     {
         var dvp = new DefaultValueParameter();
 
-        Assert.False(dvp.CanSupplyValue(GetDynamicBuildParameter(0), new ContainerBuilder().Build(), out var vp));
+        Assert.False(dvp.CanSupplyValue(GetDynamicBuildParameter(0), new ContainerBuilder().Build(), out _));
     }
 
     [Fact]
@@ -103,6 +102,6 @@ public class DefaultValueParameterTests
     {
         var dvp = new DefaultValueParameter();
 
-        Assert.False(dvp.CanSupplyValue(GetDynamicMethodParameter(), new ContainerBuilder().Build(), out var vp));
+        Assert.False(dvp.CanSupplyValue(GetDynamicMethodParameter(), new ContainerBuilder().Build(), out _));
     }
 }

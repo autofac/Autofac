@@ -52,7 +52,8 @@ public class ReflectionCacheSetTests
 
         set.Clear((member, assembly) => member == typeof(string));
 
-        Assert.Collection(internalCache, item => Assert.Equal(typeof(IEnumerable<>), item.Key));
+        var item = Assert.Single(internalCache);
+        Assert.Equal(typeof(IEnumerable<>), item.Key);
         Assert.Empty(externalCache);
     }
 

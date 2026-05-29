@@ -259,7 +259,8 @@ public class ScanningRegistrationTests
         var cb = new ContainerBuilder();
         cb.RegisterAssemblyTypes(typeof(HasNestedFactoryDelegate).GetTypeInfo().Assembly);
         var c = cb.Build();
-        c.Resolve<HasNestedFactoryDelegate.Factory>();
+        var result = c.Resolve<HasNestedFactoryDelegate.Factory>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -468,7 +469,6 @@ public class ScanningRegistrationTests
         // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
         var c = RegisterScenarioAssembly();
         var privateType = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+PrivateComponent", true);
-        _ = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
         c.AssertRegistered<NestedComponent>();
         Assert.True(c.IsRegistered(privateType));
     }
@@ -479,7 +479,7 @@ public class ScanningRegistrationTests
         // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
         var c = RegisterScenarioAssembly(conf => conf.PublicOnly());
         var privateType = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+PrivateComponent", true);
-        var internalType = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
+        _ = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
         c.AssertRegistered<NestedComponent>();
         Assert.False(c.IsRegistered(privateType));
     }
@@ -502,7 +502,7 @@ public class ScanningRegistrationTests
 
         var c = cb.Build();
 
-        var a = c.Resolve<AComponent>();
+        _ = c.Resolve<AComponent>();
 
         Assert.True(preparingCalled);
     }
@@ -518,7 +518,7 @@ public class ScanningRegistrationTests
 
         var c = cb.Build();
 
-        var a = c.Resolve<AComponent>();
+        _ = c.Resolve<AComponent>();
 
         Assert.True(activatedCalled);
     }
@@ -534,7 +534,7 @@ public class ScanningRegistrationTests
 
         var c = cb.Build();
 
-        var a = c.Resolve<AComponent>();
+        _ = c.Resolve<AComponent>();
 
         Assert.True(activatingCalled);
     }

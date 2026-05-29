@@ -20,8 +20,10 @@ public class LambdaRegistrationTests
         builder.Register(c => new A()).AsImplementedInterfaces();
         var context = builder.Build();
 
-        context.Resolve<IA>();
-        context.Resolve<IB>();
+        var resultA = context.Resolve<IA>();
+        var resultB = context.Resolve<IB>();
+        Assert.NotNull(resultA);
+        Assert.NotNull(resultB);
     }
 
     [Fact]

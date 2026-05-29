@@ -73,9 +73,9 @@ public class PreserveExistingDefaultsTests
         var container = builder.Build();
         var resolved = container.Resolve<IEnumerable<string>>().ToList();
         Assert.Equal(3, resolved.Count);
-        Assert.True(resolved.Any(s => s == "s1"), "The first service wasn't present.");
-        Assert.True(resolved.Any(s => s == "s2"), "The second service wasn't present.");
-        Assert.True(resolved.Any(s => s == "s3"), "The third service wasn't present.");
+        Assert.True(resolved.Contains("s1"), "The first service wasn't present.");
+        Assert.True(resolved.Contains("s2"), "The second service wasn't present.");
+        Assert.True(resolved.Contains("s3"), "The third service wasn't present.");
     }
 
     [Fact]
@@ -191,10 +191,10 @@ public class PreserveExistingDefaultsTests
         var scope = container.BeginLifetimeScope(b => b.RegisterInstance("s4").PreserveExistingDefaults());
         var resolved = scope.Resolve<IEnumerable<string>>().ToList();
         Assert.Equal(4, resolved.Count);
-        Assert.True(resolved.Any(s => s == "s1"), "The first service wasn't present.");
-        Assert.True(resolved.Any(s => s == "s2"), "The second service wasn't present.");
-        Assert.True(resolved.Any(s => s == "s3"), "The third service wasn't present.");
-        Assert.True(resolved.Any(s => s == "s4"), "The fourth service wasn't present.");
+        Assert.True(resolved.Contains("s1"), "The first service wasn't present.");
+        Assert.True(resolved.Contains("s2"), "The second service wasn't present.");
+        Assert.True(resolved.Contains("s3"), "The third service wasn't present.");
+        Assert.True(resolved.Contains("s4"), "The fourth service wasn't present.");
     }
 
     private class ComplexConsumer

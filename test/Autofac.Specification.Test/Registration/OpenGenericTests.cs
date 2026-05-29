@@ -17,7 +17,8 @@ public class OpenGenericTests
         var builder = new ContainerBuilder();
         builder.RegisterGeneric(typeof(SelfComponent<>)).AsImplementedInterfaces();
         var context = builder.Build();
-        context.Resolve<IImplementedInterface<object>>();
+        var result = context.Resolve<IImplementedInterface<object>>();
+        Assert.NotNull(result);
     }
 
     [Fact]
@@ -26,7 +27,8 @@ public class OpenGenericTests
         var builder = new ContainerBuilder();
         builder.RegisterGeneric(typeof(SelfComponent<>)).AsSelf();
         var context = builder.Build();
-        context.Resolve<SelfComponent<object>>();
+        var result = context.Resolve<SelfComponent<object>>();
+        Assert.NotNull(result);
     }
 
     [Fact]

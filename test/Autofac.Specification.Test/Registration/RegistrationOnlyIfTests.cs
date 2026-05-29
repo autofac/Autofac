@@ -120,7 +120,7 @@ public class RegistrationOnlyIfTests
         });
 
         var container = builder.Build();
-        var result = container.Resolve<IService>();
+        _ = container.Resolve<IService>();
         Assert.True(middlewareInvoked);
     }
 
@@ -139,7 +139,7 @@ public class RegistrationOnlyIfTests
         });
 
         var container = builder.Build();
-        var result = container.Resolve<IService>();
+        _ = container.Resolve<IService>();
         Assert.True(middlewareInvoked);
     }
 
@@ -160,7 +160,7 @@ public class RegistrationOnlyIfTests
 
         var container = builder.Build();
 
-        var result = container.Resolve<IService>();
+        _ = container.Resolve<IService>();
         Assert.True(middlewareInvoked);
     }
 
@@ -289,6 +289,9 @@ public class RegistrationOnlyIfTests
         builder.RegisterType(typeof(object)).OnlyIf(r => true);
         builder.RegisterType<object>().OnlyIf(r => true);
         builder.RegisterTypes(typeof(object)).OnlyIf(r => true);
+
+        var container = builder.Build();
+        Assert.NotNull(container);
     }
 
     [Fact]

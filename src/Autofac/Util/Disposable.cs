@@ -6,6 +6,7 @@ namespace Autofac.Util;
 /// <summary>
 /// Base class for disposable objects.
 /// </summary>
+[SuppressMessage("S3881", "S3881", Justification = "Dispose is implemented correctly, analyzers just don't see it.")]
 public class Disposable : IDisposable, IAsyncDisposable
 {
     private const int DisposedFlag = 1;
@@ -26,7 +27,7 @@ public class Disposable : IDisposable, IAsyncDisposable
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>
-    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "Dispose is implemented correctly, FxCop just doesn't see it.")]
+    [SuppressMessage("CA1063", "CA1063", Justification = "Dispose is implemented correctly, analyzers just don't see it.")]
     public void Dispose()
     {
         var wasDisposed = Interlocked.Exchange(ref _isDisposed, DisposedFlag);
@@ -40,10 +41,7 @@ public class Disposable : IDisposable, IAsyncDisposable
     }
 
     /// <inheritdoc/>
-    [SuppressMessage(
-        "Usage",
-        "CA1816:Dispose methods should call SuppressFinalize",
-        Justification = "DisposeAsync should also call SuppressFinalize (see various .NET internal implementations).")]
+    [SuppressMessage("CA1816", "CA1816", Justification = "DisposeAsync should also call SuppressFinalize (see various .NET internal implementations).")]
     public ValueTask DisposeAsync()
     {
         // Still need to check if we've already disposed; can't do both.

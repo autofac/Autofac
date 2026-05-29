@@ -12,7 +12,6 @@ namespace Autofac.Core.Activators.Reflection;
 /// </summary>
 internal class InjectableProperty
 {
-    private readonly MethodInfo _setter;
     private readonly ParameterInfo _setterParameter;
 
     /// <summary>
@@ -23,9 +22,7 @@ internal class InjectableProperty
     {
         Property = prop;
 
-        _setter = prop.SetMethod!;
-
-        _setterParameter = _setter.GetParameters()[0];
+        _setterParameter = prop.SetMethod!.GetParameters()[0];
 
         IsRequired = prop.HasRequiredMemberAttribute();
     }

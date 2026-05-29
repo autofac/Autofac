@@ -24,6 +24,7 @@ public class DisposalTests
         }
         catch (DivideByZeroException)
         {
+            // Expected exception - testing disposal behavior when component throws.
         }
 
         Assert.True(dt.IsDisposed);

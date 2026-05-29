@@ -87,10 +87,10 @@ public class ContravariantRegistrationSourceTests
         }
     }
 
-    internal enum AEnum
+    internal enum Color
     {
-        First,
-        Second,
+        Red,
+        Blue,
     }
 
     internal static class AssertExtensions
@@ -258,7 +258,7 @@ public class ContravariantRegistrationSourceTests
             builder.RegisterSource(new ContravariantRegistrationSource());
             builder.RegisterType<ObjectHandler>().As<IHandler<object>>();
             var container = builder.Build();
-            Assert.False(container.IsRegistered<IHandler<AEnum>>());
+            Assert.False(container.IsRegistered<IHandler<Color>>());
         }
     }
 }

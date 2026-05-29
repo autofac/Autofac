@@ -127,7 +127,8 @@ public class OpenGenericRegistrationExtensionsTests
         var cb = new ContainerBuilder();
         cb.RegisterGeneric(typeof(TwoParams<,>)).As(typeof(ITwoParams<,>));
         var c = cb.Build();
-        c.Resolve<ITwoParams<int, string>>();
+        var result = c.Resolve<ITwoParams<int, string>>();
+        Assert.NotNull(result);
     }
 
     [Fact]

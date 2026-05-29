@@ -16,14 +16,14 @@ internal static class Assertions
         Assert.True(context.IsRegistered<TService>());
     }
 
-    public static void AssertNotRegistered<TService>(this IComponentContext context)
-    {
-        Assert.False(context.IsRegistered<TService>());
-    }
-
     public static void AssertRegistered<TService>(this IComponentContext context, string service)
     {
         Assert.True(context.IsRegisteredWithName<TService>(service));
+    }
+
+    public static void AssertNotRegistered<TService>(this IComponentContext context)
+    {
+        Assert.False(context.IsRegistered<TService>());
     }
 
     public static void AssertNotRegistered<TService>(this IComponentContext context, string service)

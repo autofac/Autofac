@@ -1,9 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac assemblies." ToolsVersion="16.0">
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Autofac Analyzer Rules" Description="Analyzer rules for Autofac source assemblies." ToolsVersion="16.0">
   <IncludeAll Action="Warning" />
-  <Rules AnalyzerId="Microsoft.Usage" RuleNamespace="Microsoft.Usage">
-    <!-- Implement standard exception constructors - not all of the exception constructors (e.g., parameterless) are desired in our system. -->
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.Analyzers" RuleNamespace="Microsoft.CodeAnalysis.Analyzers">
+    <!-- Implement standard exception constructors - not all of the exception constructors are desired. -->
     <Rule Id="CA1032" Action="None" />
+    <!-- Implement IDisposable correctly (must be explicitly enabled). -->
+    <Rule Id="CA1063" Action="Warning" />
     <!-- Avoid excessive inheritance (must be explicitly enabled). -->
     <Rule Id="CA1501" Action="Warning" />
     <!-- Avoid excessive complexity (must be explicitly enabled). -->
@@ -12,22 +14,44 @@
     <Rule Id="CA1505" Action="Warning" />
     <!-- Avoid excessive class coupling (must be explicitly enabled). -->
     <Rule Id="CA1506" Action="Warning" />
-    <!-- Use ArgumentNullException.ThrowIfNull - this isn't available until we stop targeting netstandard. -->
+    <!-- Use ArgumentNullException.ThrowIfNull - not available in netstandard. -->
     <Rule Id="CA1510" Action="None" />
-    <!-- Use ArgumentOutOfRangeException.ThrowIfNegative - this isn't available until we stop targeting anything below net8.0. -->
+    <!-- Use ArgumentOutOfRangeException.ThrowIfNegative - not available below net8.0. -->
     <Rule Id="CA1512" Action="None" />
-    <!-- Use ObjectDisposedException.ThrowIf - this isn't available until we stop targeting anything below net8.0. -->
+    <!-- Use ObjectDisposedException.ThrowIf - not available below net8.0. -->
     <Rule Id="CA1513" Action="None" />
-    <!-- Change names to avoid reserved word overlaps (e.g., Delegate, GetType, etc.) - too many of these in the public API, we'd break if we fixed it. -->
+    <!-- Change names to avoid reserved word overlaps - would break public API. -->
     <Rule Id="CA1716" Action="None" />
-    <!-- Cache a CompositeFormat object for use in String.Format - this isn't available until we stop targeting netstandard, and we only String.Format when throwing exceptions so the work/complexity isn't justified to increase perf just for those situations. -->
+    <!-- Cache a CompositeFormat - not available in netstandard. -->
     <Rule Id="CA1863" Action="None" />
-    <!-- Implement serialization constructors - false positive when building .NET Core. -->
+    <!-- Implement serialization constructors - false positive in .NET Core. -->
     <Rule Id="CA2229" Action="None" />
-    <!-- Mark ISerializable types with SerializableAttribute - false positive when building .NET Core. -->
+    <!-- Mark ISerializable types with SerializableAttribute - false positive in .NET Core. -->
     <Rule Id="CA2237" Action="None" />
-    <!-- Prefer generic overloads to using Type parameters - many aren't available in earlier frameworks; and we do a lot of reflection work in Autofac. -->
+    <!-- Prefer generic overloads - conflicts with reflection work in Autofac. -->
     <Rule Id="CA2263" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
+    <!-- "Sonar Way" rules to match SonarQube scans. -->
+    <Rule Id="S107" Action="Warning" />
+    <!-- Do not use obsolete members - Autofac maintains deprecated APIs for backward compat. -->
+    <Rule Id="S1133" Action="None" />
+    <Rule Id="S1192" Action="Warning" />
+    <Rule Id="S1313" Action="Warning" />
+    <Rule Id="S2259" Action="Warning" />
+    <Rule Id="S2583" Action="Warning" />
+    <Rule Id="S2589" Action="Warning" />
+    <!-- Verify reflection accessibility bypass - DI containers do extensive reflection by design. -->
+    <Rule Id="S3011" Action="None" />
+    <!-- Loops should use LINQ - DI container hot paths intentionally avoid LINQ allocations. -->
+    <Rule Id="S3267" Action="None" />
+    <Rule Id="S3776" Action="Warning" />
+    <!-- IDisposable pattern - Autofac uses non-standard dispose patterns for container lifecycle. -->
+    <Rule Id="S3881" Action="None" />
+    <!-- Split method for params check + iterator - overly prescriptive for our patterns. -->
+    <Rule Id="S4456" Action="None" />
+    <Rule Id="S6418" Action="Warning" />
+    <Rule Id="S6444" Action="Warning" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <!-- Prefix local calls with this. -->

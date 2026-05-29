@@ -22,7 +22,7 @@ internal sealed class ScopeRestrictedRegisteredServicesTracker : DefaultRegister
     }
 
     /// <inheritdoc/>
-    public override void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromSource = false)
+    public override void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromDynamicSource = false)
     {
         if (registration == null)
         {
@@ -38,6 +38,6 @@ internal sealed class ScopeRestrictedRegisteredServicesTracker : DefaultRegister
 #pragma warning restore CA2000 // Dispose objects before losing scope
         }
 
-        base.AddRegistration(toRegister, preserveDefaults, originatedFromSource);
+        base.AddRegistration(toRegister, preserveDefaults, originatedFromDynamicSource);
     }
 }

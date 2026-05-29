@@ -140,7 +140,7 @@ public class NestedScopeRegistrationTests
     {
         var builder = new ContainerBuilder();
         var container = builder.Build();
-        var ls = container.BeginLifetimeScope(b => b.RegisterType<MyComponent>().As<IMyService>());
+        using var ls = container.BeginLifetimeScope(b => b.RegisterType<MyComponent>().As<IMyService>());
 
         Assert.Throws<ComponentNotRegisteredException>(() => container.Resolve<IMyService>());
     }
@@ -151,7 +151,7 @@ public class NestedScopeRegistrationTests
         var cb = new ContainerBuilder();
         cb.RegisterType<MyComponent>().As<IMyService>();
         var container = cb.Build();
-        var ls = container.BeginLifetimeScope(b => { });
+        using var ls = container.BeginLifetimeScope(b => { });
 
         var component = container.Resolve<Func<IMyService>>().Invoke();
         Assert.IsType<MyComponent>(component);
