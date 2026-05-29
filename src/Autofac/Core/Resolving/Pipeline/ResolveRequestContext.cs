@@ -7,6 +7,7 @@ using Autofac.Features.Decorators;
 namespace Autofac.Core.Resolving.Pipeline;
 
 /// <inheritdoc />
+[SuppressMessage("S1694", "S1694", Justification = "Conversion to an interface would be a breaking change.")]
 public abstract class ResolveRequestContext : IComponentContext
 {
     /// <summary>
