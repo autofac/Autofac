@@ -108,35 +108,26 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
             return (elementType, limitType, factory);
         });
 
-        if (elementType == null || factory == null || limitType == null)
+        if (!TryGetCollectionBuildInfo(elementType, limitType, factory, out var buildInfo))
         {
             return Enumerable.Empty<IComponentRegistration>();
         }
 
-        var elementTypeService = swt.ChangeType(elementType);
+        var elementTypeService = swt.ChangeType(buildInfo.ElementType);
         var isAnyKeyQuery = service is KeyedService keyedService && KeyedService.IsAnyKey(keyedService.ServiceKey);
 
         var activator = new DelegateActivator(
-            limitType,
+            buildInfo.LimitType,
             (c, p) =>
             {
                 var registrationTuples = isAnyKeyQuery
-                    ? GetAllSpecificKeyedRegistrations(c.ComponentRegistry, elementType)
+                    ? GetAllSpecificKeyedRegistrations(c.ComponentRegistry, buildInfo.ElementType)
                         .ConvertAll(static tuple => ((Service)tuple.KeyedService, tuple.Registration))
                     : BuildStandardRegistrationList(c.ComponentRegistry, elementTypeService);
 
-                string? collectionKind = null;
-                string? collectionDetail = null;
-                if (AutofacMetrics.MetricsEnabled)
-                {
-                    // The collection kind and detail are only used in recording metrics.
-                    collectionKind = isAnyKeyQuery ? "any-keyed" : "standard";
-                    collectionDetail = isAnyKeyQuery
-                        ? elementType.FullName ?? elementType.Name
-                        : elementTypeService.ToString() ?? elementTypeService.GetType().Name;
-                }
+                var (collectionKind, collectionDetail) = GetCollectionMetricsDetails(isAnyKeyQuery, buildInfo.ElementType, elementTypeService);
 
-                return BuildCollection(c, factory, registrationTuples, p, collectionKind, collectionDetail);
+                return BuildCollection(c, buildInfo.Factory, registrationTuples, p, collectionKind, collectionDetail);
             });
 
         var registration = new ComponentRegistration(
@@ -154,6 +145,34 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
     /// <inheritdoc/>
     public override string ToString()
         => CollectionRegistrationSourceResources.CollectionRegistrationSourceDescription;
+
+    private static bool TryGetCollectionBuildInfo(Type? elementType, Type? limitType, Func<int, IList>? factory, out (Type ElementType, Type LimitType, Func<int, IList> Factory) buildInfo)
+    {
+        if (elementType is null || limitType is null || factory is null)
+        {
+            buildInfo = default;
+            return false;
+        }
+
+        buildInfo = (elementType, limitType, factory);
+        return true;
+    }
+
+    private static (string? CollectionKind, string? CollectionDetail) GetCollectionMetricsDetails(bool isAnyKeyQuery, Type elementType, Service elementTypeService)
+    {
+        if (!AutofacMetrics.MetricsEnabled)
+        {
+            return (null, null);
+        }
+
+        // The collection kind and detail are only used in recording metrics.
+        var collectionKind = isAnyKeyQuery ? "any-keyed" : "standard";
+        var collectionDetail = isAnyKeyQuery
+            ? elementType.FullName ?? elementType.Name
+            : elementTypeService.ToString() ?? elementTypeService.GetType().Name;
+
+        return (collectionKind, collectionDetail);
+    }
 
     private static Func<int, IList> GenerateListFactory(Type elementType)
     {
@@ -198,44 +217,48 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
 
         foreach (var registration in registry.Registrations)
         {
-            if (registration.Metadata.ContainsKey(MetadataKeys.AnyKeyAdapter))
-            {
-                continue;
-            }
-
-            foreach (var svc in registration.Services)
-            {
-                if (svc is not KeyedService keyed)
-                {
-                    continue;
-                }
-
-                if (keyed.ServiceType != elementType || KeyedService.IsAnyKey(keyed.ServiceKey))
-                {
-                    continue;
-                }
-
-                if (!processedServices.Add(keyed))
-                {
-                    continue;
-                }
-
-                foreach (var serviceRegistration in registry.ServiceRegistrationsFor(keyed))
-                {
-                    if (serviceRegistration.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections) ||
-                        serviceRegistration.Registration.Metadata.ContainsKey(MetadataKeys.AnyKeyAdapter))
-                    {
-                        continue;
-                    }
-
-                    result.Add((keyed, serviceRegistration));
-                }
-            }
+            AppendSpecificKeyedRegistrations(registry, elementType, registration, processedServices, result);
         }
 
         result.Sort(static (a, b) => a.Item2.GetRegistrationOrder().CompareTo(b.Item2.GetRegistrationOrder()));
         return result;
     }
+
+    private static void AppendSpecificKeyedRegistrations(
+        IComponentRegistry registry,
+        Type elementType,
+        IComponentRegistration registration,
+        HashSet<KeyedService> processedServices,
+        List<(KeyedService KeyedService, ServiceRegistration Registration)> result)
+    {
+        if (registration.Metadata.ContainsKey(MetadataKeys.AnyKeyAdapter))
+        {
+            return;
+        }
+
+        foreach (var keyed in registration.Services.OfType<KeyedService>())
+        {
+            if (!IsSpecificKeyedElementService(keyed, elementType) || !processedServices.Add(keyed))
+            {
+                continue;
+            }
+
+            foreach (var serviceRegistration in registry.ServiceRegistrationsFor(keyed))
+            {
+                if (ShouldIncludeInSpecificKeyedCollection(serviceRegistration))
+                {
+                    result.Add((keyed, serviceRegistration));
+                }
+            }
+        }
+    }
+
+    private static bool IsSpecificKeyedElementService(KeyedService keyed, Type elementType)
+        => keyed.ServiceType == elementType && !KeyedService.IsAnyKey(keyed.ServiceKey);
+
+    private static bool ShouldIncludeInSpecificKeyedCollection(ServiceRegistration serviceRegistration)
+        => !serviceRegistration.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections)
+            && !serviceRegistration.Registration.Metadata.ContainsKey(MetadataKeys.AnyKeyAdapter);
 
     private static List<(Service Service, ServiceRegistration Registration)> BuildStandardRegistrationList(IComponentRegistry registry, Service elementTypeService)
     {

@@ -458,8 +458,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         {
             var next = info.DequeueNextSource();
 
-            // Do not query per-scope registration sources
-            // for isolated services.
+            // Do not query per-scope registration sources for isolated services.
             if (isScopeIsolatedService && next is IPerScopeRegistrationSource)
             {
                 continue;
@@ -467,32 +466,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
 
             foreach (var provided in next.RegistrationsFor(service, _registrationAccessor))
             {
-                // This ensures that multiple services provided by the same
-                // component share a single component (we don't re-query for them)
-                foreach (var additionalService in provided.Services)
-                {
-                    var additionalInfo = GetServiceInfo(additionalService);
-                    if (additionalInfo.IsInitialized || additionalInfo == info)
-                    {
-                        continue;
-                    }
-
-                    if (_ephemeralServiceInfo is not null)
-                    {
-                        // Use ephemeral info for additional services.
-                        additionalInfo = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
-                    }
-
-                    if (!additionalInfo.IsInitializing)
-                    {
-                        BeginServiceInfoInitialization(additionalService, additionalInfo, ExcludeSource(_dynamicRegistrationSources, next));
-                    }
-                    else
-                    {
-                        additionalInfo.SkipSource(next);
-                    }
-                }
-
+                PopulateAdditionalServicesForProvidedRegistration(service, info, next, provided);
                 AddRegistration(
                     provided,
                     preserveDefaults: true,
@@ -501,6 +475,52 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         return true;
+    }
+
+    private void PopulateAdditionalServicesForProvidedRegistration(
+        Service service,
+        ServiceRegistrationInfo info,
+        IRegistrationSource source,
+        IComponentRegistration provided)
+    {
+        // This ensures that multiple services provided by the same
+        // component share a single component (we don't re-query for them)
+        foreach (var additionalService in provided.Services)
+        {
+            var additionalInfo = GetServiceInfo(additionalService);
+            if (additionalInfo.IsInitialized || additionalInfo == info)
+            {
+                continue;
+            }
+
+            additionalInfo = UseEphemeralAdditionalInfoIfNeeded(service, info, additionalInfo);
+            InitializeOrSkipSource(additionalService, additionalInfo, source);
+        }
+    }
+
+    private ServiceRegistrationInfo UseEphemeralAdditionalInfoIfNeeded(
+        Service service,
+        ServiceRegistrationInfo info,
+        ServiceRegistrationInfo additionalInfo)
+    {
+        if (_ephemeralServiceInfo is null)
+        {
+            return additionalInfo;
+        }
+
+        // Use ephemeral info for additional services.
+        return GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+    }
+
+    private void InitializeOrSkipSource(Service additionalService, ServiceRegistrationInfo additionalInfo, IRegistrationSource source)
+    {
+        if (!additionalInfo.IsInitializing)
+        {
+            BeginServiceInfoInitialization(additionalService, additionalInfo, ExcludeSource(_dynamicRegistrationSources, source));
+            return;
+        }
+
+        additionalInfo.SkipSource(source);
     }
 
     /// <summary>

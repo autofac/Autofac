@@ -87,38 +87,26 @@ internal static class OpenGenericServiceBinder
         [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
     {
         var serviceWithTypeServiceType = serviceWithType.ServiceType;
-        if (serviceWithTypeServiceType.IsGenericType && !serviceWithTypeServiceType.IsGenericTypeDefinition)
+        if (!IsClosedGenericType(serviceWithTypeServiceType))
         {
-            var definitionService = (IServiceWithType)serviceWithType.ChangeType(GetGenericTypeDefinition(serviceWithTypeServiceType));
-            var serviceGenericArguments = serviceWithTypeServiceType.GetGenericArguments();
-
-            foreach (var s in configuredOpenGenericServices.OfType<IServiceWithType>())
-            {
-                if (s.Equals(definitionService))
-                {
-                    constructedFactory = (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
-
-                    var serviceGenericArgumentsLength = serviceGenericArguments.Length;
-                    var implementedServices = new List<Service>();
-                    foreach (var service in configuredOpenGenericServices.OfType<IServiceWithType>())
-                    {
-                        var serviceType = service.ServiceType;
-                        if (serviceType.GetGenericArguments().Length == serviceGenericArgumentsLength)
-                        {
-                            var genericService = serviceType.MakeGenericType(serviceGenericArguments);
-                            implementedServices.Add(service.ChangeType(genericService));
-                        }
-                    }
-
-                    constructedServices = implementedServices.ToArray();
-                    return true;
-                }
-            }
+            constructedFactory = null;
+            constructedServices = null;
+            return false;
         }
 
-        constructedFactory = null;
-        constructedServices = null;
-        return false;
+        var definitionService = (IServiceWithType)serviceWithType.ChangeType(GetGenericTypeDefinition(serviceWithTypeServiceType));
+        var serviceGenericArguments = serviceWithTypeServiceType.GetGenericArguments();
+
+        if (!configuredOpenGenericServices.OfType<IServiceWithType>().Any(s => s.Equals(definitionService)))
+        {
+            constructedFactory = null;
+            constructedServices = null;
+            return false;
+        }
+
+        constructedFactory = (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
+        constructedServices = BuildImplementedServices(configuredOpenGenericServices, serviceGenericArguments);
+        return true;
     }
 
     /// <summary>
@@ -168,6 +156,29 @@ internal static class OpenGenericServiceBinder
                 }
             }
         }
+    }
+
+    private static bool IsClosedGenericType(Type serviceType)
+        => serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition;
+
+    private static Service[] BuildImplementedServices(IEnumerable<Service> configuredOpenGenericServices, Type[] serviceGenericArguments)
+    {
+        var serviceGenericArgumentsLength = serviceGenericArguments.Length;
+        var implementedServices = new List<Service>();
+
+        foreach (var service in configuredOpenGenericServices.OfType<IServiceWithType>())
+        {
+            var serviceType = service.ServiceType;
+            if (serviceType.GetGenericArguments().Length != serviceGenericArgumentsLength)
+            {
+                continue;
+            }
+
+            var genericService = serviceType.MakeGenericType(serviceGenericArguments);
+            implementedServices.Add(service.ChangeType(genericService));
+        }
+
+        return implementedServices.ToArray();
     }
 
     private static Type GetGenericTypeDefinition(Type type) => ReflectionCacheSet.Shared.Internal.GenericTypeDefinitionByType.GetOrAdd(type, static t => t.GetGenericTypeDefinition());

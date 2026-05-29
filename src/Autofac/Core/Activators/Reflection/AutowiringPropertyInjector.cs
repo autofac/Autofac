@@ -113,43 +113,59 @@ internal static class AutowiringPropertyInjector
     {
         foreach (var property in instanceType.GetRuntimeProperties())
         {
-            if (!property.CanWrite)
-            {
-                continue;
-            }
-
-            // SetMethod will be non-null if CanWrite is true.
-            // Don't want to inject onto static properties.
-            if (property.SetMethod!.IsStatic)
-            {
-                continue;
-            }
-
-            var propertyType = property.PropertyType;
-
-            if (propertyType.IsValueType && !propertyType.IsEnum)
-            {
-                continue;
-            }
-
-            // GetElementType will be non-null if IsArray is true.
-            if (propertyType.IsArray && propertyType.GetElementType()!.IsValueType)
-            {
-                continue;
-            }
-
-            if (propertyType.IsGenericEnumerableInterfaceType() && propertyType.GenericTypeArguments[0].IsValueType)
-            {
-                continue;
-            }
-
-            if (property.GetIndexParameters().Length != 0)
+            if (!IsInjectableProperty(property))
             {
                 continue;
             }
 
             yield return property;
         }
+    }
+
+    private static bool IsInjectableProperty(PropertyInfo property)
+    {
+        // We only inject into assignable instance properties.
+        if (!property.CanWrite)
+        {
+            return false;
+        }
+
+        // SetMethod will be non-null if CanWrite is true.
+        // Don't want to inject onto static properties.
+        if (property.SetMethod!.IsStatic)
+        {
+            return false;
+        }
+
+        // Avoid attempting resolution for value-type shapes that Autofac does not
+        // meaningfully construct via property injection.
+        var propertyType = property.PropertyType;
+        if (IsUnsupportedPropertyType(propertyType))
+        {
+            return false;
+        }
+
+        // Indexers require index arguments and are not regular injectable properties.
+        return property.GetIndexParameters().Length == 0;
+    }
+
+    private static bool IsUnsupportedPropertyType(Type propertyType)
+    {
+        // Primitive/value-type properties are not autowired (enums are allowed).
+        if (propertyType.IsValueType && !propertyType.IsEnum)
+        {
+            return true;
+        }
+
+        // Arrays of value types behave like value containers; skip autowiring.
+        // GetElementType will be non-null if IsArray is true.
+        if (propertyType.IsArray && propertyType.GetElementType()!.IsValueType)
+        {
+            return true;
+        }
+
+        // Also skip IEnumerable<TValueType> - same rule as arrays above.
+        return propertyType.IsGenericEnumerableInterfaceType() && propertyType.GenericTypeArguments[0].IsValueType;
     }
 
     [SuppressMessage("S125", "S125", Justification = "Commented code explains the code generation output.")]
