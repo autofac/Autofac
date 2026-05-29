@@ -22,11 +22,11 @@
     <Rule Id="CA1515" Action="None" />
     <!-- Remove underscores from member name - test naming conventions use underscore. -->
     <Rule Id="CA1707" Action="None" />
-    <!-- Internal class that appears to never be instantiated - false positives from DI. -->
     <!-- Identifiers should not have incorrect suffix - test classes use Impl, Handler, etc. -->
     <Rule Id="CA1711" Action="None" />
     <!-- Property names should not match get methods - aggregate service tests intentionally test both. -->
     <Rule Id="CA1721" Action="None" />
+    <!-- Internal class that appears to never be instantiated - false positives from DI. -->
     <Rule Id="CA1812" Action="None" />
     <!-- Change Dispose() to call GC.SuppressFinalize - unimportant in tests. -->
     <Rule Id="CA1816" Action="None" />
@@ -42,9 +42,9 @@
     <Rule Id="CA1863" Action="None" />
     <!-- Call ConfigureAwait - shouldn't in test libraries; XUnit has opposing analyzer. -->
     <Rule Id="CA2007" Action="None" />
-    <!-- Implement serialization constructors - false positive in .NET Core. -->
     <!-- Do not raise reserved exception types - tests use generic exceptions for simulation. -->
     <Rule Id="CA2201" Action="None" />
+    <!-- Implement serialization constructors - false positive in .NET Core. -->
     <Rule Id="CA2229" Action="None" />
     <!-- Use Uri instead of string parameters - strings are easier for testing. -->
     <Rule Id="CA2234" Action="None" />
@@ -58,9 +58,9 @@
   <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
     <!-- Don't use hardcoded paths or URIs - needed in several test cases. -->
     <Rule Id="S1075" Action="None" />
-    <!-- Utility class should not be instantiated - test fixture classes with nested tests can't be static. -->
     <!-- Sections of code should not be commented out - test files may retain commented examples. -->
     <Rule Id="S125" Action="None" />
+    <!-- Utility class should not be instantiated - test fixture classes with nested tests can't be static. -->
     <Rule Id="S1118" Action="None" />
     <!-- Don't call GC.Collect - required for weak reference and disposal tests. -->
     <Rule Id="S1215" Action="None" />
@@ -137,11 +137,6 @@
     <!-- Don't copy/paste documentation. -->
     <Rule Id="SA1625" Action="None" />
   </Rules>
-  <Rules AnalyzerId="xUnit" RuleNamespace="xUnit">
-    <!-- Use Assert.Single when there's only one collection entry. -->
-    <Rule Id="xUnit2023" Action="Warning" />
-  </Rules>
-  <!-- IDE rules for test assemblies. -->
   <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp" RuleNamespace="Microsoft.CodeAnalysis.CSharp">
     <!-- Private member is unused - tests for reflection require members that may not get used. -->
     <Rule Id="IDE0051" Action="None" />

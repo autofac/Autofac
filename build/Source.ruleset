@@ -32,25 +32,33 @@
     <Rule Id="CA2263" Action="None" />
   </Rules>
   <Rules AnalyzerId="SonarAnalyzer.CSharp" RuleNamespace="SonarAnalyzer.CSharp">
-    <!-- "Sonar Way" rules to match SonarQube scans. -->
+    <!-- Methods should not have too many parameters. -->
     <Rule Id="S107" Action="Warning" />
     <!-- Do not use obsolete members - Autofac maintains deprecated APIs for backward compat. -->
     <Rule Id="S1133" Action="None" />
+    <!-- String literals should not be duplicated. -->
     <Rule Id="S1192" Action="Warning" />
+    <!-- IP addresses should not be hardcoded. -->
     <Rule Id="S1313" Action="Warning" />
+    <!-- Null pointers should not be dereferenced. -->
     <Rule Id="S2259" Action="Warning" />
+    <!-- Conditionally executed code should be reachable. -->
     <Rule Id="S2583" Action="Warning" />
+    <!-- Boolean expressions should not be gratuitous. -->
     <Rule Id="S2589" Action="Warning" />
     <!-- Verify reflection accessibility bypass - DI containers do extensive reflection by design. -->
     <Rule Id="S3011" Action="None" />
     <!-- Loops should use LINQ - DI container hot paths intentionally avoid LINQ allocations. -->
     <Rule Id="S3267" Action="None" />
+    <!-- Cognitive complexity (must be explicitly enabled). -->
     <Rule Id="S3776" Action="Warning" />
     <!-- IDisposable pattern - Autofac uses non-standard dispose patterns for container lifecycle. -->
     <Rule Id="S3881" Action="None" />
     <!-- Split method for params check + iterator - overly prescriptive for our patterns. -->
     <Rule Id="S4456" Action="None" />
+    <!-- Collection contents should not be updated while being enumerated. -->
     <Rule Id="S6418" Action="Warning" />
+    <!-- Private fields should be initialized before use. -->
     <Rule Id="S6444" Action="Warning" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
