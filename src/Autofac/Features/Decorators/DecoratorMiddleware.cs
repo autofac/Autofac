@@ -112,7 +112,7 @@ internal class DecoratorMiddleware : IResolveMiddleware
 
             resolveParameters[idx++] = typedServiceParameter;
             resolveParameters[idx++] = compatibleServiceParameter;
-            resolveParameters[idx++] = contextParameter;
+            resolveParameters[idx] = contextParameter;
         }
 
         // We're going to define a service registration that does not contain any service
