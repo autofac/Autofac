@@ -39,7 +39,7 @@ internal class AsyncReleaseAction<TLimit> : Disposable
             await _action(_factory()).ConfigureAwait(false);
         }
 
-        base.Dispose(disposing);
+        await base.DisposeAsync(disposing);
     }
 
     /// <inheritdoc/>
