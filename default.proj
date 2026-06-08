@@ -17,7 +17,7 @@
         <Version>$(Version)-local</Version>
       </PropertyGroup>
     </When>
-    <When Condition="'$(GITHUB_REF_NAME)'=='master' Or $([System.Text.RegularExpressions.Regex]::IsMatch($(GITHUB_REF_NAME), `^v.+\..+\..+`))">
+    <When Condition="'$(GITHUB_REF_NAME)'=='main' Or $([System.Text.RegularExpressions.Regex]::IsMatch($(GITHUB_REF_NAME), `^v.+\..+\..+`))">
       <PropertyGroup>
         <Version>$(Version)</Version>
       </PropertyGroup>

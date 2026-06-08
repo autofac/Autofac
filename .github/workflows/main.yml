@@ -1,0 +1,24 @@
+name: Continuous Integration
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  push:
+    branches:
+      - develop
+      - main
+      - feature/*
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+# If multiple pushes happen quickly in succession, cancel the running build
+# and start a new one.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ci:
+    uses: autofac/.github/.github/workflows/ci.yml@main
+    secrets: inherit
+    with:
+      solution: Autofac.sln
