@@ -175,13 +175,21 @@ public sealed class ContainerBuilder
         var componentRegistry = ComponentRegistryBuilder.Build();
 
         var result = new Container(componentRegistry);
-        if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
+        try
         {
-            StartableManager.StartStartableComponents(Properties, result);
-        }
+            if ((options & ContainerBuildOptions.IgnoreStartableComponents) == ContainerBuildOptions.None)
+            {
+                StartableManager.StartStartableComponents(Properties, result);
+            }
 
-        // Run any build callbacks.
-        BuildCallbackManager.RunBuildCallbacks(result);
+            // Run any build callbacks.
+            BuildCallbackManager.RunBuildCallbacks(result);
+        }
+        catch
+        {
+            result.Dispose();
+            throw;
+        }
 
         // Allow the reflection cache to empty any registration-time caches to save memory.
         ReflectionCacheSet.Shared.OnContainerBuildClearCaches(_clearRegistrationCaches);
