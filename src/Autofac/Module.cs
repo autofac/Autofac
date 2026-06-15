@@ -132,8 +132,28 @@ public abstract class Module : IModule
             throw new ArgumentNullException(nameof(componentRegistry));
         }
 
-        componentRegistry.Registered +=
-            (sender, e) => AttachToComponentRegistration(e.ComponentRegistryBuilder, e.ComponentRegistration);
+        var moduleType = GetType();
+        var cache = ReflectionCacheSet.Shared.Internal.ModuleOverridesAttachToComponentRegistration;
+
+        var overrides = cache.GetOrAdd(
+            moduleType,
+            static t =>
+            {
+                var method = t.GetMethod(
+                    nameof(AttachToComponentRegistration),
+                    BindingFlags.Instance | BindingFlags.NonPublic,
+                    binder: null,
+                    types: new[] { typeof(IComponentRegistryBuilder), typeof(IComponentRegistration) },
+                    modifiers: null);
+
+                return method is not null && method.DeclaringType != typeof(Module);
+            });
+
+        if (overrides)
+        {
+            componentRegistry.Registered +=
+                (sender, e) => AttachToComponentRegistration(e.ComponentRegistryBuilder, e.ComponentRegistration);
+        }
     }
 
     private void AttachToSources(IComponentRegistryBuilder componentRegistry)
@@ -143,7 +163,27 @@ public abstract class Module : IModule
             throw new ArgumentNullException(nameof(componentRegistry));
         }
 
-        componentRegistry.RegistrationSourceAdded +=
-            (sender, e) => AttachToRegistrationSource(e.ComponentRegistry, e.RegistrationSource);
+        var moduleType = GetType();
+        var cache = ReflectionCacheSet.Shared.Internal.ModuleOverridesAttachToRegistrationSource;
+
+        var overrides = cache.GetOrAdd(
+            moduleType,
+            static t =>
+            {
+                var method = t.GetMethod(
+                    nameof(AttachToRegistrationSource),
+                    BindingFlags.Instance | BindingFlags.NonPublic,
+                    binder: null,
+                    types: new[] { typeof(IComponentRegistryBuilder), typeof(IRegistrationSource) },
+                    modifiers: null);
+
+                return method is not null && method.DeclaringType != typeof(Module);
+            });
+
+        if (overrides)
+        {
+            componentRegistry.RegistrationSourceAdded +=
+                (sender, e) => AttachToRegistrationSource(e.ComponentRegistry, e.RegistrationSource);
+        }
     }
 }

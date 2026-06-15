@@ -25,6 +25,16 @@ internal class InternalReflectionCaches
             Usage = ReflectionCacheUsage.Registration,
         });
 
+        ModuleOverridesAttachToComponentRegistration = set.GetOrCreateCache(nameof(ModuleOverridesAttachToComponentRegistration), _ => new ReflectionCacheDictionary<Type, bool>
+        {
+            Usage = ReflectionCacheUsage.Registration,
+        });
+
+        ModuleOverridesAttachToRegistrationSource = set.GetOrCreateCache(nameof(ModuleOverridesAttachToRegistrationSource), _ => new ReflectionCacheDictionary<Type, bool>
+        {
+            Usage = ReflectionCacheUsage.Registration,
+        });
+
         IsGenericEnumerableInterface = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(IsGenericEnumerableInterface));
         IsGenericListOrCollectionInterfaceType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(IsGenericListOrCollectionInterfaceType));
         IsGenericTypeDefinedBy = set.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, bool>>(nameof(IsGenericTypeDefinedBy));
@@ -148,6 +158,24 @@ internal class InternalReflectionCaches
     /// Gets a cache used to determine if a type uses <see cref="ServiceKeyAttribute"/>.
     /// </summary>
     public ReflectionCacheDictionary<Type, bool> ServiceKeyUsageByType
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets a cache used by <see cref="Module"/> to determine whether a concrete module type
+    /// overrides <see cref="Module.AttachToComponentRegistration"/>.
+    /// </summary>
+    public ReflectionCacheDictionary<Type, bool> ModuleOverridesAttachToComponentRegistration
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets a cache used by <see cref="Module"/> to determine whether a concrete module type
+    /// overrides <see cref="Module.AttachToRegistrationSource"/>.
+    /// </summary>
+    public ReflectionCacheDictionary<Type, bool> ModuleOverridesAttachToRegistrationSource
     {
         get;
     }
