@@ -589,7 +589,46 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         configurationAction(builder);
 
         builder.UpdateRegistry(registryBuilder);
+
+        CheckLocalRegistrationsDoNotBindToAncestorScope(tag, tracker.Registrations);
+
         return registryBuilder;
+    }
+
+    private void CheckLocalRegistrationsDoNotBindToAncestorScope(object newScopeTag, IEnumerable<IComponentRegistration> localRegistrations)
+    {
+        // Build the set of strict ancestor tags: the current scope and all its parents (but NOT the new
+        // child scope's own tag). A locally-registered component whose MatchingScopeLifetime references
+        // an ancestor tag will be hoisted into that ancestor on every child scope creation, accumulating
+        // instances and causing a memory leak. Fail fast here rather than silently leaking.
+        var ancestorTags = new HashSet<object>();
+        ISharingLifetimeScope? current = this;
+        while (current is not null)
+        {
+            ancestorTags.Add(current.Tag);
+            current = current.ParentLifetimeScope;
+        }
+
+        foreach (var registration in localRegistrations)
+        {
+            if (registration.Lifetime is not MatchingScopeLifetime matchingLifetime)
+            {
+                continue;
+            }
+
+            foreach (var matchedTag in matchingLifetime.TagsToMatch)
+            {
+                if (ancestorTags.Contains(matchedTag))
+                {
+                    throw new InvalidOperationException(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            LifetimeScopeResources.MatchingScopeLifetimeAncestorTag,
+                            matchedTag,
+                            newScopeTag));
+                }
+            }
+        }
     }
 
     /// <summary>

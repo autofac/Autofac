@@ -123,6 +123,9 @@
   <data name="DuplicateTagDetected" xml:space="preserve">
     <value>The tag '{0}' has already been assigned to a parent lifetime scope. If you are using Owned&lt;T&gt; this indicates you may have a circular dependency chain.</value>
   </data>
+  <data name="MatchingScopeLifetimeAncestorTag" xml:space="preserve">
+    <value>A component registered in a BeginLifetimeScope configuration action has a lifetime bound to tag '{0}', which belongs to a strict ancestor scope. Such a registration can only be resolved within the current child scope, but each child scope creation will hoist a new instance into the ancestor, causing a memory leak. Either register the component in the ancestor scope directly, or use a tag that matches the current scope ('{1}') or a future descendant scope.</value>
+  </data>
   <data name="ScopeIsDisposed" xml:space="preserve">
     <value>Instances cannot be resolved and nested lifetimes cannot be created from this LifetimeScope as it (or one of its parent scopes) has already been disposed.</value>
   </data>
