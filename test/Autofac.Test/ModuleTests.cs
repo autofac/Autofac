@@ -206,7 +206,8 @@ public class ModuleTests
         Assert.Equal("value", builder.Properties["prop"]);
     }
 
-    // A module that overrides neither hook (the common case that caused the performance issue).
+    // #1446: A module that overrides neither hook (the common case that caused the
+    // O(N^2) performance issue) must not subscribe to the registry events at all.
     internal class NoHookModule : Module
     {
         protected override void Load(ContainerBuilder builder)
@@ -216,38 +217,35 @@ public class ModuleTests
     }
 
     [Fact]
-    public void NoHookModule_DoesNotSubscribeToRegisteredEvent()
+    public void ModuleWithoutHookDoesNotSubscribeToRegisteredEvent()
     {
-        // Arrange
+        // #1446: Subscribing replays every existing registration, so a module that
+        // does not override AttachToComponentRegistration must not subscribe.
         using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
 
-        // Act
         new NoHookModule().Configure(registryBuilder);
 
-        // Assert: the Registered event delegate stored in Properties should be null
-        // (no module subscription was added), meaning the key is either absent or null.
         var hasRegisteredHandler =
             registryBuilder.Properties.TryGetValue(MetadataKeys.RegisteredPropertyKey, out var registeredValue)
             && registeredValue is not null;
 
-        Assert.False(hasRegisteredHandler, "A module that does not override AttachToComponentRegistration should not subscribe to the Registered event.");
+        Assert.False(hasRegisteredHandler);
     }
 
     [Fact]
-    public void NoHookModule_DoesNotSubscribeToRegistrationSourceAddedEvent()
+    public void ModuleWithoutHookDoesNotSubscribeToRegistrationSourceAddedEvent()
     {
-        // Arrange
+        // #1446: A module that does not override AttachToRegistrationSource must not
+        // subscribe to the RegistrationSourceAdded event.
         using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
 
-        // Act
         new NoHookModule().Configure(registryBuilder);
 
-        // Assert: the RegistrationSourceAdded event delegate stored in Properties should be null.
         var hasSourceHandler =
             registryBuilder.Properties.TryGetValue(MetadataKeys.RegistrationSourceAddedPropertyKey, out var sourceValue)
             && sourceValue is not null;
 
-        Assert.False(hasSourceHandler, "A module that does not override AttachToRegistrationSource should not subscribe to the RegistrationSourceAdded event.");
+        Assert.False(hasSourceHandler);
     }
 
     // A module that overrides only AttachToComponentRegistration.
@@ -264,26 +262,24 @@ public class ModuleTests
     }
 
     [Fact]
-    public void ComponentRegistrationHookModule_SubscribesToRegisteredEvent()
+    public void ModuleOverridingComponentRegistrationHookSubscribesToRegisteredEvent()
     {
-        // Arrange
+        // #1446: A module that overrides AttachToComponentRegistration must still subscribe.
         using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
 
-        // Act
         new ComponentRegistrationHookModule().Configure(registryBuilder);
 
-        // Assert: the Registered event delegate stored in Properties should be non-null.
         var hasRegisteredHandler =
             registryBuilder.Properties.TryGetValue(MetadataKeys.RegisteredPropertyKey, out var registeredValue)
             && registeredValue is not null;
 
-        Assert.True(hasRegisteredHandler, "A module that overrides AttachToComponentRegistration must subscribe to the Registered event.");
+        Assert.True(hasRegisteredHandler);
     }
 
     [Fact]
-    public void ComponentRegistrationHookModule_HookIsCalledForSubsequentRegistrations()
+    public void ModuleOverridingComponentRegistrationHookStillReceivesRegistrations()
     {
-        // Verify the hook is still called when the override is present (regression guard).
+        // #1446: regression guard - the overridden hook must still fire for registrations.
         var module = new ComponentRegistrationHookModule();
         var builder = new ContainerBuilder();
         builder.RegisterModule(module);
@@ -292,6 +288,22 @@ public class ModuleTests
         using var container = builder.Build();
 
         Assert.NotEmpty(module.Seen);
+    }
+
+    [Fact]
+    public void ModuleOverridingOnlyComponentRegistrationHookDoesNotSubscribeToRegistrationSourceAddedEvent()
+    {
+        // #1446: the two detection paths are independent - overriding only the
+        // component-registration hook must not subscribe to the source-added event.
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+
+        new ComponentRegistrationHookModule().Configure(registryBuilder);
+
+        var hasSourceHandler =
+            registryBuilder.Properties.TryGetValue(MetadataKeys.RegistrationSourceAddedPropertyKey, out var sourceValue)
+            && sourceValue is not null;
+
+        Assert.False(hasSourceHandler);
     }
 
     // A module that overrides only AttachToRegistrationSource.
@@ -308,20 +320,34 @@ public class ModuleTests
     }
 
     [Fact]
-    public void RegistrationSourceHookModule_SubscribesToRegistrationSourceAddedEvent()
+    public void ModuleOverridingRegistrationSourceHookSubscribesToRegistrationSourceAddedEvent()
     {
-        // Arrange
+        // #1446: A module that overrides AttachToRegistrationSource must still subscribe.
         using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
 
-        // Act
         new RegistrationSourceHookModule().Configure(registryBuilder);
 
-        // Assert: the RegistrationSourceAdded event delegate stored in Properties should be non-null.
         var hasSourceHandler =
             registryBuilder.Properties.TryGetValue(MetadataKeys.RegistrationSourceAddedPropertyKey, out var sourceValue)
             && sourceValue is not null;
 
-        Assert.True(hasSourceHandler, "A module that overrides AttachToRegistrationSource must subscribe to the RegistrationSourceAdded event.");
+        Assert.True(hasSourceHandler);
+    }
+
+    [Fact]
+    public void ModuleOverridingOnlyRegistrationSourceHookDoesNotSubscribeToRegisteredEvent()
+    {
+        // #1446: the two detection paths are independent - overriding only the
+        // source-added hook must not subscribe to the component-registered event.
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+
+        new RegistrationSourceHookModule().Configure(registryBuilder);
+
+        var hasRegisteredHandler =
+            registryBuilder.Properties.TryGetValue(MetadataKeys.RegisteredPropertyKey, out var registeredValue)
+            && registeredValue is not null;
+
+        Assert.False(hasRegisteredHandler);
     }
 
     internal class NullRegistrationSource : IRegistrationSource
@@ -335,9 +361,9 @@ public class ModuleTests
     }
 
     [Fact]
-    public void RegistrationSourceHookModule_HookIsCalledWhenSourceIsAdded()
+    public void ModuleOverridingRegistrationSourceHookStillReceivesSources()
     {
-        // Verify the hook is still called when the override is present (regression guard).
+        // #1446: regression guard - the overridden hook must still fire for sources.
         var module = new RegistrationSourceHookModule();
         var builder = new ContainerBuilder();
         builder.RegisterModule(module);
@@ -371,10 +397,10 @@ public class ModuleTests
     }
 
     [Fact]
-    public void IntermediateBaseOverride_HookIsCalledForConcreteSubclass()
+    public void ModuleInheritingHookFromIntermediateBaseStillReceivesRegistrations()
     {
-        // A module that inherits the override from an intermediate class must still
-        // have its hook invoked (DeclaringType != typeof(Module) covers this case).
+        // #1446: the override-detection uses DeclaringType != typeof(Module), so an
+        // override inherited from an intermediate base class must still fire.
         var module = new ConcreteIntermediateModule();
         var builder = new ContainerBuilder();
         builder.RegisterModule(module);
@@ -386,8 +412,9 @@ public class ModuleTests
     }
 
     [Fact]
-    public void IntermediateBaseOverride_SubscribesToRegisteredEvent()
+    public void ModuleInheritingHookFromIntermediateBaseSubscribesToRegisteredEvent()
     {
+        // #1446: a module whose override is declared on an intermediate base class must subscribe.
         using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
 
         new ConcreteIntermediateModule().Configure(registryBuilder);
@@ -396,7 +423,7 @@ public class ModuleTests
             registryBuilder.Properties.TryGetValue(MetadataKeys.RegisteredPropertyKey, out var registeredValue)
             && registeredValue is not null;
 
-        Assert.True(hasRegisteredHandler, "A module with an override declared on an intermediate base class must still subscribe to the Registered event.");
+        Assert.True(hasRegisteredHandler);
     }
 
     private class Service1
