@@ -240,7 +240,18 @@ internal static class OpenGenericServiceBinder
             .ToArray();
 
         var exactMatch = availableArguments.FirstOrDefault(a => a.SequenceEqual(serviceGenericArguments));
-        return exactMatch ?? availableArguments[0];
+        if (exactMatch is not null)
+        {
+            return exactMatch;
+        }
+
+        // When no exact match exists, prefer the first candidate that produces a complete
+        // mapping (no null entries), so that a non-mappable interface appearing earlier in
+        // the interface list does not shadow a valid one that appears later. Fall back to
+        // availableArguments[0] when no candidate fully maps (preserves prior behavior for
+        // genuinely un-bindable registrations, where the caller's null check handles it).
+        var completeMatch = availableArguments.FirstOrDefault(a => a.All(arg => arg is not null));
+        return completeMatch ?? availableArguments[0];
     }
 
     private static Type?[] TryFindServiceArgumentsForImplementation(Type implementationType, IEnumerable<Type> serviceGenericArguments, IEnumerable<Type> serviceArgumentDefinitions)
