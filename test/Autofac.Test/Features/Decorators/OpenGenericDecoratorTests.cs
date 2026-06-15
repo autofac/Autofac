@@ -926,19 +926,28 @@ public class OpenGenericDecoratorTests
     // Issue 1459: A decorator constructor may take a dependency typed as a more
     // derived service than the one being decorated. The decorated instance must
     // not be force-injected into that parameter; it should be resolved normally.
+    // ReSharper disable once UnusedTypeParameter
+    private interface IDerivedService<T> : IService<T>
+    {
+    }
+
     private class PlainService<T> : IService<T>
+    {
+    }
+
+    private class DerivedServiceImpl<T> : IDerivedService<T>
     {
     }
 
     private class DerivedDependencyDecorator<T> : IService<T>
     {
-        public DerivedDependencyDecorator(IDecoratedService<T> derived, IService<T> decorated)
+        public DerivedDependencyDecorator(IDerivedService<T> derived, IService<T> decorated)
         {
             Derived = derived;
             Decorated = decorated;
         }
 
-        public IDecoratedService<T> Derived
+        public IDerivedService<T> Derived
         {
             get;
         }
@@ -954,12 +963,12 @@ public class OpenGenericDecoratorTests
     {
         // Issue 1459: The decorated service (IService<T>) should be supplied to
         // the "Decorated" parameter, while the more-derived "Derived"
-        // (IDecoratedService<T>) parameter must be resolved from the container
+        // (IDerivedService<T>) parameter must be resolved from the container
         // rather than receiving the decorated instance (which is only an
-        // IService<T> here, not an IDecoratedService<T>).
+        // IService<T> here, not an IDerivedService<T>).
         var builder = new ContainerBuilder();
         builder.RegisterGeneric(typeof(PlainService<>)).As(typeof(IService<>));
-        builder.RegisterGeneric(typeof(ImplementorA<>)).As(typeof(IDecoratedService<>));
+        builder.RegisterGeneric(typeof(DerivedServiceImpl<>)).As(typeof(IDerivedService<>));
         builder.RegisterGenericDecorator(typeof(DerivedDependencyDecorator<>), typeof(IService<>));
         var container = builder.Build();
 
@@ -967,7 +976,7 @@ public class OpenGenericDecoratorTests
 
         var decorator = Assert.IsType<DerivedDependencyDecorator<int>>(resolved);
         Assert.IsType<PlainService<int>>(decorator.Decorated);
-        Assert.IsType<ImplementorA<int>>(decorator.Derived);
+        Assert.IsType<DerivedServiceImpl<int>>(decorator.Derived);
     }
 
     private interface ICommandHandler<T>
