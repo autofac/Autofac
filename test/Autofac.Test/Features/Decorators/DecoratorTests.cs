@@ -225,6 +225,125 @@ public class DecoratorTests
         Assert.True(service.NestedServiceIsNotNull());
     }
 
+    // Issue 1459: A decorator constructor may take a dependency typed as a more
+    // derived service than the one being decorated. The decorated instance must
+    // not be force-injected into that parameter; it should be resolved normally.
+    private interface IBase
+    {
+    }
+
+    private interface IDerived : IBase
+    {
+    }
+
+    private class BaseImpl : IBase
+    {
+    }
+
+    private class DerivedImpl : IDerived
+    {
+    }
+
+    private class DerivedDependencyDecorator : IBase
+    {
+        public DerivedDependencyDecorator(IDerived derived, IBase decorated)
+        {
+            Derived = derived;
+            Decorated = decorated;
+        }
+
+        public IDerived Derived
+        {
+            get;
+        }
+
+        public IBase Decorated
+        {
+            get;
+        }
+    }
+
+    private class BaseDecorator : IBase
+    {
+        public BaseDecorator(IBase decorated)
+        {
+            Decorated = decorated;
+        }
+
+        public IBase Decorated
+        {
+            get;
+        }
+    }
+
+    [Fact]
+    public void DecoratorWithMoreDerivedServiceDependencyResolvesDependencyNormally()
+    {
+        // Issue 1459: The decorated service (IBase) should be supplied to the
+        // "Decorated" parameter, while the more-derived "Derived" (IDerived)
+        // parameter must be resolved from the container rather than receiving
+        // the decorated IBase instance (which is not an IDerived).
+        var builder = new ContainerBuilder();
+        builder.RegisterType<BaseImpl>().As<IBase>();
+        builder.RegisterType<DerivedImpl>().As<IDerived>();
+        builder.RegisterDecorator<DerivedDependencyDecorator, IBase>();
+
+        var container = builder.Build();
+
+        var resolved = container.Resolve<IBase>();
+
+        var decorator = Assert.IsType<DerivedDependencyDecorator>(resolved);
+        Assert.IsType<BaseImpl>(decorator.Decorated);
+        Assert.IsType<DerivedImpl>(decorator.Derived);
+    }
+
+    [Fact]
+    public void DecoratorWithMoreDerivedServiceDependencyResolvesDependencyNormallyInChain()
+    {
+        // Issue 1459: When decorators are chained, the decorated instance seen by
+        // the outer decorator is the inner decorator's output (via
+        // DecoratorContext.UpdateContext), which is an IBase but not an IDerived.
+        // The outer decorator's more-derived "Derived" (IDerived) parameter must
+        // still be resolved from the container rather than receiving that chained
+        // instance, while "Decorated" receives the inner decorator.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<BaseImpl>().As<IBase>();
+        builder.RegisterType<DerivedImpl>().As<IDerived>();
+
+        // Registered first => innermost decorator.
+        builder.RegisterDecorator<BaseDecorator, IBase>();
+        builder.RegisterDecorator<DerivedDependencyDecorator, IBase>();
+
+        var container = builder.Build();
+
+        var resolved = container.Resolve<IBase>();
+
+        var outer = Assert.IsType<DerivedDependencyDecorator>(resolved);
+        Assert.IsType<DerivedImpl>(outer.Derived);
+
+        var inner = Assert.IsType<BaseDecorator>(outer.Decorated);
+        Assert.IsType<BaseImpl>(inner.Decorated);
+    }
+
+    [Fact]
+    public void DecoratorWithUnregisteredMoreDerivedServiceDependencyThrowsResolutionException()
+    {
+        // Issue 1459: When the more-derived "Derived" (IDerived) parameter is not
+        // registered, the parameter falls through to normal autowiring, which
+        // cannot satisfy it. The result should be a clean DependencyResolutionException
+        // rather than the previous InvalidCastException from force-injecting the
+        // decorated instance.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<BaseImpl>().As<IBase>();
+
+        // IDerived is intentionally not registered.
+        builder.RegisterDecorator<DerivedDependencyDecorator, IBase>();
+
+        var container = builder.Build();
+
+        Assert.Throws<DependencyResolutionException>(() => container.Resolve<IBase>());
+    }
+
     private abstract class Decorator : IDecoratedService
     {
         protected Decorator(IDecoratedService decorated)

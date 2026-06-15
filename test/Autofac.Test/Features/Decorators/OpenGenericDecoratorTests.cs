@@ -923,6 +923,62 @@ public class OpenGenericDecoratorTests
             });
     }
 
+    // Issue 1459: A decorator constructor may take a dependency typed as a more
+    // derived service than the one being decorated. The decorated instance must
+    // not be force-injected into that parameter; it should be resolved normally.
+    // ReSharper disable once UnusedTypeParameter
+    private interface IDerivedService<T> : IService<T>
+    {
+    }
+
+    private class PlainService<T> : IService<T>
+    {
+    }
+
+    private class DerivedServiceImpl<T> : IDerivedService<T>
+    {
+    }
+
+    private class DerivedDependencyDecorator<T> : IService<T>
+    {
+        public DerivedDependencyDecorator(IDerivedService<T> derived, IService<T> decorated)
+        {
+            Derived = derived;
+            Decorated = decorated;
+        }
+
+        public IDerivedService<T> Derived
+        {
+            get;
+        }
+
+        public IService<T> Decorated
+        {
+            get;
+        }
+    }
+
+    [Fact]
+    public void DecoratorWithMoreDerivedServiceDependencyResolvesDependencyNormally()
+    {
+        // Issue 1459: The decorated service (IService<T>) should be supplied to
+        // the "Decorated" parameter, while the more-derived "Derived"
+        // (IDerivedService<T>) parameter must be resolved from the container
+        // rather than receiving the decorated instance (which is only an
+        // IService<T> here, not an IDerivedService<T>).
+        var builder = new ContainerBuilder();
+        builder.RegisterGeneric(typeof(PlainService<>)).As(typeof(IService<>));
+        builder.RegisterGeneric(typeof(DerivedServiceImpl<>)).As(typeof(IDerivedService<>));
+        builder.RegisterGenericDecorator(typeof(DerivedDependencyDecorator<>), typeof(IService<>));
+        var container = builder.Build();
+
+        var resolved = container.Resolve<IService<int>>();
+
+        var decorator = Assert.IsType<DerivedDependencyDecorator<int>>(resolved);
+        Assert.IsType<PlainService<int>>(decorator.Decorated);
+        Assert.IsType<DerivedServiceImpl<int>>(decorator.Derived);
+    }
+
     private interface ICommandHandler<T>
     {
         void Handle(T command);
