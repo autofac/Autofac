@@ -67,6 +67,21 @@ public class InstancePerMatchingLifetimeScopeTests
     }
 
     [Fact]
+    public void LocalRegistration_BindingToGrandchildTag_DoesNotThrow()
+    {
+        // #1460: a descendant tag more than one level down is still a future descendant,
+        // not an ancestor, so it must not throw at scope-creation time.
+        var builder = new ContainerBuilder();
+        var container = builder.Build();
+
+        using var child = container.BeginLifetimeScope("child", b =>
+            b.RegisterType<object>().InstancePerMatchingLifetimeScope("grandchild"));
+
+        using var grandchild = child.BeginLifetimeScope("grandchild");
+        Assert.NotNull(grandchild.Resolve<object>());
+    }
+
+    [Fact]
     public void LocalRegistration_BindingToRootContainerTag_ThrowsAtScopeCreation()
     {
         // The container's root tag is also a strict ancestor; binding to it from a
