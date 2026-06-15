@@ -225,6 +225,48 @@ public class DecoratorTests
         Assert.True(service.NestedServiceIsNotNull());
     }
 
+    // Issue 1459: A decorator constructor may take a dependency typed as a more
+    // derived service than the one being decorated. The decorated instance must
+    // not be force-injected into that parameter; it should be resolved normally.
+    private interface IBase
+    {
+    }
+
+    private interface IDerived : IBase
+    {
+    }
+
+    private class BaseImpl : IBase
+    {
+    }
+
+    private class DerivedImpl : IDerived
+    {
+    }
+
+    private record DerivedDependencyDecorator(IDerived Derived, IBase Decorated) : IBase;
+
+    [Fact]
+    public void DecoratorWithMoreDerivedServiceDependencyResolvesDependencyNormally()
+    {
+        // Issue 1459: The decorated service (IBase) should be supplied to the
+        // "Decorated" parameter, while the more-derived "Derived" (IDerived)
+        // parameter must be resolved from the container rather than receiving
+        // the decorated IBase instance (which is not an IDerived).
+        var builder = new ContainerBuilder();
+        builder.RegisterType<BaseImpl>().As<IBase>();
+        builder.RegisterType<DerivedImpl>().As<IDerived>();
+        builder.RegisterDecorator<DerivedDependencyDecorator, IBase>();
+
+        var container = builder.Build();
+
+        var resolved = container.Resolve<IBase>();
+
+        var decorator = Assert.IsType<DerivedDependencyDecorator>(resolved);
+        Assert.IsType<BaseImpl>(decorator.Decorated);
+        Assert.IsType<DerivedImpl>(decorator.Derived);
+    }
+
     private abstract class Decorator : IDecoratedService
     {
         protected Decorator(IDecoratedService decorated)

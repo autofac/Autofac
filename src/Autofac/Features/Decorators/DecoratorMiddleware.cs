@@ -85,10 +85,21 @@ internal class DecoratorMiddleware : IResolveMiddleware
         // decorators assume an exact typed parameter but the multi-service
         // registered decorators need the resolved version that can determine
         // compatibility by casting.
-        var typedServiceParameter = new TypedParameter(serviceType, context.DecoratorContext.CurrentInstance);
+        //
+        // Issue 1459: The compatible parameter must only supply the decorated
+        // instance to constructor parameters that the instance can actually be
+        // assigned to. A parameter typed as a more derived service than the one
+        // being decorated (for example, a sub-interface) satisfies
+        // IsAssignableFrom on the parameter type, but the decorated instance may
+        // not actually be of that more derived type. In that case the parameter
+        // should fall through to normal autowiring rather than receiving the
+        // decorated instance (which would otherwise throw an InvalidCastException).
+        var currentInstance = context.DecoratorContext.CurrentInstance;
+        var typedServiceParameter = new TypedParameter(serviceType, currentInstance);
         var compatibleServiceParameter = new ResolvedParameter(
-            (pi, ctx) => serviceType.IsAssignableFrom(pi.ParameterType),
-            (pi, ctx) => context.DecoratorContext.CurrentInstance);
+            (pi, ctx) => serviceType.IsAssignableFrom(pi.ParameterType)
+                && pi.ParameterType.IsInstanceOfType(currentInstance),
+            (pi, ctx) => currentInstance);
         var contextParameter = new TypedParameter(typeof(IDecoratorContext), context.DecoratorContext);
 
         Parameter[] resolveParameters;
