@@ -923,6 +923,53 @@ public class OpenGenericDecoratorTests
             });
     }
 
+    // Issue 1459: A decorator constructor may take a dependency typed as a more
+    // derived service than the one being decorated. The decorated instance must
+    // not be force-injected into that parameter; it should be resolved normally.
+    private class PlainService<T> : IService<T>
+    {
+    }
+
+    private class DerivedDependencyDecorator<T> : IService<T>
+    {
+        public DerivedDependencyDecorator(IDecoratedService<T> derived, IService<T> decorated)
+        {
+            Derived = derived;
+            Decorated = decorated;
+        }
+
+        public IDecoratedService<T> Derived
+        {
+            get;
+        }
+
+        public IService<T> Decorated
+        {
+            get;
+        }
+    }
+
+    [Fact]
+    public void DecoratorWithMoreDerivedServiceDependencyResolvesDependencyNormally()
+    {
+        // Issue 1459: The decorated service (IService<T>) should be supplied to
+        // the "Decorated" parameter, while the more-derived "Derived"
+        // (IDecoratedService<T>) parameter must be resolved from the container
+        // rather than receiving the decorated instance (which is only an
+        // IService<T> here, not an IDecoratedService<T>).
+        var builder = new ContainerBuilder();
+        builder.RegisterGeneric(typeof(PlainService<>)).As(typeof(IService<>));
+        builder.RegisterGeneric(typeof(ImplementorA<>)).As(typeof(IDecoratedService<>));
+        builder.RegisterGenericDecorator(typeof(DerivedDependencyDecorator<>), typeof(IService<>));
+        var container = builder.Build();
+
+        var resolved = container.Resolve<IService<int>>();
+
+        var decorator = Assert.IsType<DerivedDependencyDecorator<int>>(resolved);
+        Assert.IsType<PlainService<int>>(decorator.Decorated);
+        Assert.IsType<ImplementorA<int>>(decorator.Derived);
+    }
+
     private interface ICommandHandler<T>
     {
         void Handle(T command);
