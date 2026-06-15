@@ -67,7 +67,7 @@ public class InstancePerMatchingLifetimeScopeTests
     }
 
     [Fact]
-    public void LocalRegistration_BindingToGrandchildTag_DoesNotThrow()
+    public void LocalRegistration_BindToGrandchildTag()
     {
         // #1460: a descendant tag more than one level down is still a future descendant,
         // not an ancestor, so it must not throw at scope-creation time.
