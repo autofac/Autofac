@@ -52,9 +52,20 @@ public class OpenGenericMultipleInterfaceOrderTests
     {
     }
 
+    /// <summary>
+    /// Handler implementing several non-mappable interfaces before the single mappable one,
+    /// to ensure ordering robustness beyond the two-interface case.
+    /// </summary>
+    private class HandlerMappableLast<TParam>
+        : IHandler<IRequest>, IHandler<string>, IHandler<IRequest<TParam>>
+    {
+    }
+
     [Fact]
     public void MappableFirstHandlerIsResolvable()
     {
+        // #1464 control case: when the mappable interface (IHandler<IRequest<TParam>>)
+        // appears first, binding worked before the fix and must continue to work.
         var builder = new ContainerBuilder();
         builder
             .RegisterGeneric(typeof(HandlerMappableFirst<>))
@@ -84,6 +95,40 @@ public class OpenGenericMultipleInterfaceOrderTests
         var handlers = container.Resolve<IEnumerable<IHandler<IRequest<int>>>>();
         Assert.Single(handlers);
         Assert.IsType<HandlerNonMappableFirst<int>>(handlers.Single());
+    }
+
+    [Fact]
+    public void NonMappableFirstHandlerIsResolvableAsSingleService()
+    {
+        // #1464: the single-service resolution path (TryGetRegistration) goes through
+        // different ServiceRegistrationInfo logic than the enumerable path, so guard it
+        // explicitly - a non-mappable interface first must not break a direct resolve.
+        var builder = new ContainerBuilder();
+        builder
+            .RegisterGeneric(typeof(HandlerNonMappableFirst<>))
+            .As(typeof(IHandler<>).MakeGenericType(typeof(IRequest<>)));
+
+        var container = builder.Build();
+
+        var handler = container.Resolve<IHandler<IRequest<int>>>();
+        Assert.IsType<HandlerNonMappableFirst<int>>(handler);
+    }
+
+    [Fact]
+    public void MappableInterfaceFoundWhenItIsNotFirstAmongSeveral()
+    {
+        // #1464: ordering robustness beyond two interfaces - the mappable interface is
+        // the third one implemented, after two non-mappable ones.
+        var builder = new ContainerBuilder();
+        builder
+            .RegisterGeneric(typeof(HandlerMappableLast<>))
+            .As(typeof(IHandler<>).MakeGenericType(typeof(IRequest<>)));
+
+        var container = builder.Build();
+
+        var handlers = container.Resolve<IEnumerable<IHandler<IRequest<int>>>>();
+        Assert.Single(handlers);
+        Assert.IsType<HandlerMappableLast<int>>(handlers.Single());
     }
 
     [Fact]
