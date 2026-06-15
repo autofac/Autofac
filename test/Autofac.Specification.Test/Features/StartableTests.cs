@@ -189,6 +189,23 @@ public class StartableTests
         Assert.Equal(1, instanceCount);
     }
 
+    [Fact]
+    public void Startable_WhenStartableThrows_DependenciesAreDisposed()
+    {
+        // Issue #1392 - disposable instances resolved to satisfy a startable should be
+        // disposed when the startable's Start() method throws.
+#pragma warning disable CA2000 // Dispose objects before losing scope - ownership transferred to container
+        var dependency = new DisposableDependency();
+#pragma warning restore CA2000 // Dispose objects before losing scope
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance(dependency);
+        builder.RegisterType<ThrowingStartable>().As<IStartable>().SingleInstance();
+
+        Assert.Throws<DependencyResolutionException>(() => builder.Build());
+
+        Assert.True(dependency.IsDisposed);
+    }
+
     private class ComponentTakesStartableDependency : IStartable
     {
         public ComponentTakesStartableDependency(StartableTakesDependency dependency, bool expectStarted)
@@ -283,6 +300,31 @@ public class StartableTests
         public void Start()
         {
             WasStarted = true;
+        }
+    }
+
+    private class DisposableDependency : IDisposable
+    {
+        public bool IsDisposed
+        {
+            get; private set;
+        }
+
+        public void Dispose()
+        {
+            IsDisposed = true;
+        }
+    }
+
+    private class ThrowingStartable : IStartable
+    {
+        public ThrowingStartable(DisposableDependency dependency)
+        {
+        }
+
+        public void Start()
+        {
+            throw new InvalidOperationException("Startable failed.");
         }
     }
 }
