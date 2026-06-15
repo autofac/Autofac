@@ -676,6 +676,32 @@ public class DecoratorTests
     }
 
     [Fact]
+    public void DecoratorNotDisposedWhenDecoratedServiceIsExternallyOwned()
+    {
+        // #1402: A decorator wrapping an ExternallyOwned service should itself
+        // not be disposed by the lifetime scope.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DisposableImplementor>()
+            .As<IDecoratedService>()
+            .ExternallyOwned();
+        builder.RegisterDecorator<DisposableDecorator, IDecoratedService>();
+        var container = builder.Build();
+
+        DisposableDecorator decorator;
+        DisposableImplementor decorated;
+
+        using (var scope = container.BeginLifetimeScope())
+        {
+            var instance = scope.Resolve<IDecoratedService>();
+            decorator = (DisposableDecorator)instance;
+            decorated = (DisposableImplementor)instance.Decorated;
+        }
+
+        Assert.Equal(0, decorator.DisposeCallCount);
+        Assert.Equal(0, decorated.DisposeCallCount);
+    }
+
+    [Fact]
     public void DecoratorAppliedOnlyOnceToComponentWithExternalRegistrySource()
     {
         // #965: A nested lifetime scope that has a registration lambda
