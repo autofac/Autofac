@@ -676,6 +676,144 @@ public class DecoratorTests
     }
 
     [Fact]
+    public void DecoratorNotDisposedWhenDecoratedServiceIsExternallyOwned()
+    {
+        // #1402: A decorator wrapping an ExternallyOwned service should itself
+        // not be disposed by the lifetime scope.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DisposableImplementor>()
+            .As<IDecoratedService>()
+            .ExternallyOwned();
+        builder.RegisterDecorator<DisposableDecorator, IDecoratedService>();
+        var container = builder.Build();
+
+        DisposableDecorator decorator;
+        DisposableImplementor decorated;
+
+        using (var scope = container.BeginLifetimeScope())
+        {
+            var instance = scope.Resolve<IDecoratedService>();
+            decorator = (DisposableDecorator)instance;
+            decorated = (DisposableImplementor)instance.Decorated;
+        }
+
+        Assert.Equal(0, decorator.DisposeCallCount);
+        Assert.Equal(0, decorated.DisposeCallCount);
+    }
+
+    [Fact]
+    public void StackedDecoratorsNotDisposedWhenDecoratedServiceIsExternallyOwned()
+    {
+        // #1402: When several decorators are stacked over an ExternallyOwned
+        // service, the ownership of the underlying component governs the entire
+        // chain - none of the decorators should be disposed by the scope.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DisposableImplementor>()
+            .As<IDecoratedService>()
+            .ExternallyOwned();
+        builder.RegisterDecorator<DisposableDecorator, IDecoratedService>();
+        builder.RegisterDecorator<DisposableDecoratorB, IDecoratedService>();
+        var container = builder.Build();
+
+        DisposableDecoratorB outer;
+        DisposableDecorator inner;
+        DisposableImplementor decorated;
+
+        using (var scope = container.BeginLifetimeScope())
+        {
+            var instance = scope.Resolve<IDecoratedService>();
+            outer = (DisposableDecoratorB)instance;
+            inner = (DisposableDecorator)outer.Decorated;
+            decorated = (DisposableImplementor)inner.Decorated;
+        }
+
+        Assert.Equal(0, outer.DisposeCallCount);
+        Assert.Equal(0, inner.DisposeCallCount);
+        Assert.Equal(0, decorated.DisposeCallCount);
+    }
+
+    [Fact]
+    public void StackedDecoratorsAllDisposedWhenDecoratedServiceOwnedByLifetimeScope()
+    {
+        // #1402 regression guard: stacked decorators over a normally-owned
+        // service must continue to be disposed along with the decorated instance.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DisposableImplementor>()
+            .As<IDecoratedService>();
+        builder.RegisterDecorator<DisposableDecorator, IDecoratedService>();
+        builder.RegisterDecorator<DisposableDecoratorB, IDecoratedService>();
+        var container = builder.Build();
+
+        DisposableDecoratorB outer;
+        DisposableDecorator inner;
+        DisposableImplementor decorated;
+
+        using (var scope = container.BeginLifetimeScope())
+        {
+            var instance = scope.Resolve<IDecoratedService>();
+            outer = (DisposableDecoratorB)instance;
+            inner = (DisposableDecorator)outer.Decorated;
+            decorated = (DisposableImplementor)inner.Decorated;
+        }
+
+        Assert.Equal(1, outer.DisposeCallCount);
+        Assert.Equal(1, inner.DisposeCallCount);
+        Assert.Equal(1, decorated.DisposeCallCount);
+    }
+
+    [Fact]
+    public void GenericDecoratorNotDisposedWhenDecoratedServiceIsExternallyOwned()
+    {
+        // #1402: The open-generic decorator path also runs through the decorator
+        // middleware, so an ExternallyOwned decorated component must prevent the
+        // generic decorator from being disposed by the scope.
+        var builder = new ContainerBuilder();
+        builder.RegisterGeneric(typeof(DisposableGenericComponent<>))
+            .As(typeof(IDisposableGenericService<>))
+            .ExternallyOwned();
+        builder.RegisterGenericDecorator(typeof(DisposableGenericDecorator<>), typeof(IDisposableGenericService<>));
+        var container = builder.Build();
+
+        DisposableGenericDecorator<int> decorator;
+        DisposableGenericComponent<int> decorated;
+
+        using (var scope = container.BeginLifetimeScope())
+        {
+            var instance = scope.Resolve<IDisposableGenericService<int>>();
+            decorator = (DisposableGenericDecorator<int>)instance;
+            decorated = (DisposableGenericComponent<int>)decorator.Decorated;
+        }
+
+        Assert.Equal(0, decorator.DisposeCallCount);
+        Assert.Equal(0, decorated.DisposeCallCount);
+    }
+
+    [Fact]
+    public void GenericDecoratorAndDecoratedBothDisposedWhenOwnedByLifetimeScope()
+    {
+        // #1402 regression guard: open-generic decorator over a normally-owned
+        // service must continue to be disposed along with the decorated instance.
+        var builder = new ContainerBuilder();
+        builder.RegisterGeneric(typeof(DisposableGenericComponent<>))
+            .As(typeof(IDisposableGenericService<>));
+        builder.RegisterGenericDecorator(typeof(DisposableGenericDecorator<>), typeof(IDisposableGenericService<>));
+        var container = builder.Build();
+
+        DisposableGenericDecorator<int> decorator;
+        DisposableGenericComponent<int> decorated;
+
+        using (var scope = container.BeginLifetimeScope())
+        {
+            var instance = scope.Resolve<IDisposableGenericService<int>>();
+            decorator = (DisposableGenericDecorator<int>)instance;
+            decorated = (DisposableGenericComponent<int>)decorator.Decorated;
+        }
+
+        Assert.Equal(1, decorator.DisposeCallCount);
+        Assert.Equal(1, decorated.DisposeCallCount);
+    }
+
+    [Fact]
     public void DecoratorAppliedOnlyOnceToComponentWithExternalRegistrySource()
     {
         // #965: A nested lifetime scope that has a registration lambda
@@ -1414,6 +1552,25 @@ public class DecoratorTests
     }
 
     // ReSharper disable once ClassNeverInstantiated.Local
+    private sealed class DisposableDecoratorB : Decorator, IDisposable
+    {
+        public DisposableDecoratorB(IDecoratedService decorated)
+            : base(decorated)
+        {
+        }
+
+        public int DisposeCallCount
+        {
+            get; private set;
+        }
+
+        public void Dispose()
+        {
+            DisposeCallCount++;
+        }
+    }
+
+    // ReSharper disable once ClassNeverInstantiated.Local
     private sealed class DisposableImplementor : IDecoratedService, IDisposable
     {
         public IDecoratedService Decorated => this;
@@ -1530,6 +1687,48 @@ public class DecoratorTests
         public IGenericService<T> Decorated
         {
             get;
+        }
+    }
+
+    private interface IDisposableGenericService<T>
+    {
+    }
+
+    // ReSharper disable once ClassNeverInstantiated.Local
+    private sealed class DisposableGenericComponent<T> : IDisposableGenericService<T>, IDisposable
+    {
+        public int DisposeCallCount
+        {
+            get; private set;
+        }
+
+        public void Dispose()
+        {
+            DisposeCallCount++;
+        }
+    }
+
+    // ReSharper disable once ClassNeverInstantiated.Local
+    private sealed class DisposableGenericDecorator<T> : IDisposableGenericService<T>, IDisposable
+    {
+        public DisposableGenericDecorator(IDisposableGenericService<T> decorated)
+        {
+            Decorated = decorated;
+        }
+
+        public IDisposableGenericService<T> Decorated
+        {
+            get;
+        }
+
+        public int DisposeCallCount
+        {
+            get; private set;
+        }
+
+        public void Dispose()
+        {
+            DisposeCallCount++;
         }
     }
 

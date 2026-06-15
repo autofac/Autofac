@@ -28,7 +28,13 @@ internal class DisposalTrackingMiddleware : IResolveMiddleware
     {
         next(context);
 
-        if (context.Registration.Ownership == InstanceOwnership.OwnedByLifetimeScope)
+        // When a decorator is being resolved, context.DecoratorTarget is the underlying component
+        // registration. If the underlying component is ExternallyOwned, the decorator should also
+        // not be tracked for disposal - the caller opted out of lifetime management for the entire
+        // decorated chain. See https://github.com/autofac/Autofac/issues/1402.
+        var effectiveOwnership = context.DecoratorTarget?.Ownership ?? context.Registration.Ownership;
+
+        if (effectiveOwnership == InstanceOwnership.OwnedByLifetimeScope)
         {
             // The fact this adds instances for disposal agnostic of the activator is
             // important. The ProvidedInstanceActivator will NOT dispose of the provided
