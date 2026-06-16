@@ -9,9 +9,9 @@ namespace Autofac.Specification.Test.Lifetime;
 public class InstancePerMatchingLifetimeScopeTests
 {
     [Fact]
-    public void LocalRegistration_BindingToAncestorTag_ThrowsAtScopeCreation()
+    public void LocalRegistration_BindToAncestorTag()
     {
-        // Reproduces the exact memory-leak scenario from issue #1460:
+        // #1460: Reproduces the exact memory-leak scenario from the issue.
         // A child scope is created with a local registration whose matching-scope
         // tag refers to an ancestor (the outer scope). Each BeginLifetimeScope call
         // would hoist a fresh instance into the ancestor indefinitely, so we now
@@ -27,9 +27,9 @@ public class InstancePerMatchingLifetimeScopeTests
     }
 
     [Fact]
-    public void LocalRegistration_BindingToScopeOwnTag_DoesNotThrow()
+    public void LocalRegistration_BindToScopeOwnTag()
     {
-        // A scope-local registration whose MatchingScopeLifetime tag matches the
+        // #1460: A scope-local registration whose MatchingScopeLifetime tag matches the
         // NEW scope's own tag is perfectly legal: the component's lifetime exactly
         // matches its reachability, so there is no leak.
         var builder = new ContainerBuilder();
@@ -48,9 +48,9 @@ public class InstancePerMatchingLifetimeScopeTests
     }
 
     [Fact]
-    public void LocalRegistration_BindingToDescendantTag_DoesNotThrow()
+    public void LocalRegistration_BindToDescendantTag()
     {
-        // A scope-local registration whose MatchingScopeLifetime tag will only be
+        // #1460: A scope-local registration whose MatchingScopeLifetime tag will only be
         // matched by a future descendant scope must NOT throw at registration time —
         // this is the documented, intended usage pattern.
         var builder = new ContainerBuilder();
@@ -82,9 +82,9 @@ public class InstancePerMatchingLifetimeScopeTests
     }
 
     [Fact]
-    public void LocalRegistration_BindingToRootContainerTag_ThrowsAtScopeCreation()
+    public void LocalRegistration_BindToRootContainerTag()
     {
-        // The container's root tag is also a strict ancestor; binding to it from a
+        // #1460: The container's root tag is also a strict ancestor; binding to it from a
         // scope-local registration should likewise be rejected.
         var builder = new ContainerBuilder();
         var container = builder.Build();
@@ -95,9 +95,9 @@ public class InstancePerMatchingLifetimeScopeTests
     }
 
     [Fact]
-    public void LocalRegistration_BindingToAncestorTag_MultipleTagsOneAncestor_ThrowsAtScopeCreation()
+    public void LocalRegistration_BindToMultipleTagsIncludingAncestor()
     {
-        // When multiple tags are supplied to InstancePerMatchingLifetimeScope and at
+        // #1460: When multiple tags are supplied to InstancePerMatchingLifetimeScope and at
         // least one of them refers to an ancestor, it must still throw.
         var builder = new ContainerBuilder();
         var container = builder.Build();
