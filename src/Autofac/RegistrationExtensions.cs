@@ -780,4 +780,51 @@ public static partial class RegistrationExtensions
         var tags = new[] { MatchingScopeLifetimeTags.RequestLifetimeScopeTag }.Concat(lifetimeScopeTags).ToArray();
         return registration.InstancePerMatchingLifetimeScope(tags);
     }
+
+    /// <summary>
+    /// Gets the unique <see cref="Guid"/> identity assigned to a single-component registration.
+    /// </summary>
+    /// <typeparam name="TLimit">Registration limit type.</typeparam>
+    /// <typeparam name="TActivatorData">Activator data type.</typeparam>
+    /// <param name="registration">The registration whose identity to retrieve.</param>
+    /// <returns>
+    /// The <see cref="Guid"/> that uniquely identifies this registration. This is the same value
+    /// that will appear on the resulting <see cref="Core.IComponentRegistration.Id"/> after the
+    /// container is built.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="registration" /> is <see langword="null" />.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// Each single-component registration (created via <see cref="RegisterType{TImplementer}(ContainerBuilder)"/>,
+    /// <see cref="Register{T}(ContainerBuilder, Func{IComponentContext, T})"/>, or
+    /// <see cref="RegisterInstance{T}(ContainerBuilder, T)"/>) is assigned a stable <see cref="Guid"/>
+    /// at the time the registration builder is created. This ID flows through unchanged to
+    /// <see cref="Core.IComponentRegistration.Id"/> when the container is built.
+    /// </para>
+    /// <para>
+    /// A common use case is to capture the registration ID before building the container and use
+    /// it as a key in <see cref="ContainerBuilder.Properties"/> to associate per-registration
+    /// state or metadata, then look that state up at resolve time via
+    /// <see cref="Core.IComponentRegistration.Id"/>.
+    /// </para>
+    /// <para>
+    /// This method is only available for single-component registrations
+    /// (<see cref="Builder.SingleRegistrationStyle"/>). Multi-component registrations such as
+    /// open-generic registrations (via <c>RegisterGeneric</c>), assembly-scanning registrations,
+    /// adapters, and decorators do not have a single stable identity and this method is not
+    /// callable on them — attempting to do so results in a compile-time error.
+    /// </para>
+    /// </remarks>
+    public static Guid GetRegistrationId<TLimit, TActivatorData>(
+        this IRegistrationBuilder<TLimit, TActivatorData, SingleRegistrationStyle> registration)
+    {
+        if (registration == null)
+        {
+            throw new ArgumentNullException(nameof(registration));
+        }
+
+        return registration.RegistrationStyle.Id;
+    }
 }
