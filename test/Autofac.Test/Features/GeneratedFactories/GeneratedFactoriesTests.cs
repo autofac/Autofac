@@ -475,10 +475,12 @@ public class GeneratedFactoriesTests
         using var scope1 = container.BeginLifetimeScope(c => c.RegisterType<FuncConsumer1461>());
         scope1.Resolve<FuncConsumer1461>();
 
-        // After the first resolve, the compiled generator must be present in the cache.
-        Assert.True(ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators.ContainsKey(cacheKey));
+        // After the first resolve, the compiled generator must be present in the shared cache.
+        var cache = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators;
+        Assert.True(cache.ContainsKey(cacheKey));
 
-        var countAfterFirstScope = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators.Count;
+        // Capture the cached delegate instance — sibling scopes must reuse the same compiled entry.
+        Assert.True(cache.TryGetValue(cacheKey, out var cachedGeneratorAfterScope1));
 
         using var scope2 = container.BeginLifetimeScope(c => c.RegisterType<FuncConsumer1461>());
         scope2.Resolve<FuncConsumer1461>();
@@ -486,10 +488,10 @@ public class GeneratedFactoriesTests
         using var scope3 = container.BeginLifetimeScope(c => c.RegisterType<FuncConsumer1461>());
         scope3.Resolve<FuncConsumer1461>();
 
-        // Resolving the same Func<T> from additional sibling scopes must not add new cache entries;
-        // the count must remain stable after the first scope warms the entry.
-        var countAfterAllScopes = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators.Count;
-        Assert.Equal(countAfterFirstScope, countAfterAllScopes);
+        // The cached delegate for this key must be the same object reference after sibling scope
+        // resolutions — proving no recompilation occurred for the already-cached key.
+        Assert.True(cache.TryGetValue(cacheKey, out var cachedGeneratorAfterAllScopes));
+        Assert.Same(cachedGeneratorAfterScope1, cachedGeneratorAfterAllScopes);
     }
 
     [Fact]
@@ -644,19 +646,42 @@ public class GeneratedFactoriesTests
     {
         // #1461: The generated-factory caches must participate in ReflectionCacheSet.Clear()
         // so that types from collectible AssemblyLoadContexts can be fully unloaded.
-        var builder = new ContainerBuilder();
-        builder.RegisterType<Dependency1461>();
-        using var container = builder.Build();
+        // Uses a fresh ReflectionCacheSet instance to avoid mutating process-global shared state.
+        var set = new ReflectionCacheSet();
 
-        using var scope = container.BeginLifetimeScope(c => c.RegisterType<FuncConsumer1461>());
-        scope.Resolve<FuncConsumer1461>();
+        var cache = set.Internal.GeneratedFactoryServiceRegistrationGenerators;
+        var key = (typeof(Func<Dependency1461>), Autofac.Features.GeneratedFactories.ParameterMapping.ByType);
+        cache[key] = null!;
 
-        var serviceRegCache = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators;
+        Assert.NotEmpty(cache);
 
-        Assert.NotEmpty(serviceRegCache);
+        set.Clear();
 
-        ReflectionCacheSet.Shared.Clear();
+        Assert.Empty(cache);
+    }
 
-        Assert.Empty(serviceRegCache);
+    [Fact]
+    public void FactoryDelegate_CompiledGeneratorCache_ClearedByReflectionCacheSetPredicateClear()
+    {
+        // #1461: The generated-factory caches must also participate in predicate-based
+        // ReflectionCacheSet.Clear(predicate), which is the path taken when a collectible
+        // AssemblyLoadContext is unloaded — only types belonging to the unloaded assembly
+        // are removed, leaving unrelated entries intact.
+        // Uses a fresh ReflectionCacheSet instance to avoid mutating process-global shared state.
+        var set = new ReflectionCacheSet();
+
+        var cache = set.Internal.GeneratedFactoryServiceRegistrationGenerators;
+        var matchedKey = (typeof(Dependency1461), Autofac.Features.GeneratedFactories.ParameterMapping.ByType);
+        var unmatchedKey = (typeof(FuncConsumer1461), Autofac.Features.GeneratedFactories.ParameterMapping.ByName);
+        cache[matchedKey] = null!;
+        cache[unmatchedKey] = null!;
+
+        Assert.Equal(2, cache.Count);
+
+        // Simulate assembly-unload predicate: only remove entries whose Type key is Dependency1461.
+        set.Clear((member, _) => member == typeof(Dependency1461));
+
+        Assert.False(cache.ContainsKey(matchedKey));
+        Assert.True(cache.ContainsKey(unmatchedKey));
     }
 }
