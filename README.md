@@ -4,9 +4,9 @@
 
 Autofac is an [IoC container](http://martinfowler.com/articles/injection.html) for Microsoft .NET. It manages the dependencies between classes so that **applications stay easy to change as they grow** in size and complexity. This is achieved by treating regular .NET classes as *[components](https://autofac.readthedocs.io/en/latest/glossary.html)*.
 
-[![Build status](https://github.com/autofac/Autofac/actions/workflows/ci.yml/badge.svg)](https://github.com/autofac/Autofac/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/Autofac/Autofac/branch/develop/graph/badge.svg)](https://codecov.io/gh/Autofac/Autofac) [![NuGet](https://img.shields.io/nuget/v/Autofac.svg)](https://nuget.org/packages/Autofac)
+[![Build status](https://github.com/autofac/Autofac/actions/workflows/main.yml/badge.svg)](https://github.com/autofac/Autofac/actions/workflows/main.yml) [![codecov](https://codecov.io/gh/Autofac/Autofac/branch/develop/graph/badge.svg)](https://codecov.io/gh/Autofac/Autofac) [![NuGet](https://img.shields.io/nuget/v/Autofac.svg)](https://nuget.org/packages/Autofac)
 
-[![Autofac on Stack Overflow](https://img.shields.io/badge/stack%20overflow-autofac-orange.svg)](https://stackoverflow.com/questions/tagged/autofac) [![Join the chat at https://gitter.im/autofac/autofac](https://img.shields.io/gitter/room/autofac/autofac.svg)](https://gitter.im/autofac/autofac)
+[![Autofac on Stack Overflow](https://img.shields.io/badge/stack%20overflow-autofac-orange.svg)](https://stackoverflow.com/questions/tagged/autofac)
 
 ## Get Packages
 
@@ -49,7 +49,7 @@ There is a growing number of [application integration libraries](https://autofac
 
 ## Project
 
-Autofac is licensed under the MIT license, so you can comfortably use it in commercial applications (we still love [contributions](https://autofac.readthedocs.io/en/latest/contributors.html) though).
+Autofac is licensed under the MIT license, so you can comfortably use it in commercial applications (we still love [contributions](https://github.com/autofac/.github/blob/master/CONTRIBUTING.md) though).
 
 **File issues in the repo with the associated feature/code.**
 
@@ -77,10 +77,6 @@ Autofac is licensed under the MIT license, so you can comfortably use it in comm
 - [Autofac.Web](https://github.com/autofac/Autofac.Web) - ASP.NET web forms integration.
 - [Autofac.WebApi](https://github.com/autofac/Autofac.WebApi) - Application integration for Web API.
 - [Autofac.WebApi.Owin](https://github.com/autofac/Autofac.WebApi.Owin) - OWIN support for Web API.
-
-## Sponsors
-
-Autofac is supported by AWS. Thanks for your contribution!
 
 ## Contributing / Pull Requests
 
