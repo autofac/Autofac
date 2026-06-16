@@ -589,7 +589,60 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
         configurationAction(builder);
 
         builder.UpdateRegistry(registryBuilder);
+
+        CheckLocalRegistrationsDoNotBindToAncestorScope(tag, tracker.Registrations);
+
         return registryBuilder;
+    }
+
+    private void CheckLocalRegistrationsDoNotBindToAncestorScope(object newScopeTag, IEnumerable<IComponentRegistration> localRegistrations)
+    {
+        // Issue #1460: A locally-registered component whose MatchingScopeLifetime references an
+        // ancestor tag (e.g. InstancePerMatchingLifetimeScope("outer") registered in a child scope's
+        // configuration action) gets hoisted into that ancestor on every child scope creation,
+        // accumulating instances and causing a memory leak. Fail fast here rather than silently
+        // leaking. Only matching-lifetime registrations can trigger this, and creating configured
+        // child scopes is a hot path, so we avoid all work (no allocation, no parent-chain walk)
+        // unless and until we actually encounter a MatchingScopeLifetime registration.
+        HashSet<object>? ancestorTags = null;
+
+        foreach (var registration in localRegistrations)
+        {
+            if (registration.Lifetime is not MatchingScopeLifetime matchingLifetime)
+            {
+                continue;
+            }
+
+            // Lazily build the set of strict ancestor tags on first need: the current scope and all
+            // its parents (but NOT the new child scope's own tag, which is a legal, leak-free target).
+            ancestorTags ??= BuildAncestorTagSet();
+
+            foreach (var matchedTag in matchingLifetime.TagsToMatch)
+            {
+                if (ancestorTags.Contains(matchedTag))
+                {
+                    throw new InvalidOperationException(
+                        string.Format(
+                            CultureInfo.CurrentCulture,
+                            LifetimeScopeResources.MatchingScopeLifetimeAncestorTag,
+                            matchedTag,
+                            newScopeTag));
+                }
+            }
+        }
+    }
+
+    private HashSet<object> BuildAncestorTagSet()
+    {
+        var ancestorTags = new HashSet<object>();
+        ISharingLifetimeScope? current = this;
+        while (current is not null)
+        {
+            ancestorTags.Add(current.Tag);
+            current = current.ParentLifetimeScope;
+        }
+
+        return ancestorTags;
     }
 
     /// <summary>
