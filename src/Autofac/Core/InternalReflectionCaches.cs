@@ -3,6 +3,7 @@
 
 using System.Reflection;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Features.GeneratedFactories;
 using Autofac.Util;
 using Autofac.Util.Cache;
 
@@ -48,6 +49,20 @@ internal class InternalReflectionCaches
         ServiceKeyParameterAttributes = set.GetOrCreateCache<ReflectionCacheParameterDictionary<bool>>(nameof(ServiceKeyParameterAttributes));
         ServiceKeyPropertyAttributes = set.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, bool>>(nameof(ServiceKeyPropertyAttributes));
         ServiceKeyUsageByType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(ServiceKeyUsageByType));
+
+        GeneratedFactoryServiceOnlyGenerators = set.GetOrCreateCache(
+            nameof(GeneratedFactoryServiceOnlyGenerators),
+            _ => new ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<Service, IComponentContext, IEnumerable<Parameter>, Delegate>>
+            {
+                Usage = ReflectionCacheUsage.All,
+            });
+
+        GeneratedFactoryServiceRegistrationGenerators = set.GetOrCreateCache(
+            nameof(GeneratedFactoryServiceRegistrationGenerators),
+            _ => new ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<Service, ServiceRegistration, IComponentContext, IEnumerable<Parameter>, Delegate>>
+            {
+                Usage = ReflectionCacheUsage.All,
+            });
     }
 
     /// <summary>
@@ -176,6 +191,26 @@ internal class InternalReflectionCaches
     /// overrides <see cref="Module.AttachToRegistrationSource"/>.
     /// </summary>
     public ReflectionCacheDictionary<Type, bool> ModuleOverridesAttachToRegistrationSource
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the cache of compiled factory-delegate generators for
+    /// <see cref="Features.GeneratedFactories.FactoryGenerator"/> instances that resolve via
+    /// <c>ResolveService</c>. Keyed on <c>(delegateType, effectiveParameterMapping)</c>.
+    /// </summary>
+    public ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<Service, IComponentContext, IEnumerable<Parameter>, Delegate>> GeneratedFactoryServiceOnlyGenerators
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the cache of compiled factory-delegate generators for
+    /// <see cref="Features.GeneratedFactories.FactoryGenerator"/> instances that resolve via
+    /// <see cref="IComponentContext.ResolveComponent"/>. Keyed on <c>(delegateType, effectiveParameterMapping)</c>.
+    /// </summary>
+    public ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<Service, ServiceRegistration, IComponentContext, IEnumerable<Parameter>, Delegate>> GeneratedFactoryServiceRegistrationGenerators
     {
         get;
     }

@@ -34,5 +34,6 @@ public static class BenchmarkSet
         typeof(LambdaResolveBenchmark),
         typeof(RequiredPropertyBenchmark),
         typeof(ModuleRegistrationBenchmark),
+        typeof(GeneratedFactoryChildScopeBenchmark),
     };
 }
