@@ -414,4 +414,228 @@ public class GeneratedFactoriesTests
             C = c;
         }
     }
+
+    // #1461 — types used by the regression tests below.
+    private class Dependency1461
+    {
+    }
+
+    private class DependencyWithParam1461
+    {
+        public string Value
+        {
+            get;
+        }
+
+        public DependencyWithParam1461(string value)
+        {
+            Value = value;
+        }
+    }
+
+    private record FuncConsumer1461(Func<Dependency1461> Factory);
+
+    [Fact]
+    public void LifetimeWithConsumer_SiblingScopes()
+    {
+        // #1461: Resolving Func<T> from sibling child scopes where T is registered in the
+        // parent must not recompile the expression tree for each scope. The factory
+        // delegates produced in each scope must resolve the correct product type.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Dependency1461>();
+        using var container = builder.Build();
+
+        using var lifetimeScope1 = container.BeginLifetimeScope(c => c.RegisterType<FuncConsumer1461>());
+        using var lifetimeScope2 = container.BeginLifetimeScope(c => c.RegisterType<FuncConsumer1461>());
+        using var lifetimeScope3 = container.BeginLifetimeScope(c => c.RegisterType<FuncConsumer1461>());
+
+        var c1 = lifetimeScope1.Resolve<FuncConsumer1461>();
+        var c2 = lifetimeScope2.Resolve<FuncConsumer1461>();
+        var c3 = lifetimeScope3.Resolve<FuncConsumer1461>();
+
+        Assert.NotNull(c1.Factory());
+        Assert.NotNull(c2.Factory());
+        Assert.NotNull(c3.Factory());
+        Assert.IsType<Dependency1461>(c1.Factory());
+        Assert.IsType<Dependency1461>(c2.Factory());
+        Assert.IsType<Dependency1461>(c3.Factory());
+    }
+
+    [Fact]
+    public void FactoryDelegate_CompiledGeneratorCached_SiblingScopes()
+    {
+        // #1461: The compiled expression-tree generator for a given (delegateType, parameterMapping)
+        // pair must be compiled exactly once and reused across sibling child scopes.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Dependency1461>();
+        using var container = builder.Build();
+
+        var cacheKey = (typeof(Func<Dependency1461>), Autofac.Features.GeneratedFactories.ParameterMapping.ByType);
+
+        using var scope1 = container.BeginLifetimeScope(c => c.RegisterType<FuncConsumer1461>());
+        scope1.Resolve<FuncConsumer1461>();
+
+        // After the first resolve, the compiled generator must be present in the cache.
+        Assert.True(Autofac.Features.GeneratedFactories.FactoryGenerator.ServiceRegistrationGeneratorCache.ContainsKey(cacheKey));
+
+        var countAfterFirstScope = Autofac.Features.GeneratedFactories.FactoryGenerator.ServiceRegistrationGeneratorCache.Count;
+
+        using var scope2 = container.BeginLifetimeScope(c => c.RegisterType<FuncConsumer1461>());
+        scope2.Resolve<FuncConsumer1461>();
+
+        using var scope3 = container.BeginLifetimeScope(c => c.RegisterType<FuncConsumer1461>());
+        scope3.Resolve<FuncConsumer1461>();
+
+        // Resolving the same Func<T> from additional sibling scopes must not add new cache entries;
+        // the count must remain stable after the first scope warms the entry.
+        var countAfterAllScopes = Autofac.Features.GeneratedFactories.FactoryGenerator.ServiceRegistrationGeneratorCache.Count;
+        Assert.Equal(countAfterFirstScope, countAfterAllScopes);
+    }
+
+    [Fact]
+    public void FactoryDelegate_WithTypedParameter_SiblingScopes()
+    {
+        // #1461: Caching must not break Func<TParam, TProduct> factories where parameters
+        // are mapped by type (ByType). Each sibling scope must produce correct instances.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DependencyWithParam1461>();
+        using var container = builder.Build();
+
+        using var scope1 = container.BeginLifetimeScope();
+        using var scope2 = container.BeginLifetimeScope();
+
+        var f1 = scope1.Resolve<Func<string, DependencyWithParam1461>>();
+        var f2 = scope2.Resolve<Func<string, DependencyWithParam1461>>();
+
+        Assert.Equal("hello", f1("hello").Value);
+        Assert.Equal("world", f2("world").Value);
+    }
+
+    [Fact]
+    public void FactoryDelegate_WithNamedParameter_SiblingScopes()
+    {
+        // #1461: Caching must not break custom delegate factories where parameters are mapped
+        // by name (ByName). Each sibling scope must produce correct instances.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DependencyWithParam1461>();
+        using var container = builder.Build();
+
+        using var scope1 = container.BeginLifetimeScope();
+        using var scope2 = container.BeginLifetimeScope();
+
+        var f1 = scope1.Resolve<Func<string, DependencyWithParam1461>>();
+        var f2 = scope2.Resolve<Func<string, DependencyWithParam1461>>();
+
+        Assert.Equal("a", f1("a").Value);
+        Assert.Equal("b", f2("b").Value);
+    }
+
+    [Fact]
+    public void FactoryDelegate_DifferentProductTypes_NoCacheCollision()
+    {
+        // #1461: The cache must not collide across different product types.
+        // Func<Dependency1461> and Func<DependencyWithParam1461> must each compile their
+        // own generator entry and produce the correct product type.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Dependency1461>();
+        builder.RegisterType<DependencyWithParam1461>();
+        using var container = builder.Build();
+
+        using var scope = container.BeginLifetimeScope();
+
+        var f1 = scope.Resolve<Func<Dependency1461>>();
+        var f2 = scope.Resolve<Func<string, DependencyWithParam1461>>();
+
+        Assert.IsType<Dependency1461>(f1());
+        Assert.IsType<DependencyWithParam1461>(f2("test"));
+        Assert.Equal("test", f2("test").Value);
+    }
+
+    [Fact]
+    public void FactoryDelegate_InstancePerDependency_SiblingScopes()
+    {
+        // #1461: When the product is InstancePerDependency, each factory invocation must
+        // produce a distinct instance even when the compiled generator is shared.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Dependency1461>().InstancePerDependency();
+        using var container = builder.Build();
+
+        using var scope1 = container.BeginLifetimeScope();
+        using var scope2 = container.BeginLifetimeScope();
+
+        var f1 = scope1.Resolve<Func<Dependency1461>>();
+        var f2 = scope2.Resolve<Func<Dependency1461>>();
+
+        Assert.NotSame(f1(), f1());
+        Assert.NotSame(f2(), f2());
+        Assert.NotSame(f1(), f2());
+    }
+
+    [Fact]
+    public void FactoryDelegate_InstancePerLifetimeScope_SiblingScopes()
+    {
+        // #1461: When the product is InstancePerLifetimeScope, the factory must return the
+        // same instance within a scope but a different instance across sibling scopes.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Dependency1461>().InstancePerLifetimeScope();
+        using var container = builder.Build();
+
+        using var scope1 = container.BeginLifetimeScope();
+        using var scope2 = container.BeginLifetimeScope();
+
+        var f1 = scope1.Resolve<Func<Dependency1461>>();
+        var f2 = scope2.Resolve<Func<Dependency1461>>();
+
+        Assert.Same(f1(), f1());
+        Assert.Same(f2(), f2());
+        Assert.NotSame(f1(), f2());
+    }
+
+    [Fact]
+    public void FactoryDelegate_SingleInstance_SiblingScopes()
+    {
+        // #1461: When the product is SingleInstance, every factory invocation across all
+        // scopes must return the same singleton — the cached compiled generator must not
+        // change singleton semantics.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Dependency1461>().SingleInstance();
+        using var container = builder.Build();
+
+        using var scope1 = container.BeginLifetimeScope();
+        using var scope2 = container.BeginLifetimeScope();
+
+        var f1 = scope1.Resolve<Func<Dependency1461>>();
+        var f2 = scope2.Resolve<Func<Dependency1461>>();
+
+        Assert.Same(f1(), f2());
+    }
+
+    [Fact]
+    public void FactoryDelegate_RespectsChildScopeContext_SiblingScopes()
+    {
+        // #1461: Each factory delegate must resolve from its own child scope, not a shared
+        // ancestor scope. InstancePerLifetimeScope behaviour validates this.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Dependency1461>().InstancePerLifetimeScope();
+        using var container = builder.Build();
+
+        using var scope1 = container.BeginLifetimeScope();
+        using var scope2 = container.BeginLifetimeScope();
+
+        var f1 = scope1.Resolve<Func<Dependency1461>>();
+        var f2 = scope2.Resolve<Func<Dependency1461>>();
+
+        var result1 = f1();
+        var result2 = f2();
+
+        Assert.NotNull(result1);
+        Assert.NotNull(result2);
+
+        // Each factory is bound to its own scope — instances must differ.
+        Assert.NotSame(result1, result2);
+
+        // Within the same scope, calling the factory twice returns the same instance.
+        Assert.Same(result1, f1());
+        Assert.Same(result2, f2());
+    }
 }

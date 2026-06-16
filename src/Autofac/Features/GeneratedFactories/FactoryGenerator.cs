@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -15,6 +16,22 @@ namespace Autofac.Features.GeneratedFactories;
 /// </summary>
 public class FactoryGenerator
 {
+    /// <summary>
+    /// Cached compiled generators for the <see cref="FactoryGenerator(Type, Service, ParameterMapping)"/> overload
+    /// (resolves via <c>ResolveService</c>). Keyed on <c>(delegateType, effectiveParameterMapping)</c>.
+    /// Exposed internally for test observability only.
+    /// </summary>
+    internal static readonly ConcurrentDictionary<(Type, ParameterMapping), Func<Service, IComponentContext, IEnumerable<Parameter>, Delegate>>
+        ServiceOnlyGeneratorCache = new();
+
+    /// <summary>
+    /// Cached compiled generators for the <see cref="FactoryGenerator(Type, Service, ServiceRegistration, ParameterMapping)"/> overload
+    /// (resolves via <see cref="IComponentContext.ResolveComponent"/>). Keyed on <c>(delegateType, effectiveParameterMapping)</c>.
+    /// Exposed internally for test observability only.
+    /// </summary>
+    internal static readonly ConcurrentDictionary<(Type, ParameterMapping), Func<Service, ServiceRegistration, IComponentContext, IEnumerable<Parameter>, Delegate>>
+        ServiceRegistrationGeneratorCache = new();
+
     // The explicit '!' default is ok because the code is never executed, it's just used by
     // the expression tree.
     private static readonly ConstructorInfo _requestConstructor
@@ -38,25 +55,18 @@ public class FactoryGenerator
 
         Enforce.ArgumentTypeIsFunction(delegateType);
 
-        _generator = CreateGenerator(
-            (activatorContextParam, resolveParameterArray) =>
-            {
-                // c, service, [new Parameter(name, (object)dps)]*
-                var resolveParams = new[]
-                {
-                    activatorContextParam,
-                    Expression.Constant(service, typeof(Service)),
-                    Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),
-                };
+        var pm = GetParameterMapping(delegateType, parameterMapping);
 
-                // c.Resolve(...)
-                // default! here is for reflection only
-                return Expression.Call(
-                ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveService(default!, default!)),
-                resolveParams);
-            },
-            delegateType,
-            GetParameterMapping(delegateType, parameterMapping));
+        // Retrieve the cached compiled generator for this delegate type and parameter mapping,
+        // or compile it once on first use. The cached delegate is parameterised on 'service'
+        // (passed at invocation time) so it contains no instance-specific captures and is safe
+        // to share across all FactoryGenerator instances with the same structural signature.
+        var compiledGenerator = ServiceOnlyGeneratorCache.GetOrAdd(
+            (delegateType, pm),
+            static key => CreateServiceOnlyGenerator(key.Item1, key.Item2));
+
+        // Close over the specific service so _generator matches the expected signature.
+        _generator = (context, parameters) => compiledGenerator(service, context, parameters);
     }
 
     /// <summary>
@@ -72,27 +82,20 @@ public class FactoryGenerator
     {
         Enforce.ArgumentTypeIsFunction(delegateType);
 
-        _generator = CreateGenerator(
-            (activatorContextParam, resolveParameterArray) =>
-            {
-                // new ResolveRequest(service, productRegistration, [new Parameter(name, (object)dps)])*)
-                var newExpression = Expression.New(
-                _requestConstructor,
-                Expression.Constant(service, typeof(Service)),
-                Expression.Constant(productRegistration, typeof(ServiceRegistration)),
-                Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),
-                Expression.Constant(null, typeof(IComponentRegistration)));
+        var pm = GetParameterMapping(delegateType, parameterMapping);
 
-                // c.Resolve(...)
-                // default! for reflection only
-                return Expression.Call(
-                activatorContextParam,
-                ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveComponent(
-                    new ResolveRequest(default!, default, default(Parameter[])!, default))),
-                newExpression);
-            },
-            delegateType,
-            GetParameterMapping(delegateType, parameterMapping));
+        // Retrieve the cached compiled generator for this delegate type and parameter mapping,
+        // or compile it once on first use. The cached delegate is parameterised on both 'service'
+        // and 'productRegistration' (passed at invocation time), so it contains no instance-specific
+        // captures and is safe to share across all FactoryGenerator instances for the same delegate type.
+        var compiledGenerator = ServiceRegistrationGeneratorCache.GetOrAdd(
+            (delegateType, pm),
+            static key => CreateServiceRegistrationGenerator(key.Item1, key.Item2));
+
+        // Close over the specific service and product registration so _generator matches the
+        // expected signature. These values are instance-specific but are not baked into the
+        // compiled expression tree — they are passed as arguments at each invocation.
+        _generator = (context, parameters) => compiledGenerator(service, productRegistration, context, parameters);
     }
 
     /// <summary>
@@ -144,13 +147,18 @@ public class FactoryGenerator
         return delegateType.Name.StartsWith("Func`", StringComparison.Ordinal);
     }
 
-    private static Func<IComponentContext, IEnumerable<Parameter>, Delegate> CreateGenerator(Func<Expression, Expression[], Expression> makeResolveCall, Type delegateType, ParameterMapping pm)
+    /// <summary>
+    /// Creates a compiled generator for the overload that resolves via <c>ResolveService</c>.
+    /// The returned delegate accepts <paramref name="delegateType"/>-specific parameters at runtime and contains
+    /// no instance-specific compile-time captures, making it safe to cache and share across all
+    /// <see cref="FactoryGenerator"/> instances with the same (<paramref name="delegateType"/>, <paramref name="pm"/>) pair.
+    /// </summary>
+    private static Func<Service, IComponentContext, IEnumerable<Parameter>, Delegate> CreateServiceOnlyGenerator(Type delegateType, ParameterMapping pm)
     {
-        // (c, p) => ([dps]*) => (drt)Resolve(c, productRegistration, [new NamedParameter(name, (object)dps)]*)
-        // (c, p)
+        // Outer parameters: (Service svc, IComponentContext c, IEnumerable<Parameter> p)
+        var serviceParam = Expression.Parameter(typeof(Service), "svc");
         var activatorContextParam = Expression.Parameter(typeof(IComponentContext), "c");
         var activatorParamsParam = Expression.Parameter(typeof(IEnumerable<Parameter>), "p");
-        var activatorParams = new[] { activatorContextParam, activatorParamsParam };
 
         var invoke = delegateType.GetDeclaredMethod("Invoke");
 
@@ -163,18 +171,12 @@ public class FactoryGenerator
         Expression? resolveCast = null;
         if (DelegateTypeIsFunc(delegateType) && pm == ParameterMapping.ByType)
         {
-            // Issue #269:
-            // If we're resolving a Func<X1...XN>() and there are duplicate input parameter types
-            // and the parameter mapping is by type, we shouldn't be able to resolve it.
+            // Issue #269: duplicate input parameter types are not allowed for ByType mapping.
             var arguments = delegateType.GenericTypeArguments;
             var returnType = arguments[arguments.Length - 1];
-
-            // Remove the return type to check the list of input types only.
             Array.Resize(ref arguments, arguments.Length - 1);
             if (arguments.Distinct().Count() != arguments.Length)
             {
-                // There are duplicate input types - that's a problem. Throw
-                // when the function is invoked.
                 object[] argumentsArray = arguments.ToArray();
                 var message = string.Format(CultureInfo.CurrentCulture, GeneratedFactoryRegistrationSourceResources.DuplicateTypesInTypeMappedFuncParameterList, returnType.AssemblyQualifiedName, string.Join(", ", argumentsArray));
                 resolveCast = Expression.Throw(Expression.Constant(new DependencyResolutionException(message)), invoke.ReturnType);
@@ -183,23 +185,105 @@ public class FactoryGenerator
 
         if (resolveCast == null)
         {
-            // Issue #269: There aren't duplicate parameter types in the generated
-            // factory, so in the case of Func<X1...XN>() typed parameter mapping,
-            // if there are duplicate types in the target constructor, both constructor
-            // parameters will get the same value passed in. (We don't know
-            // the activator, so we can't do much more about it than that.)
-            //
-            // (drt)
             var resolveParameterArray = MapParameters(creatorParams, pm);
-            var resolveCall = makeResolveCall(activatorContextParam, resolveParameterArray);
+
+            // c.ResolveService(svc, [new Parameter(...)]*) — 'svc' is supplied as a runtime parameter.
+            var resolveParams = new Expression[]
+            {
+                activatorContextParam,
+                serviceParam,
+                Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),
+            };
+
+            var resolveCall = Expression.Call(
+                ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveService(default!, default!)),
+                resolveParams);
+
             resolveCast = Expression.Convert(resolveCall, invoke.ReturnType);
         }
 
-        // ([dps]*) => c.Resolve(service, [new Parameter(name, dps)]*)
+        // ([dps]*) => (drt)c.ResolveService(svc, [...])
         var creator = Expression.Lambda(delegateType, resolveCast, creatorParams);
 
-        // (c, p) => (
-        var activator = Expression.Lambda<Func<IComponentContext, IEnumerable<Parameter>, Delegate>>(creator, activatorParams);
+        // (svc, c, p) => ([dps]*) => ...
+        var activator = Expression.Lambda<Func<Service, IComponentContext, IEnumerable<Parameter>, Delegate>>(
+            creator,
+            serviceParam,
+            activatorContextParam,
+            activatorParamsParam);
+
+        return activator.Compile();
+    }
+
+    /// <summary>
+    /// Creates a compiled generator for the overload that resolves via <see cref="IComponentContext.ResolveComponent"/>.
+    /// The returned delegate accepts <paramref name="delegateType"/>-specific parameters at runtime and contains
+    /// no instance-specific compile-time captures, making it safe to cache and share across all
+    /// <see cref="FactoryGenerator"/> instances with the same (<paramref name="delegateType"/>, <paramref name="pm"/>) pair.
+    /// </summary>
+    private static Func<Service, ServiceRegistration, IComponentContext, IEnumerable<Parameter>, Delegate> CreateServiceRegistrationGenerator(Type delegateType, ParameterMapping pm)
+    {
+        // Outer parameters: (Service svc, ServiceRegistration sr, IComponentContext c, IEnumerable<Parameter> p)
+        var serviceParam = Expression.Parameter(typeof(Service), "svc");
+        var serviceRegistrationParam = Expression.Parameter(typeof(ServiceRegistration), "sr");
+        var activatorContextParam = Expression.Parameter(typeof(IComponentContext), "c");
+        var activatorParamsParam = Expression.Parameter(typeof(IEnumerable<Parameter>), "p");
+
+        var invoke = delegateType.GetDeclaredMethod("Invoke");
+
+        // [dps]*
+        var creatorParams = invoke
+            .GetParameters()
+            .Select(pi => Expression.Parameter(pi.ParameterType, pi.Name))
+            .ToList();
+
+        Expression? resolveCast = null;
+        if (DelegateTypeIsFunc(delegateType) && pm == ParameterMapping.ByType)
+        {
+            // Issue #269: duplicate input parameter types are not allowed for ByType mapping.
+            var arguments = delegateType.GenericTypeArguments;
+            var returnType = arguments[arguments.Length - 1];
+            Array.Resize(ref arguments, arguments.Length - 1);
+            if (arguments.Distinct().Count() != arguments.Length)
+            {
+                object[] argumentsArray = arguments.ToArray();
+                var message = string.Format(CultureInfo.CurrentCulture, GeneratedFactoryRegistrationSourceResources.DuplicateTypesInTypeMappedFuncParameterList, returnType.AssemblyQualifiedName, string.Join(", ", argumentsArray));
+                resolveCast = Expression.Throw(Expression.Constant(new DependencyResolutionException(message)), invoke.ReturnType);
+            }
+        }
+
+        if (resolveCast == null)
+        {
+            var resolveParameterArray = MapParameters(creatorParams, pm);
+
+            // new ResolveRequest(svc, sr, [...], null) — 'svc' and 'sr' are runtime parameters.
+            var newExpression = Expression.New(
+                _requestConstructor,
+                serviceParam,
+                serviceRegistrationParam,
+                Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),
+                Expression.Constant(null, typeof(IComponentRegistration)));
+
+            // c.ResolveComponent(new ResolveRequest(...))
+            var resolveCall = Expression.Call(
+                activatorContextParam,
+                ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveComponent(
+                    new ResolveRequest(default!, default, default(Parameter[])!, default))),
+                newExpression);
+
+            resolveCast = Expression.Convert(resolveCall, invoke.ReturnType);
+        }
+
+        // ([dps]*) => (drt)c.ResolveComponent(new ResolveRequest(svc, sr, [...]))
+        var creator = Expression.Lambda(delegateType, resolveCast, creatorParams);
+
+        // (svc, sr, c, p) => ([dps]*) => ...
+        var activator = Expression.Lambda<Func<Service, ServiceRegistration, IComponentContext, IEnumerable<Parameter>, Delegate>>(
+            creator,
+            serviceParam,
+            serviceRegistrationParam,
+            activatorContextParam,
+            activatorParamsParam);
 
         return activator.Compile();
     }
