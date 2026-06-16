@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-using System.Collections.Concurrent;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -16,22 +15,6 @@ namespace Autofac.Features.GeneratedFactories;
 /// </summary>
 public class FactoryGenerator
 {
-    /// <summary>
-    /// Cached compiled generators for the <see cref="FactoryGenerator(Type, Service, ParameterMapping)"/> overload
-    /// (resolves via <c>ResolveService</c>). Keyed on <c>(delegateType, effectiveParameterMapping)</c>.
-    /// Exposed internally for test observability only.
-    /// </summary>
-    internal static readonly ConcurrentDictionary<(Type, ParameterMapping), Func<Service, IComponentContext, IEnumerable<Parameter>, Delegate>>
-        ServiceOnlyGeneratorCache = new();
-
-    /// <summary>
-    /// Cached compiled generators for the <see cref="FactoryGenerator(Type, Service, ServiceRegistration, ParameterMapping)"/> overload
-    /// (resolves via <see cref="IComponentContext.ResolveComponent"/>). Keyed on <c>(delegateType, effectiveParameterMapping)</c>.
-    /// Exposed internally for test observability only.
-    /// </summary>
-    internal static readonly ConcurrentDictionary<(Type, ParameterMapping), Func<Service, ServiceRegistration, IComponentContext, IEnumerable<Parameter>, Delegate>>
-        ServiceRegistrationGeneratorCache = new();
-
     // The explicit '!' default is ok because the code is never executed, it's just used by
     // the expression tree.
     private static readonly ConstructorInfo _requestConstructor
@@ -61,7 +44,9 @@ public class FactoryGenerator
         // or compile it once on first use. The cached delegate is parameterised on 'service'
         // (passed at invocation time) so it contains no instance-specific captures and is safe
         // to share across all FactoryGenerator instances with the same structural signature.
-        var compiledGenerator = ServiceOnlyGeneratorCache.GetOrAdd(
+        // Accessing ReflectionCacheSet.Shared at point-of-use (not stored in a field) ensures
+        // correct weak-reference collection of the cache set.
+        var compiledGenerator = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceOnlyGenerators.GetOrAdd(
             (delegateType, pm),
             static key => CreateServiceOnlyGenerator(key.Item1, key.Item2));
 
@@ -88,7 +73,9 @@ public class FactoryGenerator
         // or compile it once on first use. The cached delegate is parameterised on both 'service'
         // and 'productRegistration' (passed at invocation time), so it contains no instance-specific
         // captures and is safe to share across all FactoryGenerator instances for the same delegate type.
-        var compiledGenerator = ServiceRegistrationGeneratorCache.GetOrAdd(
+        // Accessing ReflectionCacheSet.Shared at point-of-use (not stored in a field) ensures
+        // correct weak-reference collection of the cache set.
+        var compiledGenerator = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators.GetOrAdd(
             (delegateType, pm),
             static key => CreateServiceRegistrationGenerator(key.Item1, key.Item2));
 

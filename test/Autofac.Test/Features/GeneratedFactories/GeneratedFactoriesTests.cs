@@ -476,9 +476,9 @@ public class GeneratedFactoriesTests
         scope1.Resolve<FuncConsumer1461>();
 
         // After the first resolve, the compiled generator must be present in the cache.
-        Assert.True(Autofac.Features.GeneratedFactories.FactoryGenerator.ServiceRegistrationGeneratorCache.ContainsKey(cacheKey));
+        Assert.True(ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators.ContainsKey(cacheKey));
 
-        var countAfterFirstScope = Autofac.Features.GeneratedFactories.FactoryGenerator.ServiceRegistrationGeneratorCache.Count;
+        var countAfterFirstScope = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators.Count;
 
         using var scope2 = container.BeginLifetimeScope(c => c.RegisterType<FuncConsumer1461>());
         scope2.Resolve<FuncConsumer1461>();
@@ -488,7 +488,7 @@ public class GeneratedFactoriesTests
 
         // Resolving the same Func<T> from additional sibling scopes must not add new cache entries;
         // the count must remain stable after the first scope warms the entry.
-        var countAfterAllScopes = Autofac.Features.GeneratedFactories.FactoryGenerator.ServiceRegistrationGeneratorCache.Count;
+        var countAfterAllScopes = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators.Count;
         Assert.Equal(countAfterFirstScope, countAfterAllScopes);
     }
 
@@ -637,5 +637,26 @@ public class GeneratedFactoriesTests
         // Within the same scope, calling the factory twice returns the same instance.
         Assert.Same(result1, f1());
         Assert.Same(result2, f2());
+    }
+
+    [Fact]
+    public void FactoryDelegate_CompiledGeneratorCache_ClearedByReflectionCacheSetClear()
+    {
+        // #1461: The generated-factory caches must participate in ReflectionCacheSet.Clear()
+        // so that types from collectible AssemblyLoadContexts can be fully unloaded.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Dependency1461>();
+        using var container = builder.Build();
+
+        using var scope = container.BeginLifetimeScope(c => c.RegisterType<FuncConsumer1461>());
+        scope.Resolve<FuncConsumer1461>();
+
+        var serviceRegCache = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators;
+
+        Assert.NotEmpty(serviceRegCache);
+
+        ReflectionCacheSet.Shared.Clear();
+
+        Assert.Empty(serviceRegCache);
     }
 }
