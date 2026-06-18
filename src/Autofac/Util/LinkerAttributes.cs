@@ -76,6 +76,11 @@ internal enum DynamicallyAccessedMemberTypes
     /// Specifies all non-public events.
     /// </summary>
     NonPublicEvents = 0x1000,
+
+    /// <summary>
+    /// Specifies all interfaces implemented by the type.
+    /// </summary>
+    Interfaces = 0x2000,
 }
 
 /// <summary>
@@ -141,6 +146,48 @@ internal sealed class RequiresUnreferencedCodeAttribute : Attribute
     /// <summary>
     /// Gets or sets an optional URL that contains more information about the method,
     /// why it requires unreferenced code, and what options a consumer has to deal with it.
+    /// </summary>
+    public string? Url
+    {
+        get; set;
+    }
+}
+
+/// <summary>
+/// Fake version for pre-net-5.0 targets. Indicates that the specified method requires the
+/// ability to generate new code at runtime, for example through
+/// <see cref="System.Linq.Expressions"/> or <see cref="Reflection"/> APIs that emit IL.
+/// </summary>
+/// <remarks>
+/// This allows tools to understand which methods are unsafe to call when compiling ahead of
+/// time (for example with native AOT).
+/// </remarks>
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor, Inherited = false)]
+internal sealed class RequiresDynamicCodeAttribute : Attribute
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RequiresDynamicCodeAttribute"/> class
+    /// with the specified message.
+    /// </summary>
+    /// <param name="message">
+    /// A message that contains information about the usage of dynamic code.
+    /// </param>
+    public RequiresDynamicCodeAttribute(string message)
+    {
+        Message = message;
+    }
+
+    /// <summary>
+    /// Gets a message that contains information about the usage of dynamic code.
+    /// </summary>
+    public string Message
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets or sets an optional URL that contains more information about the method,
+    /// why it requires dynamic code, and what options a consumer has to deal with it.
     /// </summary>
     public string? Url
     {

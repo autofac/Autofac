@@ -4,6 +4,7 @@
 using System.Globalization;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Util;
 
 namespace Autofac.Features.OpenGenerics;
 
@@ -20,7 +21,7 @@ internal static class OpenGenericRegistrationExtensions
     /// <param name="implementer">The open generic implementation type.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
-        RegisterGeneric(ContainerBuilder builder, Type implementer)
+        RegisterGeneric(ContainerBuilder builder, [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type implementer)
     {
         if (builder == null)
         {
@@ -65,7 +66,7 @@ internal static class OpenGenericRegistrationExtensions
     /// <param name="implementer">The open generic implementation type.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
-        CreateGenericBuilder(Type implementer)
+        CreateGenericBuilder([DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type implementer)
     {
         if (implementer == null)
         {

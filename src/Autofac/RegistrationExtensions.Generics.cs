@@ -4,6 +4,7 @@
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.OpenGenerics;
+using Autofac.Util;
 
 namespace Autofac;
 
@@ -13,6 +14,8 @@ namespace Autofac;
 [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "RegistrationBuilder is where all registration syntax lives.")]
 public static partial class RegistrationExtensions
 {
+    private const string OpenGenericDynamicCodeWarning = "Registering open generic types constructs closed generic types at runtime via MakeGenericType, which may require dynamic code generation when closed over value types and is not compatible with native AOT.";
+
     /// <summary>
     /// Register an un-parameterized generic type, e.g. Repository&lt;&gt;.
     /// Concrete types will be made as they are requested, e.g. with Resolve&lt;Repository&lt;int&gt;&gt;().
@@ -20,8 +23,9 @@ public static partial class RegistrationExtensions
     /// <param name="builder">Container builder.</param>
     /// <param name="implementer">The open generic implementation type.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
+    [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
     public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>
-        RegisterGeneric(this ContainerBuilder builder, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type implementer)
+        RegisterGeneric(this ContainerBuilder builder, [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type implementer)
     {
         return OpenGenericRegistrationExtensions.RegisterGeneric(builder, implementer);
     }
