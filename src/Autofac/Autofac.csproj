@@ -46,6 +46,19 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <NoWarn>$(NoWarn);8600;8601;8602;8603;8604</NoWarn>
   </PropertyGroup>
+  <!--
+    AOT/trim/single-file analyzers. Only meaningful on the modern TFMs (net7.0+);
+    netstandard targets cannot be AOT-analyzed. IsTargetFrameworkCompatible keeps
+    this robust as TFMs are added/removed. IsAotCompatible is intentionally NOT
+    set yet - it is enabled only once every flagged call site has been annotated
+    (see the AOT annotation plan). Until then these surface as warnings so the
+    work list is visible.
+  -->
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <EnableAotAnalyzer>true</EnableAotAnalyzer>
+    <EnableSingleFileAnalyzer>true</EnableSingleFileAnalyzer>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\build\icon.png" Pack="true" PackagePath="\" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
