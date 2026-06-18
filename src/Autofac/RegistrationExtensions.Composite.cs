@@ -5,6 +5,7 @@ using System.Globalization;
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
+using Autofac.Util;
 
 namespace Autofac;
 
@@ -31,7 +32,7 @@ public static partial class RegistrationExtensions
     /// <typeparam name="TService">Service type to provide a composite for.</typeparam>
     /// <param name="builder">Container builder.</param>
     /// <returns>The composite registration for continued configuration.</returns>
-    public static IRegistrationBuilder<TComposite, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterComposite<TComposite, TService>(this ContainerBuilder builder)
+    public static IRegistrationBuilder<TComposite, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterComposite<[DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] TComposite, TService>(this ContainerBuilder builder)
         where TComposite : notnull, TService
         where TService : notnull
     {
@@ -66,7 +67,7 @@ public static partial class RegistrationExtensions
     /// <returns>The composite registration for continued configuration.</returns>
     public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> RegisterComposite(
         this ContainerBuilder builder,
-        Type compositeType,
+        [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type compositeType,
         Type serviceType)
     {
         if (builder == null)

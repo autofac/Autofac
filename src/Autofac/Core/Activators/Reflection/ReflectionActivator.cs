@@ -15,6 +15,7 @@ namespace Autofac.Core.Activators.Reflection;
 /// </summary>
 public class ReflectionActivator : InstanceActivator, IInstanceActivator
 {
+    [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)]
     private readonly Type _implementationType;
     private readonly Parameter[] _configuredProperties;
     private readonly Parameter[] _defaultParameters;
@@ -33,7 +34,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     /// <param name="configuredParameters">Parameters configured explicitly for this instance.</param>
     /// <param name="configuredProperties">Properties configured explicitly for this instance.</param>
     public ReflectionActivator(
-        Type implementationType,
+        [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type implementationType,
         IConstructorFinder constructorFinder,
         IConstructorSelector constructorSelector,
         IEnumerable<Parameter> configuredParameters,
@@ -51,9 +52,14 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
 
         _implementationType = implementationType;
+
+        // The cache key is the (already annotated) implementation type; the factory
+        // ignores the dictionary's unannotated key parameter and reads the annotated
+        // local instead, so the [DynamicallyAccessedMembers] contract flows correctly
+        // into UsesServiceKeyAttribute.
         _requiresServiceKeyParameter = ReflectionCacheSet.Shared.Internal.ServiceKeyUsageByType.GetOrAdd(
             _implementationType,
-            static t => UsesServiceKeyAttribute(t));
+            _ => UsesServiceKeyAttribute(implementationType));
         ConstructorFinder = constructorFinder ?? throw new ArgumentNullException(nameof(constructorFinder));
         ConstructorSelector = constructorSelector ?? throw new ArgumentNullException(nameof(constructorSelector));
         _configuredProperties = configuredProperties.ToArray();
@@ -123,7 +129,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     /// </summary>
     /// <param name="implementationType">The type to inspect.</param>
     /// <returns><see langword="true"/> if the type uses the <see cref="ServiceKeyAttribute"/>; otherwise, <see langword="false"/>.</returns>
-    private static bool UsesServiceKeyAttribute(Type implementationType)
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2070:UnrecognizedReflectionPattern",
+        Justification = "This is a best-effort scan for [ServiceKey] across all constructors and properties, including non-public ones. Autofac's trim/AOT contract preserves only public constructors and properties (see ActivatorMemberTypes); if a non-public member is trimmed away, it simply is not found here, which matches the documented behavior that non-public activation is not trim/AOT-safe. No public member that drives activation is missed.")]
+    private static bool UsesServiceKeyAttribute([DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type implementationType)
     {
         // Intentionally not picky about _which_ constructor or property has the
         // attribute. If a different constructor is picked via constructor
@@ -347,6 +357,10 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             });
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2077:UnrecognizedReflectionPattern",
+        Justification = "GetRuntimeProperties enumerates non-public properties as well, but Autofac's trim/AOT contract preserves only public properties (see ActivatorMemberTypes). The injectable set is filtered down to required members and explicitly-configured properties; non-public properties that the trimmer removes are not part of the supported (public) property-injection surface.")]
     private void InitializeInjectablePropertySet()
     {
         if (!_anyRequiredMembers && _configuredProperties.Length == 0)

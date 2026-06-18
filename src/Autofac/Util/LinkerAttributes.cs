@@ -140,9 +140,82 @@ internal sealed class RequiresUnreferencedCodeAttribute : Attribute
 
     /// <summary>
     /// Gets or sets an optional URL that contains more information about the method,
-    /// why it requries unreferenced code, and what options a consumer has to deal with it.
+    /// why it requires unreferenced code, and what options a consumer has to deal with it.
     /// </summary>
     public string? Url
+    {
+        get; set;
+    }
+}
+
+/// <summary>
+/// Fake version for pre-net-5.0 targets. Suppresses reporting of a specified trimming/AOT
+/// analysis rule for the decorated code element.
+/// </summary>
+[AttributeUsage(
+    AttributeTargets.All,
+    Inherited = false,
+    AllowMultiple = true)]
+internal sealed class UnconditionalSuppressMessageAttribute : Attribute
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="UnconditionalSuppressMessageAttribute"/>
+    /// class with the specified category and rule identifier.
+    /// </summary>
+    /// <param name="category">The category for the attribute.</param>
+    /// <param name="checkId">
+    /// The identifier of the analysis rule the attribute applies to.
+    /// </param>
+    public UnconditionalSuppressMessageAttribute(string category, string checkId)
+    {
+        Category = category;
+        CheckId = checkId;
+    }
+
+    /// <summary>
+    /// Gets the category identifying the classification of the attribute.
+    /// </summary>
+    public string Category
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the identifier of the analysis rule the attribute applies to.
+    /// </summary>
+    public string CheckId
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets or sets the scope of the code that is relevant for the attribute.
+    /// </summary>
+    public string? Scope
+    {
+        get; set;
+    }
+
+    /// <summary>
+    /// Gets or sets a fully qualified path that represents the target of the attribute.
+    /// </summary>
+    public string? Target
+    {
+        get; set;
+    }
+
+    /// <summary>
+    /// Gets or sets an optional argument expanding on exclusion criteria.
+    /// </summary>
+    public string? MessageId
+    {
+        get; set;
+    }
+
+    /// <summary>
+    /// Gets or sets the justification for suppressing the code analysis message.
+    /// </summary>
+    public string? Justification
     {
         get; set;
     }

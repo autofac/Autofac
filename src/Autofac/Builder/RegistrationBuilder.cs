@@ -59,7 +59,7 @@ public static class RegistrationBuilder
     /// </summary>
     /// <typeparam name="TImplementer">Implementation type to register.</typeparam>
     /// <returns>A registration builder.</returns>
-    public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType<TImplementer>()
+    public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType<[DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] TImplementer>()
         where TImplementer : notnull
     {
         // Open generics can't be generic type parameters so we don't have to check for that here.
@@ -79,7 +79,7 @@ public static class RegistrationBuilder
     /// </summary>
     /// <param name="implementationType">Implementation type to register.</param>
     /// <returns>A registration builder.</returns>
-    public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType(Type implementationType)
+    public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> ForType([DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type implementationType)
     {
         if (implementationType is null)
         {

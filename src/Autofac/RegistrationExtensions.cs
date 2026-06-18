@@ -95,7 +95,7 @@ public static partial class RegistrationExtensions
     /// <param name="builder">Container builder.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-        RegisterType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImplementer>(this ContainerBuilder builder)
+        RegisterType<[DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] TImplementer>(this ContainerBuilder builder)
         where TImplementer : notnull
     {
         if (builder == null)
@@ -117,7 +117,7 @@ public static partial class RegistrationExtensions
     /// <param name="implementationType">The type of the component implementation.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-        RegisterType(this ContainerBuilder builder, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type implementationType)
+        RegisterType(this ContainerBuilder builder, [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type implementationType)
     {
         if (builder == null)
         {

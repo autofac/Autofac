@@ -3,6 +3,7 @@
 
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Util;
 
 namespace Autofac.Builder;
 
@@ -14,6 +15,7 @@ public class ReflectionActivatorData
     private static readonly IConstructorFinder _defaultConstructorFinder = new DefaultConstructorFinder();
     private static readonly IConstructorSelector _defaultConstructorSelector = new MostParametersConstructorSelector();
 
+    [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)]
     private Type _implementer = default!;
     private IConstructorFinder _constructorFinder;
     private IConstructorSelector _constructorSelector;
@@ -22,7 +24,7 @@ public class ReflectionActivatorData
     /// Initializes a new instance of the <see cref="ReflectionActivatorData"/> class.
     /// </summary>
     /// <param name="implementer">Type that will be activated.</param>
-    public ReflectionActivatorData(Type implementer)
+    public ReflectionActivatorData([DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type implementer)
     {
         ImplementationType = implementer;
 
@@ -33,6 +35,7 @@ public class ReflectionActivatorData
     /// <summary>
     /// Gets or sets the implementation type.
     /// </summary>
+    [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)]
     public Type ImplementationType
     {
         get
