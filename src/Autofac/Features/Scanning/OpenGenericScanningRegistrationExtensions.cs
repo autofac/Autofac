@@ -52,6 +52,14 @@ internal static class OpenGenericScanningRegistrationExtensions
     /// <param name="registration">Registration to set service mapping on.</param>
     /// <param name="serviceMapping">Function mapping types to services.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "Operates on open generic implementation types discovered by assembly scanning, whose public entry points already carry [RequiresUnreferencedCode]. Preserving the interfaces of scanned types is the responsibility of the consumer that opted into scanning.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "Operates on the scanned implementation type's interfaces, discovered by assembly scanning whose public entry points already carry [RequiresUnreferencedCode]. Preserving them is the responsibility of the consumer that opted into scanning.")]
     public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
         As<TLimit, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
@@ -94,6 +102,10 @@ internal static class OpenGenericScanningRegistrationExtensions
     /// <param name="registration">The registration builder.</param>
     /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
     /// <returns>The registration builder for continued configuration.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "Operates on candidate types discovered by assembly scanning, whose public entry points already carry [RequiresUnreferencedCode]. Preserving the interfaces of scanned types is the responsibility of the consumer that opted into scanning.")]
     public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
         AssignableTo<TLimit, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,
@@ -146,6 +158,10 @@ internal static class OpenGenericScanningRegistrationExtensions
     /// <param name="openGenericServiceType">The type or interface which all classes must be assignable from.</param>
     /// <param name="serviceKeyMapping">A function to determine the service key for a given type.</param>
     /// <returns>The registration builder for continued configuration.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "Operates on candidate types discovered by assembly scanning, whose public entry points already carry [RequiresUnreferencedCode]. Preserving the interfaces of scanned types is the responsibility of the consumer that opted into scanning.")]
     public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle>
         AssignableTo<TLimit, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, TRegistrationStyle> registration,

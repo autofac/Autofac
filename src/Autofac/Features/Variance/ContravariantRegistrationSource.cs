@@ -67,6 +67,10 @@ public class ContravariantRegistrationSource : IRegistrationSource
         "Trimming",
         "IL2055:MakeGenericType",
         Justification = "The constructed types are candidate closed generics over the contravariant type's base/interface types, used only to probe for existing registrations. Preserving them is the responsibility of the consumer that opted into contravariant resolution.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2062:UnrecognizedReflectionPattern",
+        Justification = "The contravariant type argument is supplied by the consumer at resolve time and its base/interface walk operates on runtime types that cannot carry static annotations. Preserving them is the responsibility of the consumer that opted into contravariant resolution.")]
     public IEnumerable<IComponentRegistration> RegistrationsFor(
         Service service,
         Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
@@ -131,6 +135,10 @@ public class ContravariantRegistrationSource : IRegistrationSource
         "Trimming",
         "IL2070:UnrecognizedReflectionPattern",
         Justification = "Enumerates base types and interfaces of a contravariant type argument supplied by the consumer at resolve time. The walk recurses into base/interface types which cannot carry static annotations; contravariant resolution is an opt-in feature whose registered types the consumer is responsible for preserving.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "The recursive walk feeds base/interface types (runtime values that cannot carry static annotations) back into itself. Contravariant resolution is opt-in and the consumer is responsible for preserving its registered types.")]
     private static IEnumerable<Type> GetBagOfTypesAssignableFrom([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type type)
     {
         if (type.BaseType is not null)

@@ -24,7 +24,7 @@ internal static class GeneratedFactoryRegistrationExtensions
     /// <remarks>Factory delegates are provided automatically in Autofac 2, and
     /// this method is generally not required.</remarks>
     internal static IRegistrationBuilder<TLimit, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-        RegisterGeneratedFactory<TLimit>(ContainerBuilder builder, Type delegateType, Service service)
+        RegisterGeneratedFactory<TLimit>(ContainerBuilder builder, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, Service service)
         where TLimit : notnull
     {
         var activatorData = new GeneratedFactoryActivatorData(delegateType, service);

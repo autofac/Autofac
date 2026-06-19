@@ -8,6 +8,7 @@ using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.Decorators;
 using Autofac.Features.LightweightAdapters;
 using Autofac.Features.OpenGenerics;
+using Autofac.Util;
 
 namespace Autofac;
 
@@ -17,6 +18,8 @@ namespace Autofac;
 [SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "RegistrationBuilder is where all registration syntax lives.")]
 public static partial class RegistrationExtensions
 {
+    private const string GenericDecoratorDynamicCodeWarning = "Registering an open generic decorator constructs closed generic types at runtime via MakeGenericType, which may require dynamic code generation when closed over value types and is not compatible with native AOT.";
+
     /// <summary>
     /// Decorate all components implementing service <typeparamref name="TService"/>
     /// using the provided <paramref name="decorator"/> function.
@@ -125,7 +128,7 @@ public static partial class RegistrationExtensions
     /// <typeparam name="TService">Service type being decorated.</typeparam>
     /// <param name="builder">Container builder.</param>
     /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/> instance determines if the decorator should be applied.</param>
-    public static void RegisterDecorator<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool>? condition = null)
+    public static void RegisterDecorator<[DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool>? condition = null)
         where TDecorator : notnull, TService
     {
         if (builder == null)
@@ -157,7 +160,7 @@ public static partial class RegistrationExtensions
     /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/> instance determines if the decorator should be applied.</param>
     public static void RegisterDecorator(
         this ContainerBuilder builder,
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type decoratorType,
+        [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type decoratorType,
         Type serviceType,
         Func<IDecoratorContext, bool>? condition = null)
     {
@@ -249,10 +252,11 @@ public static partial class RegistrationExtensions
     /// <param name="fromKey">Service key or name associated with the components being decorated.</param>
     /// <param name="toKey">Service key or name given to the decorated components.</param>
     /// <returns>The decorator registration for continued configuration.</returns>
+    [RequiresDynamicCode(GenericDecoratorDynamicCodeWarning)]
     public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
         RegisterGenericDecorator(
             this ContainerBuilder builder,
-            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type decoratorType,
+            [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type decoratorType,
             Type decoratedServiceType,
             object fromKey,
             object? toKey = null)
@@ -283,9 +287,10 @@ public static partial class RegistrationExtensions
     /// of type <paramref name="serviceType"/>, which will be set to the instance being decorated.</param>
     /// <param name="serviceType">Service type being decorated. Must be an open generic type.</param>
     /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/> instance determines if the decorator should be applied.</param>
+    [RequiresDynamicCode(GenericDecoratorDynamicCodeWarning)]
     public static void RegisterGenericDecorator(
         this ContainerBuilder builder,
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type decoratorType,
+        [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type decoratorType,
         Type serviceType,
         Func<IDecoratorContext, bool>? condition = null)
     {

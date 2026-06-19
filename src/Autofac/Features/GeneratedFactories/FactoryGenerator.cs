@@ -49,9 +49,11 @@ public class FactoryGenerator
         // to share across all FactoryGenerator instances with the same structural signature.
         // Accessing ReflectionCacheSet.Shared at point-of-use (not stored in a field) ensures
         // correct weak-reference collection of the cache set.
+        // The factory reads the annotated delegateType local rather than the cache key's
+        // unannotated Item1 so the [DynamicallyAccessedMembers] contract flows into the generator.
         var compiledGenerator = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceOnlyGenerators.GetOrAdd(
             (delegateType, pm),
-            static key => CreateServiceOnlyGenerator(key.Item1, key.Item2));
+            key => CreateServiceOnlyGenerator(delegateType, key.Item2));
 
         // Close over the specific service so _generator matches the expected signature.
         _generator = (context, parameters) => compiledGenerator(service, context, parameters);
@@ -79,9 +81,11 @@ public class FactoryGenerator
         // captures and is safe to share across all FactoryGenerator instances for the same delegate type.
         // Accessing ReflectionCacheSet.Shared at point-of-use (not stored in a field) ensures
         // correct weak-reference collection of the cache set.
+        // The factory reads the annotated delegateType local rather than the cache key's
+        // unannotated Item1 so the [DynamicallyAccessedMembers] contract flows into the generator.
         var compiledGenerator = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators.GetOrAdd(
             (delegateType, pm),
-            static key => CreateServiceRegistrationGenerator(key.Item1, key.Item2));
+            key => CreateServiceRegistrationGenerator(delegateType, key.Item2));
 
         // Close over the specific service and product registration so _generator matches the
         // expected signature. These values are instance-specific but are not baked into the

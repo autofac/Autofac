@@ -10,8 +10,20 @@ namespace System.Diagnostics.CodeAnalysis;
 /// <summary>
 /// Fake version for pre-net-5.0 targets.
 /// </summary>
+/// <remarks>
+/// This faithfully mirrors the .NET <c>DynamicallyAccessedMemberTypes</c> enum, which is a
+/// <see cref="FlagsAttribute"/> enum whose members are deliberately individual bit values
+/// (not all of which are pure powers of two, e.g. <c>PublicConstructors</c>).
+/// </remarks>
+[Flags]
+[SuppressMessage("Major Code Smell", "S4070:Non-flags enums should not be marked with \"FlagsAttribute\"", Justification = "Mirrors the framework DynamicallyAccessedMemberTypes [Flags] enum exactly; the values are combined with bitwise operations throughout.")]
 internal enum DynamicallyAccessedMemberTypes
 {
+    /// <summary>
+    /// Specifies no members.
+    /// </summary>
+    None = 0x0000,
+
     /// <summary>
     /// Specifies the default, parameterless public constructor.
     /// </summary>

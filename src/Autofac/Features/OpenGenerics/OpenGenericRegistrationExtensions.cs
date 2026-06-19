@@ -123,7 +123,7 @@ internal static class OpenGenericRegistrationExtensions
     /// <param name="toKey">Service key or name given to the decorated components.</param>
     /// <returns>The decorator registration for further configuration.</returns>
     public static IRegistrationBuilder<object, OpenGenericDecoratorActivatorData, DynamicRegistrationStyle>
-        RegisterGenericDecorator(ContainerBuilder builder, Type decoratorType, Type decoratedServiceType, object fromKey, object? toKey)
+        RegisterGenericDecorator(ContainerBuilder builder, [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type decoratorType, Type decoratedServiceType, object fromKey, object? toKey)
     {
         if (builder == null)
         {

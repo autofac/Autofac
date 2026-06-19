@@ -271,6 +271,10 @@ internal static class InternalTypeExtensions
     // Run IsCompilerGenerated check last due to perf. See AssemblyScanningPerformanceTests.MeasurePerformance.
     internal static bool MayAllowReflectionActivation(this Type? type, bool allowCompilerGenerated = false) => type is not null && type.IsClass && !type.IsAbstract && !type.IsDelegate() && (allowCompilerGenerated || !type.IsCompilerGenerated());
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "The generic type definition is derived from the base type's own generic instantiation; only its identity is compared (no members are reflected on it beyond the recursive open-generic check). Reachable through open generic / scanning paths whose consumers preserve their types.")]
     private static bool CheckBaseTypeIsOpenGenericTypeOf(this Type @this, Type type)
     {
         if (@this.BaseType == null)
@@ -283,6 +287,10 @@ internal static class InternalTypeExtensions
             : type.IsAssignableFrom(@this.BaseType);
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "Each interface's generic type definition is derived from the interface's own instantiation; only its identity is compared via the recursive open-generic check. Reachable through open generic / scanning paths whose consumers preserve their types.")]
     private static bool CheckInterfacesAreOpenGenericTypeOf([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] this Type @this, Type type)
     {
         return @this.GetInterfaces()

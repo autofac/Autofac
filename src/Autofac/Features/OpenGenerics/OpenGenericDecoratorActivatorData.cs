@@ -4,6 +4,7 @@
 using System.Globalization;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Util;
 
 namespace Autofac.Features.OpenGenerics;
 
@@ -17,7 +18,7 @@ public class OpenGenericDecoratorActivatorData : ReflectionActivatorData
     /// </summary>
     /// <param name="implementer">The decorator type.</param>
     /// <param name="fromService">The open generic service type to decorate.</param>
-    public OpenGenericDecoratorActivatorData(Type implementer, IServiceWithType fromService)
+    public OpenGenericDecoratorActivatorData([DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type implementer, IServiceWithType fromService)
         : base(implementer)
     {
         if (fromService == null)

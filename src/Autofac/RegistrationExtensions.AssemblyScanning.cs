@@ -187,6 +187,10 @@ public static partial class RegistrationExtensions
     /// <typeparam name="TLimit">Registration limit type.</typeparam>
     /// <param name="registration">Registration to set service mapping on.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "Maps scanned types to their implemented interfaces. The types are discovered by assembly scanning, whose public entry points already carry [RequiresUnreferencedCode]; the consumer that opted into scanning is responsible for preserving the interfaces of scanned types.")]
     public static IRegistrationBuilder<TLimit, ScanningActivatorData, DynamicRegistrationStyle>
         AsImplementedInterfaces<TLimit>(this IRegistrationBuilder<TLimit, ScanningActivatorData, DynamicRegistrationStyle> registration)
     {
@@ -205,6 +209,10 @@ public static partial class RegistrationExtensions
     /// <typeparam name="TConcreteActivatorData">Activator data type.</typeparam>
     /// <param name="registration">Registration to set service mapping on.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "Maps the registered component's limit type to its implemented interfaces. The interfaces of a type the consumer explicitly registered are reachable; the LimitType getter cannot carry the annotation, so the requirement is asserted here.")]
     public static IRegistrationBuilder<TLimit, TConcreteActivatorData, SingleRegistrationStyle>
         AsImplementedInterfaces<TLimit, TConcreteActivatorData>(this IRegistrationBuilder<TLimit, TConcreteActivatorData, SingleRegistrationStyle> registration)
         where TConcreteActivatorData : IConcreteActivatorData
@@ -223,6 +231,10 @@ public static partial class RegistrationExtensions
     /// <typeparam name="TLimit">Registration limit type.</typeparam>
     /// <param name="registration">Registration to set service mapping on.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "Maps the registered component's implementation type to its implemented interfaces. The interfaces of a type the consumer explicitly registered are reachable; the ImplementationType getter cannot carry the Interfaces annotation, so the requirement is asserted here.")]
     public static IRegistrationBuilder<TLimit, ReflectionActivatorData, DynamicRegistrationStyle>
         AsImplementedInterfaces<TLimit>(this IRegistrationBuilder<TLimit, ReflectionActivatorData, DynamicRegistrationStyle> registration)
     {
@@ -371,7 +383,7 @@ public static partial class RegistrationExtensions
     /// <typeparam name="T">The concrete type to exclude.</typeparam>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-        Except<T>(
+        Except<[DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] T>(
             this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration,
             Action<IRegistrationBuilder<T, ConcreteReflectionActivatorData, SingleRegistrationStyle>> customizedRegistration)
         where T : notnull
@@ -460,13 +472,13 @@ public static partial class RegistrationExtensions
         return registration;
     }
 
-    private static Type[] GetImplementedInterfaces(Type type)
+    private static Type[] GetImplementedInterfaces([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type type)
     {
         var interfaces = type.GetInterfaces().Where(i => i != typeof(IDisposable));
         return type.IsInterface ? interfaces.AppendItem(type).ToArray() : interfaces.ToArray();
     }
 
-    private static Type[] GetOpenGenericImplementedInterfaces(this Type @this)
+    private static Type[] GetOpenGenericImplementedInterfaces([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] this Type @this)
     {
         return @this.GetInterfaces()
             .Where(it => it.IsGenericType)

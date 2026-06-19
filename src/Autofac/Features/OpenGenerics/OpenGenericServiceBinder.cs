@@ -124,7 +124,7 @@ internal static class OpenGenericServiceBinder
     /// <param name="services">The set of open generic services.</param>
     [UnconditionalSuppressMessage(
         "Trimming",
-        "IL2070:UnrecognizedReflectionPattern",
+        "IL2067:UnrecognizedReflectionPattern",
         Justification = "Inspects the interfaces of the open generic implementation type to validate it can implement the configured services. The implementation type comes from an open generic registration (RegisterGeneric / open generic scanning), whose consumer is responsible for preserving its interfaces.")]
     public static void EnforceBindable(Type implementationType, IEnumerable<Service> services)
     {
@@ -202,7 +202,7 @@ internal static class OpenGenericServiceBinder
 
     [UnconditionalSuppressMessage(
         "Trimming",
-        "IL2070:UnrecognizedReflectionPattern",
+        "IL2067:UnrecognizedReflectionPattern",
         Justification = "Inspects the interfaces of the open generic implementation type to map its generic arguments. The implementation type comes from an open generic registration whose consumer is responsible for preserving its interfaces.")]
     private static Type?[] TryMapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
     {

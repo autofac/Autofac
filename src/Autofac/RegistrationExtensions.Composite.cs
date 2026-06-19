@@ -160,9 +160,10 @@ public static partial class RegistrationExtensions
     /// </param>
     /// <param name="serviceType">Service type to provide a composite for.</param>
     /// <returns>The composite registration for continued configuration.</returns>
+    [RequiresDynamicCode("Registering an open generic composite constructs closed generic types at runtime via MakeGenericType, which may require dynamic code generation when closed over value types and is not compatible with native AOT.")]
     public static IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle> RegisterGenericComposite(
         this ContainerBuilder builder,
-        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type compositeType,
+        [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type compositeType,
         Type serviceType)
     {
         if (builder == null)
