@@ -59,6 +59,14 @@ public class ContravariantRegistrationSource : IRegistrationSource
     /// additional services, along with the implementation of s. It is not an error to return components
     /// that do not implement <paramref name="service"/>.
     /// </remarks>
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "The contravariant registration source is opt-in (registered via RegisterSource). It constructs candidate closed generic types via MakeGenericType only when a consumer resolves a contravariant interface. The consumer that opted into contravariance takes on the dynamic-code requirement.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2055:MakeGenericType",
+        Justification = "The constructed types are candidate closed generics over the contravariant type's base/interface types, used only to probe for existing registrations. Preserving them is the responsibility of the consumer that opted into contravariant resolution.")]
     public IEnumerable<IComponentRegistration> RegistrationsFor(
         Service service,
         Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
@@ -113,13 +121,17 @@ public class ContravariantRegistrationSource : IRegistrationSource
         return copy;
     }
 
-    private static IEnumerable<Type> GetTypesAssignableFrom(Type type)
+    private static IEnumerable<Type> GetTypesAssignableFrom([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type type)
     {
         return GetBagOfTypesAssignableFrom(type)
             .Distinct();
     }
 
-    private static IEnumerable<Type> GetBagOfTypesAssignableFrom(Type type)
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2070:UnrecognizedReflectionPattern",
+        Justification = "Enumerates base types and interfaces of a contravariant type argument supplied by the consumer at resolve time. The walk recurses into base/interface types which cannot carry static annotations; contravariant resolution is an opt-in feature whose registered types the consumer is responsible for preserving.")]
+    private static IEnumerable<Type> GetBagOfTypesAssignableFrom([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type type)
     {
         if (type.BaseType is not null)
         {

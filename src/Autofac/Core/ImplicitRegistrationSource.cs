@@ -50,6 +50,14 @@ public abstract class ImplicitRegistrationSource : IRegistrationSource
     public virtual string Description => GetType().Name;
 
     /// <inheritdoc />
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "Implicit relationship sources (Lazy<T>, Meta<T>, etc.) are registered for every container but only ever construct the relationship registration via MakeGenericMethod when a consumer actually resolves that relationship type. The closed-type resolve path never reaches this. Consumers that resolve implicit relationships over value-type arguments take on the dynamic-code requirement.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2060:MakeGenericMethod",
+        Justification = "The generic argument is the relationship's value type supplied by the consumer at resolve time; preserving it is the responsibility of the consumer that resolves the implicit relationship.")]
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
     {
         if (registrationAccessor == null)

@@ -22,6 +22,14 @@ internal class GeneratedFactoryRegistrationSource : IRegistrationSource
     /// <param name="service">The service that was requested.</param>
     /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
     /// <returns>Registrations providing the service.</returns>
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "The generated-factory source is registered for every container but only compiles a factory delegate (via FactoryGenerator's expression tree) when a consumer actually resolves a delegate factory type. The closed-type resolve path never reaches this. Consumers that resolve generated factories take on the dynamic-code requirement.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "The delegate ServiceType is the factory type the consumer requested; reading its Invoke return type is intrinsic to a delegate and the consumer that resolves the factory is responsible for that type.")]
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
     {
         if (service == null)

@@ -130,6 +130,14 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="parameter" /> or <paramref name="context" /> is <see langword="null" />.
     /// </exception>
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "MetadataFilter is an opt-in attribute the consumer applies to a constructor parameter. The MakeGenericMethod over the parameter's element type only runs when such a parameter is resolved; the dynamic-code/preservation responsibility lies with the consumer that applied [MetadataFilter]. The base ParameterFilterAttribute cannot be marked [RequiresDynamicCode] without forcing it on all filter attributes.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2060:MakeGenericMethod",
+        Justification = "The generic argument is the element type of the parameter being filtered, supplied by the consumer's metadata-filtered registration. Preserving it is the responsibility of the consumer that opted into [MetadataFilter].")]
     public override object? ResolveParameter(ParameterInfo parameter, IComponentContext context)
     {
         if (parameter == null)
@@ -160,6 +168,14 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
     /// <param name="parameter">The specific parameter being resolved that is marked with this attribute.</param>
     /// <param name="context">The component context under which the parameter is being resolved.</param>
     /// <returns>true if parameter can be resolved; otherwise, false.</returns>
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "MetadataFilter is an opt-in attribute the consumer applies to a constructor parameter. The MakeGenericMethod over the parameter's element type only runs when such a parameter is resolved; the dynamic-code/preservation responsibility lies with the consumer that applied [MetadataFilter]. The base ParameterFilterAttribute cannot be marked [RequiresDynamicCode] without forcing it on all filter attributes.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2060:MakeGenericMethod",
+        Justification = "The generic argument is the element type of the parameter being filtered, supplied by the consumer's metadata-filtered registration. Preserving it is the responsibility of the consumer that opted into [MetadataFilter].")]
     public override bool CanResolveParameter(ParameterInfo parameter, IComponentContext context)
     {
         if (parameter == null)
@@ -187,6 +203,10 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
         return type.IsGenericEnumerableInterfaceType() ? type.GenericTypeArguments[0] : type;
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2091:UnrecognizedReflectionPattern",
+        Justification = "The Lazy<T> in Meta<Lazy<T>> is resolved through the container with a value factory; T's own constructor is never invoked by Lazy<T>, so the nominal PublicParameterlessConstructor requirement does not apply.")]
     private static T? FilterOne<T>(IComponentContext context, string metadataKey, object metadataValue)
     {
         // Using Lazy<T> to ensure components that aren't actually used won't get activated.
@@ -196,6 +216,10 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
             .FirstOrDefault();
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2091:UnrecognizedReflectionPattern",
+        Justification = "The Lazy<T> in Meta<Lazy<T>> is resolved through the container with a value factory; T's own constructor is never invoked by Lazy<T>, so the nominal PublicParameterlessConstructor requirement does not apply.")]
     private static T[] FilterAll<T>(IComponentContext context, string metadataKey, object metadataValue)
     {
         // Using Lazy<T> to ensure components that aren't actually used won't get activated.
@@ -205,6 +229,10 @@ public sealed class MetadataFilterAttribute : ParameterFilterAttribute
             .ToArray();
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2091:UnrecognizedReflectionPattern",
+        Justification = "The Lazy<T> in Meta<Lazy<T>> is resolved through the container with a value factory; T's own constructor is never invoked by Lazy<T>, so the nominal PublicParameterlessConstructor requirement does not apply.")]
     private static bool CanResolve<T>(IComponentContext context, string metadataKey, object metadataValue)
     {
         // Using Lazy<T> to ensure components that aren't actually used won't get activated.

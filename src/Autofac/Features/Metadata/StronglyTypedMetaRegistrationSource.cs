@@ -26,6 +26,14 @@ internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
     public bool IsAdapterForIndividualComponents => true;
 
     /// <inheritdoc/>
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "This source is registered for every container but only builds the Meta<T, TMetadata> registration via MakeGenericMethod when a consumer actually resolves that relationship. The closed-type resolve path never reaches this. Consumers that resolve Meta<T, TMetadata> over value-type arguments take on the dynamic-code requirement.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2060:MakeGenericMethod",
+        Justification = "The generic arguments are the relationship's value and metadata types supplied by the consumer at resolve time; preserving them is the responsibility of the consumer that resolves the relationship.")]
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
     {
         if (registrationAccessor == null)
@@ -67,7 +75,8 @@ internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
         return MetaRegistrationSourceResources.StronglyTypedMetaRegistrationSourceDescription;
     }
 
-    private static IComponentRegistration CreateMetaRegistration<T, TMetadata>(Service providedService, Service valueService, ServiceRegistration implementation)
+    [RequiresDynamicCode("Meta<T, TMetadata> builds a strongly-typed metadata view at runtime via expression compilation; only reached when a consumer resolves the relationship.")]
+    private static IComponentRegistration CreateMetaRegistration<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] TMetadata>(Service providedService, Service valueService, ServiceRegistration implementation)
     {
         var metadataProvider = MetadataViewProvider.GetMetadataViewProvider<TMetadata>();
 

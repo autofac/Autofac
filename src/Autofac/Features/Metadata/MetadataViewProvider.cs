@@ -14,6 +14,8 @@ namespace Autofac.Features.Metadata;
 /// </summary>
 internal static class MetadataViewProvider
 {
+    private const string DynamicCodeWarning = "Strongly-typed metadata views are populated by compiling an expression tree at runtime and using MakeGenericMethod over each property type, which requires dynamic code generation and is not compatible with native AOT.";
+
     private static readonly MethodInfo _getMetadataValueMethod = typeof(MetadataViewProvider).GetDeclaredMethod(nameof(GetMetadataValue));
 
     /// <summary>
@@ -21,7 +23,16 @@ internal static class MetadataViewProvider
     /// </summary>
     /// <typeparam name="TMetadata">The metadata type.</typeparam>
     /// <returns>A provider function.</returns>
-    public static Func<IDictionary<string, object?>, TMetadata> GetMetadataViewProvider<TMetadata>()
+    [RequiresDynamicCode(DynamicCodeWarning)]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2060:MakeGenericMethod",
+        Justification = "The generic argument is the metadata view property's own type. The properties of TMetadata are preserved by this method's [DynamicallyAccessedMembers(PublicProperties)] annotation, so the property types are reachable.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2087:UnrecognizedReflectionPattern",
+        Justification = "GetRuntimeProperties also enumerates non-public properties, but only public settable properties of the metadata view are populated (and those are preserved by the PublicProperties annotation). Non-public properties are not part of the supported metadata-view surface.")]
+    public static Func<IDictionary<string, object?>, TMetadata> GetMetadataViewProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] TMetadata>()
     {
         if (typeof(TMetadata) == typeof(IDictionary<string, object>))
         {

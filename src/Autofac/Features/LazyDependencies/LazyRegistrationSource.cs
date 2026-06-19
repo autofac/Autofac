@@ -25,6 +25,10 @@ internal class LazyRegistrationSource : ImplicitRegistrationSource
     public override string Description => LazyRegistrationSourceResources.LazyRegistrationSourceDescription;
 
     /// <inheritdoc/>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2091:UnrecognizedReflectionPattern",
+        Justification = "Lazy<T> nominally wants a public parameterless constructor on T, but this Lazy is constructed with an explicit value factory that resolves T through the container - T's own constructor is never invoked by Lazy<T> here.")]
     protected override object ResolveInstance<T>(IComponentContext ctx, in ResolveRequest request)
     {
         var capturedContext = ctx.Resolve<IComponentContext>();

@@ -15,6 +15,8 @@ namespace Autofac.Features.GeneratedFactories;
 /// </summary>
 public class FactoryGenerator
 {
+    private const string DynamicCodeWarning = "Generated factories compile a delegate from an expression tree at runtime, which requires dynamic code generation and is not compatible with native AOT.";
+
     // The explicit '!' default is ok because the code is never executed, it's just used by
     // the expression tree.
     private static readonly ConstructorInfo _requestConstructor
@@ -29,7 +31,8 @@ public class FactoryGenerator
     /// order to create the products of the factory.</param>
     /// <param name="delegateType">The delegate to provide as a factory.</param>
     /// <param name="parameterMapping">The parameter mapping mode to use.</param>
-    public FactoryGenerator(Type delegateType, Service service, ParameterMapping parameterMapping)
+    [RequiresDynamicCode(DynamicCodeWarning)]
+    public FactoryGenerator([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, Service service, ParameterMapping parameterMapping)
     {
         if (service == null)
         {
@@ -63,7 +66,8 @@ public class FactoryGenerator
     /// order to create the products of the factory.</param>
     /// <param name="delegateType">The delegate to provide as a factory.</param>
     /// <param name="parameterMapping">The parameter mapping mode to use.</param>
-    public FactoryGenerator(Type delegateType, Service service, ServiceRegistration productRegistration, ParameterMapping parameterMapping)
+    [RequiresDynamicCode(DynamicCodeWarning)]
+    public FactoryGenerator([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, Service service, ServiceRegistration productRegistration, ParameterMapping parameterMapping)
     {
         Enforce.ArgumentTypeIsFunction(delegateType);
 
@@ -140,7 +144,8 @@ public class FactoryGenerator
     /// no instance-specific compile-time captures, making it safe to cache and share across all
     /// <see cref="FactoryGenerator"/> instances with the same (<paramref name="delegateType"/>, <paramref name="pm"/>) pair.
     /// </summary>
-    private static Func<Service, IComponentContext, IEnumerable<Parameter>, Delegate> CreateServiceOnlyGenerator(Type delegateType, ParameterMapping pm)
+    [RequiresDynamicCode(DynamicCodeWarning)]
+    private static Func<Service, IComponentContext, IEnumerable<Parameter>, Delegate> CreateServiceOnlyGenerator([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, ParameterMapping pm)
     {
         // Outer parameters: (Service svc, IComponentContext c, IEnumerable<Parameter> p)
         var serviceParam = Expression.Parameter(typeof(Service), "svc");
@@ -208,7 +213,8 @@ public class FactoryGenerator
     /// no instance-specific compile-time captures, making it safe to cache and share across all
     /// <see cref="FactoryGenerator"/> instances with the same (<paramref name="delegateType"/>, <paramref name="pm"/>) pair.
     /// </summary>
-    private static Func<Service, ServiceRegistration, IComponentContext, IEnumerable<Parameter>, Delegate> CreateServiceRegistrationGenerator(Type delegateType, ParameterMapping pm)
+    [RequiresDynamicCode(DynamicCodeWarning)]
+    private static Func<Service, ServiceRegistration, IComponentContext, IEnumerable<Parameter>, Delegate> CreateServiceRegistrationGenerator([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, ParameterMapping pm)
     {
         // Outer parameters: (Service svc, ServiceRegistration sr, IComponentContext c, IEnumerable<Parameter> p)
         var serviceParam = Expression.Parameter(typeof(Service), "svc");
