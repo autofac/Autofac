@@ -27,7 +27,7 @@ public static class RegistrationExtensions
     /// and this method is generally not required.</remarks>
     [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
     public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-        RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType)
+        RegisterGeneratedFactory(this ContainerBuilder builder, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType)
     {
         if (delegateType == null)
         {
@@ -51,7 +51,7 @@ public static class RegistrationExtensions
     /// this method is generally not required.</remarks>
     [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
     public static IRegistrationBuilder<Delegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-        RegisterGeneratedFactory(this ContainerBuilder builder, Type delegateType, Service service)
+        RegisterGeneratedFactory(this ContainerBuilder builder, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, Service service)
     {
         if (builder == null)
         {
@@ -72,7 +72,7 @@ public static class RegistrationExtensions
     /// and this method is generally not required.</remarks>
     [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
     public static IRegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-        RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder, Service service)
+        RegisterGeneratedFactory<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] TDelegate>(this ContainerBuilder builder, Service service)
         where TDelegate : class
     {
         if (builder == null)
@@ -93,7 +93,7 @@ public static class RegistrationExtensions
     /// and this method is generally not required.</remarks>
     [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
     public static IRegistrationBuilder<TDelegate, GeneratedFactoryActivatorData, SingleRegistrationStyle>
-        RegisterGeneratedFactory<TDelegate>(this ContainerBuilder builder)
+        RegisterGeneratedFactory<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] TDelegate>(this ContainerBuilder builder)
         where TDelegate : class
     {
         if (builder == null)

@@ -265,7 +265,7 @@ public static partial class RegistrationExtensions
     /// <param name="registration">Registration to set metadata on.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-        WithMetadataFrom<TAttribute>(
+        WithMetadataFrom<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TAttribute>(
             this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration)
     {
         var attrType = typeof(TAttribute);

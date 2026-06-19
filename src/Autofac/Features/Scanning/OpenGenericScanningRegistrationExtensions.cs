@@ -162,6 +162,10 @@ internal static class OpenGenericScanningRegistrationExtensions
             .As(candidateType => (Service)new KeyedService(serviceKeyMapping(candidateType), candidateType));
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "The implementation types are discovered by assembly scanning, whose public entry points (RegisterAssemblyOpenGenericTypes etc.) already carry [RequiresUnreferencedCode]. Preserving the activatable members of scanned types is the responsibility of the consumer that opted into scanning.")]
     private static void ScanAssembliesForOpenGenerics(IEnumerable<Assembly> assemblies, IComponentRegistryBuilder cr, RegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> rb)
     {
         rb.ActivatorData.Filters.Add(t =>

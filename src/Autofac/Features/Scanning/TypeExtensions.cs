@@ -57,6 +57,10 @@ internal static class TypeExtensions
     /// A "template" registration builder that is used to provide activator data
     /// filters and serve as the basis for individual component registrations.
     /// </param>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "The concrete types are discovered by assembly scanning, whose public entry points (RegisterAssemblyTypes etc.) already carry [RequiresUnreferencedCode]. Preserving the activatable members of scanned types is the responsibility of the consumer that opted into scanning.")]
     internal static void FilterAndRegisterConcreteTypes(this IEnumerable<Type> types, IComponentRegistryBuilder cr, IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> rb)
     {
         var closedTypes = types.WhichAreAllowedThroughScanning()

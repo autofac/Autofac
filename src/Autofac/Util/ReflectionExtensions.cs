@@ -29,6 +29,10 @@ internal static class ReflectionExtensions
     /// <param name="pi">Parameter to the property setter.</param>
     /// <param name="prop">The property info on which the setter is specified.</param>
     /// <returns>True if the parameter is a property setter.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "The declaring type is derived from a property setter's ParameterInfo that the caller already holds. The setter (and therefore its declaring property) is reachable, so resolving the property back from its own setter does not introduce a new trimming root.")]
     public static bool TryGetDeclaringProperty(this ParameterInfo pi, [NotNullWhen(returnValue: true)] out PropertyInfo? prop)
     {
         var mi = pi.Member as MethodInfo;

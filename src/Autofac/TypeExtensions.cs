@@ -67,7 +67,7 @@ public static class TypeExtensions
     /// <param name="this">The type to test.</param>
     /// <param name="openGeneric">The open generic against which the type should be tested.</param>
     /// <returns><see langword="true"/> if the provided type is a closed version of the provided open generic; otherwise, <see langword="false"/>.</returns>
-    public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
+    public static bool IsClosedTypeOf([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] this Type @this, Type openGeneric)
     {
         if (@this == null)
         {
@@ -110,7 +110,7 @@ public static class TypeExtensions
     /// <param name="this">The type.</param>
     /// <param name="methodName">The name of the method.</param>
     /// <returns>An object that represents the specified method, if found; otherwise, null.</returns>
-    public static MethodInfo GetDeclaredMethod(this Type @this, string methodName)
+    public static MethodInfo GetDeclaredMethod([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] this Type @this, string methodName)
     {
         if (@this is null)
         {
@@ -133,7 +133,7 @@ public static class TypeExtensions
     /// <param name="this">The type.</param>
     /// <param name="propertyName">The name of the property.</param>
     /// <returns>An object that represents the specified property, if found; otherwise, null.</returns>
-    public static PropertyInfo GetDeclaredProperty(this Type @this, string propertyName)
+    public static PropertyInfo GetDeclaredProperty([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] this Type @this, string propertyName)
     {
         if (@this is null)
         {
@@ -155,7 +155,7 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="this">The type.</param>
     /// <returns>A collection of instance constructors.</returns>
-    public static ConstructorInfo[] GetDeclaredConstructors(this Type @this)
+    public static ConstructorInfo[] GetDeclaredConstructors([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] this Type @this)
     {
         if (@this is null)
         {
@@ -171,7 +171,7 @@ public static class TypeExtensions
     /// </summary>
     /// <param name="this">The type.</param>
     /// <returns>A collection of instance constructors.</returns>
-    public static ConstructorInfo[] GetDeclaredPublicConstructors(this Type @this)
+    public static ConstructorInfo[] GetDeclaredPublicConstructors([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] this Type @this)
     {
         if (@this is null)
         {
@@ -187,7 +187,7 @@ public static class TypeExtensions
     /// <param name="type">The type being tested.</param>
     /// <param name="constructorParameterTypes">The types of the contractor to find.</param>
     /// <returns>The <see cref="ConstructorInfo"/> is a match is found; otherwise, <c>null</c>.</returns>
-    public static ConstructorInfo? GetMatchingConstructor(this Type type, Type[] constructorParameterTypes)
+    public static ConstructorInfo? GetMatchingConstructor([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] this Type type, Type[] constructorParameterTypes)
     {
         return type.GetDeclaredConstructors().FirstOrDefault(
             c => c.GetParameters().Select(p => p.ParameterType).SequenceEqual(constructorParameterTypes));

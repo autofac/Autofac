@@ -42,9 +42,12 @@ public class DefaultConstructorFinder : IConstructorFinder
         return _finder(targetType);
     }
 
-    private static ConstructorInfo[] GetDefaultPublicConstructors(Type type)
+    private static ConstructorInfo[] GetDefaultPublicConstructors([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
     {
+        // The cache key is the (annotated) target type; the factory reads the annotated
+        // local rather than the dictionary's unannotated key parameter so the
+        // [DynamicallyAccessedMembers] contract flows into GetDeclaredPublicConstructors.
         return ReflectionCacheSet.Shared.Internal.DefaultPublicConstructors
-            .GetOrAdd(type, t => t.GetDeclaredPublicConstructors());
+            .GetOrAdd(type, _ => type.GetDeclaredPublicConstructors());
     }
 }

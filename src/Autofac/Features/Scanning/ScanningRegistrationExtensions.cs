@@ -80,6 +80,10 @@ internal static class ScanningRegistrationExtensions
     /// <param name="registration">The registration builder.</param>
     /// <param name="openGenericServiceType">The open generic to register closed types of.</param>
     /// <returns>The registration builder for continued configuration.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "The candidate types are discovered by assembly scanning, whose public entry points (RegisterAssemblyTypes etc.) already carry [RequiresUnreferencedCode]. Preserving the interfaces of scanned types is the responsibility of the consumer that opted into scanning.")]
     public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
         AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,
@@ -137,6 +141,10 @@ internal static class ScanningRegistrationExtensions
     /// <param name="openGenericServiceType">The open generic to register closed types of.</param>
     /// <param name="serviceKeyMapping">A function to determine the service key for a given type.</param>
     /// <returns>The registration builder for continued configuration.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "The candidate types are discovered by assembly scanning, whose public entry points (RegisterAssemblyTypes etc.) already carry [RequiresUnreferencedCode]. Preserving the interfaces of scanned types is the responsibility of the consumer that opted into scanning.")]
     public static IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle>
         AsClosedTypesOf<TLimit, TScanningActivatorData, TRegistrationStyle>(
             IRegistrationBuilder<TLimit, TScanningActivatorData, TRegistrationStyle> registration,

@@ -7,6 +7,7 @@ using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.OpenGenerics;
 using Autofac.Features.Scanning;
+using Autofac.Util;
 
 namespace Autofac;
 
@@ -158,7 +159,7 @@ public static partial class RegistrationExtensions
     public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
         Except(
             this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration,
-            Type openGenericType,
+            [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type openGenericType,
             Action<IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>> customizedRegistration)
     {
         var result = registration.Except(openGenericType);
@@ -328,7 +329,7 @@ public static partial class RegistrationExtensions
     /// <param name="registration">Registration to set metadata on.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
-        WithMetadataFrom<TAttribute>(
+        WithMetadataFrom<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TAttribute>(
             this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration)
     {
         var attrType = typeof(TAttribute);
