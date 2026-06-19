@@ -75,7 +75,10 @@ internal class StronglyTypedMetaRegistrationSource : IRegistrationSource
         return MetaRegistrationSourceResources.StronglyTypedMetaRegistrationSourceDescription;
     }
 
-    [RequiresDynamicCode("Meta<T, TMetadata> builds a strongly-typed metadata view at runtime via expression compilation; only reached when a consumer resolves the relationship.")]
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "Builds a strongly-typed Meta<T, TMetadata> metadata view via expression compilation. Reached only when a consumer resolves that relationship through this always-registered implicit source (dispatched by relationship type, which cannot surface the requirement at the consumer's call site). Consumers that resolve Meta<T, TMetadata> take on the dynamic-code requirement.")]
     private static IComponentRegistration CreateMetaRegistration<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] TMetadata>(Service providedService, Service valueService, ServiceRegistration implementation)
     {
         var metadataProvider = MetadataViewProvider.GetMetadataViewProvider<TMetadata>();

@@ -70,4 +70,26 @@
     <MakeDir Directories="$(LogDirectory)" />
     <Exec Command="dotnet test &quot;%(SolutionFile.FullPath)&quot; -c $(Configuration) --results-directory &quot;$(LogDirectory)&quot; --logger:trx /p:Version=$(Version) --collect:&quot;XPlat Code Coverage&quot; --settings &quot;$(CoverageRunSettings)&quot;" />
   </Target>
+  <!--
+    Native AOT verification. Publishes the AOT smoke-test app with PublishAot=true
+    (which runs the ILC trim/AOT analyzer and would fail the build on any IL2104/
+    IL3053 warning, since the project treats warnings as errors) and then executes
+    the produced native binary, asserting a zero exit code. This proves both that
+    Autofac is statically AOT-clean AND that the AOT-safe resolve path works at
+    runtime. The project is intentionally excluded from Autofac.sln so the normal
+    Compile/Test targets do not require the native toolchain.
+  -->
+  <PropertyGroup>
+    <AotProjectDirectory>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),'test/Autofac.Test.Aot'))</AotProjectDirectory>
+    <AotPublishDirectory>$([System.IO.Path]::Combine($(ArtifactDirectory),'aot'))</AotPublishDirectory>
+    <AotExecutableName>Autofac.Test.Aot</AotExecutableName>
+    <AotExecutableName Condition="'$(OS)' == 'Windows_NT'">Autofac.Test.Aot.exe</AotExecutableName>
+  </PropertyGroup>
+  <Target Name="VerifyAot">
+    <Message Text="****************************************" Importance="high" />
+    <Message Text="Verifying Native AOT compatibility" Importance="high" />
+    <Message Text="****************************************" Importance="high" />
+    <Exec Command="dotnet publish &quot;$(AotProjectDirectory)&quot; -c $(Configuration) --output &quot;$(AotPublishDirectory)&quot;" />
+    <Exec Command="&quot;$([System.IO.Path]::Combine($(AotPublishDirectory),$(AotExecutableName)))&quot;" />
+  </Target>
 </Project>

@@ -80,7 +80,10 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
         return LazyWithMetadataRegistrationSourceResources.LazyWithMetadataRegistrationSourceDescription;
     }
 
-    [RequiresDynamicCode("Lazy<T, TMetadata> builds a strongly-typed metadata view at runtime via expression compilation; only reached when a consumer resolves the relationship.")]
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "Builds a strongly-typed Lazy<T, TMetadata> metadata view via expression compilation. Reached only when a consumer resolves that relationship through this always-registered implicit source (dispatched by relationship type, which cannot surface the requirement at the consumer's call site). Consumers that resolve Lazy<T, TMetadata> take on the dynamic-code requirement.")]
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2072:UnrecognizedReflectionPattern",

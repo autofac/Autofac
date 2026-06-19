@@ -14,8 +14,6 @@ namespace Autofac.Features.Metadata;
 /// </summary>
 internal static class MetadataViewProvider
 {
-    private const string DynamicCodeWarning = "Strongly-typed metadata views are populated by compiling an expression tree at runtime and using MakeGenericMethod over each property type, which requires dynamic code generation and is not compatible with native AOT.";
-
     private static readonly MethodInfo _getMetadataValueMethod = typeof(MetadataViewProvider).GetDeclaredMethod(nameof(GetMetadataValue));
 
     /// <summary>
@@ -23,7 +21,10 @@ internal static class MetadataViewProvider
     /// </summary>
     /// <typeparam name="TMetadata">The metadata type.</typeparam>
     /// <returns>A provider function.</returns>
-    [RequiresDynamicCode(DynamicCodeWarning)]
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "Strongly-typed metadata views compile an expression tree and use MakeGenericMethod over each property type. This is only reached when a consumer resolves a Meta<T, TMetadata> / Lazy<T, TMetadata> relationship (an always-registered implicit source dispatched by relationship type, which cannot surface the requirement at the consumer's call site). Consumers that resolve strongly-typed metadata views take on the dynamic-code requirement.")]
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2060:MakeGenericMethod",
