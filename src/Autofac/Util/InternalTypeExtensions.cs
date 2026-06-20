@@ -12,12 +12,14 @@ namespace Autofac.Util;
 /// </summary>
 internal static class InternalTypeExtensions
 {
+    private const string OpenGenericConstraintDynamicCodeWarning = "Validating open generic constraints constructs candidate closed generic types at runtime via MakeGenericType, which may require dynamic code generation when closed over value types and is not compatible with native AOT.";
+
     /// <summary>
     /// For a delegate type, outputs the return type of the delegate.
     /// </summary>
     /// <param name="type">The delegate type.</param>
     /// <returns>The delegate return type.</returns>
-    public static Type FunctionReturnType(this Type type)
+    public static Type FunctionReturnType([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] this Type type)
     {
         var invoke = type.GetDeclaredMethod("Invoke");
         Enforce.NotNull(invoke);
@@ -39,7 +41,7 @@ internal static class InternalTypeExtensions
     /// <param name="this">The type that is being checked for the interface.</param>
     /// <param name="openGeneric">The open generic type to locate.</param>
     /// <returns>The type of the interface.</returns>
-    public static IEnumerable<Type> GetTypesThatClose(this Type @this, Type openGeneric)
+    public static IEnumerable<Type> GetTypesThatClose([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] this Type @this, Type openGeneric)
     {
         return FindAssignableTypesThatClose(@this, openGeneric);
     }
@@ -50,7 +52,7 @@ internal static class InternalTypeExtensions
     /// <param name="this">The type we are checking.</param>
     /// <param name="openGeneric">The open generic type to validate against.</param>
     /// <returns>True if <paramref name="this"/> is a closed type of <paramref name="openGeneric"/>. False otherwise.</returns>
-    public static bool IsClosedTypeOf(this Type @this, Type openGeneric)
+    public static bool IsClosedTypeOf([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] this Type @this, Type openGeneric)
     {
         return TypesAssignableFrom(@this).Any(t => t.IsGenericType && !@this.ContainsGenericParameters && t.GetGenericTypeDefinition() == openGeneric);
     }
@@ -61,6 +63,11 @@ internal static class InternalTypeExtensions
     /// <param name="genericTypeDefinition">The generic type definition.</param>
     /// <param name="parameters">The set of parameters to check against.</param>
     /// <returns>True if the parameters match the generic parameter constraints.</returns>
+    [RequiresDynamicCode(OpenGenericConstraintDynamicCodeWarning)]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2062:UnrecognizedReflectionPattern",
+        Justification = "The generic argument constraints and candidate parameter types are caller-supplied runtime types from an open generic registration. Their members cannot be statically annotated; preserving them is the responsibility of the consumer that opted into open generic registration (which carries [RequiresUnreferencedCode]/[RequiresDynamicCode]).")]
     public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
     {
         var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
@@ -216,7 +223,7 @@ internal static class InternalTypeExtensions
     /// <param name="this">The type we are checking.</param>
     /// <param name="type">The type to validate against.</param>
     /// <returns>True if <paramref name="this"/> is a open generic type of <paramref name="type"/>. False otherwise.</returns>
-    public static bool IsOpenGenericTypeOf(this Type @this, Type type)
+    public static bool IsOpenGenericTypeOf([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] this Type @this, Type type)
     {
         if (@this == null || type == null)
         {
@@ -264,6 +271,10 @@ internal static class InternalTypeExtensions
     // Run IsCompilerGenerated check last due to perf. See AssemblyScanningPerformanceTests.MeasurePerformance.
     internal static bool MayAllowReflectionActivation(this Type? type, bool allowCompilerGenerated = false) => type is not null && type.IsClass && !type.IsAbstract && !type.IsDelegate() && (allowCompilerGenerated || !type.IsCompilerGenerated());
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "The generic type definition is derived from the base type's own generic instantiation; only its identity is compared (no members are reflected on it beyond the recursive open-generic check). Reachable through open generic / scanning paths whose consumers preserve their types.")]
     private static bool CheckBaseTypeIsOpenGenericTypeOf(this Type @this, Type type)
     {
         if (@this.BaseType == null)
@@ -276,7 +287,11 @@ internal static class InternalTypeExtensions
             : type.IsAssignableFrom(@this.BaseType);
     }
 
-    private static bool CheckInterfacesAreOpenGenericTypeOf(this Type @this, Type type)
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "Each interface's generic type definition is derived from the interface's own instantiation; only its identity is compared via the recursive open-generic check. Reachable through open generic / scanning paths whose consumers preserve their types.")]
+    private static bool CheckInterfacesAreOpenGenericTypeOf([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] this Type @this, Type type)
     {
         return @this.GetInterfaces()
             .Any(it => it.IsGenericType
@@ -290,7 +305,11 @@ internal static class InternalTypeExtensions
     /// <param name="candidateType">The type that is being checked for the interface.</param>
     /// <param name="openGenericServiceType">The open generic service type to locate.</param>
     /// <returns>True if a closed implementation was found; otherwise false.</returns>
-    private static IEnumerable<Type> FindAssignableTypesThatClose(Type candidateType, Type openGenericServiceType)
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "The enumerated types are the base types and interfaces of candidateType (whose interfaces are preserved by this method's own annotation). These derived Type values cannot carry static annotations; the interface check on them is best-effort and the closed types involved are preserved by the consumer that opted into the (open generic / scanning) feature.")]
+    private static IEnumerable<Type> FindAssignableTypesThatClose([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type candidateType, Type openGenericServiceType)
     {
         return TypesAssignableFrom(candidateType)
             .Where(t => t.IsClosedTypeOf(openGenericServiceType));
@@ -306,7 +325,12 @@ internal static class InternalTypeExtensions
         return parameters[constraint.GenericParameterPosition];
     }
 
-    private static bool ParameterCompatibleWithTypeConstraint(Type parameter, Type constraint)
+    [RequiresDynamicCode(OpenGenericConstraintDynamicCodeWarning)]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2062:UnrecognizedReflectionPattern",
+        Justification = "The generic type arguments and interfaces inspected here come from caller-supplied runtime types in an open generic registration. They cannot carry static annotations; preserving them is the responsibility of the consumer that opted into open generic registration.")]
+    private static bool ParameterCompatibleWithTypeConstraint([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type parameter, Type constraint)
     {
         if (constraint.IsAssignableFrom(parameter))
         {
@@ -340,6 +364,11 @@ internal static class InternalTypeExtensions
 #if NET6_0_OR_GREATER
     [SuppressMessage("Microsoft.Design", "CA1031", Justification = "Implementing a real TryMakeGenericType is not worth the effort.")]
 #endif
+    [RequiresDynamicCode(OpenGenericConstraintDynamicCodeWarning)]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2055:MakeGenericType",
+        Justification = "The constraint type definition and its generic arguments are caller-supplied runtime types from an open generic registration. Preserving the closed type is the responsibility of the consumer that opted into open generic registration.")]
     private static bool ParameterEqualsConstraint(Type parameter, Type constraint)
     {
         var genericArguments = parameter.GenericTypeArguments;
@@ -374,7 +403,7 @@ internal static class InternalTypeExtensions
         return false;
     }
 
-    private static IEnumerable<Type> TypesAssignableFrom(Type candidateType)
+    private static IEnumerable<Type> TypesAssignableFrom([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type candidateType)
     {
         return candidateType.GetInterfaces().Concat(
             Traverse.Across(candidateType, t => t.BaseType!));

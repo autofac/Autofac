@@ -244,6 +244,10 @@ public sealed class ContainerBuilder
         }
     }
 
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "The built-in KeyedServiceIndex<,> adapter is registered for every container. The IIndex<,> relationship is only ever constructed when a consumer actually resolves an IIndex<,>, so this default registration does not by itself force dynamic code; suppressing here avoids tainting the always-run Build() path. Consumers that resolve IIndex<,> over value-type keys take on the same dynamic-code requirement as any other open generic.")]
     private void RegisterDefaultAdapters(IComponentRegistryBuilder componentRegistry)
     {
         this.RegisterGeneric(typeof(KeyedServiceIndex<,>)).As(typeof(IIndex<,>)).InstancePerLifetimeScope();

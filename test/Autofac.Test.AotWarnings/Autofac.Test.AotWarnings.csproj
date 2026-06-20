@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    AOT/trim WARNING fixture.
+
+    This project is EXPECTED TO BUILD SUCCESSFULLY and, in doing so, emit the
+    trim/AOT analyzer warnings (IL2026 / IL3050) for the Autofac APIs that are
+    annotated [RequiresUnreferencedCode] / [RequiresDynamicCode]. Setting
+    IsAotCompatible=true turns on those analyzers, and TreatWarningsAsErrors is left
+    OFF so the warnings stay warnings (and the build still succeeds).
+
+    The 'VerifyAotWarnings' target in default.proj builds this project and asserts
+    the expected IL codes appear in the (successful) build output. That guards
+    against silently LOSING a [Requires*] attribute in a future refactor: if an
+    annotation is dropped, the corresponding warning stops firing and the target
+    fails because an expected code is missing.
+
+    Unlike the runtime smoke test (Autofac.Test.Aot) this needs no native toolchain -
+    plain 'dotnet build' surfaces the analyzer diagnostics - so it runs in normal CI.
+
+    It is intentionally NOT part of Autofac.sln; it exists only to be built by the
+    verify target.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+    <!-- Sign to match the rest of the repo's assemblies (and the sibling AOT test project). -->
+    <AssemblyOriginatorKeyFile>../../Autofac.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <!-- Turn on the trim/AOT analyzers so the [Requires*] diagnostics are emitted. -->
+    <IsAotCompatible>true</IsAotCompatible>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <!--
+      Keep TreatWarningsAsErrors OFF: this project is supposed to build successfully
+      WITH the trim/AOT warnings present, and the verify target reads the IL codes
+      from that successful build output. Treating them as errors would fail the build
+      and there would be no output to inspect.
+    -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RunAnalyzers>true</RunAnalyzers>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Autofac\Autofac.csproj" />
+  </ItemGroup>
+</Project>

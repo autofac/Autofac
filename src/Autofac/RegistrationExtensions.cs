@@ -95,7 +95,7 @@ public static partial class RegistrationExtensions
     /// <param name="builder">Container builder.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<TImplementer, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-        RegisterType<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TImplementer>(this ContainerBuilder builder)
+        RegisterType<[DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] TImplementer>(this ContainerBuilder builder)
         where TImplementer : notnull
     {
         if (builder == null)
@@ -117,7 +117,7 @@ public static partial class RegistrationExtensions
     /// <param name="implementationType">The type of the component implementation.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
     public static IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>
-        RegisterType(this ContainerBuilder builder, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type implementationType)
+        RegisterType(this ContainerBuilder builder, [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type implementationType)
     {
         if (builder == null)
         {
@@ -264,8 +264,12 @@ public static partial class RegistrationExtensions
     /// <typeparam name="TAttribute">The attribute applied to the scanned type.</typeparam>
     /// <param name="registration">Registration to set metadata on.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2087:UnrecognizedReflectionPattern",
+        Justification = "GetRuntimeProperties also enumerates non-public properties, but only readable public properties contribute metadata (preserved by the PublicProperties annotation on TAttribute). Non-public properties are not part of the supported metadata surface.")]
     public static IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>
-        WithMetadataFrom<TAttribute>(
+        WithMetadataFrom<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TAttribute>(
             this IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle> registration)
     {
         var attrType = typeof(TAttribute);
@@ -395,6 +399,10 @@ public static partial class RegistrationExtensions
     /// <param name="registration">Registration to set policy on.</param>
     /// <param name="signature">Constructor signature to match.</param>
     /// <returns>A registration builder allowing further configuration of the component.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "Validates that a constructor matching the caller-specified signature exists on the implementation type. The activation contract (ActivatorMemberTypes) preserves public constructors; this is a best-effort validation and the activator itself enforces constructor availability at resolve time.")]
     public static IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle>
         UsingConstructor<TLimit, TReflectionActivatorData, TStyle>(
             this IRegistrationBuilder<TLimit, TReflectionActivatorData, TStyle> registration,

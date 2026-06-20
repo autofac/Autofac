@@ -390,9 +390,14 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
     {
         static string DescribeValidEnumRange(PipelinePhase start, PipelinePhase end)
         {
+#if NET5_0_OR_GREATER
+            var enumValues = Enum.GetValues<PipelinePhase>()
+                                 .Where(value => value >= start && value <= end);
+#else
             var enumValues = Enum.GetValues(typeof(PipelinePhase))
                                  .Cast<PipelinePhase>()
                                  .Where(value => value >= start && value <= end);
+#endif
 
             return string.Join(", ", enumValues);
         }

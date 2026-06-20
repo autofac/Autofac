@@ -12,6 +12,8 @@ namespace Autofac.Features.OpenGenerics;
 /// </summary>
 internal static class OpenGenericServiceBinder
 {
+    private const string OpenGenericDynamicCodeWarning = "Binding open generic types constructs closed generic types at runtime via MakeGenericType, which may require dynamic code generation when closed over value types and is not compatible with native AOT.";
+
     /// <summary>
     /// Given a closed generic service (that is being requested), creates a closed generic implementation type
     /// and associated services from the open generic implementation and services.
@@ -22,12 +24,17 @@ internal static class OpenGenericServiceBinder
     /// <param name="constructedImplementationType">The built closed generic implementation type.</param>
     /// <param name="constructedServices">The built closed generic services.</param>
     /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
+    [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2055:MakeGenericType",
+        Justification = "Constructs the closed implementation and service types from the open generic registration's runtime type arguments. The implementation type's activatable members are preserved by its [DynamicallyAccessedMembers] annotation; the consumer that registered the open generic is responsible for the closed type.")]
     [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
     public static bool TryBindOpenGenericTypedService(
         IServiceWithType serviceWithType,
         IEnumerable<Service> configuredOpenGenericServices,
-        Type openGenericImplementationType,
-        [NotNullWhen(returnValue: true)] out Type? constructedImplementationType,
+        [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type openGenericImplementationType,
+        [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)][NotNullWhen(returnValue: true)] out Type? constructedImplementationType,
         [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
     {
         if (serviceWithType.ServiceType.IsGenericType && !serviceWithType.ServiceType.IsGenericTypeDefinition)
@@ -78,6 +85,7 @@ internal static class OpenGenericServiceBinder
     /// <param name="constructedFactory">The built closed generic implementation type.</param>
     /// <param name="constructedServices">The built closed generic services.</param>
     /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
+    [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
     [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
     public static bool TryBindOpenGenericDelegateService(
         IServiceWithType serviceWithType,
@@ -114,6 +122,10 @@ internal static class OpenGenericServiceBinder
     /// </summary>
     /// <param name="implementationType">The open generic implementation type.</param>
     /// <param name="services">The set of open generic services.</param>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "Inspects the interfaces of the open generic implementation type to validate it can implement the configured services. The implementation type comes from an open generic registration (RegisterGeneric / open generic scanning), whose consumer is responsible for preserving its interfaces.")]
     public static void EnforceBindable(Type implementationType, IEnumerable<Service> services)
     {
         if (implementationType == null)
@@ -161,6 +173,11 @@ internal static class OpenGenericServiceBinder
     private static bool IsClosedGenericType(Type serviceType)
         => serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition;
 
+    [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2055:MakeGenericType",
+        Justification = "Constructs the closed service types from the open generic registration's runtime type arguments. The consumer that registered the open generic is responsible for preserving the closed types.")]
     private static Service[] BuildImplementedServices(IEnumerable<Service> configuredOpenGenericServices, Type[] serviceGenericArguments)
     {
         var serviceGenericArgumentsLength = serviceGenericArguments.Length;
@@ -183,6 +200,10 @@ internal static class OpenGenericServiceBinder
 
     private static Type GetGenericTypeDefinition(Type type) => ReflectionCacheSet.Shared.Internal.GenericTypeDefinitionByType.GetOrAdd(type, static t => t.GetGenericTypeDefinition());
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "Inspects the interfaces of the open generic implementation type to map its generic arguments. The implementation type comes from an open generic registration whose consumer is responsible for preserving its interfaces.")]
     private static Type?[] TryMapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
     {
         if (serviceTypeDefinition == implementationType)
@@ -282,7 +303,7 @@ internal static class OpenGenericServiceBinder
         return baseType;
     }
 
-    private static Type[] GetInterfaces(Type implementationType, Type serviceType)
+    private static Type[] GetInterfaces([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type implementationType, Type serviceType)
         => implementationType.GetInterfaces()
             .Where(i => i.Name == serviceType.Name && i.Namespace == serviceType.Namespace)
             .ToArray();

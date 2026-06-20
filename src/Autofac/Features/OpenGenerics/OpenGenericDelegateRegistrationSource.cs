@@ -38,6 +38,10 @@ internal class OpenGenericDelegateRegistrationSource : IRegistrationSource
     public bool IsAdapterForIndividualComponents => false;
 
     /// <inheritdoc/>
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "This registration source is only ever added to the container by the [RequiresDynamicCode] RegisterGeneric API, so the dynamic-code requirement has already been surfaced to the caller at registration time. The resolve-time binding here cannot be reached without that opt-in.")]
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
     {
         if (service == null)

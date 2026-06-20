@@ -46,6 +46,20 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
     <NoWarn>$(NoWarn);8600;8601;8602;8603;8604</NoWarn>
   </PropertyGroup>
+  <!--
+    Advertise the assembly as AOT/trim-compatible on the modern TFMs (net7.0+);
+    netstandard targets cannot be AOT-analyzed. IsTargetFrameworkCompatible keeps
+    this robust as TFMs are added/removed. IsAotCompatible implicitly enables the
+    trim, AOT, and single-file analyzers, so combined with Release
+    TreatWarningsAsErrors this is a permanent in-build gate: any new unannotated
+    reflection/dynamic-code call site fails the build. APIs that are inherently
+    incompatible (open generics, assembly scanning, generated factories, strongly
+    typed metadata, etc.) are individually annotated [RequiresUnreferencedCode] /
+    [RequiresDynamicCode] so the warning surfaces at the consumer's call site.
+  -->
+  <PropertyGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\build\icon.png" Pack="true" PackagePath="\" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />

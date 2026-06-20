@@ -85,7 +85,7 @@ internal static class Enforce
     /// Enforce that the argument is a delegate type.
     /// </summary>
     /// <param name="delegateType">The type to test.</param>
-    public static void ArgumentTypeIsFunction(Type delegateType)
+    public static void ArgumentTypeIsFunction([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType)
     {
         if (delegateType == null)
         {

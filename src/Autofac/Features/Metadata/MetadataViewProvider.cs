@@ -21,7 +21,19 @@ internal static class MetadataViewProvider
     /// </summary>
     /// <typeparam name="TMetadata">The metadata type.</typeparam>
     /// <returns>A provider function.</returns>
-    public static Func<IDictionary<string, object?>, TMetadata> GetMetadataViewProvider<TMetadata>()
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "Strongly-typed metadata views compile an expression tree and use MakeGenericMethod over each property type. This is only reached when a consumer resolves a Meta<T, TMetadata> / Lazy<T, TMetadata> relationship (an always-registered implicit source dispatched by relationship type, which cannot surface the requirement at the consumer's call site). Consumers that resolve strongly-typed metadata views take on the dynamic-code requirement.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2060:MakeGenericMethod",
+        Justification = "The generic argument is the metadata view property's own type. The properties of TMetadata are preserved by this method's [DynamicallyAccessedMembers(PublicProperties)] annotation, so the property types are reachable.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2087:UnrecognizedReflectionPattern",
+        Justification = "GetRuntimeProperties also enumerates non-public properties, but only public settable properties of the metadata view are populated (and those are preserved by the PublicProperties annotation). Non-public properties are not part of the supported metadata-view surface.")]
+    public static Func<IDictionary<string, object?>, TMetadata> GetMetadataViewProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] TMetadata>()
     {
         if (typeof(TMetadata) == typeof(IDictionary<string, object>))
         {

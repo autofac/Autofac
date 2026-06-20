@@ -58,6 +58,10 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
         "Reliability",
         "CA2000:Dispose objects before losing scope",
         Justification = "Activator lifetime controlled by registry.")]
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "The collection registration source is registered for every container but only constructs the List<T>/array element type via MakeGenericType/MakeArrayType when a consumer actually resolves IEnumerable<T>/IList<T>/T[]. The closed-type resolve path never reaches this. Consumers that resolve collections of value types take on the dynamic-code requirement.")]
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
     {
         if (service == null)
@@ -174,6 +178,10 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
         return (collectionKind, collectionDetail);
     }
 
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "Only reached when a consumer resolves IList<T>/ICollection<T>; constructing the closed List<T> is the consumer's dynamic-code requirement, already surfaced at the resolve of the collection relationship.")]
     private static Func<int, IList> GenerateListFactory(Type elementType)
     {
         var parameter = Expression.Parameter(typeof(int));
@@ -185,6 +193,10 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
         return Expression.Lambda<Func<int, IList>>(newList, parameter).Compile();
     }
 
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "Only reached when a consumer resolves T[]/IEnumerable<T>; constructing the array type is the consumer's dynamic-code requirement, already surfaced at the resolve of the collection relationship.")]
     private static Func<int, IList> GenerateArrayFactory(Type elementType)
     {
         var parameter = Expression.Parameter(typeof(int));

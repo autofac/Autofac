@@ -3,6 +3,7 @@
 
 using Autofac.Core;
 using Autofac.Core.Activators.Reflection;
+using Autofac.Util;
 
 namespace Autofac.Builder;
 
@@ -15,7 +16,7 @@ public class ConcreteReflectionActivatorData : ReflectionActivatorData, IConcret
     /// Initializes a new instance of the <see cref="ConcreteReflectionActivatorData"/> class.
     /// </summary>
     /// <param name="implementer">Type that will be activated.</param>
-    public ConcreteReflectionActivatorData(Type implementer)
+    public ConcreteReflectionActivatorData([DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type implementer)
         : base(implementer)
     {
     }

@@ -58,6 +58,10 @@ public class AnyConcreteTypeNotAlreadyRegisteredSource : IRegistrationSource, IP
     /// <param name="service">The service that was requested.</param>
     /// <param name="registrationAccessor">A function that will return existing registrations for a service.</param>
     /// <returns>Registrations providing the service.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "This source is opt-in (registered via RegisterSource / RegisterTypesThatAreNotAlreadyRegistered) and reflection-activates whatever concrete type is requested at resolve time. The requested types cannot be statically known; the consumer that opted into resolve-anything is responsible for preserving the constructible types they resolve.")]
     public IEnumerable<IComponentRegistration> RegistrationsFor(
         Service service,
         Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)

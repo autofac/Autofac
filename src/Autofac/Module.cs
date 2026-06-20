@@ -125,6 +125,10 @@ public abstract class Module : IModule
     {
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2070:UnrecognizedReflectionPattern",
+        Justification = "Reflects over the module's own runtime type to detect whether the well-known virtual method AttachToComponentRegistration has been overridden. The method is declared on Module (this assembly) and is always present; a derived module that overrides it inherently keeps its own method.")]
     private void AttachToRegistrations(IComponentRegistryBuilder componentRegistry)
     {
         if (componentRegistry == null)
@@ -156,6 +160,10 @@ public abstract class Module : IModule
         }
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2070:UnrecognizedReflectionPattern",
+        Justification = "Reflects over the module's own runtime type to detect whether the well-known virtual method AttachToRegistrationSource has been overridden. The method is declared on Module (this assembly) and is always present; a derived module that overrides it inherently keeps its own method.")]
     private void AttachToSources(IComponentRegistryBuilder componentRegistry)
     {
         if (componentRegistry == null)

@@ -22,7 +22,7 @@ internal static class DiagnosticSourceExtensions
     {
         if (diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareStart))
         {
-            diagnosticSource.Write(DiagnosticEventKeys.MiddlewareStart, new MiddlewareDiagnosticData(requestContext, middleware));
+            Write(diagnosticSource, DiagnosticEventKeys.MiddlewareStart, new MiddlewareDiagnosticData(requestContext, middleware));
         }
     }
 
@@ -36,7 +36,7 @@ internal static class DiagnosticSourceExtensions
     {
         if (diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareFailure))
         {
-            diagnosticSource.Write(DiagnosticEventKeys.MiddlewareFailure, new MiddlewareDiagnosticData(requestContext, middleware));
+            Write(diagnosticSource, DiagnosticEventKeys.MiddlewareFailure, new MiddlewareDiagnosticData(requestContext, middleware));
         }
     }
 
@@ -50,7 +50,7 @@ internal static class DiagnosticSourceExtensions
     {
         if (diagnosticSource.IsEnabled(DiagnosticEventKeys.MiddlewareSuccess))
         {
-            diagnosticSource.Write(DiagnosticEventKeys.MiddlewareSuccess, new MiddlewareDiagnosticData(requestContext, middleware));
+            Write(diagnosticSource, DiagnosticEventKeys.MiddlewareSuccess, new MiddlewareDiagnosticData(requestContext, middleware));
         }
     }
 
@@ -64,7 +64,7 @@ internal static class DiagnosticSourceExtensions
     {
         if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationStart))
         {
-            diagnosticSource.Write(DiagnosticEventKeys.OperationStart, new OperationStartDiagnosticData(operation, initiatingRequest));
+            Write(diagnosticSource, DiagnosticEventKeys.OperationStart, new OperationStartDiagnosticData(operation, initiatingRequest));
         }
     }
 
@@ -78,7 +78,7 @@ internal static class DiagnosticSourceExtensions
     {
         if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationFailure))
         {
-            diagnosticSource.Write(DiagnosticEventKeys.OperationFailure, new OperationFailureDiagnosticData(operation, operationException));
+            Write(diagnosticSource, DiagnosticEventKeys.OperationFailure, new OperationFailureDiagnosticData(operation, operationException));
         }
     }
 
@@ -92,7 +92,7 @@ internal static class DiagnosticSourceExtensions
     {
         if (diagnosticSource.IsEnabled(DiagnosticEventKeys.OperationSuccess))
         {
-            diagnosticSource.Write(DiagnosticEventKeys.OperationSuccess, new OperationSuccessDiagnosticData(operation, resolvedInstance));
+            Write(diagnosticSource, DiagnosticEventKeys.OperationSuccess, new OperationSuccessDiagnosticData(operation, resolvedInstance));
         }
     }
 
@@ -106,7 +106,7 @@ internal static class DiagnosticSourceExtensions
     {
         if (diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestStart))
         {
-            diagnosticSource.Write(DiagnosticEventKeys.RequestStart, new RequestDiagnosticData(operation, requestContext));
+            Write(diagnosticSource, DiagnosticEventKeys.RequestStart, new RequestDiagnosticData(operation, requestContext));
         }
     }
 
@@ -121,7 +121,7 @@ internal static class DiagnosticSourceExtensions
     {
         if (diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestFailure))
         {
-            diagnosticSource.Write(DiagnosticEventKeys.RequestFailure, new RequestFailureDiagnosticData(operation, requestContext, requestException));
+            Write(diagnosticSource, DiagnosticEventKeys.RequestFailure, new RequestFailureDiagnosticData(operation, requestContext, requestException));
         }
     }
 
@@ -135,7 +135,31 @@ internal static class DiagnosticSourceExtensions
     {
         if (diagnosticSource.IsEnabled(DiagnosticEventKeys.RequestSuccess))
         {
-            diagnosticSource.Write(DiagnosticEventKeys.RequestSuccess, new RequestDiagnosticData(operation, requestContext));
+            Write(diagnosticSource, DiagnosticEventKeys.RequestSuccess, new RequestDiagnosticData(operation, requestContext));
         }
+    }
+
+    /// <summary>
+    /// Centralizes the <see cref="DiagnosticSource.Write(string, object?)"/> call so the
+    /// trimming/AOT suppression for it lives in exactly one place.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="DiagnosticSource.Write(string, object?)"/> is annotated
+    /// <c>[RequiresUnreferencedCode]</c> because a listener may reflect over the
+    /// anonymously-typed payload. Autofac's diagnostics are opt-in: this code path only
+    /// runs when a caller has explicitly attached a <see cref="DiagnosticListener"/>
+    /// subscriber, which is a development/observability scenario rather than part of the
+    /// core resolve behavior. The payload types are concrete, internal
+    /// <c>*DiagnosticData</c> classes that are always referenced from this assembly, so they
+    /// are not trimmed away. Suppressing here keeps the resolve pipeline (which calls these
+    /// methods) free of trim warnings.
+    /// </remarks>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:RequiresUnreferencedCode",
+        Justification = "Diagnostics are opt-in and only run when a DiagnosticListener subscriber is attached. Payload types are concrete internal types referenced from this assembly and are not trimmed.")]
+    private static void Write(DiagnosticListener diagnosticSource, string name, object value)
+    {
+        diagnosticSource.Write(name, value);
     }
 }

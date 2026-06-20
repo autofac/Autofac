@@ -21,6 +21,7 @@ public static class AssemblyExtensions
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="assembly" /> is <see langword="null" />.
     /// </exception>
+    [RequiresUnreferencedCode("Enumerating all types defined in an assembly is not compatible with member-level trimming; the linker cannot determine which types to preserve.")]
     public static IEnumerable<Type> GetLoadableTypes(this Assembly assembly)
     {
         // Algorithm from StackOverflow answer here:

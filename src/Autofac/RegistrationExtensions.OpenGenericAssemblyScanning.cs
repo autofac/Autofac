@@ -7,6 +7,7 @@ using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Features.OpenGenerics;
 using Autofac.Features.Scanning;
+using Autofac.Util;
 
 namespace Autofac;
 
@@ -158,7 +159,7 @@ public static partial class RegistrationExtensions
     public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
         Except(
             this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration,
-            Type openGenericType,
+            [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type openGenericType,
             Action<IRegistrationBuilder<object, ReflectionActivatorData, DynamicRegistrationStyle>> customizedRegistration)
     {
         var result = registration.Except(openGenericType);
@@ -290,6 +291,10 @@ public static partial class RegistrationExtensions
     /// <typeparam name="TLimit">Registration limit type.</typeparam>
     /// <param name="registration">Registration to set service mapping on.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "Maps scanned open generic types to their implemented interfaces. The types are discovered by assembly scanning, whose public entry points already carry [RequiresUnreferencedCode]; the consumer that opted into scanning is responsible for preserving the interfaces of scanned types.")]
     public static IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
         AsImplementedInterfaces<TLimit>(this IRegistrationBuilder<TLimit, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration)
     {
@@ -327,8 +332,12 @@ public static partial class RegistrationExtensions
     /// <typeparam name="TAttribute">The attribute applied to the scanned type.</typeparam>
     /// <param name="registration">Registration to set metadata on.</param>
     /// <returns>Registration builder allowing the registration to be configured.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2087:UnrecognizedReflectionPattern",
+        Justification = "GetRuntimeProperties also enumerates non-public properties, but only readable public properties contribute metadata (preserved by the PublicProperties annotation on TAttribute). Non-public properties are not part of the supported metadata surface.")]
     public static IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle>
-        WithMetadataFrom<TAttribute>(
+        WithMetadataFrom<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] TAttribute>(
             this IRegistrationBuilder<object, OpenGenericScanningActivatorData, DynamicRegistrationStyle> registration)
     {
         var attrType = typeof(TAttribute);

@@ -23,6 +23,10 @@ public class DefaultValueParameter : Parameter
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="pi" /> is <see langword="null" />.
     /// </exception>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "Activator.CreateInstance is only called for value types (pi.ParameterType.IsValueType), which always have an implicit parameterless constructor and require no metadata preservation or dynamic code to default-construct.")]
     public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, [NotNullWhen(returnValue: true)] out Func<object?>? valueProvider)
     {
         if (pi == null)

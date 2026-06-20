@@ -35,6 +35,10 @@ internal class OpenGenericDecoratorMiddlewareSource : IServiceMiddlewareSource
     }
 
     /// <inheritdoc/>
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "This middleware source is only ever added to the container by the [RequiresDynamicCode] RegisterGenericDecorator API, so the dynamic-code requirement has already been surfaced to the caller at registration time. The resolve-time binding here cannot be reached without that opt-in.")]
     public void ProvideMiddleware(Service service, IComponentRegistryServices availableServices, IResolvePipelineBuilder pipelineBuilder)
     {
         if (service is IServiceWithType swt)

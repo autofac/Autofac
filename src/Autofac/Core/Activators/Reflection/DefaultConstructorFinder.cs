@@ -42,9 +42,14 @@ public class DefaultConstructorFinder : IConstructorFinder
         return _finder(targetType);
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "This is the default constructor finder used by reflection activation. The target type's public constructors are preserved by the activation contract (ActivatorMemberTypes) flowed through the registration APIs. The finder is invoked via a Func<Type, ConstructorInfo[]> delegate which cannot carry the annotation, so the requirement is asserted here.")]
+    [SuppressMessage("Major Code Smell", "S6612:The lambda parameter should be used instead of capturing arguments", Justification = "The factory deliberately reads the [DynamicallyAccessedMembers]-annotated 'type' local rather than the unannotated lambda parameter so the trimming contract flows into GetDeclaredPublicConstructors.")]
     private static ConstructorInfo[] GetDefaultPublicConstructors(Type type)
     {
         return ReflectionCacheSet.Shared.Internal.DefaultPublicConstructors
-            .GetOrAdd(type, t => t.GetDeclaredPublicConstructors());
+            .GetOrAdd(type, _ => type.GetDeclaredPublicConstructors());
     }
 }

@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Native AOT smoke test for Autofac core.
+
+    This is intentionally NOT an xUnit project and is NOT part of Autofac.sln.
+    The value of this project comes from 'dotnet publish' with PublishAot=true:
+    the ILC compiler emits the IL2104/IL3053 trim/AOT analysis warnings that a
+    normal build does not, and only running the published native binary proves
+    that the AOT-safe surface (closed-type Resolve, constructor/property
+    injection, child scopes) actually works at runtime.
+
+    Build/run it via the 'VerifyAot' target in default.proj, or by publishing it
+    for a runtime identifier and executing the produced native binary; a
+    non-zero exit code means a failure.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyOriginatorKeyFile>../../Autofac.snk</AssemblyOriginatorKeyFile>
+    <SignAssembly>true</SignAssembly>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <CodeAnalysisRuleSet>../../build/Test.ruleset</CodeAnalysisRuleSet>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <IsPackable>false</IsPackable>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Keep this project out of normal solution test discovery. -->
+    <IsTestProject>false</IsTestProject>
+    <!--
+      Enable Native AOT publishing and surface every trim/AOT analysis warning
+      per-site (TrimmerSingleWarn=false) instead of a single rollup. Combined
+      with Release TreatWarningsAsErrors (Directory.Build.props) this makes any
+      new trim/AOT incompatibility - in this app or in core Autofac - fail the
+      publish.
+    -->
+    <PublishAot>true</PublishAot>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <!-- Treat trim/AOT analysis warnings as errors regardless of configuration. -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Autofac\Autofac.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="..\..\build\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+</Project>

@@ -19,6 +19,10 @@ internal static class AssemblyExtensions
     /// </summary>
     /// <param name="assembly">The assembly to load types from.</param>
     /// <returns>The set of loadable types.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2026:RequiresUnreferencedCode",
+        Justification = "This is internal assembly-scanning infrastructure reached only from the public scanning APIs (RegisterAssemblyTypes etc.), which already carry [RequiresUnreferencedCode]. The consumer that opted into scanning is responsible for preserving the scanned types.")]
     internal static IEnumerable<Type> GetPermittedTypesForAssemblyScanning(this Assembly assembly)
     {
         static IReadOnlyList<Type> Uncached(Assembly assembly)

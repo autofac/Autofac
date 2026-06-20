@@ -109,6 +109,10 @@ internal static class AutowiringPropertyInjector
         }
     }
 
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2067:UnrecognizedReflectionPattern",
+        Justification = "instanceType is the runtime type of an already-constructed instance being property-injected. Its public properties are preserved by the activation contract (ActivatorMemberTypes) for reflection-activated types; for externally-provided instances the caller that opted into property injection is responsible for preserving them.")]
     private static IEnumerable<PropertyInfo> GetInjectableProperties(Type instanceType)
     {
         foreach (var property in instanceType.GetRuntimeProperties())
@@ -169,6 +173,14 @@ internal static class AutowiringPropertyInjector
     }
 
     [SuppressMessage("S125", "S125", Justification = "Commented code explains the code generation output.")]
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "Builds a strongly-typed property setter delegate via MakeGenericType/MakeGenericMethod over the property's declaring and value types. Reachable only when property injection is configured for a registration; the consumer that opted into property injection takes on the dynamic-code requirement for value-typed properties.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2060:MakeGenericMethod",
+        Justification = "The generic arguments are the property's declaring type and value type, both reachable from the property being injected. Preserving them is the responsibility of the consumer that opted into property injection.")]
     private static Action<object, object?> MakeFastPropertySetter(PropertyInfo propertyInfo)
     {
         // SetMethod will be non-null if we're trying to make a setter for it.

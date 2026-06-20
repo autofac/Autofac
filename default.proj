@@ -2,7 +2,7 @@
 <Project DefaultTargets="All" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="Current">
   <PropertyGroup>
     <!-- Increment the overall semantic version here. -->
-    <Version>9.2.0</Version>
+    <Version>9.3.0</Version>
     <SolutionName>Autofac</SolutionName>
     <Configuration Condition="'$(Configuration)'==''">Release</Configuration>
     <ArtifactDirectory>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),"artifacts"))</ArtifactDirectory>
@@ -69,5 +69,85 @@
   <Target Name="Test">
     <MakeDir Directories="$(LogDirectory)" />
     <Exec Command="dotnet test &quot;%(SolutionFile.FullPath)&quot; -c $(Configuration) --results-directory &quot;$(LogDirectory)&quot; --logger:trx /p:Version=$(Version) --collect:&quot;XPlat Code Coverage&quot; --settings &quot;$(CoverageRunSettings)&quot;" />
+  </Target>
+  <!--
+    Native AOT verification. Publishes the AOT smoke-test app with PublishAot=true
+    (which runs the ILC trim/AOT analyzer and would fail the build on any IL2104/
+    IL3053 warning, since the project treats warnings as errors) and then executes
+    the produced native binary, asserting a zero exit code. This proves both that
+    Autofac is statically AOT-clean AND that the AOT-safe resolve path works at
+    runtime. The project is intentionally excluded from Autofac.sln so the normal
+    Compile/Test targets do not require the native toolchain.
+  -->
+  <PropertyGroup>
+    <AotProjectDirectory>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),'test/Autofac.Test.Aot'))</AotProjectDirectory>
+    <AotPublishDirectory>$([System.IO.Path]::Combine($(ArtifactDirectory),'aot'))</AotPublishDirectory>
+    <AotExecutableName>Autofac.Test.Aot</AotExecutableName>
+    <AotExecutableName Condition="'$(OS)' == 'Windows_NT'">Autofac.Test.Aot.exe</AotExecutableName>
+  </PropertyGroup>
+  <Target Name="VerifyAot" DependsOnTargets="VerifyAotWarnings">
+    <Message Text="****************************************" Importance="high" />
+    <Message Text="Verifying Native AOT compatibility" Importance="high" />
+    <Message Text="****************************************" Importance="high" />
+    <Exec Command="dotnet publish &quot;$(AotProjectDirectory)&quot; -c $(Configuration) --output &quot;$(AotPublishDirectory)&quot;" />
+    <Exec Command="&quot;$([System.IO.Path]::Combine($(AotPublishDirectory),$(AotExecutableName)))&quot;" />
+  </Target>
+  <!--
+    AOT/trim warning verification. Builds the warning fixture (which calls the APIs
+    annotated [RequiresDynamicCode] / [RequiresUnreferencedCode]) and asserts the
+    expected analyzer diagnostics are emitted. This guards against silently LOSING an
+    annotation: if an attribute is dropped, the warning stops firing and this target
+    fails. Unlike VerifyAot proper, this needs no native toolchain - a plain build
+    surfaces the analyzer diagnostics - so it is cheap to run anywhere.
+
+    The check is PER CALL SITE, not just per diagnostic code: each ExpectedAotWarning
+    item names both the code (IL2026/IL3050) and a distinctive substring of the
+    annotated member's signature as it appears in the warning text. Multiple call
+    sites share a code (e.g. RegisterGeneric and RegisterGenericDecorator are both
+    IL3050), so asserting only "IL3050 appears somewhere" would not catch losing the
+    annotation on just one of them. Matching the member signature catches each one.
+
+    Keep the ExpectedAotWarning items in sync with the calls in
+    test/Autofac.Test.AotWarnings/Program.cs - one item per annotated call.
+  -->
+  <PropertyGroup>
+    <AotWarningsProjectDirectory>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),'test/Autofac.Test.AotWarnings'))</AotWarningsProjectDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Identity = the IL code; Member = a substring uniquely identifying the API in the warning text. -->
+    <ExpectedAotWarning Include="IL3050" Member="RegisterGeneric(ContainerBuilder, Type)" />
+    <ExpectedAotWarning Include="IL3050" Member="RegisterGenericDecorator(ContainerBuilder, Type, Type" />
+    <ExpectedAotWarning Include="IL2026" Member="RegisterAssemblyTypes(ContainerBuilder, params Assembly" />
+    <ExpectedAotWarning Include="IL2026" Member="RegisterAssemblyModules(ContainerBuilder, params Assembly" />
+  </ItemGroup>
+  <Target Name="VerifyAotWarnings">
+    <Message Text="****************************************" Importance="high" />
+    <Message Text="Verifying AOT/trim warnings still fire" Importance="high" />
+    <Message Text="****************************************" Importance="high" />
+    <MakeDir Directories="$(LogDirectory)" />
+    <PropertyGroup>
+      <AotWarningsLog>$([System.IO.Path]::Combine($(LogDirectory),'aot-warnings-build.log'))</AotWarningsLog>
+    </PropertyGroup>
+    <!--
+      Build the fixture (full recompile so analyzer diagnostics are always emitted)
+      and redirect ALL output to a log file. This is deliberate: the fixture emits the
+      IL2026/IL3050 warnings on purpose, and if they reached the CI job's stdout the
+      .NET problem matcher would turn each one into a (misleading) PR annotation. By
+      sending the build output only to a file and reading it back here, the warnings
+      are verified without ever surfacing on the console. The log is written under the
+      artifacts directory and inspected below.
+    -->
+    <Exec Command="dotnet build &quot;$(AotWarningsProjectDirectory)&quot; -c $(Configuration) --no-incremental &gt; &quot;$(AotWarningsLog)&quot; 2&gt;&amp;1"
+          IgnoreExitCode="true" />
+    <ReadLinesFromFile File="$(AotWarningsLog)">
+      <Output TaskParameter="Lines" ItemName="AotWarningsBuildOutput" />
+    </ReadLinesFromFile>
+    <PropertyGroup>
+      <AotWarningsBuildText>@(AotWarningsBuildOutput, '%0a')</AotWarningsBuildText>
+    </PropertyGroup>
+    <!-- Each expected warning must appear with BOTH its code and the specific member signature. -->
+    <Error Condition="!($(AotWarningsBuildText.Contains('warning %(ExpectedAotWarning.Identity)')) and $(AotWarningsBuildText.Contains('%(ExpectedAotWarning.Member)')))"
+           Text="Expected AOT/trim diagnostic %(ExpectedAotWarning.Identity) for '%(ExpectedAotWarning.Member)' was NOT emitted by Autofac.Test.AotWarnings. A [RequiresDynamicCode]/[RequiresUnreferencedCode] annotation may have been lost in core Autofac." />
+    <Message Text="All expected AOT/trim warnings were emitted (@(ExpectedAotWarning->'%(Identity): %(Member)', '; '))." Importance="high" />
   </Target>
 </Project>

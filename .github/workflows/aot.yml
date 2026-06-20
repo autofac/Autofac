@@ -1,0 +1,50 @@
+name: Native AOT Verification
+
+# Repo-local, additive workflow (the shared org CI in autofac/.github builds and
+# tests the solution). This job runs the VerifyAot target, which proves Autofac
+# stays Native-AOT/trim clean in two complementary ways:
+#   1. VerifyAotWarnings - builds a fixture that uses the [RequiresDynamicCode] /
+#      [RequiresUnreferencedCode] APIs and asserts those diagnostics still fire,
+#      guarding against silently losing an annotation.
+#   2. The native publish - publishes the smoke-test app with PublishAot=true (the
+#      ILC trim/AOT analyzer fails on any IL2104/IL3053 since the project treats
+#      warnings as errors) and executes the native binary, which exits non-zero on
+#      any runtime failure of the AOT-safe resolve path (or if a dynamic-code
+#      scenario unexpectedly stops throwing).
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  push:
+    branches:
+      - develop
+      - main
+      - feature/*
+    tags:
+      - v[0-9]+.[0-9]+.[0-9]+
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify-aot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      # Native AOT on Linux compiles and links native code, which requires a C
+      # toolchain and zlib development headers.
+      - name: Install Native AOT prerequisites
+        run: sudo apt-get update && sudo apt-get install -y clang zlib1g-dev
+
+      - name: Verify Native AOT compatibility
+        run: dotnet msbuild ./default.proj -t:VerifyAot -p:Configuration=Release

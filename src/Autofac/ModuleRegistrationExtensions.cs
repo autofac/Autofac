@@ -12,6 +12,8 @@ namespace Autofac;
 /// </summary>
 public static class ModuleRegistrationExtensions
 {
+    private const string AssemblyScanningWarning = "Registering modules by scanning assemblies is not compatible with member-level trimming; the linker cannot determine which module types to preserve.";
+
     /// <summary>
     /// Registers modules found in an assembly.
     /// </summary>
@@ -24,6 +26,7 @@ public static class ModuleRegistrationExtensions
     /// The <see cref="IModuleRegistrar"/> to allow
     /// additional chained module registrations.
     /// </returns>
+    [RequiresUnreferencedCode(AssemblyScanningWarning)]
     public static IModuleRegistrar RegisterAssemblyModules(this ContainerBuilder builder, params Assembly[] assemblies)
     {
         if (builder == null)
@@ -47,6 +50,7 @@ public static class ModuleRegistrationExtensions
     /// The <see cref="IModuleRegistrar"/> to allow
     /// additional chained module registrations.
     /// </returns>
+    [RequiresUnreferencedCode(AssemblyScanningWarning)]
     public static IModuleRegistrar RegisterAssemblyModules(this IModuleRegistrar registrar, params Assembly[] assemblies)
     {
         if (registrar == null)
@@ -70,6 +74,7 @@ public static class ModuleRegistrationExtensions
     /// The <see cref="IModuleRegistrar"/> to allow
     /// additional chained module registrations.
     /// </returns>
+    [RequiresUnreferencedCode(AssemblyScanningWarning)]
     public static IModuleRegistrar RegisterAssemblyModules<TModule>(this ContainerBuilder builder, params Assembly[] assemblies)
         where TModule : IModule
     {
@@ -95,6 +100,7 @@ public static class ModuleRegistrationExtensions
     /// The <see cref="IModuleRegistrar"/> to allow
     /// additional chained module registrations.
     /// </returns>
+    [RequiresUnreferencedCode(AssemblyScanningWarning)]
     public static IModuleRegistrar RegisterAssemblyModules<TModule>(this IModuleRegistrar registrar, params Assembly[] assemblies)
         where TModule : IModule
     {
@@ -119,6 +125,7 @@ public static class ModuleRegistrationExtensions
     /// The <see cref="IModuleRegistrar"/> to allow
     /// additional chained module registrations.
     /// </returns>
+    [RequiresUnreferencedCode(AssemblyScanningWarning)]
     public static IModuleRegistrar RegisterAssemblyModules(this ContainerBuilder builder, Type moduleType, params Assembly[] assemblies)
     {
         if (builder == null)
@@ -148,6 +155,7 @@ public static class ModuleRegistrationExtensions
     /// The <see cref="IModuleRegistrar"/> to allow
     /// additional chained module registrations.
     /// </returns>
+    [RequiresUnreferencedCode(AssemblyScanningWarning)]
     public static IModuleRegistrar RegisterAssemblyModules(this IModuleRegistrar registrar, Type moduleType, params Assembly[] assemblies)
     {
         if (registrar == null)

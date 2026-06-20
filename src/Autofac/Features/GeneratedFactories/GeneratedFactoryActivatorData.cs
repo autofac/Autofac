@@ -13,6 +13,7 @@ namespace Autofac.Features.GeneratedFactories;
 [Obsolete("Update your code to use the Func<T> implicit relationship or delegate factories. See https://autofac.readthedocs.io/en/latest/resolve/relationships.html and https://autofac.readthedocs.io/en/latest/advanced/delegate-factories.html for more information.")]
 public class GeneratedFactoryActivatorData : IConcreteActivatorData
 {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
     private readonly Type _delegateType;
     private readonly Service _productService;
 
@@ -21,7 +22,7 @@ public class GeneratedFactoryActivatorData : IConcreteActivatorData
     /// </summary>
     /// <param name="delegateType">The type of the factory.</param>
     /// <param name="productService">The service used to provide the products of the factory.</param>
-    public GeneratedFactoryActivatorData(Type delegateType, Service productService)
+    public GeneratedFactoryActivatorData([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, Service productService)
     {
         _delegateType = delegateType ?? throw new ArgumentNullException(nameof(delegateType));
         _productService = productService ?? throw new ArgumentNullException(nameof(productService));
@@ -38,6 +39,10 @@ public class GeneratedFactoryActivatorData : IConcreteActivatorData
     /// <summary>
     /// Gets the activator data that can provide an IInstanceActivator instance.
     /// </summary>
+    [UnconditionalSuppressMessage(
+        "AOT",
+        "IL3050:RequiresDynamicCode",
+        Justification = "This obsolete activator data implements IConcreteActivatorData (which cannot be marked [RequiresDynamicCode]). It compiles a factory delegate via FactoryGenerator's expression tree; the dynamic-code requirement is surfaced on the [Obsolete] RegisterGeneratedFactory APIs that create this data.")]
     public IInstanceActivator Activator
     {
         get
