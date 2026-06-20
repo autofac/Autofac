@@ -1,11 +1,16 @@
 name: Native AOT Verification
 
 # Repo-local, additive workflow (the shared org CI in autofac/.github builds and
-# tests the solution). This job proves Autofac stays Native-AOT/trim clean: it
-# publishes the AOT smoke-test app with PublishAot=true - which runs the ILC
-# trim/AOT analyzer and fails on any IL2104/IL3053 because the project treats
-# warnings as errors - and then executes the produced native binary, which exits
-# non-zero on any runtime failure of the AOT-safe resolve path.
+# tests the solution). This job runs the VerifyAot target, which proves Autofac
+# stays Native-AOT/trim clean in two complementary ways:
+#   1. VerifyAotWarnings - builds a fixture that uses the [RequiresDynamicCode] /
+#      [RequiresUnreferencedCode] APIs and asserts those diagnostics still fire,
+#      guarding against silently losing an annotation.
+#   2. The native publish - publishes the smoke-test app with PublishAot=true (the
+#      ILC trim/AOT analyzer fails on any IL2104/IL3053 since the project treats
+#      warnings as errors) and executes the native binary, which exits non-zero on
+#      any runtime failure of the AOT-safe resolve path (or if a dynamic-code
+#      scenario unexpectedly stops throwing).
 
 on:
   pull_request:

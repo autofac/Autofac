@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    AOT/trim WARNING fixture.
+
+    This project's job is to FAIL TO BUILD. It calls the Autofac APIs that are
+    annotated [RequiresDynamicCode] / [RequiresUnreferencedCode], with
+    IsAotCompatible=true (which turns on the trim/AOT analyzers) and
+    TreatWarningsAsErrors=true, so the analyzer diagnostics become build errors.
+
+    The 'VerifyAotWarnings' target in default.proj builds this project EXPECTING
+    failure and asserts that the expected IL2026/IL3050 codes appear. That guards
+    against silently LOSING a [Requires*] attribute in a future refactor: if an
+    annotation is dropped, the corresponding warning stops firing, this project
+    starts building successfully, and the verification target fails.
+
+    Unlike the runtime smoke test (Autofac.Test.Aot) this needs no native toolchain -
+    plain 'dotnet build' surfaces the analyzer diagnostics - so it runs in normal CI.
+
+    It is intentionally NOT part of Autofac.sln so the normal build does not try to
+    compile a project that is designed not to compile.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+    <!-- Turn on the trim/AOT analyzers so the [Requires*] diagnostics are emitted. -->
+    <IsAotCompatible>true</IsAotCompatible>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <!--
+      This project is verified by building it and asserting it fails. Do not let a
+      stray analyzer/style rule turn into an error that masks the IL diagnostics, and
+      do not treat the deliberate IL warnings as errors here - the verify target reads
+      them from the (failed-by-design) build output instead.
+    -->
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RunAnalyzers>true</RunAnalyzers>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Autofac\Autofac.csproj" />
+  </ItemGroup>
+</Project>

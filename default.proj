@@ -85,11 +85,46 @@
     <AotExecutableName>Autofac.Test.Aot</AotExecutableName>
     <AotExecutableName Condition="'$(OS)' == 'Windows_NT'">Autofac.Test.Aot.exe</AotExecutableName>
   </PropertyGroup>
-  <Target Name="VerifyAot">
+  <Target Name="VerifyAot" DependsOnTargets="VerifyAotWarnings">
     <Message Text="****************************************" Importance="high" />
     <Message Text="Verifying Native AOT compatibility" Importance="high" />
     <Message Text="****************************************" Importance="high" />
     <Exec Command="dotnet publish &quot;$(AotProjectDirectory)&quot; -c $(Configuration) --output &quot;$(AotPublishDirectory)&quot;" />
     <Exec Command="&quot;$([System.IO.Path]::Combine($(AotPublishDirectory),$(AotExecutableName)))&quot;" />
+  </Target>
+  <!--
+    AOT/trim warning verification. Builds the warning fixture (which calls the APIs
+    annotated [RequiresDynamicCode] / [RequiresUnreferencedCode]) and asserts the
+    expected analyzer diagnostics are emitted. This guards against silently LOSING an
+    annotation: if an attribute is dropped, the warning stops firing and this target
+    fails. Unlike VerifyAot proper, this needs no native toolchain - a plain build
+    surfaces the analyzer diagnostics - so it is cheap to run anywhere.
+
+    Keep ExpectedAotWarningCodes in sync with the diagnostics produced by
+    test/Autofac.Test.AotWarnings/Program.cs.
+  -->
+  <PropertyGroup>
+    <AotWarningsProjectDirectory>$([System.IO.Path]::Combine($(MSBuildProjectDirectory),'test/Autofac.Test.AotWarnings'))</AotWarningsProjectDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <ExpectedAotWarningCode Include="IL3050" />
+    <ExpectedAotWarningCode Include="IL2026" />
+  </ItemGroup>
+  <Target Name="VerifyAotWarnings">
+    <Message Text="****************************************" Importance="high" />
+    <Message Text="Verifying AOT/trim warnings still fire" Importance="high" />
+    <Message Text="****************************************" Importance="high" />
+    <!-- Build the fixture, forcing a full recompile so analyzer diagnostics are always emitted, and capture the output. -->
+    <Exec Command="dotnet build &quot;$(AotWarningsProjectDirectory)&quot; -c $(Configuration) --no-incremental"
+          ConsoleToMSBuild="true"
+          IgnoreExitCode="true">
+      <Output TaskParameter="ConsoleOutput" ItemName="AotWarningsBuildOutput" />
+    </Exec>
+    <PropertyGroup>
+      <AotWarningsBuildText>@(AotWarningsBuildOutput, '%0a')</AotWarningsBuildText>
+    </PropertyGroup>
+    <Error Condition="!$(AotWarningsBuildText.Contains('warning %(ExpectedAotWarningCode.Identity)'))"
+           Text="Expected AOT/trim diagnostic %(ExpectedAotWarningCode.Identity) was NOT emitted by Autofac.Test.AotWarnings. A [RequiresDynamicCode]/[RequiresUnreferencedCode] annotation may have been lost in core Autofac." />
+    <Message Text="All expected AOT/trim warnings (@(ExpectedAotWarningCode, ', ')) were emitted." Importance="high" />
   </Target>
 </Project>
