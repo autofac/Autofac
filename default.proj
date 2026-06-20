@@ -124,12 +124,24 @@
     <Message Text="****************************************" Importance="high" />
     <Message Text="Verifying AOT/trim warnings still fire" Importance="high" />
     <Message Text="****************************************" Importance="high" />
-    <!-- Build the fixture, forcing a full recompile so analyzer diagnostics are always emitted, and capture the output. -->
-    <Exec Command="dotnet build &quot;$(AotWarningsProjectDirectory)&quot; -c $(Configuration) --no-incremental"
-          ConsoleToMSBuild="true"
-          IgnoreExitCode="true">
-      <Output TaskParameter="ConsoleOutput" ItemName="AotWarningsBuildOutput" />
-    </Exec>
+    <MakeDir Directories="$(LogDirectory)" />
+    <PropertyGroup>
+      <AotWarningsLog>$([System.IO.Path]::Combine($(LogDirectory),'aot-warnings-build.log'))</AotWarningsLog>
+    </PropertyGroup>
+    <!--
+      Build the fixture (full recompile so analyzer diagnostics are always emitted)
+      and redirect ALL output to a log file. This is deliberate: the fixture emits the
+      IL2026/IL3050 warnings on purpose, and if they reached the CI job's stdout the
+      .NET problem matcher would turn each one into a (misleading) PR annotation. By
+      sending the build output only to a file and reading it back here, the warnings
+      are verified without ever surfacing on the console. The log is written under the
+      artifacts directory and inspected below.
+    -->
+    <Exec Command="dotnet build &quot;$(AotWarningsProjectDirectory)&quot; -c $(Configuration) --no-incremental &gt; &quot;$(AotWarningsLog)&quot; 2&gt;&amp;1"
+          IgnoreExitCode="true" />
+    <ReadLinesFromFile File="$(AotWarningsLog)">
+      <Output TaskParameter="Lines" ItemName="AotWarningsBuildOutput" />
+    </ReadLinesFromFile>
     <PropertyGroup>
       <AotWarningsBuildText>@(AotWarningsBuildOutput, '%0a')</AotWarningsBuildText>
     </PropertyGroup>
