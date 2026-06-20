@@ -9,9 +9,13 @@ using Autofac;
 // Each statement below calls an Autofac API that is annotated [RequiresDynamicCode]
 // or [RequiresUnreferencedCode]. With IsAotCompatible=true the trim/AOT analyzers
 // run and emit the IL codes noted in the comments. The 'VerifyAotWarnings' target in
-// default.proj builds this project and asserts those codes are present in the output;
-// if an annotation is ever lost, the corresponding warning disappears and the target
-// fails. The expected codes are duplicated in that target - keep them in sync.
+// default.proj builds this project and asserts, PER CALL SITE, that the expected
+// warning appears (matching both the IL code and the member signature - several call
+// sites share a code, so a code-only check would miss losing one of them). If an
+// annotation is ever lost, the matching warning disappears and the target fails.
+//
+// Keep these calls in sync with the ExpectedAotWarning items in default.proj - one
+// item there per annotated call here.
 var builder = new ContainerBuilder();
 
 // IL3050 (RequiresDynamicCode): open generic registration constructs closed types

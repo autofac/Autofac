@@ -136,7 +136,11 @@ internal static class Program
         // --- Scenarios that MUST throw under Native AOT (dynamic-code boundary) ---
 
         // Closing an open generic over a VALUE type requires MakeGenericType over a
-        // value type, which Native AOT cannot generate.
+        // value type, which Native AOT cannot generate. This assertion is deliberately
+        // runtime/environment sensitive: if a future runtime adds universal shared
+        // generics for value types, this could start SUCCEEDING and fail the check.
+        // That is by design - a failure here likely means "the AOT boundary moved"
+        // (update this test and the AOT docs), not "Autofac is broken".
         CheckThrows(failures, "Resolve IGenericHolder<int> (value-type close)", () => container.Resolve<IGenericHolder<int>>());
 
         if (failures.Count > 0)
