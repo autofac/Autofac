@@ -29,6 +29,7 @@ public static class BenchmarkSet
         typeof(EnumerableResolveBenchmark),
         typeof(PropertyInjectionBenchmark),
         typeof(RootContainerResolveBenchmark),
+        typeof(ResolvePipelineAllocationBenchmark),
         typeof(OpenGenericBenchmark),
         typeof(MultiConstructorBenchmark),
         typeof(LambdaResolveBenchmark),

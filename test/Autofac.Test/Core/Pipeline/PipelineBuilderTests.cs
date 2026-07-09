@@ -425,6 +425,40 @@ public class PipelineBuilderTests
         }));
     }
 
+    // Regression test for https://github.com/autofac/Autofac/issues/1493. In 9.2 the
+    // built middleware chain wrapped each stage in a lambda that captured the
+    // per-invocation ResolveRequestContext, so a fresh closure was allocated for every
+    // stage on every resolve. The built pipeline should close only over build-time
+    // state, so invoking it must not allocate on the hot path.
+    [Fact]
+    public void InvokingBuiltPipelineDoesNotAllocatePerInvocation()
+    {
+        var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
+        pipelineBuilder.Use(PipelinePhase.ResolveRequestStart, (context, next) => next(context));
+        pipelineBuilder.Use(PipelinePhase.ScopeSelection, (context, next) => next(context));
+        pipelineBuilder.Use(PipelinePhase.Sharing, (context, next) => next(context));
+
+        var built = pipelineBuilder.Build();
+        var context = new PipelineRequestContextStub();
+
+        // Warm up so JIT compilation and any first-run allocations happen before we measure.
+        for (var i = 0; i < 100; i++)
+        {
+            built.Invoke(context);
+        }
+
+        const int Iterations = 1000;
+        var before = GC.GetAllocatedBytesForCurrentThread();
+        for (var i = 0; i < Iterations; i++)
+        {
+            built.Invoke(context);
+        }
+
+        var allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+        Assert.Equal(0, allocated);
+    }
+
     [SuppressMessage("CA1001", "CA1001", Justification = "This is an expedient test stub; we don't really care if proper disposal for internal stubs happens.")]
     private class PipelineRequestContextStub : ResolveRequestContext
     {

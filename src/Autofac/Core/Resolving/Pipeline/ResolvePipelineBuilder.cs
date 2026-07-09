@@ -140,23 +140,34 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
         var current = lastDecl;
         var currentInvoke = _terminateAction;
 
-        Action<ResolveRequestContext> BuildMiddlewareChain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
+        while (current is not null)
         {
+            var stage = current.Middleware;
+
             // MetricsEnabled is static readonly (set once at startup), so checking here
             // at pipeline build time avoids a per-invocation branch in every middleware.
-            return AutofacMetrics.MetricsEnabled
-                ? BuildMetricsMiddlewareChain(next, stage)
-                : BuildStandardMiddlewareChain(next, stage);
+            currentInvoke = AutofacMetrics.MetricsEnabled
+                ? BuildMetricsMiddlewareChain(currentInvoke, stage)
+                : BuildStandardMiddlewareChain(currentInvoke, stage);
+            current = current.Previous;
         }
 
-        Action<ResolveRequestContext> BuildMetricsMiddlewareChain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
-        {
-            var stagePhase = stage.Phase;
-            var stageName = stage.ToString()!;
+        return new ResolvePipeline(currentInvoke);
+    }
 
-            // Metrics are captured around each stage execution while preserving
-            // diagnostics callbacks (if enabled for the current request).
-            return context => ExecuteWithDiagnostics(context, stage, () =>
+    private static Action<ResolveRequestContext> BuildMetricsMiddlewareChain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
+    {
+        var stagePhase = stage.Phase;
+        var stageName = stage.ToString()!;
+
+        // Metrics are captured around each stage execution while preserving
+        // diagnostics callbacks (if enabled for the current request). This lambda
+        // must only close over build-time state (next, stage, stagePhase, stageName)
+        // so it is allocated once per pipeline build rather than once per resolve.
+        // See issue #1493.
+        return context =>
+        {
+            if (!context.DiagnosticSource.IsEnabled())
             {
                 context.PhaseReached = stagePhase;
                 var timer = ValueStopwatch.StartNew();
@@ -168,29 +179,7 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
                 {
                     AutofacMetrics.RecordMiddlewareExecution(stageName, timer.GetElapsedTime());
                 }
-            });
-        }
 
-        Action<ResolveRequestContext> BuildStandardMiddlewareChain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
-        {
-            var stagePhase = stage.Phase;
-
-            // Hot path when execution metrics are disabled.
-            return context => ExecuteWithDiagnostics(context, stage, () =>
-            {
-                context.PhaseReached = stagePhase;
-                stage.Execute(context, next);
-            });
-        }
-
-        static void ExecuteWithDiagnostics(ResolveRequestContext context, IResolveMiddleware stage, Action action)
-        {
-            // Same basic flow in if/else, but doing a one-time check for diagnostics
-            // and choosing the "diagnostics enabled" version vs. the more common
-            // "no diagnostics enabled" path: hot-path optimization.
-            if (!context.DiagnosticSource.IsEnabled())
-            {
-                action();
                 return;
             }
 
@@ -198,7 +187,17 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
             var succeeded = false;
             try
             {
-                action();
+                context.PhaseReached = stagePhase;
+                var timer = ValueStopwatch.StartNew();
+                try
+                {
+                    stage.Execute(context, next);
+                }
+                finally
+                {
+                    AutofacMetrics.RecordMiddlewareExecution(stageName, timer.GetElapsedTime());
+                }
+
                 succeeded = true;
             }
             finally
@@ -212,16 +211,48 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
                     context.DiagnosticSource.MiddlewareFailure(context, stage);
                 }
             }
-        }
+        };
+    }
 
-        while (current is not null)
+    private static Action<ResolveRequestContext> BuildStandardMiddlewareChain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
+    {
+        var stagePhase = stage.Phase;
+
+        // Hot path when execution metrics are disabled. This lambda must only close
+        // over build-time state (next, stage, stagePhase) so it is allocated once per
+        // pipeline build rather than once per resolve. See issue #1493.
+        return context =>
         {
-            var stage = current.Middleware;
-            currentInvoke = BuildMiddlewareChain(currentInvoke, stage);
-            current = current.Previous;
-        }
+            // Same basic flow in if/else, but doing a one-time check for diagnostics
+            // and choosing the "diagnostics enabled" version vs. the more common
+            // "no diagnostics enabled" path: hot-path optimization.
+            if (!context.DiagnosticSource.IsEnabled())
+            {
+                context.PhaseReached = stagePhase;
+                stage.Execute(context, next);
+                return;
+            }
 
-        return new ResolvePipeline(currentInvoke);
+            context.DiagnosticSource.MiddlewareStart(context, stage);
+            var succeeded = false;
+            try
+            {
+                context.PhaseReached = stagePhase;
+                stage.Execute(context, next);
+                succeeded = true;
+            }
+            finally
+            {
+                if (succeeded)
+                {
+                    context.DiagnosticSource.MiddlewareSuccess(context, stage);
+                }
+                else
+                {
+                    context.DiagnosticSource.MiddlewareFailure(context, stage);
+                }
+            }
+        };
     }
 
     private bool InsertRangeWithinExistingStages(
