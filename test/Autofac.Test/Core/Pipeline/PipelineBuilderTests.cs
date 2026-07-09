@@ -425,11 +425,11 @@ public class PipelineBuilderTests
         }));
     }
 
-    // Issue 1493: a built pipeline must close only over build-time state, so invoking it
-    // must not allocate a per-invocation closure for each middleware stage on the hot path.
     [Fact]
     public void InvokingBuiltPipelineDoesNotAllocatePerInvocation()
     {
+        // Issue 1493: a built pipeline must close only over build-time state, so invoking it
+        // must not allocate a per-invocation closure for each middleware stage on the hot path.
         var pipelineBuilder = new ResolvePipelineBuilder(PipelineType.Service);
         pipelineBuilder.Use(PipelinePhase.ResolveRequestStart, (context, next) => next(context));
         pipelineBuilder.Use(PipelinePhase.ScopeSelection, (context, next) => next(context));
