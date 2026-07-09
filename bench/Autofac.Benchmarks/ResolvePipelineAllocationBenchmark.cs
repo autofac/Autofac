@@ -7,7 +7,7 @@ namespace Autofac.Benchmarks;
 /// Tests the per-resolve allocation cost of running the resolve pipeline. Each
 /// resolve walks the built middleware chain, so a closure allocated per stage
 /// per invocation (rather than once at pipeline build time) shows up here as
-/// extra allocations that scale with graph depth. See issue #1493.
+/// extra allocations that scale with graph depth.
 /// </summary>
 public class ResolvePipelineAllocationBenchmark
 {
