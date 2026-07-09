@@ -425,11 +425,8 @@ public class PipelineBuilderTests
         }));
     }
 
-    // Regression test for https://github.com/autofac/Autofac/issues/1493. In 9.2 the
-    // built middleware chain wrapped each stage in a lambda that captured the
-    // per-invocation ResolveRequestContext, so a fresh closure was allocated for every
-    // stage on every resolve. The built pipeline should close only over build-time
-    // state, so invoking it must not allocate on the hot path.
+    // Issue 1493: a built pipeline must close only over build-time state, so invoking it
+    // must not allocate a per-invocation closure for each middleware stage on the hot path.
     [Fact]
     public void InvokingBuiltPipelineDoesNotAllocatePerInvocation()
     {

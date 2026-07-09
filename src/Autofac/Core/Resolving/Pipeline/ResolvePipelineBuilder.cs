@@ -160,11 +160,10 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
         var stagePhase = stage.Phase;
         var stageName = stage.ToString()!;
 
-        // Metrics are captured around each stage execution while preserving
-        // diagnostics callbacks (if enabled for the current request). This lambda
-        // must only close over build-time state (next, stage, stagePhase, stageName)
-        // so it is allocated once per pipeline build rather than once per resolve.
-        // See issue #1493.
+        // Metrics are captured around each stage execution while preserving diagnostics
+        // callbacks (if enabled for the current request). Issue 1493: this lambda must
+        // only close over build-time state so it is allocated once per pipeline build
+        // rather than once per resolve.
         return context =>
         {
             if (!context.DiagnosticSource.IsEnabled())
@@ -218,9 +217,9 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
     {
         var stagePhase = stage.Phase;
 
-        // Hot path when execution metrics are disabled. This lambda must only close
-        // over build-time state (next, stage, stagePhase) so it is allocated once per
-        // pipeline build rather than once per resolve. See issue #1493.
+        // Hot path when execution metrics are disabled. Issue 1493: this lambda must only
+        // close over build-time state so it is allocated once per pipeline build rather
+        // than once per resolve.
         return context =>
         {
             // Same basic flow in if/else, but doing a one-time check for diagnostics
