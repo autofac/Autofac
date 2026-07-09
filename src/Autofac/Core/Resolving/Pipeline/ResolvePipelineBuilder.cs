@@ -158,6 +158,7 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
         return new ResolvePipeline(currentInvoke);
     }
 
+    [ExcludeFromCodeCoverage]
     private static Action<ResolveRequestContext> BuildMetricsMiddlewareChain(Action<ResolveRequestContext> next, IResolveMiddleware stage)
     {
         var stagePhase = stage.Phase;
