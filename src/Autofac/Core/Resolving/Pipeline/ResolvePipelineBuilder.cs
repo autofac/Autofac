@@ -13,18 +13,19 @@ namespace Autofac.Core.Resolving.Pipeline;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The pipeline builder is built as a doubly-linked list; each node in that list is a
-/// <see cref="MiddlewareDeclaration"/>, that holds the middleware instance, and the reference to the next and previous nodes.
+/// The pipeline builder is built as a doubly-linked list; each node in that
+/// list is a <see cref="MiddlewareDeclaration"/>, that holds the middleware
+/// instance, and the reference to the next and previous nodes.
 /// </para>
-///
 /// <para>
-/// When you call one of the Use* methods, we find the appropriate node in the linked list based on the phase of the new middleware
-/// and insert it into the list.
+/// When you call one of the Use* methods, we find the appropriate node in the
+/// linked list based on the phase of the new middleware and insert it into the
+/// list.
 /// </para>
-///
 /// <para>
-/// When you build a pipeline, we walk back through that set of middleware and generate the concrete call chain so that when you execute the pipeline,
-/// we don't iterate over any nodes, but just invoke the built set of methods.
+/// When you build a pipeline, we walk back through that set of middleware and
+/// generate the concrete call chain so that when you execute the pipeline, we
+/// don't iterate over any nodes, but just invoke the built set of methods.
 /// </para>
 /// </remarks>
 internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IResolveMiddleware>
@@ -108,8 +109,8 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
     /// <inheritdoc/>
     public IResolvePipelineBuilder Clone()
     {
-        // To clone a pipeline, we create a new instance, then insert the same stage
-        // objects in the same order.
+        // To clone a pipeline, we create a new instance, then insert the same
+        // stage objects in the same order.
         var newPipeline = new ResolvePipelineBuilder(Type);
         var currentStage = _first;
 
@@ -136,7 +137,8 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
 
     private static ResolvePipeline BuildPipeline(MiddlewareDeclaration? lastDecl)
     {
-        // When we build, we go through the set and construct a single call stack, starting from the end.
+        // When we build, we go through the set and construct a single call
+        // stack, starting from the end.
         var current = lastDecl;
         var currentInvoke = _terminateAction;
 
@@ -144,8 +146,9 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
         {
             var stage = current.Middleware;
 
-            // MetricsEnabled is static readonly (set once at startup), so checking here
-            // at pipeline build time avoids a per-invocation branch in every middleware.
+            // MetricsEnabled is static readonly (set once at startup), so
+            // checking here at pipeline build time avoids a per-invocation
+            // branch in every middleware.
             currentInvoke = AutofacMetrics.MetricsEnabled
                 ? BuildMetricsMiddlewareChain(currentInvoke, stage)
                 : BuildStandardMiddlewareChain(currentInvoke, stage);
@@ -160,10 +163,11 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
         var stagePhase = stage.Phase;
         var stageName = stage.ToString()!;
 
-        // Metrics are captured around each stage execution while preserving diagnostics
-        // callbacks (if enabled for the current request). Issue 1493: this lambda must
-        // only close over build-time state so it is allocated once per pipeline build
-        // rather than once per resolve.
+        // Metrics are captured around each stage execution while preserving
+        // diagnostics callbacks (if enabled for the current request).
+        //
+        // Issue 1493: this lambda must only close over build-time state so it
+        // is allocated once per pipeline build rather than once per resolve.
         return context =>
         {
             if (!context.DiagnosticSource.IsEnabled())
@@ -217,14 +221,16 @@ internal class ResolvePipelineBuilder : IResolvePipelineBuilder, IEnumerable<IRe
     {
         var stagePhase = stage.Phase;
 
-        // Hot path when execution metrics are disabled. Issue 1493: this lambda must only
-        // close over build-time state so it is allocated once per pipeline build rather
-        // than once per resolve.
+        // Hot path when execution metrics are disabled.
+        //
+        // Issue 1493: this lambda must only close over build-time state so it
+        // is allocated once per pipeline build rather than once per resolve.
         return context =>
         {
-            // Same basic flow in if/else, but doing a one-time check for diagnostics
-            // and choosing the "diagnostics enabled" version vs. the more common
-            // "no diagnostics enabled" path: hot-path optimization.
+            // Same basic flow in if/else, but doing a one-time check for
+            // diagnostics and choosing the "diagnostics enabled" version vs.
+            // the more common "no diagnostics enabled" path: hot-path
+            // optimization.
             if (!context.DiagnosticSource.IsEnabled())
             {
                 context.PhaseReached = stagePhase;
