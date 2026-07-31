@@ -8,7 +8,7 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: "c7c1c7640e610068e8e4754e9f1bf109bd987dc7"  # post-v0.48.0 with patches
+    rev: "5b5dddc4fb0f83c3ea1fc5616fa63e115dce83e0"  # frozen: v0.49.1
     hooks:
       - id: markdownlint
         args:
