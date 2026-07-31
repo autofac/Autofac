@@ -52,14 +52,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
 
         _implementationType = implementationType;
-
-        // The cache key is the (already annotated) implementation type; the factory
-        // ignores the dictionary's unannotated key parameter and reads the annotated
-        // local instead, so the [DynamicallyAccessedMembers] contract flows correctly
-        // into UsesServiceKeyAttribute.
-        _requiresServiceKeyParameter = ReflectionCacheSet.Shared.Internal.ServiceKeyUsageByType.GetOrAdd(
-            _implementationType,
-            _ => UsesServiceKeyAttribute(implementationType));
+        _requiresServiceKeyParameter = UsesServiceKeyAttributeCached(implementationType);
         ConstructorFinder = constructorFinder ?? throw new ArgumentNullException(nameof(constructorFinder));
         ConstructorSelector = constructorSelector ?? throw new ArgumentNullException(nameof(constructorSelector));
         _configuredProperties = configuredProperties.ToArray();
@@ -133,6 +126,10 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         "Trimming",
         "IL2070:UnrecognizedReflectionPattern",
         Justification = "This is a best-effort scan for [ServiceKey] across all constructors and properties, including non-public ones. Autofac's trim/AOT contract preserves only public constructors and properties (see ActivatorMemberTypes); if a non-public member is trimmed away, it simply is not found here, which matches the documented behavior that non-public activation is not trim/AOT-safe. No public member that drives activation is missed.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "Recurses into BaseType to inspect declared members level-by-level. BaseType members are preserved via the derived type's ActivatorMemberTypes annotation; if a base member is trimmed it simply is not found, matching the documented best-effort behavior.")]
     private static bool UsesServiceKeyAttribute([DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type implementationType)
     {
         // Intentionally not picky about _which_ constructor or property has the
@@ -141,7 +138,17 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         // where we "may or may not need it." If you mark a property with the
         // attribute but never inject properties, we'll still provide the
         // parameter "just in case" you change your mind at runtime.
-        foreach (var constructor in implementationType.GetConstructors(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+        //
+        // We scan DeclaredOnly members and recurse into the base type (memoized per
+        // type via ServiceKeyUsageByType). This is critical for performance: scanning
+        // *inherited* members via GetProperties on a derived type yields PropertyInfo
+        // objects whose ReflectedType is the derived type, so the per-member attribute
+        // cache misses on every (derived type x inherited member) pair - O(types x
+        // inherited members) of attribute reflection. Scanning DeclaredOnly anchors each
+        // member to its declaring type so the cache is shared across all derived types.
+        const BindingFlags DeclaredMembers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
+
+        foreach (var constructor in implementationType.GetConstructors(DeclaredMembers))
         {
             foreach (var parameter in constructor.GetParameters())
             {
@@ -152,7 +159,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             }
         }
 
-        foreach (var property in implementationType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+        foreach (var property in implementationType.GetProperties(DeclaredMembers))
         {
             if (property.CanWrite && ServiceKeyAttributeCache.PropertyHasServiceKey(property))
             {
@@ -160,8 +167,27 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             }
         }
 
+        var baseType = implementationType.BaseType;
+        if (baseType is not null && baseType != typeof(object))
+        {
+            // IL2072 suppressed on this method: baseType is unannotated but its members
+            // are preserved transitively via the derived type's annotation.
+            return UsesServiceKeyAttributeCached(baseType);
+        }
+
         return false;
     }
+
+    // Memoizes the per-type result so each base type in a hierarchy is scanned once,
+    // regardless of how many derived types share it. The factory captures the annotated
+    // 'type' local (the dictionary key parameter is ignored) so the DynamicallyAccessedMembers
+    // contract flows without an unannotated-to-annotated assignment.
+#pragma warning disable S6612 // Intentionally capture the annotated 'type' local (not the unannotated lambda key) so the DynamicallyAccessedMembers contract flows and trimming stays satisfied.
+    private static bool UsesServiceKeyAttributeCached([DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type type)
+        => ReflectionCacheSet.Shared.Internal.ServiceKeyUsageByType.GetOrAdd(
+            type,
+            _ => UsesServiceKeyAttribute(type));
+#pragma warning restore S6612
 
     private void UseSingleConstructorActivation(IResolvePipelineBuilder pipelineBuilder, ConstructorBinder singleConstructor)
     {
