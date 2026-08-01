@@ -146,6 +146,13 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         // cache misses on every (derived type x inherited member) pair - O(types x
         // inherited members) of attribute reflection. Scanning DeclaredOnly anchors each
         // member to its declaring type so the cache is shared across all derived types.
+        //
+        // This also makes the scan more conservative than the one it replaces: it now
+        // additionally sees private base properties, members hidden by new or override,
+        // and base constructor parameters. That is safe - the flag only gates whether
+        // the key parameter is offered, and KeyedServiceKeyParameter.CanSupplyValue
+        // re-checks the attribute per parameter - so a false positive costs one unused
+        // Parameter, never a wrong injection.
         const BindingFlags DeclaredMembers = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly;
 
         foreach (var constructor in implementationType.GetConstructors(DeclaredMembers))
@@ -182,12 +189,11 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     // regardless of how many derived types share it. The factory captures the annotated
     // 'type' local (the dictionary key parameter is ignored) so the DynamicallyAccessedMembers
     // contract flows without an unannotated-to-annotated assignment.
-#pragma warning disable S6612 // Intentionally capture the annotated 'type' local (not the unannotated lambda key) so the DynamicallyAccessedMembers contract flows and trimming stays satisfied.
+    [SuppressMessage("Major Code Smell", "S6612:The lambda parameter should be used instead of capturing arguments", Justification = "The factory deliberately reads the [DynamicallyAccessedMembers]-annotated 'type' local rather than the unannotated lambda parameter so the trimming contract flows into UsesServiceKeyAttribute.")]
     private static bool UsesServiceKeyAttributeCached([DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type type)
         => ReflectionCacheSet.Shared.Internal.ServiceKeyUsageByType.GetOrAdd(
             type,
             _ => UsesServiceKeyAttribute(type));
-#pragma warning restore S6612
 
     private void UseSingleConstructorActivation(IResolvePipelineBuilder pipelineBuilder, ConstructorBinder singleConstructor)
     {

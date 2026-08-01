@@ -1076,16 +1076,10 @@ public class KeyedServiceTests
         }
     }
 
-    // The tests below pin down [ServiceKey] behavior for INHERITED members. Autofac decides
-    // once per implementation type whether a keyed resolve needs to carry its key as a
-    // parameter, and it determines that by scanning constructors and properties. How that
-    // scan treats inherited members is easy to change by accident while refactoring it -
-    // reflection surfaces inherited members differently depending on whether the scan walks
-    // the type or walks the hierarchy - so each case where the two strategies can disagree
-    // gets a test.
     [Fact]
     public void ResolveKeyedServiceWithServiceKeyPropertyOnBaseClass()
     {
+        // Issue #1480: A [ServiceKey] property inherited from a base class still receives the key.
         var builder = new ContainerBuilder();
         builder.RegisterType<DerivedFromKeyAwareBase>().Keyed<DerivedFromKeyAwareBase>("inherited-property").PropertiesAutowired();
         var provider = builder.Build();
@@ -1098,6 +1092,7 @@ public class KeyedServiceTests
     [Fact]
     public void ResolveKeyedServiceWithServiceKeyConstructorParameterOnDeclaringType()
     {
+        // Issue #1480: Baseline for the inherited cases - [ServiceKey] on the type's own constructor parameter.
         var builder = new ContainerBuilder();
         builder.RegisterType<OwnKeyConstructorService>().Keyed<OwnKeyConstructorService>("own-parameter");
         var provider = builder.Build();
@@ -1110,10 +1105,8 @@ public class KeyedServiceTests
     [Fact]
     public void ResolveKeyedServiceWithServiceKeyConstructorParameterOnBaseClassOnly()
     {
-        // The base constructor's parameter carries [ServiceKey], but the derived constructor
-        // passes its own literal, so the service key must NOT reach the base parameter. This
-        // holds even when the scan notices the base constructor, because the key parameter
-        // only supplies values to parameters that themselves carry the attribute.
+        // Issue #1480: The base constructor parameter carries [ServiceKey], but the derived
+        // constructor passes its own literal, so the key must not reach it.
         var builder = new ContainerBuilder();
         builder.RegisterType<DerivedPassingLiteralToKeyAwareBase>().Keyed<DerivedPassingLiteralToKeyAwareBase>("ignored-key");
         var provider = builder.Build();
@@ -1126,9 +1119,8 @@ public class KeyedServiceTests
     [Fact]
     public void ResolveKeyedServiceWithPrivateServiceKeyPropertyOnBaseClass()
     {
-        // A private property on a base class is not part of the supported property injection
-        // surface (only public setters are injected by default), so the key is not supplied
-        // to it. The resolve must still succeed.
+        // Issue #1480: A private [ServiceKey] property on a base class is outside the injection
+        // surface (public setters only), so the resolve succeeds with the property left unset.
         var builder = new ContainerBuilder();
         builder.RegisterType<DerivedFromPrivateKeyAwareBase>().Keyed<DerivedFromPrivateKeyAwareBase>("private-property").PropertiesAutowired();
         var provider = builder.Build();
@@ -1142,6 +1134,8 @@ public class KeyedServiceTests
     [Fact]
     public void ResolveKeyedServiceWithRequiredServiceKeyPropertyOnBaseClass()
     {
+        // Issue #1480: An inherited 'required' [ServiceKey] property receives the key even
+        // without PropertiesAutowired, because required members are always populated.
         var builder = new ContainerBuilder();
         builder.RegisterType<DerivedFromRequiredKeyAwareBase>().Keyed<DerivedFromRequiredKeyAwareBase>("inherited-required");
         var provider = builder.Build();
@@ -1154,6 +1148,8 @@ public class KeyedServiceTests
     [Fact]
     public void ResolveKeyedServiceWithDeepHierarchyAndNoServiceKey()
     {
+        // Issue #1480: A multi-level hierarchy with no [ServiceKey] anywhere resolves normally -
+        // the base-type walk terminates without requiring the key parameter.
         var builder = new ContainerBuilder();
         builder.RegisterType<DeepLevel3>().Keyed<DeepLevel3>("no-attribute").PropertiesAutowired();
         var provider = builder.Build();

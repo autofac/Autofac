@@ -71,11 +71,10 @@ public class ContainerBuildInheritedMembersBenchmark
         // are not cleared on container build (their usage includes resolution), so without
         // this reset only the first invocation would scan anything and BenchmarkDotNet's
         // steady-state measurement would report a warm no-op. Clearing here - rather than in
-        // an [IterationSetup] - keeps the reset inside the measured region whatever
-        // invocation count BenchmarkDotNet picks, and avoids attaching a job attribute that
-        // would compose badly with the jobs Program.cs configures. The clear itself is
-        // proportional to the entries this benchmark created, and is negligible next to the
-        // scan it forces.
+        // an [IterationSetup], which would require [InvocationCount(1)] and yields a
+        // multimodal, high-variance distribution - keeps the reset inside the measured region
+        // whatever invocation count BenchmarkDotNet picks. The clear itself is proportional to
+        // the entries this benchmark created, and is negligible next to the scan it forces.
         ReflectionCacheSet.Shared.Clear();
 
         var builder = new ContainerBuilder();
