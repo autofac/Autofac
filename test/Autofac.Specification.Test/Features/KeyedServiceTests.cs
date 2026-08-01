@@ -1075,4 +1075,161 @@ public class KeyedServiceTests
             get;
         }
     }
+
+    [Fact]
+    public void ResolveKeyedServiceWithServiceKeyPropertyOnBaseClass()
+    {
+        // Issue #1480: A [ServiceKey] property inherited from a base class still receives the key.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DerivedFromKeyAwareBase>().Keyed<DerivedFromKeyAwareBase>("inherited-property").PropertiesAutowired();
+        var provider = builder.Build();
+
+        var svc = provider.ResolveKeyed<DerivedFromKeyAwareBase>("inherited-property");
+
+        Assert.Equal("inherited-property", svc.Key);
+    }
+
+    [Fact]
+    public void ResolveKeyedServiceWithServiceKeyConstructorParameterOnDeclaringType()
+    {
+        // Issue #1480: Baseline for the inherited cases - [ServiceKey] on the type's own constructor parameter.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<OwnKeyConstructorService>().Keyed<OwnKeyConstructorService>("own-parameter");
+        var provider = builder.Build();
+
+        var svc = provider.ResolveKeyed<OwnKeyConstructorService>("own-parameter");
+
+        Assert.Equal("own-parameter", svc.Key);
+    }
+
+    [Fact]
+    public void ResolveKeyedServiceWithServiceKeyConstructorParameterOnBaseClassOnly()
+    {
+        // Issue #1480: The base constructor parameter carries [ServiceKey], but the derived
+        // constructor passes its own literal, so the key must not reach it.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DerivedPassingLiteralToKeyAwareBase>().Keyed<DerivedPassingLiteralToKeyAwareBase>("ignored-key");
+        var provider = builder.Build();
+
+        var svc = provider.ResolveKeyed<DerivedPassingLiteralToKeyAwareBase>("ignored-key");
+
+        Assert.Equal("literal-from-derived", svc.Key);
+    }
+
+    [Fact]
+    public void ResolveKeyedServiceWithPrivateServiceKeyPropertyOnBaseClass()
+    {
+        // Issue #1480: A private [ServiceKey] property on a base class is outside the injection
+        // surface (public setters only), so the resolve succeeds with the property left unset.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DerivedFromPrivateKeyAwareBase>().Keyed<DerivedFromPrivateKeyAwareBase>("private-property").PropertiesAutowired();
+        var provider = builder.Build();
+
+        var svc = provider.ResolveKeyed<DerivedFromPrivateKeyAwareBase>("private-property");
+
+        Assert.NotNull(svc);
+        Assert.Null(svc.ReadPrivateKey());
+    }
+
+    [Fact]
+    public void ResolveKeyedServiceWithRequiredServiceKeyPropertyOnBaseClass()
+    {
+        // Issue #1480: An inherited 'required' [ServiceKey] property receives the key even
+        // without PropertiesAutowired, because required members are always populated.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DerivedFromRequiredKeyAwareBase>().Keyed<DerivedFromRequiredKeyAwareBase>("inherited-required");
+        var provider = builder.Build();
+
+        var svc = provider.ResolveKeyed<DerivedFromRequiredKeyAwareBase>("inherited-required");
+
+        Assert.Equal("inherited-required", svc.Key);
+    }
+
+    [Fact]
+    public void ResolveKeyedServiceWithDeepHierarchyAndNoServiceKey()
+    {
+        // Issue #1480: A multi-level hierarchy with no [ServiceKey] anywhere resolves normally -
+        // the base-type walk terminates without requiring the key parameter.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DeepLevel3>().Keyed<DeepLevel3>("no-attribute").PropertiesAutowired();
+        var provider = builder.Build();
+
+        var svc = provider.ResolveKeyed<DeepLevel3>("no-attribute");
+
+        Assert.NotNull(svc);
+    }
+
+    private class KeyAwareBase
+    {
+        [ServiceKey]
+        public string Key { get; set; } = default!;
+    }
+
+    private class DerivedFromKeyAwareBase : KeyAwareBase
+    {
+    }
+
+    private class OwnKeyConstructorService
+    {
+        public OwnKeyConstructorService([ServiceKey] string key) => Key = key;
+
+        public string Key
+        {
+            get;
+        }
+    }
+
+    private abstract class KeyAwareConstructorBase
+    {
+        protected KeyAwareConstructorBase([ServiceKey] string key) => Key = key;
+
+        public string Key
+        {
+            get;
+        }
+    }
+
+    private class DerivedPassingLiteralToKeyAwareBase : KeyAwareConstructorBase
+    {
+        public DerivedPassingLiteralToKeyAwareBase()
+            : base("literal-from-derived")
+        {
+        }
+    }
+
+    private class PrivateKeyAwareBase
+    {
+        [ServiceKey]
+        private string PrivateKey { get; set; } = default!;
+
+        public string ReadPrivateKey() => PrivateKey;
+    }
+
+    private class DerivedFromPrivateKeyAwareBase : PrivateKeyAwareBase
+    {
+    }
+
+    private class RequiredKeyAwareBase
+    {
+        [ServiceKey]
+        public required string Key { get; set; } = default!;
+    }
+
+    private class DerivedFromRequiredKeyAwareBase : RequiredKeyAwareBase
+    {
+    }
+
+    private class DeepLevel1
+    {
+        public string FirstLevel { get; set; } = default!;
+    }
+
+    private class DeepLevel2 : DeepLevel1
+    {
+        public string SecondLevel { get; set; } = default!;
+    }
+
+    private class DeepLevel3 : DeepLevel2
+    {
+    }
 }
