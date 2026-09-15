@@ -10,6 +10,7 @@ public static class BenchmarkSet
     public static readonly Type[] All =
     {
         typeof(ChildScopeResolveBenchmark),
+        typeof(KeyedAnyKeyChildScopeBenchmark),
         typeof(ContainerBuildBenchmark),
         typeof(ContainerBuildInheritedMembersBenchmark),
         typeof(ConcurrencyBenchmark),

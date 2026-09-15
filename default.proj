@@ -138,7 +138,16 @@
       artifacts directory and inspected below.
     -->
     <Exec Command="dotnet build &quot;$(AotWarningsProjectDirectory)&quot; -c $(Configuration) --no-incremental &gt; &quot;$(AotWarningsLog)&quot; 2&gt;&amp;1"
-          IgnoreExitCode="true" />
+          IgnoreExitCode="true">
+      <Output TaskParameter="ExitCode" PropertyName="AotWarningsBuildExitCode" />
+    </Exec>
+    <!--
+      The fixture is meant to build successfully, so a failed build means something
+      unrelated broke - a restore error, say. Report that instead of the missing-warning
+      error below, which would otherwise blame a lost annotation.
+    -->
+    <Error Condition="'$(AotWarningsBuildExitCode)' != '0'"
+           Text="Autofac.Test.AotWarnings failed to build (exit code $(AotWarningsBuildExitCode)); the expected AOT/trim diagnostics cannot be verified. See $(AotWarningsLog)." />
     <ReadLinesFromFile File="$(AotWarningsLog)">
       <Output TaskParameter="Lines" ItemName="AotWarningsBuildOutput" />
     </ReadLinesFromFile>
