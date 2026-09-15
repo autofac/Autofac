@@ -45,6 +45,17 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     private bool _trackerPopulationComplete;
 
     /// <summary>
+    /// Implementations a source produced for a service that had not yet drained that source, held
+    /// until it does so the source's queue position rather than the order services happened to be
+    /// resolved in decides the default.
+    /// </summary>
+    /// <remarks>
+    /// Only a component exposing more than one service can populate this, which is rare, so the
+    /// field stays null for most containers and every check against it is a null read.
+    /// </remarks>
+    private ConcurrentDictionary<(ServiceRegistrationInfo Info, IRegistrationSource Source), List<IComponentRegistration>>? _deferredSourceImplementations;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker"/> class.
     /// </summary>
     public DefaultRegisteredServicesTracker()
@@ -97,8 +108,10 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     }
 
     /// <inheritdoc />
-    public virtual void AddRegistration(IComponentRegistration registration, bool preserveDefaults, bool originatedFromDynamicSource = false)
+    public virtual void AddRegistration(IComponentRegistration registration, bool preserveDefaults, IRegistrationSource? originatingSource = null)
     {
+        var originatedFromDynamicSource = originatingSource is not null;
+
         foreach (var service in registration.Services)
         {
             var info = GetServiceInfo(service);
@@ -107,6 +120,17 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
             if (_ephemeralServiceInfo is not null)
             {
                 info = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+            }
+
+            // A service this component exposes may have had the implementation deferred because it
+            // has not drained this source yet, in which case it must not take it now - that would
+            // place it ahead of the higher-priority sources still to be queried. Only a
+            // multi-service component can defer, so the field is null for most containers.
+            if (_deferredSourceImplementations is not null &&
+                originatingSource is not null &&
+                WasDeferred(info, originatingSource, registration))
+            {
+                continue;
             }
 
             info.AddImplementation(registration, preserveDefaults, originatedFromDynamicSource);
@@ -265,24 +289,6 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     }
 
     /// <summary>
-    /// Filters registration sources to skip a single source.
-    /// </summary>
-    /// <param name="sources">The source sequence to scan.</param>
-    /// <param name="exclude">The source to exclude.</param>
-    /// <returns>Sources that are not the excluded instance.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static IEnumerable<IRegistrationSource> ExcludeSource(IEnumerable<IRegistrationSource> sources, IRegistrationSource exclude)
-    {
-        foreach (var item in sources)
-        {
-            if (item != exclude)
-            {
-                yield return item;
-            }
-        }
-    }
-
-    /// <summary>
     /// Acquires the service info lock and records wait time when metrics are enabled.
     /// </summary>
     /// <param name="info">The service info lock target.</param>
@@ -340,6 +346,79 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         return service;
+    }
+
+    /// <summary>
+    /// Applies the implementations a source produced for this service earlier, while a different
+    /// service sharing those components was being initialized, instead of querying the source again
+    /// and creating duplicate components.
+    /// </summary>
+    /// <param name="info">The service info being populated.</param>
+    /// <param name="source">The source about to be queried.</param>
+    /// <returns><see langword="true"/> when the source had already run and its implementations were applied.</returns>
+    private bool TryApplyDeferredSourceImplementations(ServiceRegistrationInfo info, IRegistrationSource source)
+    {
+        if (!_deferredSourceImplementations!.TryRemove((info, source), out var deferred))
+        {
+            return false;
+        }
+
+        lock (deferred)
+        {
+            foreach (var provided in deferred)
+            {
+                info.AddImplementation(provided, preserveDefaults: true, originatedFromSource: true);
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Holds an implementation for a service that has not drained the producing source yet, so it
+    /// can be applied in source order once that service is initialized.
+    /// </summary>
+    /// <param name="info">The service info the implementation is being held for.</param>
+    /// <param name="source">The source that produced the registration.</param>
+    /// <param name="registration">The component registration.</param>
+    private void DeferSourceImplementation(ServiceRegistrationInfo info, IRegistrationSource source, IComponentRegistration registration)
+    {
+        var deferred = _deferredSourceImplementations;
+        if (deferred is null)
+        {
+            deferred = new ConcurrentDictionary<(ServiceRegistrationInfo, IRegistrationSource), List<IComponentRegistration>>();
+            deferred = Interlocked.CompareExchange(ref _deferredSourceImplementations, deferred, null) ?? deferred;
+        }
+
+        // The list is shared, and two services initializing concurrently can both hold an
+        // implementation against the same key, so guard it rather than mutating inside an
+        // AddOrUpdate delegate that may run more than once.
+        var held = deferred.GetOrAdd((info, source), static _ => new List<IComponentRegistration>());
+
+        lock (held)
+        {
+            held.Add(registration);
+        }
+    }
+
+    /// <summary>
+    /// Determines whether an implementation is being held for a service rather than applied to it.
+    /// </summary>
+    /// <param name="info">The service info to check.</param>
+    /// <param name="source">The source that produced the registration.</param>
+    /// <param name="registration">The component registration.</param>
+    /// <returns><see langword="true"/> when the implementation is being held.</returns>
+    private bool WasDeferred(ServiceRegistrationInfo info, IRegistrationSource source, IComponentRegistration registration)
+    {
+        if (!_deferredSourceImplementations!.TryGetValue((info, source), out var deferred))
+        {
+            return false;
+        }
+
+        lock (deferred)
+        {
+            return deferred.Contains(registration);
+        }
     }
 
     /// <summary>
@@ -464,13 +543,20 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
                 continue;
             }
 
+            // Null unless some multi-service component has deferred an implementation, so this is a
+            // single field read for most containers.
+            if (_deferredSourceImplementations is not null && TryApplyDeferredSourceImplementations(info, next))
+            {
+                continue;
+            }
+
             foreach (var provided in next.RegistrationsFor(service, _registrationAccessor))
             {
                 PopulateAdditionalServicesForProvidedRegistration(service, info, next, provided);
                 AddRegistration(
                     provided,
                     preserveDefaults: true,
-                    originatedFromDynamicSource: true);
+                    originatingSource: next);
             }
         }
 
@@ -494,7 +580,20 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
             }
 
             additionalInfo = UseEphemeralAdditionalInfoIfNeeded(service, info, additionalInfo);
-            InitializeOrSkipSource(additionalService, additionalInfo, source);
+
+            // Start the additional service's queue so this source keeps its place in it. The source
+            // is not removed: it is consumed in order when the additional service is initialized.
+            if (!additionalInfo.IsInitializing)
+            {
+                BeginServiceInfoInitialization(additionalService, additionalInfo, _dynamicRegistrationSources);
+            }
+
+            // Hold the implementation rather than letting the service take it now, which would put
+            // it ahead of the higher-priority sources the service still has to query.
+            if (additionalInfo.IsSourceQueued(source))
+            {
+                DeferSourceImplementation(additionalInfo, source, provided);
+            }
         }
     }
 
@@ -510,17 +609,6 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
 
         // Use ephemeral info for additional services.
         return GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
-    }
-
-    private void InitializeOrSkipSource(Service additionalService, ServiceRegistrationInfo additionalInfo, IRegistrationSource source)
-    {
-        if (!additionalInfo.IsInitializing)
-        {
-            BeginServiceInfoInitialization(additionalService, additionalInfo, ExcludeSource(_dynamicRegistrationSources, source));
-            return;
-        }
-
-        additionalInfo.SkipSource(source);
     }
 
     /// <summary>

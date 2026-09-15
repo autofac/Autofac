@@ -277,16 +277,14 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     }
 
     /// <summary>
-    /// Skip a given source in the set of dynamic sources.
+    /// Gets a value indicating whether this service still has the given source left to query.
+    /// A source that is still queued has not yet contributed to this service, so anything it
+    /// produced now would land ahead of the higher-priority sources still to be drained.
     /// </summary>
-    /// <param name="source">The source to skip.</param>
-    public void SkipSource(IRegistrationSource source)
-    {
-        EnforceDuringInitialization();
-
-        // _sourcesToQuery always non-null during Initialization.
-        _sourcesToQuery = new Queue<IRegistrationSource>(_sourcesToQuery!.Where(rs => rs != source));
-    }
+    /// <param name="source">The source to look for.</param>
+    /// <returns>True if the source is still waiting to be queried for this service.</returns>
+    public bool IsSourceQueued(IRegistrationSource source)
+        => _sourcesToQuery is not null && _sourcesToQuery.Count != 0 && !IsInitialized && _sourcesToQuery.Contains(source);
 
     /// <summary>
     /// Dequeue the next registration source.
