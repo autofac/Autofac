@@ -124,6 +124,73 @@ public class AnyKeyRegistrationSourceTests
         Assert.Same(registration, adapter.Target);
     }
 
+    [Fact]
+    public void ResolveKeyed_AdapterNotSharedAcrossScopeRegistries()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DummyService>().Keyed<DummyService>(KeyedService.AnyKey);
+        using var container = builder.Build();
+        using var scope = container.BeginLifetimeScope(b => { });
+
+        container.ResolveKeyed<DummyService>("key");
+        scope.ResolveKeyed<DummyService>("key");
+
+        var service = new KeyedService("key", typeof(DummyService));
+        Assert.True(container.ComponentRegistry.TryGetServiceRegistration(service, out var fromContainer));
+        Assert.True(scope.ComponentRegistry.TryGetServiceRegistration(service, out var fromScope));
+        Assert.NotSame(fromContainer.Registration, fromScope.Registration);
+    }
+
+    // Issue #1497: disposing the scope that first resolved the key used to dispose
+    // the adapter every other scope was handed.
+    [Fact]
+    public void ResolveKeyed_AdapterUsableAfterAnotherScopeIsDisposed()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DummyService>().Keyed<DummyService>(KeyedService.AnyKey);
+        using var container = builder.Build();
+
+        using (var first = container.BeginLifetimeScope(b => { }))
+        {
+            first.ResolveKeyed<DummyService>("key");
+        }
+
+        using var second = container.BeginLifetimeScope(b => { });
+
+        Assert.NotNull(second.ResolveKeyed<DummyService>("key"));
+    }
+
+    // Issue #1497: a registry that adds middleware as components are registered
+    // used to get an adapter whose pipeline another registry had already built.
+    [Fact]
+    public void ResolveKeyed_ScopeRegistryCanAddPipelineMiddleware()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<DummyService>().Keyed<DummyService>(KeyedService.AnyKey);
+        using var container = builder.Build();
+        container.ResolveKeyed<DummyService>("key");
+
+        using var scope = container.BeginLifetimeScope(b =>
+            b.ComponentRegistryBuilder.Registered += (sender, e) =>
+                e.ComponentRegistration.PipelineBuilding += (sender, pipeline) => { });
+
+        Assert.NotNull(scope.ResolveKeyed<DummyService>("key"));
+    }
+
+    [Fact]
+    public void ResolveKeyed_SiblingScopesUseTheirOwnAnyKeyRegistration()
+    {
+        var builder = new ContainerBuilder();
+        using var container = builder.Build();
+        using var scope1 = container.BeginLifetimeScope(
+            b => b.RegisterType<DummyService>().As<IDummyService>().Keyed<IDummyService>(KeyedService.AnyKey));
+        using var scope2 = container.BeginLifetimeScope(
+            b => b.RegisterType<OtherDummyService>().As<IDummyService>().Keyed<IDummyService>(KeyedService.AnyKey));
+
+        Assert.IsType<DummyService>(scope1.ResolveKeyed<IDummyService>("key"));
+        Assert.IsType<OtherDummyService>(scope2.ResolveKeyed<IDummyService>("key"));
+    }
+
     private static IComponentRegistration CreateComponentRegistration<T>()
     {
         return RegistrationBuilder
@@ -136,7 +203,15 @@ public class AnyKeyRegistrationSourceTests
         return new ServiceRegistration(ServicePipelines.DefaultServicePipeline, registration);
     }
 
-    private sealed class DummyService
+    private interface IDummyService
+    {
+    }
+
+    private sealed class DummyService : IDummyService
+    {
+    }
+
+    private sealed class OtherDummyService : IDummyService
     {
     }
 }

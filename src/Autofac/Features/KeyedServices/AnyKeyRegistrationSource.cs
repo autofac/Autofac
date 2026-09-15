@@ -6,30 +6,19 @@ using Autofac.Core;
 using Autofac.Core.Activators.Delegate;
 using Autofac.Core.Registration;
 using Autofac.Util;
-using Autofac.Util.Cache;
 
 namespace Autofac.Features.KeyedServices;
 
 /// <summary>
 /// Provides fallback registrations for keyed services that can be satisfied by <see cref="KeyedService.AnyKey"/>.
 /// </summary>
+/// <remarks>
+/// Adapters are created per registry, never cached and shared. The registry an adapter goes
+/// into builds its pipeline and disposes it, and the adapter has to target the any-key
+/// registration visible in that registry - both of which differ per scope (issue #1497).
+/// </remarks>
 internal sealed class AnyKeyRegistrationSource : IRegistrationSource
 {
-    private readonly ReflectionCacheKeyedServiceDictionary<IComponentRegistration[]> _adapterCache;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AnyKeyRegistrationSource"/> class.
-    /// </summary>
-    public AnyKeyRegistrationSource()
-    {
-        _adapterCache = new ReflectionCacheKeyedServiceDictionary<IComponentRegistration[]>
-        {
-            Usage = ReflectionCacheUsage.Resolution,
-        };
-
-        ReflectionCacheSet.Shared.RegisterExternalCache(_adapterCache);
-    }
-
     /// <inheritdoc/>
     public bool IsAdapterForIndividualComponents => true;
 
@@ -53,11 +42,6 @@ internal sealed class AnyKeyRegistrationSource : IRegistrationSource
             return Enumerable.Empty<IComponentRegistration>();
         }
 
-        if (_adapterCache.TryGetValue(keyedService, out var cached))
-        {
-            return cached;
-        }
-
         // If there are already specific registrations for this key, do nothing.
         if (registrationAccessor(service).Any())
         {
@@ -78,7 +62,6 @@ internal sealed class AnyKeyRegistrationSource : IRegistrationSource
             adapters[i] = CreateAdapterRegistration(anyKeyRegistrations[i], keyedService);
         }
 
-        _adapterCache.TryAdd(keyedService, adapters);
         return adapters;
     }
 
