@@ -51,7 +51,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     /// </summary>
     /// <remarks>
     /// Only a component exposing more than one service can populate this, which is rare, so the
-    /// field stays null for most containers and every check against it is a null read.
+    /// field stays <see langword="null"/> for most containers, where checking it is a field read.
     /// </remarks>
     private ConcurrentDictionary<(ServiceRegistrationInfo Info, IRegistrationSource Source), List<IComponentRegistration>>? _deferredSourceImplementations;
 

@@ -49,7 +49,7 @@ internal interface IRegisteredServicesTracker : IDisposable, IAsyncDisposable, I
     /// </summary>
     /// <param name="registration">The registration to add.</param>
     /// <param name="preserveDefaults">Indicates whether the defaults should be preserved.</param>
-    /// <param name="originatingSource">The dynamic registration source that produced the registration, or null when the registration was added explicitly.</param>
+    /// <param name="originatingSource">The dynamic registration source that produced the registration, or <see langword="null"/> when the registration was added explicitly.</param>
     void AddRegistration(IComponentRegistration registration, bool preserveDefaults, IRegistrationSource? originatingSource = null);
 
     /// <summary>

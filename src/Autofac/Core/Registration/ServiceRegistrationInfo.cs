@@ -282,9 +282,9 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     /// produced now would land ahead of the higher-priority sources still to be drained.
     /// </summary>
     /// <param name="source">The source to look for.</param>
-    /// <returns>True if the source is still waiting to be queried for this service.</returns>
+    /// <returns><see langword="true"/> if the source is still waiting to be queried for this service.</returns>
     public bool IsSourceQueued(IRegistrationSource source)
-        => _sourcesToQuery is not null && _sourcesToQuery.Count != 0 && !IsInitialized && _sourcesToQuery.Contains(source);
+        => IsInitializing && _sourcesToQuery!.Contains(source);
 
     /// <summary>
     /// Dequeue the next registration source.
