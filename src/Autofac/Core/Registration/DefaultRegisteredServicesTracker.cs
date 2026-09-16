@@ -551,9 +551,12 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
             var held = _deferredSourceImplementations;
 
             // Do not query per-scope registration sources for isolated services. Anything held from
-            // such a source is deliberately not applied - it has no place in an isolated resolve.
+            // such a source is deliberately not applied - it has no place in an isolated resolve -
+            // but it is released, because this service will never drain that source and the entry
+            // would otherwise outlive the service info it keys on.
             if (isScopeIsolatedService && next is IPerScopeRegistrationSource)
             {
+                held?.TryRemove((info, next), out _);
                 continue;
             }
 
