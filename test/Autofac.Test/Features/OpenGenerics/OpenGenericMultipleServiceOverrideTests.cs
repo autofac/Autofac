@@ -1,6 +1,11 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Core;
+using Autofac.Core.Activators.Delegate;
+using Autofac.Core.Lifetime;
+using Autofac.Core.Registration;
+
 namespace Autofac.Test.Features.OpenGenerics;
 
 /// <summary>
@@ -181,6 +186,25 @@ public class OpenGenericMultipleServiceOverrideTests
         Assert.Contains(all, x => x is SecondOnly<int>);
     }
 
+    [Fact]
+    public void SeveralImplementationsFromOneSourceAreAllHeldForTheOtherService()
+    {
+        // A source may return more than one component for a service, and every one of them that
+        // also provides the other service has to be held, not just the first.
+        var builder = new ContainerBuilder();
+        builder.RegisterSource(new TwoComponentMultiServiceSource());
+
+        using var container = builder.Build();
+
+        // Resolving the first service drains the source and holds both components for the second.
+        Assert.NotNull(container.Resolve<IFirstService<int>>());
+
+        var all = container.Resolve<IEnumerable<ISecondService<int>>>().ToList();
+
+        Assert.Equal(2, all.Count);
+        Assert.All(all, x => Assert.IsType<BothServices<int>>(x));
+    }
+
     private static IContainer BuildGenericContainer()
     {
         var builder = new ContainerBuilder();
@@ -213,5 +237,47 @@ public class OpenGenericMultipleServiceOverrideTests
             .As<ISecondService>();
 
         return builder.Build();
+    }
+
+    /// <summary>
+    /// Returns two separate components for the same closed generic service, each exposing both
+    /// services, so one source query holds two implementations for the other service.
+    /// </summary>
+    private sealed class TwoComponentMultiServiceSource : IRegistrationSource
+    {
+        public bool IsAdapterForIndividualComponents => false;
+
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
+        {
+            if (service is not IServiceWithType swt ||
+                !swt.ServiceType.IsGenericType ||
+                (swt.ServiceType.GetGenericTypeDefinition() != typeof(IFirstService<>) &&
+                 swt.ServiceType.GetGenericTypeDefinition() != typeof(ISecondService<>)))
+            {
+                yield break;
+            }
+
+            var argument = swt.ServiceType.GenericTypeArguments[0];
+            var limit = typeof(BothServices<>).MakeGenericType(argument);
+            var services = new Service[]
+            {
+                new TypedService(typeof(IFirstService<>).MakeGenericType(argument)),
+                new TypedService(typeof(ISecondService<>).MakeGenericType(argument)),
+            };
+
+            for (var i = 0; i < 2; i++)
+            {
+#pragma warning disable CA2000 // Activator lifetime is controlled by the registry.
+                yield return new ComponentRegistration(
+                    Guid.NewGuid(),
+                    new DelegateActivator(limit, (_, _) => Activator.CreateInstance(limit)!),
+                    new CurrentScopeLifetime(),
+                    InstanceSharing.None,
+                    InstanceOwnership.OwnedByLifetimeScope,
+                    services,
+                    new Dictionary<string, object>());
+#pragma warning restore CA2000
+            }
+        }
     }
 }

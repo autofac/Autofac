@@ -381,19 +381,6 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     }
 
     /// <summary>
-    /// Discards implementations held for a service and source without applying them, for the case
-    /// where the service will never drain that source.
-    /// </summary>
-    /// <param name="held">The map of held implementations.</param>
-    /// <param name="info">The service info being populated.</param>
-    /// <param name="source">The source that will not be queried.</param>
-    private static void DiscardDeferredSourceImplementations(
-        DeferredImplementationMap held,
-        ServiceRegistrationInfo info,
-        IRegistrationSource source)
-        => held.TryRemove((info, source), out _);
-
-    /// <summary>
     /// Determines whether an implementation is being held for a service rather than applied to it.
     /// </summary>
     /// <param name="held">The map of held implementations.</param>
@@ -564,15 +551,9 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
             var held = _deferredSourceImplementations;
 
             // Do not query per-scope registration sources for isolated services. Anything held from
-            // such a source is dropped rather than applied - it has no place in an isolated resolve -
-            // but it still has to be released so the entry does not outlive the service info.
+            // such a source is deliberately not applied - it has no place in an isolated resolve.
             if (isScopeIsolatedService && next is IPerScopeRegistrationSource)
             {
-                if (held is not null)
-                {
-                    DiscardDeferredSourceImplementations(held, info, next);
-                }
-
                 continue;
             }
 
@@ -616,6 +597,20 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
     }
 
+    private ServiceRegistrationInfo UseEphemeralAdditionalInfoIfNeeded(
+        Service service,
+        ServiceRegistrationInfo info,
+        ServiceRegistrationInfo additionalInfo)
+    {
+        if (_ephemeralServiceInfo is null)
+        {
+            return additionalInfo;
+        }
+
+        // Use ephemeral info for additional services.
+        return GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+    }
+
     /// <summary>
     /// Starts the additional service's source queue and holds the implementation against the source
     /// that produced it, so the service takes it in source order rather than immediately.
@@ -644,56 +639,60 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         IRegistrationSource source,
         IComponentRegistration provided)
     {
-        if (!Monitor.TryEnter(additionalInfo))
+        // Failing to take the monitor means another thread is initializing this service, and the
+        // implementation is left to be applied immediately by the caller as it was before this
+        // ordering fix existed, rather than blocking and risking a cycle.
+        if (Monitor.TryEnter(additionalInfo))
         {
-            return;
-        }
-
-        try
-        {
-            if (additionalInfo.IsInitialized)
+            try
             {
-                return;
-            }
-
-            // Start the additional service's queue so this source keeps its place in it. The source
-            // is not removed: it is consumed in order when the additional service is initialized.
-            if (!additionalInfo.IsInitializing)
-            {
-                BeginServiceInfoInitialization(additionalService, additionalInfo, _dynamicRegistrationSources);
-            }
-
-            if (additionalInfo.IsSourceQueued(source))
-            {
-                // Recording the implementation publishes it to whichever thread drains this source
-                // next, and that thread resolves through it, so its pipeline has to be built first.
-                // Building is idempotent, so the call AddRegistration makes later does nothing.
-                if (_ephemeralServiceInfo is null)
+                // The caller checked this before the monitor was taken, so re-check it: beginning
+                // initialization again would reset a service info another thread just finished.
+                if (!additionalInfo.IsInitialized)
                 {
-                    provided.BuildResolvePipeline(this);
+                    HoldForAdditionalService(additionalService, additionalInfo, source, provided);
                 }
-
-                DeferSourceImplementation(additionalInfo, source, provided);
             }
-        }
-        finally
-        {
-            Monitor.Exit(additionalInfo);
+            finally
+            {
+                Monitor.Exit(additionalInfo);
+            }
         }
     }
 
-    private ServiceRegistrationInfo UseEphemeralAdditionalInfoIfNeeded(
-        Service service,
-        ServiceRegistrationInfo info,
-        ServiceRegistrationInfo additionalInfo)
+    /// <summary>
+    /// Starts the additional service's source queue if needed and records the implementation against
+    /// the source that produced it. Called with the additional service's monitor held.
+    /// </summary>
+    /// <param name="additionalService">The other service the component exposes.</param>
+    /// <param name="additionalInfo">That service's info.</param>
+    /// <param name="source">The source that produced the registration.</param>
+    /// <param name="provided">The component registration.</param>
+    private void HoldForAdditionalService(
+        Service additionalService,
+        ServiceRegistrationInfo additionalInfo,
+        IRegistrationSource source,
+        IComponentRegistration provided)
     {
-        if (_ephemeralServiceInfo is null)
+        // Start the additional service's queue so this source keeps its place in it. The source is
+        // not removed: it is consumed in order when the additional service is initialized.
+        if (!additionalInfo.IsInitializing)
         {
-            return additionalInfo;
+            BeginServiceInfoInitialization(additionalService, additionalInfo, _dynamicRegistrationSources);
         }
 
-        // Use ephemeral info for additional services.
-        return GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+        if (additionalInfo.IsSourceQueued(source))
+        {
+            // Recording the implementation publishes it to whichever thread drains this source next,
+            // and that thread resolves through it, so its pipeline has to be built first. Building
+            // is idempotent, so the call AddRegistration makes later does nothing.
+            if (_ephemeralServiceInfo is null)
+            {
+                provided.BuildResolvePipeline(this);
+            }
+
+            DeferSourceImplementation(additionalInfo, source, provided);
+        }
     }
 
     /// <summary>
