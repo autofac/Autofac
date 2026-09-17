@@ -29,6 +29,7 @@ public class StronglyTypedMeta_WhenNoMatchingMetadataIsSupplied
         var propertyName = ReflectionExtensions.GetProperty<MyMeta, int>(x => x.TheInt).Name;
         var message = string.Format(CultureInfo.InvariantCulture, MetadataViewProviderResources.MissingMetadata, propertyName);
 
+        Assert.NotNull(exception.InnerException);
         Assert.Equal(message, exception.InnerException.Message);
     }
 

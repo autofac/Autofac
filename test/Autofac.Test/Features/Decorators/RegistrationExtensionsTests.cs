@@ -12,7 +12,7 @@ public class RegistrationExtensionsTests
     {
         var builder = new ContainerBuilder();
         var exception = Assert.Throws<ArgumentNullException>(
-            () => builder.RegisterDecorator(null, typeof(object)));
+            () => builder.RegisterDecorator(null!, typeof(object)));
 
         Assert.Equal("decoratorType", exception.ParamName);
     }
@@ -22,7 +22,7 @@ public class RegistrationExtensionsTests
     {
         var builder = new ContainerBuilder();
         var exception = Assert.Throws<ArgumentNullException>(
-            () => builder.RegisterDecorator(typeof(object), null));
+            () => builder.RegisterDecorator(typeof(object), null!));
 
         Assert.Equal("serviceType", exception.ParamName);
     }
@@ -33,7 +33,7 @@ public class RegistrationExtensionsTests
         var builder = new ContainerBuilder();
         var exception = Assert.Throws<ArgumentNullException>(
             () => builder.RegisterDecorator(
-                default(Func<IComponentContext, IEnumerable<Parameter>, object, object>)));
+                default(Func<IComponentContext, IEnumerable<Parameter>, object, object>)!));
 
         Assert.Equal("decorator", exception.ParamName);
     }
@@ -43,7 +43,7 @@ public class RegistrationExtensionsTests
     {
         var builder = new ContainerBuilder();
         var exception = Assert.Throws<ArgumentNullException>(
-            () => builder.RegisterGenericDecorator(null, typeof(object)));
+            () => builder.RegisterGenericDecorator(null!, typeof(object)));
 
         Assert.Equal("decoratorType", exception.ParamName);
     }
@@ -53,7 +53,7 @@ public class RegistrationExtensionsTests
     {
         var builder = new ContainerBuilder();
         var exception = Assert.Throws<ArgumentNullException>(
-            () => builder.RegisterGenericDecorator(typeof(object), null));
+            () => builder.RegisterGenericDecorator(typeof(object), null!));
 
         Assert.Equal("serviceType", exception.ParamName);
     }

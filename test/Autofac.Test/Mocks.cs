@@ -60,7 +60,7 @@ internal static class Mocks
     {
         public BoundConstructor SelectConstructorBinding(BoundConstructor[] constructorBindings, IEnumerable<Parameter> parameters)
         {
-            return default;
+            return default!;
         }
     }
 
@@ -88,15 +88,9 @@ internal static class Mocks
             get;
         }
 
-        public IInstanceActivator Activator
-        {
-            get;
-        }
+        public IInstanceActivator Activator { get; } = null!;
 
-        public IComponentLifetime Lifetime
-        {
-            get;
-        }
+        public IComponentLifetime Lifetime { get; } = null!;
 
         public InstanceSharing Sharing
         {
@@ -110,22 +104,16 @@ internal static class Mocks
 
         public IEnumerable<Service> Services { get; } = Array.Empty<Service>();
 
-        public IDictionary<string, object> Metadata
-        {
-            get;
-        }
+        public IDictionary<string, object?> Metadata { get; } = null!;
 
-        public IComponentRegistration Target
-        {
-            get;
-        }
+        public IComponentRegistration Target { get; } = null!;
 
         public bool IsAdapterForIndividualComponent
         {
             get;
         }
 
-        public event EventHandler<IResolvePipelineBuilder> PipelineBuilding;
+        public event EventHandler<IResolvePipelineBuilder>? PipelineBuilding;
 
         public IResolvePipeline ResolvePipeline { get; } = new ResolvePipelineBuilder(PipelineType.Registration).Build();
 
@@ -152,21 +140,21 @@ internal static class Mocks
             EnableAll();
         }
 
-        public event Action<IResolveOperation, ResolveRequest> OperationStarting;
+        public event Action<IResolveOperation, ResolveRequest>? OperationStarting;
 
-        public event Action<IResolveOperation, ResolveRequestContext> RequestStarting;
+        public event Action<IResolveOperation, ResolveRequestContext>? RequestStarting;
 
-        public event Action<ResolveRequestContext, IResolveMiddleware> EnteringMiddleware;
+        public event Action<ResolveRequestContext, IResolveMiddleware>? EnteringMiddleware;
 
-        public event Action<ResolveRequestContext, IResolveMiddleware, bool> ExitingMiddleware;
+        public event Action<ResolveRequestContext, IResolveMiddleware, bool>? ExitingMiddleware;
 
-        public event Action<IResolveOperation, ResolveRequestContext, Exception> RequestFailing;
+        public event Action<IResolveOperation, ResolveRequestContext, Exception>? RequestFailing;
 
-        public event Action<IResolveOperation, ResolveRequestContext> RequestSucceeding;
+        public event Action<IResolveOperation, ResolveRequestContext>? RequestSucceeding;
 
-        public event Action<IResolveOperation, Exception> OperationFailing;
+        public event Action<IResolveOperation, Exception>? OperationFailing;
 
-        public event Action<IResolveOperation, object> OperationSucceeding;
+        public event Action<IResolveOperation, object>? OperationSucceeding;
 
         protected override void OnOperationStart(OperationStartDiagnosticData data)
         {

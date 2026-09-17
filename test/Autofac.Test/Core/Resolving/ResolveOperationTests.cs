@@ -37,7 +37,7 @@ public class ResolveOperationTests
     [Fact]
     public void AfterTheOperationIsFinished_ReusingTheTemporaryContextThrows()
     {
-        IComponentContext ctx = null;
+        IComponentContext? ctx = null;
         var builder = new ContainerBuilder();
         builder.Register(c =>
         {
@@ -48,6 +48,7 @@ public class ResolveOperationTests
         var container = builder.Build();
         container.Resolve<string>();
         container.Resolve<object>();
+        Assert.NotNull(ctx);
         Assert.Throws<ObjectDisposedException>(() => ctx.Resolve<string>());
     }
 
@@ -63,6 +64,7 @@ public class ResolveOperationTests
         container.SubscribeToDiagnostics(mockTracer);
 
         var scope = container.Resolve<ILifetimeScope>() as ISharingLifetimeScope;
+        Assert.NotNull(scope);
 
         var resolveOp = new ResolveOperation(scope, container.DiagnosticSource);
 
@@ -115,6 +117,7 @@ public class ResolveOperationTests
         container.SubscribeToDiagnostics(mockTracer);
 
         var scope = container.Resolve<ILifetimeScope>() as ISharingLifetimeScope;
+        Assert.NotNull(scope);
 
         var resolveOp = new ResolveOperation(scope, container.DiagnosticSource);
 

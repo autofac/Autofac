@@ -276,12 +276,12 @@ public class RequiredPropertyTests
         {
         }
 
-        public required ServiceA ServiceA
+        public required ServiceA? ServiceA
         {
             get; set;
         }
 
-        public required ServiceB ServiceB
+        public required ServiceB? ServiceB
         {
             get; set;
         }
@@ -316,7 +316,7 @@ public class RequiredPropertyTests
         {
         }
 
-        public required ServiceA ServiceA
+        public required ServiceA? ServiceA
         {
             get; set;
         }

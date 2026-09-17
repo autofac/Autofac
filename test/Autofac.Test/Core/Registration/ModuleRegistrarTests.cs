@@ -10,7 +10,7 @@ public class ModuleRegistrarTests
     [Fact]
     public void Ctor_RequiresContainerBuilder()
     {
-        Assert.Throws<ArgumentNullException>(() => new ModuleRegistrar(null));
+        Assert.Throws<ArgumentNullException>(() => new ModuleRegistrar(null!));
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public class ModuleRegistrarTests
     public void RegisterModule_RequiresModule()
     {
         var registrar = new ModuleRegistrar(new ContainerBuilder());
-        Assert.Throws<ArgumentNullException>(() => registrar.RegisterModule(null));
+        Assert.Throws<ArgumentNullException>(() => registrar.RegisterModule(null!));
     }
 
     private class ModuleA : Module

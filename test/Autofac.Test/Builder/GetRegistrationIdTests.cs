@@ -12,7 +12,7 @@ public class GetRegistrationIdTests
     public void GetRegistrationId_NullRegistration_ThrowsArgumentNullException()
     {
         // Issue #1327
-        IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> registration = null;
+        IRegistrationBuilder<object, SimpleActivatorData, SingleRegistrationStyle> registration = null!;
         Assert.Throws<ArgumentNullException>(() => registration.GetRegistrationId());
     }
 

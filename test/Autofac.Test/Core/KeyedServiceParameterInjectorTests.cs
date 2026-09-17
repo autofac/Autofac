@@ -101,6 +101,7 @@ public class KeyedServiceParameterInjectorTests
     }
 
     private static IComponentRegistration CreateRegistration<T>()
+        where T : notnull
         => RegistrationBuilder
             .ForType<T>()
             .CreateRegistration();

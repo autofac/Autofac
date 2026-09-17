@@ -18,13 +18,13 @@ public class KeyedServiceTests
     [Fact]
     public void Ctor_NullKey()
     {
-        Assert.Throws<ArgumentNullException>(() => new KeyedService(null, typeof(object)));
+        Assert.Throws<ArgumentNullException>(() => new KeyedService(null!, typeof(object)));
     }
 
     [Fact]
     public void Ctor_NullType()
     {
-        Assert.Throws<ArgumentNullException>(() => new KeyedService("name", null));
+        Assert.Throws<ArgumentNullException>(() => new KeyedService("name", null!));
     }
 
     [Fact]

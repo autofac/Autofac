@@ -195,7 +195,7 @@ public class LifetimeScopeTests
                 InstanceSharing.None,
                 InstanceOwnership.OwnedByLifetimeScope,
                 new[] { service },
-                new Dictionary<string, object>());
+                new Dictionary<string, object?>());
     }
 
     internal class DependsOnRegisteredInstance

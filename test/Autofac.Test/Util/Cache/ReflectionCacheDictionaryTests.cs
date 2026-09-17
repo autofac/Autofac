@@ -45,7 +45,7 @@ public class ReflectionCacheDictionaryTests
     {
         var cacheDict = new ReflectionCacheDictionary<MethodInfo, bool>();
 
-        cacheDict[typeof(string).GetMethod("IsNullOrEmpty")] = false;
+        cacheDict[typeof(string).GetMethod("IsNullOrEmpty")!] = false;
 
         cacheDict.Clear((member, assemblies) =>
         {

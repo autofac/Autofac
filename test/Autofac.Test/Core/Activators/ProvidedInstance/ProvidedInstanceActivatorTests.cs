@@ -11,7 +11,7 @@ public class ProvidedInstanceActivatorTests
     [Fact]
     public void NullIsNotAValidInstance()
     {
-        Assert.Throws<ArgumentNullException>(() => new ProvidedInstanceActivator(null));
+        Assert.Throws<ArgumentNullException>(() => new ProvidedInstanceActivator(null!));
     }
 
     [Fact]

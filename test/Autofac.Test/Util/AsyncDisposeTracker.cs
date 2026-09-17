@@ -5,9 +5,9 @@ namespace Autofac.Test.Util;
 
 public sealed class AsyncDisposeTracker : IDisposable, IAsyncDisposable
 {
-    private readonly SemaphoreSlim _semaphore;
+    private readonly SemaphoreSlim? _semaphore;
 
-    public event EventHandler<EventArgs> Disposing;
+    public event EventHandler<EventArgs>? Disposing;
 
     public bool IsSyncDisposed
     {
@@ -24,7 +24,7 @@ public sealed class AsyncDisposeTracker : IDisposable, IAsyncDisposable
     {
     }
 
-    public AsyncDisposeTracker(SemaphoreSlim semaphore)
+    public AsyncDisposeTracker(SemaphoreSlim? semaphore)
     {
         _semaphore = semaphore;
     }

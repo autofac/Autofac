@@ -5,7 +5,7 @@ namespace Autofac.Test.Scenarios.Dependencies;
 
 public class DependsByProp
 {
-    public DependsByCtor Dep
+    public DependsByCtor? Dep
     {
         get; set;
     }

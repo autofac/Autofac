@@ -31,7 +31,7 @@ public sealed class ScopeRestrictedRegisteredServicesTrackerTests
         var restrictedRootScopeLifetime = new MatchingScopeLifetime(new object());
         using var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
 
-        using var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
+        using var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object?>());
 
         builder.AddRegistrationSource(new ObjectRegistrationSource());
 
@@ -48,7 +48,7 @@ public sealed class ScopeRestrictedRegisteredServicesTrackerTests
         var restrictedRootScopeLifetime = new MatchingScopeLifetime(new object());
         using var tracker = new ScopeRestrictedRegisteredServicesTracker(restrictedRootScopeLifetime);
 
-        using var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
+        using var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object?>());
 
         builder.Register(_objectRegistration);
 

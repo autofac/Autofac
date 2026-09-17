@@ -16,7 +16,7 @@ public class TypedServiceTests
     [Fact]
     public void ConstructorRequires_TypeNotNull()
     {
-        Assert.Throws<ArgumentNullException>(() => new TypedService(null));
+        Assert.Throws<ArgumentNullException>(() => new TypedService(null!));
     }
 
     [Fact]

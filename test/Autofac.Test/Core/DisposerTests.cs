@@ -12,7 +12,7 @@ public class DisposerTests
     [Fact]
     public void DisposerDisposesContainedInstances_InReverseOfOrderAdded()
     {
-        DisposeTracker lastDisposed = null;
+        DisposeTracker? lastDisposed = null;
 
         var instance1 = new DisposeTracker();
         instance1.Disposing += (s, e) => lastDisposed = instance1;

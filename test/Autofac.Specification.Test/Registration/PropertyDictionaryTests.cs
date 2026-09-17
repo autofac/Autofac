@@ -64,7 +64,7 @@ public class PropertyDictionaryTests
         builder.Properties["count"] = 0;
         builder.Register(ctx =>
         {
-            return ctx.ComponentRegistry.Properties["count"].ToString();
+            return ctx.ComponentRegistry.Properties["count"]!.ToString()!;
         }).As<string>();
 
         var container = builder.Build();

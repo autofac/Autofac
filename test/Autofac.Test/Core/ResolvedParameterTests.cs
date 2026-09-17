@@ -107,7 +107,7 @@ public class ResolvedParameterTests
     private static ParameterInfo GetCharParameter()
     {
         return typeof(string)
-            .GetConstructor(new[] { typeof(char), typeof(int) })
+            .GetConstructor(new[] { typeof(char), typeof(int) })!
             .GetParameters()[0];
     }
 }

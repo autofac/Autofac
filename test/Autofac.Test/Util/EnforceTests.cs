@@ -11,6 +11,6 @@ public class EnforceTests
     public void FindsEmptyElementInList()
     {
         Assert.Throws<ArgumentException>(() =>
-            Enforce.ArgumentElementNotNull(new object[] { null }, "arg"));
+            Enforce.ArgumentElementNotNull(new object[] { null! }, "arg"));
     }
 }

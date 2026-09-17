@@ -192,6 +192,7 @@ public class AnyKeyRegistrationSourceTests
     }
 
     private static IComponentRegistration CreateComponentRegistration<T>()
+        where T : notnull
     {
         return RegistrationBuilder
             .ForType<T>()

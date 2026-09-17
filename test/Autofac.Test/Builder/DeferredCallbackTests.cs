@@ -11,13 +11,13 @@ public class DeferredCallbackTests
     public void Callback_Null()
     {
         var c = new DeferredCallback(reg => { });
-        Assert.Throws<ArgumentNullException>(() => { c.Callback = null; });
+        Assert.Throws<ArgumentNullException>(() => { c.Callback = null!; });
     }
 
     [Fact]
     public void Ctor_NullCallback()
     {
-        Assert.Throws<ArgumentNullException>(() => new DeferredCallback(null));
+        Assert.Throws<ArgumentNullException>(() => new DeferredCallback(null!));
     }
 
     [Fact]

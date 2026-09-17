@@ -30,7 +30,7 @@ public class DecoratorTests
 
     private class AutoWiredService : IAutoWiredService
     {
-        public NestedService NestedService
+        public NestedService? NestedService
         {
             get; set;
         }

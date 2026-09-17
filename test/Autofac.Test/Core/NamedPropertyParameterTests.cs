@@ -56,14 +56,14 @@ public class NamedPropertyParameterTests
     {
         return GetSetAccessorParameter(
                 typeof(HasInjectionPoints)
-                .GetProperty(HasInjectionPoints.PropertyName));
+                .GetProperty(HasInjectionPoints.PropertyName)!);
     }
 
     private ParameterInfo WrongPropertySetValueParameter()
     {
         return GetSetAccessorParameter(
                 typeof(HasInjectionPoints)
-                .GetProperty(HasInjectionPoints.WrongPropertyName));
+                .GetProperty(HasInjectionPoints.WrongPropertyName)!);
     }
 
     private ParameterInfo ConstructorParameter()
@@ -76,7 +76,7 @@ public class NamedPropertyParameterTests
     private ParameterInfo MethodParameter()
     {
         return typeof(HasInjectionPoints)
-            .GetMethod(HasInjectionPoints.MethodName)
+            .GetMethod(HasInjectionPoints.MethodName)!
             .GetParameters()[0];
     }
 

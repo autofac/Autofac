@@ -60,7 +60,7 @@ public class ScanningRegistrationTests
         var cb = new ContainerBuilder();
         cb.RegisterAssemblyTypes(typeof(SaveCommand).GetTypeInfo().Assembly)
             .Where(t => t != typeof(UndoRedoCommand))
-            .WithMetadata(t => t.GetMethods().ToDictionary(m => m.Name, m => (object)m.ReturnType));
+            .WithMetadata(t => t.GetMethods().ToDictionary(m => m.Name, m => (object?)m.ReturnType));
 
         var c = cb.Build();
         var s = c.Resolve<Meta<SaveCommand>>();
@@ -168,7 +168,7 @@ public class ScanningRegistrationTests
     {
         var cb = new ContainerBuilder();
         Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyTypes(typeof(ICommand<>).GetTypeInfo().Assembly).
-            AsClosedTypesOf(null));
+            AsClosedTypesOf(null!));
     }
 
     [Fact]
@@ -393,7 +393,7 @@ public class ScanningRegistrationTests
         c.AssertComponentRegistrationOrder<IAService, AnExistingComponent, A2Component>();
     }
 
-    public static IContainer RegisterScenarioAssembly(Action<IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>> configuration = null)
+    public static IContainer RegisterScenarioAssembly(Action<IRegistrationBuilder<object, ScanningActivatorData, DynamicRegistrationStyle>>? configuration = null)
     {
         var cb = new ContainerBuilder();
         var config = cb.RegisterAssemblyTypes(_scenarioAssembly);
@@ -417,6 +417,7 @@ public class ScanningRegistrationTests
             .WithMetadataFrom<IHaveName>());
 
         c.ComponentRegistry.TryGetRegistration(new TypedService(typeof(ScannedComponentWithName)), out var r);
+        Assert.NotNull(r);
 
         r.Metadata.TryGetValue("Name", out var name);
 
@@ -451,6 +452,7 @@ public class ScanningRegistrationTests
         // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
         var c = RegisterScenarioAssembly();
         var internalType = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.InternalComponent", true);
+        Assert.NotNull(internalType);
         Assert.True(c.IsRegistered(internalType));
     }
 
@@ -460,6 +462,7 @@ public class ScanningRegistrationTests
         // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
         var c = RegisterScenarioAssembly(conf => conf.PublicOnly());
         var internalType = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.InternalComponent", true);
+        Assert.NotNull(internalType);
         Assert.False(c.IsRegistered(internalType));
     }
 
@@ -469,6 +472,7 @@ public class ScanningRegistrationTests
         // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
         var c = RegisterScenarioAssembly();
         var privateType = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+PrivateComponent", true);
+        Assert.NotNull(privateType);
         c.AssertRegistered<NestedComponent>();
         Assert.True(c.IsRegistered(privateType));
     }
@@ -479,6 +483,7 @@ public class ScanningRegistrationTests
         // Issue #897: It may not be obvious, but our long-running behavior has been to include non-public types.
         var c = RegisterScenarioAssembly(conf => conf.PublicOnly());
         var privateType = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+PrivateComponent", true);
+        Assert.NotNull(privateType);
         _ = _scenarioAssembly.GetType("Autofac.Test.Scenarios.ScannedAssembly.NestedComponent+InternalComponent", true);
         c.AssertRegistered<NestedComponent>();
         Assert.False(c.IsRegistered(privateType));

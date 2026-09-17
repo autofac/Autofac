@@ -209,7 +209,7 @@ public class PreserveExistingDefaultsTests
             get; private set;
         }
 
-        public object Value
+        public object? Value
         {
             get; set;
         }

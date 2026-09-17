@@ -15,7 +15,7 @@ public class RegistrationBuilderTests
             get; set;
         }
 
-        public string B
+        public string? B
         {
             get; set;
         }

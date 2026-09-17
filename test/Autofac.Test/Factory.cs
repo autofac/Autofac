@@ -27,6 +27,7 @@ internal static class Factory
     }
 
     public static IComponentRegistration CreateSingletonRegistration<T>(T instance)
+        where T : notnull
     {
         return RegistrationBuilder
             .ForDelegate((c, p) => instance)
@@ -109,9 +110,9 @@ internal static class Factory
         return new ProvidedInstanceActivator(instance);
     }
 
-    private static Dictionary<string, object> GetDefaultMetadata()
+    private static Dictionary<string, object?> GetDefaultMetadata()
     {
-        return new Dictionary<string, object>
+        return new Dictionary<string, object?>
             {
                 { MetadataKeys.RegistrationOrderMetadataKey, SequenceGenerator.GetNextUniqueSequence() },
             };
@@ -120,7 +121,7 @@ internal static class Factory
     [SuppressMessage("CA2000", "CA2000", Justification = "The component registry builder handles disposal of the services tracker.")]
     public static IComponentRegistryBuilder CreateEmptyComponentRegistryBuilder()
     {
-        return new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object>());
+        return new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), new Dictionary<string, object?>());
     }
 
     [SuppressMessage("CA2000", "CA2000", Justification = "Shortcut for testing.")]

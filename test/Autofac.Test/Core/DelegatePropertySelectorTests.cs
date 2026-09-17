@@ -35,7 +35,7 @@ public class DelegatePropertySelectorTests
     [Fact]
     public void ThrowsExceptionOnNull()
     {
-        Assert.Throws<ArgumentNullException>("finder", () => new DelegatePropertySelector(null));
+        Assert.Throws<ArgumentNullException>("finder", () => new DelegatePropertySelector(null!));
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class DelegatePropertySelectorTests
         foreach (var propInfo in typeof(HasProperties).GetProperties())
         {
             var expected = propInfo.GetCustomAttributes<InjectPropertyAttribute>().Any();
-            Assert.Equal(expected, finder.InjectProperty(propInfo, null));
+            Assert.Equal(expected, finder.InjectProperty(propInfo, null!));
         }
     }
 }

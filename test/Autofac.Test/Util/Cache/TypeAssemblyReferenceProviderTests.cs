@@ -37,6 +37,7 @@ public class TypeAssemblyReferenceProviderTests
     public void MemberInfoReferencesCanBeDetermined()
     {
         var memberInfo = typeof(PropertyOwner<ContainerBuilder>).GetProperty(nameof(PropertyOwner<ContainerBuilder>.Property));
+        Assert.NotNull(memberInfo);
 
         var expectedResults = new[] { typeof(ContainerBuilder), typeof(PropertyOwner<>) };
 
@@ -80,7 +81,7 @@ public class TypeAssemblyReferenceProviderTests
 
     private class PropertyOwner<T>
     {
-        public string Property
+        public string? Property
         {
             get; set;
         }

@@ -181,32 +181,32 @@ public class TypeExtensionsTests
 
     private class DeclaredPropertyType
     {
-        public string PublicInstanceProperty
+        public string? PublicInstanceProperty
         {
             get; set;
         }
 
-        protected string ProtectedInstanceProperty
+        protected string? ProtectedInstanceProperty
         {
             get; set;
         }
 
-        private string PrivateInstanceProperty
+        private string? PrivateInstanceProperty
         {
             get; set;
         }
 
-        public static string PublicStaticProperty
+        public static string? PublicStaticProperty
         {
             get; set;
         }
 
-        protected static string ProtectedStaticProperty
+        protected static string? ProtectedStaticProperty
         {
             get; set;
         }
 
-        private static string PrivateStaticProperty
+        private static string? PrivateStaticProperty
         {
             get; set;
         }

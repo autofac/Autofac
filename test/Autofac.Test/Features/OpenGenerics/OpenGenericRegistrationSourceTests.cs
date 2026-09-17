@@ -26,7 +26,7 @@ public class OpenGenericRegistrationSourceTests
         var g = ConstructSource(typeof(A1<>), typeof(I<>));
 
         var r = g
-            .RegistrationsFor(new TypedService(typeof(I<int>)), s => null)
+            .RegistrationsFor(new TypedService(typeof(I<int>)), s => null!)
             .Single();
 
         Assert.Equal(
@@ -116,7 +116,7 @@ public class OpenGenericRegistrationSourceTests
     {
         var g = ConstructSource(implementor, typeof(I<>));
 
-        var rs = g.RegistrationsFor(new TypedService(typeof(I<TClosing>)), s => null);
+        var rs = g.RegistrationsFor(new TypedService(typeof(I<TClosing>)), s => null!);
 
         return rs.Count() == 1;
     }
@@ -134,7 +134,7 @@ public class OpenGenericRegistrationSourceTests
     {
         var g = ConstructSource(typeof(TwoParams<,>));
 
-        var rs = g.RegistrationsFor(new TypedService(typeof(TwoParams<int, string>)), s => null);
+        var rs = g.RegistrationsFor(new TypedService(typeof(TwoParams<int, string>)), s => null!);
 
         Assert.Single(rs);
     }
@@ -144,7 +144,7 @@ public class OpenGenericRegistrationSourceTests
     {
         var g = ConstructSource(typeof(TwoParams<,>), typeof(ITwoParams<,>));
 
-        var rs = g.RegistrationsFor(new TypedService(typeof(ITwoParams<int, string>)), s => null);
+        var rs = g.RegistrationsFor(new TypedService(typeof(ITwoParams<int, string>)), s => null!);
 
         Assert.Single(rs);
     }
@@ -167,7 +167,7 @@ public class OpenGenericRegistrationSourceTests
     {
         var g = ConstructSource(typeof(Repository<,>));
 
-        var rs = g.RegistrationsFor(new TypedService(typeof(Repository<EntityOfInt, int>)), s => null);
+        var rs = g.RegistrationsFor(new TypedService(typeof(Repository<EntityOfInt, int>)), s => null!);
 
         Assert.Single(rs);
     }
@@ -256,7 +256,7 @@ public class OpenGenericRegistrationSourceTests
         return true;
     }
 
-    private static OpenGenericRegistrationSource ConstructSource(Type component, Type service = null)
+    private static OpenGenericRegistrationSource ConstructSource(Type component, Type? service = null)
     {
         return new OpenGenericRegistrationSource(
             new RegistrationData(new TypedService(service ?? component)),

@@ -168,7 +168,7 @@ public class FallbackDictionaryTests
     [Fact]
     public void Ctor_NullParent()
     {
-        Assert.Throws<ArgumentNullException>(() => new FallbackDictionary<string, object>(null));
+        Assert.Throws<ArgumentNullException>(() => new FallbackDictionary<string, object>(null!));
     }
 
     [Fact]

@@ -14,7 +14,7 @@ public class ComponentRegistrationTests
     {
         Assert.Throws<ArgumentException>(() =>
         {
-            var services = new Service[] { new TypedService(typeof(object)), null };
+            var services = new Service[] { new TypedService(typeof(object)), null! };
             Factory.CreateSingletonRegistration(services, Factory.CreateProvidedInstanceActivator(new object()));
         });
     }

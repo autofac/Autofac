@@ -275,7 +275,7 @@ public class OpenGenericMultipleServiceOverrideTests
                     InstanceSharing.None,
                     InstanceOwnership.OwnedByLifetimeScope,
                     services,
-                    new Dictionary<string, object>());
+                    new Dictionary<string, object?>());
 #pragma warning restore CA2000
             }
         }

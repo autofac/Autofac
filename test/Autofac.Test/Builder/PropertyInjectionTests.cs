@@ -19,10 +19,10 @@ public class PropertyInjectionTests
         var propertySelector = new DefaultPropertySelector(true);
         var parameters = Array.Empty<Parameter>();
 
-        Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null, instance, propertySelector, parameters));
-        Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null, propertySelector, parameters));
-        Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, instance, null, parameters));
-        Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, instance, propertySelector, null));
+        Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(null!, instance, propertySelector, parameters));
+        Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, null!, propertySelector, parameters));
+        Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, instance, null!, parameters));
+        Assert.Throws<ArgumentNullException>(() => AutowiringPropertyInjector.InjectProperties(ctx, instance, propertySelector, null!));
     }
 
     [Fact]

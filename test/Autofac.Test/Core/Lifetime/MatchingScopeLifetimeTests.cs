@@ -38,7 +38,7 @@ public class MatchingScopeLifetimeTests
     public void WhenTagsToMatchIsNull_ExceptionThrown()
     {
         var exception = Assert.Throws<ArgumentNullException>(
-            () => new MatchingScopeLifetime(null));
+            () => new MatchingScopeLifetime(null!));
 
         Assert.Equal("lifetimeScopeTagsToMatch", exception.ParamName);
     }
