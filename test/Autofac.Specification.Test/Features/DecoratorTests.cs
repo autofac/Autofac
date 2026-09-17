@@ -58,6 +58,77 @@ public class DecoratorTests
     }
 
     [Fact]
+    public void CanApplyDecoratorConditionallyUsingWithCondition()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>()
+            .WithCondition(context => context.AppliedDecorators.Any());
+        builder.RegisterDecorator<DecoratorB, IDecoratedService>();
+        var container = builder.Build();
+
+        var instance = container.Resolve<IDecoratedService>();
+
+        Assert.IsType<DecoratorB>(instance);
+        Assert.IsType<ImplementorA>(instance.Decorated);
+    }
+
+    [Fact]
+    public void WithConditionReplacesTheConditionPassedToRegisterDecorator()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>(_ => false)
+            .WithCondition(_ => true);
+        var container = builder.Build();
+
+        var instance = container.Resolve<IDecoratedService>();
+
+        Assert.IsType<DecoratorA>(instance);
+        Assert.IsType<ImplementorA>(instance.Decorated);
+    }
+
+    [Fact]
+    public void DecoratorCanBeConfiguredAfterItIsRegistered()
+    {
+        var builder = new ContainerBuilder();
+        var decorator = builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+
+        // Registrations made in between, and configuration applied well after the
+        // RegisterDecorator call, are both picked up when the container is built.
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        decorator.WithCondition(_ => false);
+
+        var container = builder.Build();
+
+        Assert.IsType<ImplementorA>(container.Resolve<IDecoratedService>());
+    }
+
+    [Fact]
+    public void CanConfigureADecoratorRegisteredByType()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator(typeof(DecoratorA), typeof(IDecoratedService))
+            .WithCondition(_ => false);
+        var container = builder.Build();
+
+        Assert.IsType<ImplementorA>(container.Resolve<IDecoratedService>());
+    }
+
+    [Fact]
+    public void CanConfigureADecoratorRegisteredByLambda()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<IDecoratedService>((c, p, i) => new DecoratorA(i))
+            .WithCondition(_ => false);
+        var container = builder.Build();
+
+        Assert.IsType<ImplementorA>(container.Resolve<IDecoratedService>());
+    }
+
+    [Fact]
     public void CanInjectDecoratorContextAsSnapshot()
     {
         var builder = new ContainerBuilder();
