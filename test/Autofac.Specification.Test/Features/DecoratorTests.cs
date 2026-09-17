@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.Decorators;
 using Autofac.Features.Metadata;
 using Autofac.Features.OwnedInstances;
@@ -10,6 +12,8 @@ namespace Autofac.Specification.Test.Features;
 
 public class DecoratorTests
 {
+    private const string DecoratorMetadataKey = "decorator-metadata";
+
     private interface IDecoratedService : IService
     {
         IDecoratedService Decorated
@@ -126,6 +130,214 @@ public class DecoratorTests
         var container = builder.Build();
 
         Assert.IsType<ImplementorA>(container.Resolve<IDecoratedService>());
+    }
+
+    [Fact]
+    public void RegisterDecoratorReturnsABuilder()
+    {
+        var builder = new ContainerBuilder();
+
+        var fromGeneric = builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+        var fromType = builder.RegisterDecorator(typeof(DecoratorB), typeof(IDecoratedService));
+        var fromLambda = builder.RegisterDecorator<IDecoratedService>((_, _, inner) => new DecoratorA(inner));
+
+        // The type argument each overload closes over is part of the public API. The non-generic
+        // overload deliberately uses object, matching the precedent set by RegisterType(Type)
+        // returning IRegistrationBuilder<object, ...>.
+        Assert.IsAssignableFrom<IDecoratorRegistrationBuilder<IDecoratedService>>(fromGeneric);
+        Assert.IsAssignableFrom<IDecoratorRegistrationBuilder<object>>(fromType);
+        Assert.IsAssignableFrom<IDecoratorRegistrationBuilder<IDecoratedService>>(fromLambda);
+    }
+
+    [Fact]
+    public void PipelineMiddlewareWrapsTheDecoratorInstance()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>()
+            .ConfigurePipeline(WrapWithProxyStandIn);
+        var container = builder.Build();
+
+        var instance = container.Resolve<IDecoratedService>();
+
+        // The middleware wraps the decorator, not the component being decorated.
+        Assert.IsType<ProxyStandIn>(instance);
+        Assert.IsType<DecoratorA>(instance.Decorated);
+        Assert.IsType<ImplementorA>(instance.Decorated.Decorated);
+    }
+
+    [Fact]
+    public void PipelineMiddlewareOnTheOutermostDecoratorWrapsEverything()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+        builder.RegisterDecorator<DecoratorB, IDecoratedService>()
+            .ConfigurePipeline(WrapWithProxyStandIn);
+        var container = builder.Build();
+
+        var instance = container.Resolve<IDecoratedService>();
+
+        Assert.IsType<ProxyStandIn>(instance);
+        Assert.IsType<DecoratorB>(instance.Decorated);
+        Assert.IsType<DecoratorA>(instance.Decorated.Decorated);
+    }
+
+    [Fact]
+    public void PipelineMiddlewareOnTheInnermostDecoratorWrapsOnlyThatDecorator()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>()
+            .ConfigurePipeline(WrapWithProxyStandIn);
+        builder.RegisterDecorator<DecoratorB, IDecoratedService>();
+        var container = builder.Build();
+
+        var instance = container.Resolve<IDecoratedService>();
+
+        Assert.IsType<DecoratorB>(instance);
+        Assert.IsType<ProxyStandIn>(instance.Decorated);
+        Assert.IsType<DecoratorA>(instance.Decorated.Decorated);
+    }
+
+    [Fact]
+    public void PipelineMiddlewareRunsAgainstTheDecoratorServiceAndRegistration()
+    {
+        var services = new List<Service>();
+        var registrations = new List<IComponentRegistration>();
+
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>()
+            .ConfigurePipeline(p => p.Use(PipelinePhase.Activation, MiddlewareInsertionMode.StartOfPhase, (ctx, next) =>
+            {
+                next(ctx);
+                services.Add(ctx.Service);
+                registrations.Add(ctx.Registration);
+            }));
+        var container = builder.Build();
+
+        container.Resolve<IDecoratedService>();
+
+        var decoratorService = Assert.IsType<DecoratorService>(Assert.Single(services));
+        Assert.Equal(typeof(IDecoratedService), decoratorService.ServiceType);
+        Assert.Equal(typeof(DecoratorA), Assert.Single(registrations).Activator.LimitType);
+    }
+
+    [Fact]
+    public void MetadataIsVisibleOnTheDecoratorRegistration()
+    {
+        var registrations = new List<IComponentRegistration>();
+
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>()
+            .WithMetadata(DecoratorMetadataKey, "the-value")
+            .ConfigurePipeline(p => p.Use(PipelinePhase.Activation, (ctx, next) =>
+            {
+                next(ctx);
+                registrations.Add(ctx.Registration);
+            }));
+        var container = builder.Build();
+
+        container.Resolve<IDecoratedService>();
+
+        Assert.Equal("the-value", Assert.Single(registrations).Metadata[DecoratorMetadataKey]);
+    }
+
+    [Fact]
+    public void MetadataPropertyExposesTheUnderlyingDictionary()
+    {
+        var builder = new ContainerBuilder();
+        var decorator = builder.RegisterDecorator<DecoratorA, IDecoratedService>()
+            .WithMetadata(DecoratorMetadataKey, "first");
+
+        Assert.Equal("first", decorator.Metadata[DecoratorMetadataKey]);
+
+        // Integrations that need to append to a value already present can go via the dictionary.
+        decorator.Metadata[DecoratorMetadataKey] = "second";
+
+        Assert.Equal("second", decorator.Metadata[DecoratorMetadataKey]);
+    }
+
+    [Fact]
+    public void MetadataCanBeProvidedAsASequence()
+    {
+        var builder = new ContainerBuilder();
+        var decorator = builder.RegisterDecorator<DecoratorA, IDecoratedService>()
+            .WithMetadata([new(DecoratorMetadataKey, "the-value")]);
+
+        Assert.Equal("the-value", decorator.Metadata[DecoratorMetadataKey]);
+    }
+
+    [Fact]
+    public void WithConditionIsAppliedToTheDecorator()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>()
+            .WithCondition(_ => false);
+        var container = builder.Build();
+
+        Assert.IsType<ImplementorA>(container.Resolve<IDecoratedService>());
+    }
+
+    [Fact]
+    public void WithConditionReceivesTheDecoratorContext()
+    {
+        var contexts = new List<IDecoratorContext>();
+
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>()
+            .WithCondition(context =>
+            {
+                contexts.Add(context);
+                return true;
+            });
+        var container = builder.Build();
+
+        container.Resolve<IDecoratedService>();
+
+        var context = Assert.Single(contexts);
+        Assert.Equal(typeof(IDecoratedService), context.ServiceType);
+        Assert.Equal(typeof(ImplementorA), context.ImplementationType);
+    }
+
+    [Fact]
+    public void ConfigurePipelineRequiresAnAction()
+    {
+        var builder = new ContainerBuilder();
+        var decorator = builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+
+        Assert.Throws<ArgumentNullException>(() => decorator.ConfigurePipeline(null!));
+    }
+
+    [Fact]
+    public void WithMetadataRequiresAKey()
+    {
+        var builder = new ContainerBuilder();
+        var decorator = builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+
+        Assert.Throws<ArgumentNullException>(() => decorator.WithMetadata(null!, "value"));
+    }
+
+    [Fact]
+    public void WithMetadataRequiresProperties()
+    {
+        var builder = new ContainerBuilder();
+        var decorator = builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+
+        Assert.Throws<ArgumentNullException>(() => decorator.WithMetadata(null!));
+    }
+
+    [Fact]
+    public void WithConditionRequiresACondition()
+    {
+        var builder = new ContainerBuilder();
+        var decorator = builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+
+        Assert.Throws<ArgumentNullException>(() => decorator.WithCondition(null!));
     }
 
     [Fact]
@@ -1497,6 +1709,21 @@ public class DecoratorTests
         Assert.Throws<DependencyResolutionException>(() => container.Resolve<IDecoratedService>());
     }
 
+    /// <summary>
+    /// Adds middleware that replaces the activated instance with a wrapper, in the same place in
+    /// the pipeline an interception integration would use.
+    /// </summary>
+    /// <param name="pipeline">The decorator registration's pipeline builder.</param>
+    private static void WrapWithProxyStandIn(IResolvePipelineBuilder pipeline)
+    {
+        pipeline.Use(PipelinePhase.Activation, MiddlewareInsertionMode.StartOfPhase, (ctx, next) =>
+        {
+            next(ctx);
+
+            ctx.Instance = new ProxyStandIn((IDecoratedService)ctx.Instance!);
+        });
+    }
+
     private class MyMetadata
     {
         public int A
@@ -1529,6 +1756,17 @@ public class DecoratorTests
     private class DecoratorB : Decorator
     {
         public DecoratorB(IDecoratedService decorated)
+            : base(decorated)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Stands in for the proxy an interception integration would put around an activated instance.
+    /// </summary>
+    private class ProxyStandIn : Decorator
+    {
+        public ProxyStandIn(IDecoratedService decorated)
             : base(decorated)
         {
         }
