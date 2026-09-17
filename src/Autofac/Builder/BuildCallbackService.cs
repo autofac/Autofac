@@ -42,7 +42,7 @@ internal class BuildCallbackService
 
         try
         {
-            foreach (var callback in _callbacks!)
+            foreach (var callback in _callbacks)
             {
                 callback(scope);
             }
