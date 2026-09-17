@@ -23,7 +23,7 @@ public class LoadContextScopeTests
             (builder, assembly) => builder.RegisterAssemblyTypes(assembly),
             (scope, loadContext, assembly) =>
             {
-                var instance = scope.Resolve(assembly.GetType("A.Service1"));
+                var instance = scope.Resolve(assembly.GetType("A.Service1")!);
 
                 Assert.Contains(instance.GetType().Assembly, loadContext.Assemblies);
             });
@@ -46,7 +46,7 @@ public class LoadContextScopeTests
             (builder, assembly) => { },
             (scope, loadContext, assembly) =>
             {
-                var instance = scope.Resolve(assembly.GetType("A.Service1"));
+                var instance = scope.Resolve(assembly.GetType("A.Service1")!);
 
                 Assert.Contains(instance.GetType().Assembly, loadContext.Assemblies);
             });
@@ -66,19 +66,19 @@ public class LoadContextScopeTests
             out var loadContextRef,
             (builder, assembly) =>
             {
-                var module = (IModule)Activator.CreateInstance(assembly.GetType("A.OnActivatedModule"), 100);
-
+                var module = Activator.CreateInstance(assembly.GetType("A.OnActivatedModule")!, 100) as IModule;
+                Assert.NotNull(module);
                 builder.RegisterModule(module);
             },
             (scope, loadContext, assembly) =>
             {
-                var serviceType = assembly.GetType("A.Service1");
+                var serviceType = assembly.GetType("A.Service1")!;
 
                 var instance = scope.Resolve(serviceType);
 
                 Assert.Contains(instance.GetType().Assembly, loadContext.Assemblies);
 
-                var valueProp = serviceType.GetProperty("Value");
+                var valueProp = serviceType.GetProperty("Value")!;
 
                 Assert.Equal(100, valueProp.GetValue(instance));
             });
@@ -102,13 +102,13 @@ public class LoadContextScopeTests
             {
                 Action invoke = () => { callbackInvoked = true; };
 
-                var module = (IModule)Activator.CreateInstance(assembly.GetType("A.LifetimeScopeEndingModule"), invoke);
-
+                var module = Activator.CreateInstance(assembly.GetType("A.LifetimeScopeEndingModule")!, invoke) as IModule;
+                Assert.NotNull(module);
                 builder.RegisterModule(module);
             },
             (scope, loadContext, assembly) =>
             {
-                var serviceType = assembly.GetType("A.Service1");
+                var serviceType = assembly.GetType("A.Service1")!;
 
                 var instance = scope.Resolve(serviceType);
 
@@ -130,10 +130,10 @@ public class LoadContextScopeTests
         LoadAssemblyAndTest(
             rootContainer,
             out var loadContextRef,
-            (builder, assembly) => builder.RegisterType(assembly.GetType("A.Service1")),
+            (builder, assembly) => builder.RegisterType(assembly.GetType("A.Service1")!),
             (scope, loadContext, assembly) =>
             {
-                var genericEnumerable = typeof(IEnumerable<>).MakeGenericType(assembly.GetType("A.Service1"));
+                var genericEnumerable = typeof(IEnumerable<>).MakeGenericType(assembly.GetType("A.Service1")!);
 
                 var resolved = (IEnumerable<object>)scope.Resolve(genericEnumerable);
 
@@ -157,7 +157,7 @@ public class LoadContextScopeTests
         LoadAssemblyAndTest(
             rootContainer,
             out var loadContextRef,
-            (builder, assembly) => builder.RegisterType(assembly.GetType("A.Service1")).As<object>(),
+            (builder, assembly) => builder.RegisterType(assembly.GetType("A.Service1")!).As<object>(),
             (scope, loadContext, assembly) =>
             {
                 var resolved = scope.Resolve<IEnumerable<object>>();
@@ -170,7 +170,7 @@ public class LoadContextScopeTests
                     },
                     secondItem =>
                     {
-                        Assert.IsType(assembly.GetType("A.Service1"), secondItem);
+                        Assert.IsType(assembly.GetType("A.Service1")!, secondItem);
                     });
             });
 
@@ -210,7 +210,7 @@ public class LoadContextScopeTests
 
         // Replace the project/assembly name in the path; this makes sure we use the same dotnet sdk and configuration
         // as this assembly.
-        var newAssemblyPath = thisAssemblyPath.Replace(currentAssembly.GetName().Name, "Autofac.Test.Scenarios.LoadContext", StringComparison.Ordinal);
+        var newAssemblyPath = thisAssemblyPath.Replace(currentAssembly.GetName().Name!, "Autofac.Test.Scenarios.LoadContext", StringComparison.Ordinal);
 
         var loadContext = new AssemblyLoadContext("test", isCollectible: true);
         loadContextRef = new WeakReference(loadContext);

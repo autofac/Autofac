@@ -5,7 +5,7 @@ namespace Autofac.Specification.Test.Features.PropertyInjection;
 
 public class HasPublicSetter
 {
-    public string Val
+    public string? Val
     {
         get; set;
     }

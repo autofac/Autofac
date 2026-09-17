@@ -11,7 +11,7 @@ public class CtorWithValueParameter
     // parameter that is named `value` - this property doesn't
     // need to be filled in, it just needs to exist and not be
     // a simple `object` or `string` or something.
-    public HasMixedVisibilityProperties Dummy
+    public HasMixedVisibilityProperties? Dummy
     {
         get; set;
     }

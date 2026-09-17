@@ -12,7 +12,7 @@ public class AsyncOnlyDisposeTracker : IAsyncDisposable
         _completeAsync = completeAsync;
     }
 
-    public event EventHandler<EventArgs> Disposing;
+    public event EventHandler<EventArgs>? Disposing;
 
     public bool IsAsyncDisposed
     {

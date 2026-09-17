@@ -34,7 +34,7 @@ public class RequiredPropertyTests
 
         var exception = Assert.Throws<DependencyResolutionException>(() => container.Resolve<Component>());
 
-        Assert.Contains(nameof(Component.ServiceB), exception.InnerException.Message, StringComparison.Ordinal);
+        Assert.Contains(nameof(Component.ServiceB), exception?.InnerException?.Message, StringComparison.Ordinal);
     }
 
     [Fact]

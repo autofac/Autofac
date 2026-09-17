@@ -1017,9 +1017,9 @@ public class DecoratorTests
         builder.RegisterType<ImplementorA>().As<IDecoratedService>();
         builder.RegisterDecorator<IDecoratedService>((c, p, i) =>
         {
-            var stringParameter = (string)p
+            var stringParameter = (string?)p
                 .OfType<NamedParameter>()
-                .FirstOrDefault(np => np.Name == ParameterName)?.Value;
+                .FirstOrDefault(np => np.Name == ParameterName)?.Value ?? "";
 
             return new DecoratorWithParameter(i, stringParameter);
         });

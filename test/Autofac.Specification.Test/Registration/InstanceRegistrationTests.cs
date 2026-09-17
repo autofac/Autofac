@@ -17,7 +17,7 @@ public class InstanceRegistrationTests
     public void NullCannotBeRegisteredAsAnInstance()
     {
         var builder = new ContainerBuilder();
-        Assert.Throws<ArgumentNullException>(() => builder.RegisterInstance((object)null));
+        Assert.Throws<ArgumentNullException>(() => builder.RegisterInstance((object)null!));
     }
 
     [Fact]

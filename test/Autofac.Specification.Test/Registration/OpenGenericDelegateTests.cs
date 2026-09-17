@@ -33,7 +33,7 @@ public class OpenGenericDelegateTests
     {
         var builder = new ContainerBuilder();
 
-        builder.RegisterGeneric((context, types) => Activator.CreateInstance(typeof(ImplementationA<>).MakeGenericType(types)))
+        builder.RegisterGeneric((context, types) => Activator.CreateInstance(typeof(ImplementationA<>).MakeGenericType(types))!)
                .As(typeof(IInterfaceA<>));
 
         var container = builder.Build();
@@ -50,7 +50,7 @@ public class OpenGenericDelegateTests
     {
         var builder = new ContainerBuilder();
 
-        builder.RegisterGeneric((context, types) => Activator.CreateInstance(typeof(ImplementationA<>).MakeGenericType(types)))
+        builder.RegisterGeneric((context, types) => Activator.CreateInstance(typeof(ImplementationA<>).MakeGenericType(types))!)
                .As(typeof(IInterfaceA<>));
 
         var container = builder.Build();
@@ -63,7 +63,7 @@ public class OpenGenericDelegateTests
     {
         var builder = new ContainerBuilder();
 
-        builder.RegisterGeneric((context, types) => Activator.CreateInstance(typeof(ImplementationMultiType<,>).MakeGenericType(types)))
+        builder.RegisterGeneric((context, types) => Activator.CreateInstance(typeof(ImplementationMultiType<,>).MakeGenericType(types))!)
                .As(typeof(IInterfaceMultiType<,>));
 
         var container = builder.Build();
@@ -84,7 +84,7 @@ public class OpenGenericDelegateTests
         {
             var chosenType = types.Length == 2 ? typeof(ImplementationMultiType<,>) : typeof(ImplementationA<>);
 
-            return Activator.CreateInstance(chosenType.MakeGenericType(types));
+            return Activator.CreateInstance(chosenType.MakeGenericType(types))!;
         })
         .As(typeof(IInterfaceMultiType<,>))
         .As(typeof(IInterfaceA<>));
@@ -105,13 +105,13 @@ public class OpenGenericDelegateTests
     {
         var builder = new ContainerBuilder();
 
-        List<Parameter> passedParameters = null;
+        List<Parameter> passedParameters = null!;
 
         builder.RegisterGeneric((context, types, parameters) =>
         {
             passedParameters = parameters.ToList();
 
-            return Activator.CreateInstance(typeof(ImplementationA<>).MakeGenericType(types));
+            return Activator.CreateInstance(typeof(ImplementationA<>).MakeGenericType(types))!;
         })
         .As(typeof(IInterfaceA<>));
 

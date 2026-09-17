@@ -112,7 +112,7 @@ public class CircularDependencyTests
 
         var c = cb.Build();
 
-        string capturedTrace = null;
+        string? capturedTrace = null;
 
         var tracer = new DefaultDiagnosticTracer();
         tracer.OperationCompleted += (sender, args) =>
@@ -228,7 +228,7 @@ public class CircularDependencyTests
 
     private interface ICircularDependencyA
     {
-        ICircularDependencyB DependencyB
+        ICircularDependencyB? DependencyB
         {
             get;
         }
@@ -236,7 +236,7 @@ public class CircularDependencyTests
 
     private interface ICircularDependencyB
     {
-        ICircularDependencyA DependencyA
+        ICircularDependencyA? DependencyA
         {
             get;
         }
@@ -244,12 +244,12 @@ public class CircularDependencyTests
 
     private interface ICircularDependencyHost
     {
-        ICircularDependencyB DependencyB
+        ICircularDependencyB? DependencyB
         {
             get;
         }
 
-        ICircularDependencyA DependencyA
+        ICircularDependencyA? DependencyA
         {
             get;
         }
@@ -257,7 +257,7 @@ public class CircularDependencyTests
 
     private class CircularDependencyA : ICircularDependencyA
     {
-        public ICircularDependencyB DependencyB
+        public ICircularDependencyB? DependencyB
         {
             get; set;
         }
@@ -265,7 +265,7 @@ public class CircularDependencyTests
 
     private class CircularDependencyB : ICircularDependencyB
     {
-        public ICircularDependencyA DependencyA
+        public ICircularDependencyA? DependencyA
         {
             get; set;
         }
@@ -273,18 +273,18 @@ public class CircularDependencyTests
 
     private class CircularDependencyHost : ICircularDependencyHost
     {
-        public ICircularDependencyB DependencyB
+        public ICircularDependencyB? DependencyB
         {
             get; set;
         }
 
-        public ICircularDependencyA DependencyA
+        public ICircularDependencyA? DependencyA
         {
             get; set;
         }
     }
 
-    private static IPlugin SafeResolvePlugin(string pluginName, IComponentContext core)
+    private static IPlugin? SafeResolvePlugin(string pluginName, IComponentContext core)
     {
         try
         {

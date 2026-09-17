@@ -5,18 +5,18 @@ namespace Autofac.Specification.Test.Features.PropertyInjection;
 
 public class HasMixedVisibilityProperties
 {
-    public string PublicString
+    public string? PublicString
     {
         get; set;
     }
 
     [Inject]
-    private string PrivateString
+    private string? PrivateString
     {
         get; set;
     }
 
-    public string PrivateStringAccessor()
+    public string? PrivateStringAccessor()
     {
         return PrivateString;
     }

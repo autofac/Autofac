@@ -424,7 +424,7 @@ public class PropertyInjectionTests
     {
         // Issue 1427: WithProperty should consistently allow null values.
         var builder = new ContainerBuilder();
-        builder.RegisterType<HasPublicSetter>().WithProperty(TypedParameter.From<string>(null));
+        builder.RegisterType<HasPublicSetter>().WithProperty(TypedParameter.From<string>(null!));
         var container = builder.Build();
         var instance = container.Resolve<HasPublicSetter>();
         Assert.Null(instance.Val);
@@ -440,7 +440,7 @@ public class PropertyInjectionTests
             _id = id;
         }
 
-        public string Name
+        public string? Name
         {
             get; set;
         }
@@ -466,7 +466,7 @@ public class PropertyInjectionTests
             get; set;
         }
 
-        public string Value
+        public string? Value
         {
             private get
             {
@@ -489,7 +489,7 @@ public class PropertyInjectionTests
 
     private sealed class DecoratedService : IMyService
     {
-        public string Prop
+        public string? Prop
         {
             get; set;
         }

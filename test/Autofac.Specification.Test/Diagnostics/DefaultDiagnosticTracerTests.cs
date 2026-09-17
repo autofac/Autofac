@@ -19,7 +19,7 @@ public class DefaultDiagnosticTracerTests
 
         container.SubscribeToDiagnostics(tracer);
 
-        string lastOpResult = null;
+        string? lastOpResult = null;
 
         tracer.OperationCompleted += (sender, args) =>
         {
@@ -45,7 +45,7 @@ public class DefaultDiagnosticTracerTests
 
         container.SubscribeToDiagnostics(tracer);
 
-        string lastOpResult = null;
+        string? lastOpResult = null;
 
         tracer.OperationCompleted += (sender, args) =>
         {
@@ -71,7 +71,7 @@ public class DefaultDiagnosticTracerTests
 
         container.SubscribeToDiagnostics(tracer);
 
-        string lastOpResult = null;
+        string? lastOpResult = null;
 
         tracer.OperationCompleted += (sender, args) =>
         {
