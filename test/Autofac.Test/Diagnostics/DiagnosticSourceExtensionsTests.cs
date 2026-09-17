@@ -154,6 +154,7 @@ public class DiagnosticSourceExtensionsTests
     {
         var container = new ContainerBuilder().Build();
         var scope = container.BeginLifetimeScope() as ISharingLifetimeScope;
+        Assert.NotNull(scope);
         return new ResolveOperation(scope, container.DiagnosticSource);
     }
 
@@ -174,11 +175,11 @@ public class DiagnosticSourceExtensionsTests
 
     private class MockSubscriber : DiagnosticTracerBase
     {
-        public List<KeyValuePair<string, object>> Events { get; } = new List<KeyValuePair<string, object>>();
+        public List<KeyValuePair<string, object?>> Events { get; } = new List<KeyValuePair<string, object?>>();
 
-        protected override void Write(string diagnosticName, object data)
+        protected override void Write(string diagnosticName, object? data)
         {
-            Events.Add(new KeyValuePair<string, object>(diagnosticName, data));
+            Events.Add(new KeyValuePair<string, object?>(diagnosticName, data));
         }
     }
 }

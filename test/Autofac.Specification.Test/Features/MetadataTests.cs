@@ -10,8 +10,8 @@ public class MetadataTests
     [Fact]
     public void WithMetadata()
     {
-        var p1 = new KeyValuePair<string, object>("p1", "p1Value");
-        var p2 = new KeyValuePair<string, object>("p2", "p2Value");
+        var p1 = new KeyValuePair<string, object?>("p1", "p1Value");
+        var p2 = new KeyValuePair<string, object?>("p2", "p2Value");
 
         var builder = new ContainerBuilder();
         builder.RegisterType<object>()

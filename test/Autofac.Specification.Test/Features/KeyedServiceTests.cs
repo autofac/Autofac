@@ -236,8 +236,8 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        TestServiceA[] allInstancesA = null;
-        TestServiceB[] allInstancesB = null;
+        TestServiceA[] allInstancesA = null!;
+        TestServiceB[] allInstancesB = null!;
 
         if (anyKeyQueryBeforeSingletonQueries)
         {
@@ -298,8 +298,8 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        TestServiceA[] allInstancesA = null;
-        TestServiceB[] allInstancesB = null;
+        TestServiceA[] allInstancesA = null!;
+        TestServiceB[] allInstancesB = null!;
 
         if (anyKeyQueryBeforeSingletonQueries)
         {
@@ -372,8 +372,8 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        TestServiceA[] allInstancesA = null;
-        TestServiceB[] allInstancesB = null;
+        TestServiceA[] allInstancesA = null!;
+        TestServiceB[] allInstancesB = null!;
 
         if (anyKeyQueryBeforeSingletonQueries)
         {
@@ -448,8 +448,8 @@ public class KeyedServiceTests
 
         var provider = builder.Build();
 
-        TestServiceA[] allInstancesA = null;
-        TestServiceB[] allInstancesB = null;
+        TestServiceA[] allInstancesA = null!;
+        TestServiceB[] allInstancesB = null!;
 
         if (anyKeyQueryBeforeSingletonQueries)
         {
@@ -897,7 +897,7 @@ public class KeyedServiceTests
         void VerifyException()
         {
             Assert.Contains(nameof(IService), e.Message, StringComparison.Ordinal);
-            Assert.Contains(serviceKey.GetType().FullName, e.Message, StringComparison.Ordinal);
+            Assert.Contains(serviceKey.GetType().FullName!, e.Message, StringComparison.Ordinal);
         }
     }
 
@@ -954,19 +954,19 @@ public class KeyedServiceTests
     private class OtherServiceWithDefaultCtorArgs
     {
         public OtherServiceWithDefaultCtorArgs(
-            [KeyFilter("service1")] IService service1 = null,
-            [KeyFilter("service2")] IService service2 = null)
+            [KeyFilter("service1")] IService? service1 = null,
+            [KeyFilter("service2")] IService? service2 = null)
         {
             Service1 = service1;
             Service2 = service2;
         }
 
-        public IService Service1
+        public IService? Service1
         {
             get;
         }
 
-        public IService Service2
+        public IService? Service2
         {
             get;
         }
@@ -1041,7 +1041,7 @@ public class KeyedServiceTests
 
     private class FakeService : IFakeSingletonService, IFakeOpenGenericService<PocoClass>
     {
-        public PocoClass Value
+        public PocoClass? Value
         {
             get; set;
         }
@@ -1052,8 +1052,9 @@ public class KeyedServiceTests
     }
 
     private interface IFakeOpenGenericService<out TValue>
+        where TValue : class?
     {
-        TValue Value
+        TValue? Value
         {
             get;
         }
@@ -1064,13 +1065,14 @@ public class KeyedServiceTests
     }
 
     private class FakeOpenGenericService<TVal> : IFakeOpenGenericService<TVal>
+        where TVal : class?
     {
         public FakeOpenGenericService(TVal value)
         {
             Value = value;
         }
 
-        public TVal Value
+        public TVal? Value
         {
             get;
         }

@@ -68,7 +68,7 @@ public class LazyRegistrationSourceTests
 
     private class B
     {
-        public A A
+        public A? A
         {
             get; set;
         }

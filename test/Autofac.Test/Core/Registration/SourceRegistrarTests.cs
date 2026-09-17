@@ -14,7 +14,7 @@ public sealed class SourceRegistrarTests
     [Fact]
     public void Ctor_RequiresContainerBuilder()
     {
-        Assert.Throws<ArgumentNullException>(() => new SourceRegistrar(null));
+        Assert.Throws<ArgumentNullException>(() => new SourceRegistrar(null!));
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public sealed class SourceRegistrarTests
     public void RegisterSource_RequiresRegistrationSource()
     {
         var registrar = new SourceRegistrar(new ContainerBuilder());
-        Assert.Throws<ArgumentNullException>(() => registrar.RegisterSource(null));
+        Assert.Throws<ArgumentNullException>(() => registrar.RegisterSource(null!));
     }
 
     private class SourceA : ObjectRegistrationSource

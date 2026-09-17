@@ -66,7 +66,7 @@ public sealed class ConcurrencyTests
             {
                 ThreadPool.QueueUserWorkItem(state =>
                 {
-                    containerProvider().Resolve<int>();
+                    containerProvider!().Resolve<int>();
                     resetEvent.Set();
                 });
                 resetEvent.Wait(1250);
@@ -145,8 +145,8 @@ public sealed class ConcurrencyTests
             var builder = new ContainerBuilder();
             builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
             var container = builder.Build();
-            A result1 = null;
-            A result2 = null;
+            A? result1 = null;
+            A? result2 = null;
             Parallel.Invoke(
                 () => result1 = container.Resolve<A>(),
                 () => result2 = container.Resolve<A>());

@@ -5,7 +5,7 @@ namespace Autofac.Test.Scenarios.WithProperty;
 
 public class WithProps
 {
-    public string A
+    public string? A
     {
         get; set;
     }
@@ -17,5 +17,5 @@ public class WithProps
 
     [SuppressMessage("SA1401", "SA1401", Justification = "Public field handles a specific test case.")]
     [SuppressMessage("CA1051", "CA1051", Justification = "Public field handles a specific test case.")]
-    public string _field;
+    public string? _field;
 }

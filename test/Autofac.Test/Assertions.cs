@@ -12,21 +12,25 @@ namespace Autofac.Test;
 internal static class Assertions
 {
     public static void AssertRegistered<TService>(this IComponentContext context)
+        where TService : notnull
     {
         Assert.True(context.IsRegistered<TService>());
     }
 
     public static void AssertRegistered<TService>(this IComponentContext context, string service)
+        where TService : notnull
     {
         Assert.True(context.IsRegisteredWithName<TService>(service));
     }
 
     public static void AssertNotRegistered<TService>(this IComponentContext context)
+        where TService : notnull
     {
         Assert.False(context.IsRegistered<TService>());
     }
 
     public static void AssertNotRegistered<TService>(this IComponentContext context, string service)
+        where TService : notnull
     {
         Assert.False(context.IsRegisteredWithName<TService>(service));
     }
@@ -100,9 +104,9 @@ internal static class Assertions
             if (source is OpenGenericRegistrationSource)
             {
                 var activatorData = typeof(OpenGenericRegistrationSource)
-                    .GetField("_activatorData", BindingFlags.NonPublic | BindingFlags.Instance)
+                    .GetField("_activatorData", BindingFlags.NonPublic | BindingFlags.Instance)!
                     .GetValue(source) as ReflectionActivatorData;
-                return activatorData.ImplementationType != typeof(KeyedServiceIndex<,>);
+                return activatorData!.ImplementationType != typeof(KeyedServiceIndex<,>);
             }
             else
             {
@@ -115,6 +119,7 @@ internal static class Assertions
     {
         return registrations
             .Select(registration => types.FirstOrDefault(type => registration.Activator.LimitType == type))
-            .Where(foundType => foundType is not null);
+            .Where(foundType => foundType is not null)
+            .Cast<Type>();
     }
 }

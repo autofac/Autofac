@@ -399,7 +399,7 @@ public class WithAttributeFilterTestFixture
 
     private class IdentifiableObject
     {
-        public string Id
+        public string? Id
         {
             get; set;
         }
@@ -583,7 +583,7 @@ public class WithAttributeFilterTestFixture
 
     private class AdapterMetadata
     {
-        public string Target
+        public string? Target
         {
             get; set;
         }

@@ -31,7 +31,7 @@ public class ModuleTests
     [Fact]
     public void DetectsNullComponentRegistryArgument()
     {
-        Assert.Throws<ArgumentNullException>(() => new ObjectModule().Configure(null));
+        Assert.Throws<ArgumentNullException>(() => new ObjectModule().Configure(null!));
     }
 
     internal class AttachingModule : Module
@@ -178,7 +178,7 @@ public class ModuleTests
         protected override void Load(ContainerBuilder builder)
         {
             // Increment a counter to show use of existing properties.
-            var count = (int)builder.Properties["count"];
+            var count = (int)builder.Properties["count"]!;
             count++;
             builder.Properties["count"] = count;
 

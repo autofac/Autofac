@@ -46,7 +46,7 @@ public class ComponentRegistrationExtensionsTests
     [Fact]
     public void MatchingLifetimeScopeTags_NullRegistration()
     {
-        Assert.Throws<ArgumentNullException>(() => ComponentRegistrationExtensions.MatchingLifetimeScopeTags(null));
+        Assert.Throws<ArgumentNullException>(() => ComponentRegistrationExtensions.MatchingLifetimeScopeTags(null!));
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class ComponentRegistrationExtensionsTests
         using var activator = Factory.CreateProvidedInstanceActivator(new object());
         using var registration = Factory.CreateSingletonRegistration(services, activator);
 
-        Assert.Throws<ArgumentNullException>(() => registration.ConfigurePipeline(null));
+        Assert.Throws<ArgumentNullException>(() => registration.ConfigurePipeline(null!));
     }
 
     [Fact]

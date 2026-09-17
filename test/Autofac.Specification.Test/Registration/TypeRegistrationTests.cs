@@ -187,7 +187,7 @@ public class TypeRegistrationTests
     public void RegisterTypesIgnoresNullValues()
     {
         var container = new ContainerBuilder().Build().BeginLifetimeScope(b =>
-            b.RegisterTypes(null, typeof(MyComponent), null));
+            b.RegisterTypes(null!, typeof(MyComponent), null!));
 
         Assert.Single(container.ComponentRegistry.Registrations);
         Assert.True(container.TryResolve(typeof(MyComponent), out var _));

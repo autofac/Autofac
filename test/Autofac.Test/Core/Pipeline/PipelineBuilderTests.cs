@@ -483,9 +483,9 @@ public class PipelineBuilderTests
 
         public override Service Service => _resolveRequest.Service;
 
-        public override IComponentRegistration DecoratorTarget => _resolveRequest.DecoratorTarget;
+        public override IComponentRegistration? DecoratorTarget => _resolveRequest.DecoratorTarget;
 
-        public override object Instance
+        public override object? Instance
         {
             get; set;
         }
@@ -509,12 +509,12 @@ public class PipelineBuilderTests
             get; set;
         }
 
-        public override DecoratorContext DecoratorContext
+        public override DecoratorContext? DecoratorContext
         {
             get; set;
         }
 
-        public override event EventHandler<ResolveRequestCompletingEventArgs> RequestCompleting
+        public override event EventHandler<ResolveRequestCompletingEventArgs>? RequestCompleting
         {
             add
             {

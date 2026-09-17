@@ -55,7 +55,7 @@ public class ReflectionCacheTupleDictionaryTests
     {
         var cacheDict = new ReflectionCacheTupleDictionary<MethodInfo, bool>();
 
-        cacheDict[(typeof(string).GetMethod("IsNullOrEmpty"), typeof(int).GetMethod("GetHashCode"))] = false;
+        cacheDict[(typeof(string).GetMethod("IsNullOrEmpty")!, typeof(int).GetMethod("GetHashCode")!)] = false;
 
         cacheDict.Clear((member, assemblies) =>
         {

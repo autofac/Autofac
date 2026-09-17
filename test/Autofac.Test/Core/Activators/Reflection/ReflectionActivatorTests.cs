@@ -116,7 +116,7 @@ public class ReflectionActivatorTests
         Assert.Throws<ArgumentNullException>(
             () => new ReflectionActivator(
                 typeof(object),
-                null,
+                null!,
                 Mocks.GetConstructorSelector(),
                 Factory.NoParameters,
                 Factory.NoProperties));
@@ -130,7 +130,7 @@ public class ReflectionActivatorTests
                 typeof(object),
                 Mocks.GetConstructorFinder(),
                 Mocks.GetConstructorSelector(),
-                null,
+                null!,
                 Factory.NoProperties));
     }
 
@@ -143,7 +143,7 @@ public class ReflectionActivatorTests
                 Mocks.GetConstructorFinder(),
                 Mocks.GetConstructorSelector(),
                 Factory.NoParameters,
-                null));
+                null!));
     }
 
     [Fact]
@@ -153,7 +153,7 @@ public class ReflectionActivatorTests
             () => new ReflectionActivator(
                 typeof(object),
                 Mocks.GetConstructorFinder(),
-                null,
+                null!,
                 Factory.NoParameters,
                 Factory.NoProperties));
     }
@@ -163,7 +163,7 @@ public class ReflectionActivatorTests
     {
         Assert.Throws<ArgumentNullException>(
             () => new ReflectionActivator(
-                null,
+                null!,
                 Mocks.GetConstructorFinder(),
                 Mocks.GetConstructorSelector(),
                 Factory.NoParameters,
@@ -242,7 +242,7 @@ public class ReflectionActivatorTests
         var dx = Assert.Throws<NoConstructorsFoundException>(
             () => target.GetPipelineInvoker(Factory.CreateEmptyComponentRegistry()));
 
-        Assert.Contains(typeof(NoPublicConstructor).FullName, dx.Message, StringComparison.Ordinal);
+        Assert.Contains(typeof(NoPublicConstructor).FullName!, dx.Message, StringComparison.Ordinal);
         Assert.Equal(typeof(NoPublicConstructor), dx.OffendingType);
     }
 

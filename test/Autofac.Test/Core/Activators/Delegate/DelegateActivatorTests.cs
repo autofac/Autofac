@@ -11,13 +11,13 @@ public class DelegateActivatorTests
     [Fact]
     public void Constructor_DoesNotAcceptNullDelegate()
     {
-        Assert.Throws<ArgumentNullException>(() => new DelegateActivator(typeof(object), null));
+        Assert.Throws<ArgumentNullException>(() => new DelegateActivator(typeof(object), null!));
     }
 
     [Fact]
     public void Constructor_DoesNotAcceptNullType()
     {
-        Assert.Throws<ArgumentNullException>(() => new DelegateActivator(null, (c, p) => new object()));
+        Assert.Throws<ArgumentNullException>(() => new DelegateActivator(null!, (c, p) => new object()));
     }
 
     [Fact]
@@ -37,7 +37,7 @@ public class DelegateActivatorTests
     [Fact]
     public void WhenActivationDelegateReturnsNull_ExceptionDescribesLimitType()
     {
-        using var target = new DelegateActivator(typeof(string), (c, p) => null);
+        using var target = new DelegateActivator(typeof(string), (c, p) => null!);
 
         using var container = Factory.CreateEmptyContainer();
         var invoker = target.GetPipelineInvoker(container.ComponentRegistry);

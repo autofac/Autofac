@@ -130,7 +130,7 @@ public class ModuleRegistrationTests
     {
         var mod = new ObjectModule();
         var builder = new ContainerBuilder();
-        Assert.Throws<ArgumentNullException>(() => builder.RegisterModule(mod).OnlyIf(null));
+        Assert.Throws<ArgumentNullException>(() => builder.RegisterModule(mod).OnlyIf(null!));
     }
 
     [Fact]
@@ -138,7 +138,7 @@ public class ModuleRegistrationTests
     {
         _ = new ObjectModule();
         _ = new ContainerBuilder();
-        Assert.Throws<ArgumentNullException>(() => ModuleRegistrationExtensions.OnlyIf(null, reg => true));
+        Assert.Throws<ArgumentNullException>(() => ModuleRegistrationExtensions.OnlyIf(null!, reg => true));
     }
 
     [Fact]
@@ -214,7 +214,7 @@ public class ModuleRegistrationTests
     {
         _ = new ObjectModule();
         _ = new ContainerBuilder();
-        Assert.Throws<ArgumentNullException>(() => ModuleRegistrationExtensions.IfNotRegistered(null, typeof(object)));
+        Assert.Throws<ArgumentNullException>(() => ModuleRegistrationExtensions.IfNotRegistered(null!, typeof(object)));
     }
 
     [Fact]
@@ -222,7 +222,7 @@ public class ModuleRegistrationTests
     {
         var mod = new ObjectModule();
         var builder = new ContainerBuilder();
-        Assert.Throws<ArgumentNullException>(() => builder.RegisterModule(mod).IfNotRegistered(null));
+        Assert.Throws<ArgumentNullException>(() => builder.RegisterModule(mod).IfNotRegistered(null!));
     }
 
     [Fact]

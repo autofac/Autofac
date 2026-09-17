@@ -76,7 +76,7 @@ public class LightweightAdapterRegistrationExtensionsTests
             var builder = new ContainerBuilder();
             builder.RegisterInstance(_from).WithMetadata(NameKey, Name);
             builder.RegisterAdapter<Meta<Command>, ToolbarButton>(
-                cmd => new ToolbarButton(cmd.Value, (string)cmd.Metadata[NameKey]));
+                cmd => new ToolbarButton(cmd.Value, (string)cmd.Metadata[NameKey]!));
             var container = builder.Build();
             _to = container.Resolve<ToolbarButton>();
         }

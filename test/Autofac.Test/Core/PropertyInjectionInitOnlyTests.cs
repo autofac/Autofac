@@ -9,7 +9,7 @@ public class PropertyInjectionInitOnlyTests
 {
     private class HasInitOnlyProperties
     {
-        public string InjectedString
+        public string? InjectedString
         {
             get; init;
         }

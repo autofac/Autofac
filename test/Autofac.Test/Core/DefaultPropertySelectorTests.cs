@@ -29,13 +29,14 @@ public class DefaultPropertySelectorTests
             PublicRequiredProperty = new(),
         };
         var property = instance.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.NotNull(property);
 
         Assert.Equal(expected, finder.InjectProperty(property, instance));
     }
 
     private class HasProperties
     {
-        public Test PublicPropertyNoDefault
+        public Test? PublicPropertyNoDefault
         {
             get; set;
         }
@@ -49,7 +50,7 @@ public class DefaultPropertySelectorTests
             }
         }
 
-        public Test PublicPropertyNoSet
+        public Test? PublicPropertyNoSet
         {
             get;
         }
@@ -78,7 +79,7 @@ public class DefaultPropertySelectorTests
 
         private Test PrivatePropertyWithDefault { get; set; } = new Test();
 
-        private Test PrivatePropertyWithSet
+        private Test? PrivatePropertyWithSet
         {
             get; set;
         }

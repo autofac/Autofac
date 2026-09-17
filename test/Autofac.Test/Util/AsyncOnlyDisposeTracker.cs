@@ -5,7 +5,7 @@ namespace Autofac.Test.Util;
 
 public class AsyncOnlyDisposeTracker : IAsyncDisposable
 {
-    public event EventHandler<EventArgs> Disposing;
+    public event EventHandler<EventArgs>? Disposing;
 
     public bool IsAsyncDisposed
     {

@@ -44,13 +44,13 @@ public class ConstructorSelectorTests
         // but it needs to be there or it'll just be a Func<T>.
         yield return new object[]
         {
-            (Expression<Func<MultipleConstructors>>)(() => new MultipleConstructors(default, default)),
+            (Expression<Func<MultipleConstructors>>)(() => new MultipleConstructors(default!, default!)),
             2,
         };
 
         yield return new object[]
         {
-            (Expression<Func<MultipleConstructors>>)(() => new MultipleConstructors(default)),
+            (Expression<Func<MultipleConstructors>>)(() => new MultipleConstructors(default!)),
             1,
         };
     }

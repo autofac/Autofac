@@ -36,7 +36,7 @@ public class ReflectiveRegistrationBuilderTests
         var cb = new ContainerBuilder();
 
         var exception = Assert.Throws<ArgumentNullException>(
-            () => cb.RegisterType<MultipleConstructors>().FindConstructorsWith((IConstructorFinder)null));
+            () => cb.RegisterType<MultipleConstructors>().FindConstructorsWith((IConstructorFinder)null!));
 
         Assert.Equal("constructorFinder", exception.ParamName);
     }
@@ -47,7 +47,7 @@ public class ReflectiveRegistrationBuilderTests
         var cb = new ContainerBuilder();
 
         var exception = Assert.Throws<ArgumentNullException>(
-            () => cb.RegisterType<MultipleConstructors>().FindConstructorsWith((Func<Type, ConstructorInfo[]>)null));
+            () => cb.RegisterType<MultipleConstructors>().FindConstructorsWith((Func<Type, ConstructorInfo[]>)null!));
 
         Assert.Equal("finder", exception.ParamName);
     }
@@ -57,7 +57,7 @@ public class ReflectiveRegistrationBuilderTests
     {
         var cb = new ContainerBuilder();
         var registration = cb.RegisterType<MultipleConstructors>();
-        Assert.Throws<ArgumentNullException>(() => registration.UsingConstructor((Type[])null));
+        Assert.Throws<ArgumentNullException>(() => registration.UsingConstructor((Type[])null!));
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public class ReflectiveRegistrationBuilderTests
     {
         var cb = new ContainerBuilder();
         var registration = cb.RegisterType<MultipleConstructors>();
-        Assert.Throws<ArgumentNullException>(() => registration.UsingConstructor((Expression<Func<MultipleConstructors>>)null));
+        Assert.Throws<ArgumentNullException>(() => registration.UsingConstructor((Expression<Func<MultipleConstructors>>)null!));
     }
 
     [Fact]

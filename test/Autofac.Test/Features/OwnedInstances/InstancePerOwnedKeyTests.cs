@@ -15,7 +15,7 @@ public class InstancePerOwnedKeyTests
     [InlineData(typeof(string), null, typeof(int), false)]
     [InlineData(typeof(int), "Foo", typeof(string), false)]
     [InlineData(typeof(int), null, typeof(string), false)]
-    public void ServiceEquality(Type dependencyType, object ownedKey, Type ownedType, bool expected)
+    public void ServiceEquality(Type dependencyType, object? ownedKey, Type ownedType, bool expected)
     {
         var dependencyService = new TypedService(dependencyType);
         var instancePerOwnedKey = new InstancePerOwnedKey(dependencyService);

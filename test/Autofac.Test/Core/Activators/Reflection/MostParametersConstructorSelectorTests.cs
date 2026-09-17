@@ -13,7 +13,7 @@ public class MostParametersConstructorSelectorTests
     public void DoesNotAcceptNullBindings()
     {
         var target = new MostParametersConstructorSelector();
-        Assert.Throws<ArgumentNullException>(() => target.SelectConstructorBinding(null, Enumerable.Empty<Parameter>()));
+        Assert.Throws<ArgumentNullException>(() => target.SelectConstructorBinding(null!, Enumerable.Empty<Parameter>()));
     }
 
     [Fact]

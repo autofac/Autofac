@@ -21,13 +21,13 @@ public class ComponentRegisteredEventArgsTests
     public void NullContainerDetected()
     {
         using var registration = Factory.CreateSingletonObjectRegistration();
-        Assert.Throws<ArgumentNullException>(() => new ComponentRegisteredEventArgs(null, registration));
+        Assert.Throws<ArgumentNullException>(() => new ComponentRegisteredEventArgs(null!, registration));
     }
 
     [Fact]
     public void NullRegistrationDetected()
     {
         using var registry = Factory.CreateEmptyComponentRegistryBuilder();
-        Assert.Throws<ArgumentNullException>(() => new ComponentRegisteredEventArgs(registry, null));
+        Assert.Throws<ArgumentNullException>(() => new ComponentRegisteredEventArgs(registry, null!));
     }
 }

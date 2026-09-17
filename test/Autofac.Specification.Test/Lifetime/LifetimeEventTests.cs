@@ -138,13 +138,14 @@ public class LifetimeEventTests
     public void PreparingCanProvideParametersToActivator()
     {
         IEnumerable<Parameter> parameters = new Parameter[] { new NamedParameter("n", 1) };
-        IEnumerable<Parameter> actual = null;
+        IEnumerable<Parameter>? actual = null;
         var cb = new ContainerBuilder();
         cb.RegisterType<AService>()
             .OnPreparing(e => e.Parameters = parameters)
             .OnActivating(e => actual = e.Parameters);
         var container = cb.Build();
         container.Resolve<AService>();
+        Assert.NotNull(actual);
         Assert.False(parameters.Except(actual).Any());
     }
 
@@ -152,7 +153,7 @@ public class LifetimeEventTests
     public void AsyncPreparingCanProvideParametersToActivator()
     {
         IEnumerable<Parameter> parameters = new Parameter[] { new NamedParameter("n", 1) };
-        IEnumerable<Parameter> actual = null;
+        IEnumerable<Parameter>? actual = null;
         var cb = new ContainerBuilder();
         cb.RegisterType<AService>()
             .OnPreparing(async e =>
@@ -163,6 +164,7 @@ public class LifetimeEventTests
             .OnActivating(e => actual = e.Parameters);
         var container = cb.Build();
         container.Resolve<AService>();
+        Assert.NotNull(actual);
         Assert.False(parameters.Except(actual).Any());
     }
 
@@ -461,7 +463,7 @@ public class LifetimeEventTests
     public void ReleaseHandlersGetInstanceBeingReleased()
     {
         var builder = new ContainerBuilder();
-        object instance = null;
+        object? instance = null;
         builder.RegisterType<DisposeTracker>()
             .OnRelease(i => { instance = i; });
         var container = builder.Build();
@@ -486,7 +488,7 @@ public class LifetimeEventTests
     public void AsyncReleaseHandlersRunUnderNormalDisposal()
     {
         var builder = new ContainerBuilder();
-        object instance = null;
+        object? instance = null;
         builder.RegisterType<DisposeTracker>()
             .OnRelease(async i =>
             {
@@ -509,7 +511,7 @@ public class LifetimeEventTests
         };
 
         var builder = new ContainerBuilder();
-        object instance = null;
+        object? instance = null;
         builder.RegisterType<DisposeTracker>()
             .OnRelease(async i =>
             {
@@ -536,16 +538,19 @@ public class LifetimeEventTests
             .OnPreparing((e) =>
             {
                 var service = e.Service as IServiceWithType;
+                Assert.NotNull(service);
                 Assert.Equal(typeof(MethodInjection), service.ServiceType);
             })
             .OnActivating((e) =>
             {
                 var service = e.Service as IServiceWithType;
+                Assert.NotNull(service);
                 Assert.Equal(typeof(MethodInjection), service.ServiceType);
             })
             .OnActivated((e) =>
             {
                 var service = e.Service as IServiceWithType;
+                Assert.NotNull(service);
                 Assert.Equal(typeof(MethodInjection), service.ServiceType);
             });
 

@@ -44,6 +44,7 @@ public static class ActivatorPipelineExtensions
         {
             // To get the sharing scope from what might be a container, we're going to resolve the lifetime scope.
             var lifetimeScope = scope.Resolve<ILifetimeScope>() as LifetimeScope;
+            Assert.NotNull(lifetimeScope);
 
             var request = new DefaultResolveRequestContext(
                 new ResolveOperation(lifetimeScope, lifetimeScope.DiagnosticSource),
@@ -52,6 +53,7 @@ public static class ActivatorPipelineExtensions
                 lifetimeScope.DiagnosticSource);
 
             built.Invoke(request);
+            Assert.NotNull(request.Instance);
 
             return (T)request.Instance;
         };
@@ -76,7 +78,7 @@ public static class ActivatorPipelineExtensions
             return _registry.RegistrationsFor(service);
         }
 
-        public bool TryGetRegistration(Service service, [NotNullWhen(true)] out IComponentRegistration registration)
+        public bool TryGetRegistration(Service service, [NotNullWhen(true)] out IComponentRegistration? registration)
         {
             return _registry.TryGetRegistration(service, out registration);
         }

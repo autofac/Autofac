@@ -214,7 +214,7 @@ public class ResolutionExtensionsTests
 
         Assert.True(result);
         Assert.NotNull(services);
-        Assert.Single(services!);
+        Assert.Single(services);
     }
 
     private sealed class AnyKeyService

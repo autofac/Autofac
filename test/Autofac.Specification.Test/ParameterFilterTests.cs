@@ -25,13 +25,13 @@ public class ParameterFilterTests
     public void NamedRequiresName()
     {
         var parameters = Array.Empty<Parameter>();
-        Assert.Throws<ArgumentNullException>(() => parameters.Named<string>(null));
+        Assert.Throws<ArgumentNullException>(() => parameters.Named<string>(null!));
     }
 
     [Fact]
     public void NamedRequiresParameterEnumerable()
     {
-        IEnumerable<Parameter> parameters = null;
+        IEnumerable<Parameter> parameters = null!;
         Assert.Throws<ArgumentNullException>(() => parameters.Named<string>("value"));
     }
 
@@ -66,7 +66,7 @@ public class ParameterFilterTests
     [Fact]
     public void PositionalRequiresParameterEnumerable()
     {
-        IEnumerable<Parameter> parameters = null;
+        IEnumerable<Parameter> parameters = null!;
         Assert.Throws<ArgumentNullException>(() => parameters.Positional<string>(2));
     }
 
@@ -110,7 +110,7 @@ public class ParameterFilterTests
     [Fact]
     public void TypedAsRequiresParameterEnumerable()
     {
-        IEnumerable<Parameter> parameters = null;
+        IEnumerable<Parameter> parameters = null!;
         Assert.Throws<ArgumentNullException>(() => parameters.TypedAs<int>());
     }
 

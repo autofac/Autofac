@@ -33,7 +33,7 @@ public sealed class DeferredSourceImplementationIsolationTests
     public void HeldImplementationIsReleasedWhenAPerScopeSourceIsSkippedForAnIsolatedService()
     {
         using var tracker = new DefaultRegisteredServicesTracker();
-        using var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
+        using var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object?>());
         builder.AddRegistrationSource(new MultiServicePerScopeSource());
 
         var registry = builder.Build();
@@ -54,7 +54,7 @@ public sealed class DeferredSourceImplementationIsolationTests
     public void HeldImplementationIsAppliedWhenTheServiceIsNotIsolated()
     {
         using var tracker = new DefaultRegisteredServicesTracker();
-        using var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object>());
+        using var builder = new ComponentRegistryBuilder(tracker, new Dictionary<string, object?>());
         builder.AddRegistrationSource(new MultiServicePerScopeSource());
 
         var registry = builder.Build();
@@ -78,7 +78,7 @@ public sealed class DeferredSourceImplementationIsolationTests
 
         Assert.NotNull(field);
 
-        var value = field!.GetValue(tracker);
+        var value = field.GetValue(tracker);
 
         return value is null ? 0 : ((System.Collections.ICollection)value).Count;
     }
@@ -112,7 +112,7 @@ public sealed class DeferredSourceImplementationIsolationTests
                     new TypedService(typeof(IFirstService)),
                     new TypedService(typeof(ISecondService)),
                 },
-                new Dictionary<string, object>());
+                new Dictionary<string, object?>());
 #pragma warning restore CA2000
         }
     }

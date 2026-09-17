@@ -299,13 +299,13 @@ public class RegistrationOnlyIfTests
     {
         var builder = new ContainerBuilder();
         var rb = builder.RegisterType<object>();
-        Assert.Throws<ArgumentNullException>(() => rb.OnlyIf(null));
+        Assert.Throws<ArgumentNullException>(() => rb.OnlyIf(null!));
     }
 
     [Fact]
     public void OnlyIf_NullRegistration()
     {
-        Assert.Throws<ArgumentNullException>(() => RegistrationExtensions.OnlyIf<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>(null, reg => true));
+        Assert.Throws<ArgumentNullException>(() => RegistrationExtensions.OnlyIf<object, ConcreteReflectionActivatorData, SingleRegistrationStyle>(null!, reg => true));
     }
 
     [Fact]

@@ -16,7 +16,7 @@ public class ComponentRegistryTests
     public void Register_DoesNotAcceptNull()
     {
         using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
-        Assert.Throws<ArgumentNullException>(() => registryBuilder.Register(null));
+        Assert.Throws<ArgumentNullException>(() => registryBuilder.Register(null!));
     }
 
     [Fact]
@@ -33,8 +33,8 @@ public class ComponentRegistryTests
     [Fact]
     public void WhenRegistrationIsMade_ComponentRegisteredEventFired()
     {
-        object eventSender = null;
-        ComponentRegisteredEventArgs args = null;
+        object? eventSender = null;
+        ComponentRegisteredEventArgs? args = null;
         var eventCount = 0;
 
         using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
@@ -223,6 +223,7 @@ public class ComponentRegistryTests
         var registry = registryBuilder.Build();
 
         registry.TryGetRegistration(new TypedService(typeof(object)), out var def);
+        Assert.NotNull(def);
 
         var invoker = def.Activator.GetPipelineInvoker(registry);
 
@@ -358,8 +359,8 @@ public class ComponentRegistryTests
     {
         using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
 
-        object sender = null;
-        RegistrationSourceAddedEventArgs args = null;
+        object? sender = null;
+        RegistrationSourceAddedEventArgs? args = null;
 
         registryBuilder.RegistrationSourceAdded += (s, e) =>
         {
@@ -371,6 +372,7 @@ public class ComponentRegistryTests
         registryBuilder.AddRegistrationSource(source);
 
         Assert.Same(registryBuilder, sender);
+        Assert.NotNull(args);
         Assert.Same(registryBuilder, args.ComponentRegistry);
         Assert.Same(source, args.RegistrationSource);
     }

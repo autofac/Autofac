@@ -19,7 +19,7 @@ public class ContainerBuilderTests
     public void RegisterBuildCallbackThrowsWhenProvidedNullCallback()
     {
         var builder = new ContainerBuilder();
-        var exception = Assert.Throws<ArgumentNullException>(() => builder.RegisterBuildCallback(null));
+        var exception = Assert.Throws<ArgumentNullException>(() => builder.RegisterBuildCallback(null!));
         Assert.Equal("buildCallback", exception.ParamName);
     }
 
@@ -31,7 +31,7 @@ public class ContainerBuilderTests
         builder.Register(ctx =>
         {
             // TOTALLY not thread-safe, but illustrates the point.
-            var count = (int)ctx.ComponentRegistry.Properties["count"];
+            var count = (int)ctx.ComponentRegistry.Properties["count"]!;
             count++;
             ctx.ComponentRegistry.Properties["count"] = count;
             return "incremented";
@@ -57,7 +57,7 @@ public class ContainerBuilderTests
                 {
                     next(context);
 
-                    activatedInstances.Add(context.Instance);
+                    activatedInstances.Add(context.Instance!);
                 }));
         });
 
@@ -82,13 +82,14 @@ public class ContainerBuilderTests
 
     private class Controller
     {
-        public Lazy<IRepository<object>> TheRepository
+        public Lazy<IRepository<object>>? TheRepository
         {
             get; set;
         }
 
         public void UseTheRepository()
         {
+            Assert.NotNull(TheRepository);
             Assert.NotNull(TheRepository.Value);
         }
     }

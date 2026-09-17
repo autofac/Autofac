@@ -5,11 +5,11 @@ namespace Autofac.Specification.Test.Features.PropertyInjection;
 
 public class HasWriteOnlyProperty
 {
-    private string _val;
+    private string? _val;
 
     [SuppressMessage("CA1044", "CA1044", Justification = "Handles a specific test case for a write-only property.")]
     [SuppressMessage("CA1721", "CA1721", Justification = "Handles a specific test case for a write-only property.")]
-    public string Val
+    public string? Val
     {
         set
         {
@@ -18,7 +18,7 @@ public class HasWriteOnlyProperty
     }
 
     [SuppressMessage("CA1024", "CA1024", Justification = "Handles a specific test case for a write-only property.")]
-    public string GetVal()
+    public string? GetVal()
     {
         return _val;
     }

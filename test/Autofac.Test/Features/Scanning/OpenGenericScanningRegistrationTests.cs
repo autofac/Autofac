@@ -102,16 +102,16 @@ public class OpenGenericScanningRegistrationTests
     {
         var cb = new ContainerBuilder();
         Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
-            .AssignableTo(null));
+            .AssignableTo(null!));
 
         Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
-            .AssignableTo(typeof(RedoOpenGenericCommand<>), (object)null));
+            .AssignableTo(typeof(RedoOpenGenericCommand<>), (object)null!));
 
         Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
-            .AssignableTo(null, "serviceKey"));
+            .AssignableTo(null!, "serviceKey"));
 
         Assert.Throws<ArgumentNullException>(() => cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
-            .AssignableTo(null, t => t));
+            .AssignableTo(null!, t => t));
     }
 
     [Theory]
@@ -222,7 +222,7 @@ public class OpenGenericScanningRegistrationTests
     {
         var cb = new ContainerBuilder();
         cb.RegisterAssemblyOpenGenericTypes(typeof(ICommand<>).GetTypeInfo().Assembly)
-            .WithMetadata(t => t.GetMethods().ToDictionary(m => m.Name, m => (object)m.ReturnType));
+            .WithMetadata(t => t.GetMethods().ToDictionary(m => m.Name, m => (object?)m.ReturnType));
 
         var c = cb.Build();
         var s = c.Resolve<Meta<RedoOpenGenericCommand<int>>>();
@@ -271,6 +271,7 @@ public class OpenGenericScanningRegistrationTests
         var c = cb.Build();
 
         c.ComponentRegistry.TryGetRegistration(new TypedService(typeof(OpenGenericScannedComponentWithName<string>)), out var r);
+        Assert.NotNull(r);
 
         r.Metadata.TryGetValue("Name", out var name);
 

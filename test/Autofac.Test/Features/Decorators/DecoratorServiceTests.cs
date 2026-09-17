@@ -10,7 +10,7 @@ public class DecoratorServiceTests
     [Fact]
     public void MustBeConstructedWithServiceType()
     {
-        var exception = Assert.Throws<ArgumentNullException>(() => new DecoratorService(null));
+        var exception = Assert.Throws<ArgumentNullException>(() => new DecoratorService(null!));
         Assert.Equal("serviceType", exception.ParamName);
     }
 

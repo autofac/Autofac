@@ -11,7 +11,7 @@ public class DelegateRegistrationBuilderTests
     public void RegisterNull()
     {
         var target = new ContainerBuilder();
-        Assert.Throws<ArgumentNullException>(() => target.Register((Func<IComponentContext, object>)null));
+        Assert.Throws<ArgumentNullException>(() => target.Register((Func<IComponentContext, object>)null!));
     }
 
     [Fact]

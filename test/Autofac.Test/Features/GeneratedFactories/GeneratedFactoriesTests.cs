@@ -150,7 +150,7 @@ public class GeneratedFactoriesTests
     {
         public delegate StringHolder Factory();
 
-        public string S
+        public string? S
         {
             get; set;
         }
