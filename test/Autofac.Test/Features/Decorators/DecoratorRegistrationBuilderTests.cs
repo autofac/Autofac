@@ -6,6 +6,11 @@ using Autofac.Core;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.Decorators;
 
+// The test project leaves <Nullable> unset, and SDK versions disagree about which nullable
+// diagnostics that produces - the CI build reports CS8600/CS8620 here where a local build reports
+// nothing. Opting this file into an explicit context makes the analysis the same everywhere.
+#nullable enable
+
 namespace Autofac.Test.Features.Decorators;
 
 /// <summary>
@@ -101,8 +106,8 @@ public class DecoratorRegistrationBuilderTests
     [Fact]
     public void PipelineMiddlewareRunsAgainstTheDecoratorServiceAndRegistration()
     {
-        Service capturedService = null;
-        IComponentRegistration capturedRegistration = null;
+        Service? capturedService = null;
+        IComponentRegistration? capturedRegistration = null;
 
         var builder = new ContainerBuilder();
         builder.RegisterType<Implementor>().As<IDecoratedService>();
@@ -125,7 +130,7 @@ public class DecoratorRegistrationBuilderTests
     [Fact]
     public void MetadataIsVisibleOnTheDecoratorRegistration()
     {
-        IComponentRegistration capturedRegistration = null;
+        IComponentRegistration? capturedRegistration = null;
 
         var builder = new ContainerBuilder();
         builder.RegisterType<Implementor>().As<IDecoratedService>();
@@ -163,7 +168,7 @@ public class DecoratorRegistrationBuilderTests
     {
         var builder = new ContainerBuilder();
         var decorator = builder.RegisterDecorator<DecoratorA, IDecoratedService>()
-            .WithMetadata(new Dictionary<string, object> { [MetadataKey] = "the-value" });
+            .WithMetadata(new Dictionary<string, object?> { [MetadataKey] = "the-value" });
 
         Assert.Equal("the-value", decorator.Metadata[MetadataKey]);
     }
@@ -197,7 +202,7 @@ public class DecoratorRegistrationBuilderTests
     [Fact]
     public void WithConditionReceivesTheDecoratorContext()
     {
-        IDecoratorContext capturedContext = null;
+        IDecoratorContext? capturedContext = null;
 
         var builder = new ContainerBuilder();
         builder.RegisterType<Implementor>().As<IDecoratedService>();
@@ -212,7 +217,7 @@ public class DecoratorRegistrationBuilderTests
         container.Resolve<IDecoratedService>();
 
         Assert.NotNull(capturedContext);
-        Assert.Equal(typeof(IDecoratedService), capturedContext!.ServiceType);
+        Assert.Equal(typeof(IDecoratedService), capturedContext.ServiceType);
         Assert.Equal(typeof(Implementor), capturedContext.ImplementationType);
     }
 
