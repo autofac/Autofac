@@ -128,7 +128,8 @@ public static partial class RegistrationExtensions
     /// <typeparam name="TService">Service type being decorated.</typeparam>
     /// <param name="builder">Container builder.</param>
     /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/> instance determines if the decorator should be applied.</param>
-    public static void RegisterDecorator<[DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool>? condition = null)
+    /// <returns>The decorator registration for continued configuration.</returns>
+    public static IDecoratorRegistrationBuilder<TService> RegisterDecorator<[DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] TDecorator, TService>(this ContainerBuilder builder, Func<IDecoratorContext, bool>? condition = null)
         where TDecorator : notnull, TService
     {
         if (builder == null)
@@ -136,17 +137,15 @@ public static partial class RegistrationExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        var decoratorService = new DecoratorService(typeof(TService), condition);
+        var rb = RegistrationBuilder.ForType<TDecorator>();
 
-        var rb = RegistrationBuilder.ForType<TDecorator>().As(decoratorService);
-
-        var decoratorRegistration = rb.CreateRegistration();
-
-        var middleware = new DecoratorMiddleware(decoratorService, decoratorRegistration);
-        builder.RegisterServiceMiddleware<TService>(middleware, MiddlewareInsertionMode.StartOfPhase);
-
-        // Add the decorator to the registry so the pipeline gets built.
-        builder.RegisterCallback(crb => crb.Register(decoratorRegistration));
+        return AddDecorator<TService>(
+            builder,
+            typeof(TService),
+            rb.RegistrationData,
+            rb.ResolvePipeline,
+            decoratorService => rb.As(decoratorService).CreateRegistration(),
+            condition);
     }
 
     /// <summary>
@@ -158,7 +157,8 @@ public static partial class RegistrationExtensions
     /// of type <paramref name="serviceType"/>, which will be set to the instance being decorated.</param>
     /// <param name="serviceType">Service type being decorated.</param>
     /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/> instance determines if the decorator should be applied.</param>
-    public static void RegisterDecorator(
+    /// <returns>The decorator registration for continued configuration.</returns>
+    public static IDecoratorRegistrationBuilder<object> RegisterDecorator(
         this ContainerBuilder builder,
         [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type decoratorType,
         Type serviceType,
@@ -179,18 +179,15 @@ public static partial class RegistrationExtensions
             throw new ArgumentNullException(nameof(serviceType));
         }
 
-        var decoratorService = new DecoratorService(serviceType, condition);
+        var rb = RegistrationBuilder.ForType(decoratorType);
 
-        var rb = RegistrationBuilder.ForType(decoratorType).As(decoratorService);
-
-        var decoratorRegistration = rb.CreateRegistration();
-
-        var middleware = new DecoratorMiddleware(decoratorService, decoratorRegistration);
-
-        builder.RegisterServiceMiddleware(serviceType, middleware, MiddlewareInsertionMode.StartOfPhase);
-
-        // Add the decorator to the registry so the pipeline gets built.
-        builder.RegisterCallback(crb => crb.Register(decoratorRegistration));
+        return AddDecorator<object>(
+            builder,
+            serviceType,
+            rb.RegistrationData,
+            rb.ResolvePipeline,
+            decoratorService => rb.As(decoratorService).CreateRegistration(),
+            condition);
     }
 
     /// <summary>
@@ -202,7 +199,8 @@ public static partial class RegistrationExtensions
     /// <param name="decorator">Function decorating a component instance that provides
     /// <typeparamref name="TService"/>, given the context, parameters and service to decorate.</param>
     /// <param name="condition">A function that when provided with an <see cref="IDecoratorContext"/> instance determines if the decorator should be applied.</param>
-    public static void RegisterDecorator<TService>(
+    /// <returns>The decorator registration for continued configuration.</returns>
+    public static IDecoratorRegistrationBuilder<TService> RegisterDecorator<TService>(
         this ContainerBuilder builder,
         Func<IComponentContext, IEnumerable<Parameter>, TService, TService> decorator,
         Func<IDecoratorContext, bool>? condition = null)
@@ -218,8 +216,6 @@ public static partial class RegistrationExtensions
             throw new ArgumentNullException(nameof(decorator));
         }
 
-        var service = new DecoratorService(typeof(TService), condition);
-
         var rb = RegistrationBuilder.ForDelegate((c, p) =>
         {
             var instance = (TService?)p
@@ -227,16 +223,15 @@ public static partial class RegistrationExtensions
                 .FirstOrDefault(tp => tp.Type == typeof(TService))
                 ?.Value ?? throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));
             return decorator(c, p, instance);
-        }).As(service);
+        });
 
-        var decoratorRegistration = rb.CreateRegistration();
-
-        var middleware = new DecoratorMiddleware(service, decoratorRegistration);
-
-        builder.RegisterServiceMiddleware<TService>(middleware, MiddlewareInsertionMode.StartOfPhase);
-
-        // Add the decorator to the registry so the pipeline gets built.
-        builder.RegisterCallback(crb => crb.Register(decoratorRegistration));
+        return AddDecorator<TService>(
+            builder,
+            typeof(TService),
+            rb.RegistrationData,
+            rb.ResolvePipeline,
+            decoratorService => rb.As(decoratorService).CreateRegistration(),
+            condition);
     }
 
     /// <summary>
@@ -316,5 +311,43 @@ public static partial class RegistrationExtensions
             .As(decoratorService);
 
         builder.RegisterServiceMiddlewareSource(new OpenGenericDecoratorMiddlewareSource(decoratorService, genericRegistration.RegistrationData, genericRegistration.ActivatorData));
+    }
+
+    /// <summary>
+    /// Creates the builder used to configure a decorator registration, and schedules the
+    /// registration itself for when the container is built.
+    /// </summary>
+    /// <typeparam name="TService">Service type being decorated.</typeparam>
+    /// <param name="builder">Container builder.</param>
+    /// <param name="serviceType">The service type being decorated.</param>
+    /// <param name="registrationData">Registration data for the decorator registration.</param>
+    /// <param name="pipelineBuilder">Resolve pipeline builder for the decorator registration.</param>
+    /// <param name="registrationFactory">Factory producing the decorator's component registration.</param>
+    /// <param name="condition">A function that determines if the decorator should be applied.</param>
+    /// <returns>The decorator registration for continued configuration.</returns>
+    /// <remarks>
+    /// The decorator's component registration is deliberately not created here. Deferring it to
+    /// container build time is what allows the returned builder to keep configuring the
+    /// registration - in particular its resolve pipeline, which
+    /// <see cref="RegistrationBuilder"/>.<c>CreateRegistration</c> clones.
+    /// </remarks>
+    private static DecoratorRegistrationBuilder<TService> AddDecorator<TService>(
+        ContainerBuilder builder,
+        Type serviceType,
+        RegistrationData registrationData,
+        IResolvePipelineBuilder pipelineBuilder,
+        Func<DecoratorService, IComponentRegistration> registrationFactory,
+        Func<IDecoratorContext, bool>? condition)
+    {
+        var decoratorBuilder = new DecoratorRegistrationBuilder<TService>(
+            serviceType,
+            registrationData,
+            pipelineBuilder,
+            registrationFactory,
+            condition);
+
+        builder.RegisterCallback(decoratorBuilder.Register);
+
+        return decoratorBuilder;
     }
 }
