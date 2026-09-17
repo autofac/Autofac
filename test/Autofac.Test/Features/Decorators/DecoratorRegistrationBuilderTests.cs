@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Features.Decorators;
@@ -28,9 +29,16 @@ public class DecoratorRegistrationBuilderTests
     {
         var builder = new ContainerBuilder();
 
-        Assert.NotNull(builder.RegisterDecorator<DecoratorA, IDecoratedService>());
-        Assert.NotNull(builder.RegisterDecorator(typeof(DecoratorB), typeof(IDecoratedService)));
-        Assert.NotNull(builder.RegisterDecorator<IDecoratedService>((_, _, inner) => new DecoratorA(inner)));
+        var fromGeneric = builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+        var fromType = builder.RegisterDecorator(typeof(DecoratorB), typeof(IDecoratedService));
+        var fromLambda = builder.RegisterDecorator<IDecoratedService>((_, _, inner) => new DecoratorA(inner));
+
+        // The type argument each overload closes over is part of the public API. The non-generic
+        // overload deliberately uses object, matching the precedent set by RegisterType(Type)
+        // returning IRegistrationBuilder<object, ...>.
+        Assert.IsAssignableFrom<IDecoratorRegistrationBuilder<IDecoratedService>>(fromGeneric);
+        Assert.IsAssignableFrom<IDecoratorRegistrationBuilder<object>>(fromType);
+        Assert.IsAssignableFrom<IDecoratorRegistrationBuilder<IDecoratedService>>(fromLambda);
     }
 
     [Fact]
