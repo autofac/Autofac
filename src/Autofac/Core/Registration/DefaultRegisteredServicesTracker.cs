@@ -686,14 +686,9 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
 
         if (additionalInfo.IsSourceQueued(source))
         {
-            // Recording the implementation publishes it to whichever thread drains this source next,
-            // and that thread resolves through it, so its pipeline has to be built first. Building
-            // is idempotent, so the call AddRegistration makes later does nothing.
-            if (_ephemeralServiceInfo is null)
-            {
-                provided.BuildResolvePipeline(this);
-            }
-
+            // Issue #1503: AddRegistration raises Registered before it builds the pipeline so
+            // listeners can attach to PipelineBuilding, and attaching throws once the pipeline
+            // exists. Nothing may build it before then; the enclosing AddRegistration call does.
             DeferSourceImplementation(additionalInfo, source, provided);
         }
     }

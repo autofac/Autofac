@@ -187,6 +187,26 @@ public class OpenGenericMultipleServiceOverrideTests
     }
 
     [Fact]
+    public void HoldingAnImplementationLeavesPipelineBuildingAttachableFromTheRegisteredEvent()
+    {
+        // Issue #1503: AddRegistration raises Registered before it builds the pipeline so listeners
+        // can attach to PipelineBuilding, and attaching throws once the pipeline exists.
+        var builder = new ContainerBuilder();
+        builder
+            .RegisterGeneric(typeof(BothServices<>))
+            .As(typeof(IFirstService<>))
+            .As(typeof(ISecondService<>));
+
+        builder.ComponentRegistryBuilder.Registered += (sender, e) =>
+            e.ComponentRegistration.PipelineBuilding += (sender, pipeline) => { };
+
+        using var container = builder.Build();
+
+        Assert.NotNull(container.Resolve<IFirstService<int>>());
+        Assert.NotNull(container.Resolve<ISecondService<int>>());
+    }
+
+    [Fact]
     public void SeveralImplementationsFromOneSourceAreAllHeldForTheOtherService()
     {
         // A source may return more than one component for a service, and every one of them that
