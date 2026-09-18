@@ -189,10 +189,8 @@ public class OpenGenericMultipleServiceOverrideTests
     [Fact]
     public void HoldingAnImplementationLeavesPipelineBuildingAttachableFromTheRegisteredEvent()
     {
-        // Regression for issue #1503. Holding an implementation for the second service must not
-        // build the component's pipeline: AddRegistration raises Registered first so that listeners
-        // can attach to PipelineBuilding, which throws once the pipeline exists. Every consumer of
-        // Autofac.Extensions.DependencyInjection attaches exactly this way.
+        // Issue #1503: AddRegistration raises Registered before it builds the pipeline so listeners
+        // can attach to PipelineBuilding, and attaching throws once the pipeline exists.
         var builder = new ContainerBuilder();
         builder
             .RegisterGeneric(typeof(BothServices<>))
