@@ -58,6 +58,48 @@ public class ConstructorBinderTests
         }
     }
 
+    private class Dependency
+    {
+    }
+
+    private class Missing
+    {
+    }
+
+    private class CtorWithDependency
+    {
+        public CtorWithDependency(Dependency dependency)
+        {
+            Dependency = dependency;
+        }
+
+        public Dependency Dependency
+        {
+            get;
+        }
+    }
+
+    private class CtorWithDependencyAndMissing
+    {
+        public CtorWithDependencyAndMissing(Dependency dependency, Missing missing)
+        {
+        }
+    }
+
+    private class CountingAutowiringParameter : AutowiringParameter
+    {
+        public int Calls
+        {
+            get; private set;
+        }
+
+        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, [NotNullWhen(returnValue: true)] out Func<object?>? valueProvider)
+        {
+            Calls++;
+            return base.CanSupplyValue(pi, context, out valueProvider);
+        }
+    }
+
     [Fact]
     public void WhenAnExceptionIsThrownFromAConstructor_TheInnerExceptionIsWrapped()
     {
@@ -98,6 +140,57 @@ public class ConstructorBinderTests
         var parameters = new List<Parameter> { new PositionalParameter(0, 42) };
         var cpb = new ConstructorBinder(ci).Bind(parameters, new ContainerBuilder().Build());
         var instance = (CtorWithInt)cpb.Instantiate();
+
+        Assert.Equal(42, instance.Value);
+    }
+
+    [Fact]
+    public void AutowiringParameterSubclassIsStillAsked()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Dependency>();
+        var container = builder.Build();
+        var parameter = new CountingAutowiringParameter();
+        var ci = typeof(CtorWithDependency).GetTypeInfo().DeclaredConstructors.Single();
+
+        var instance = (CtorWithDependency)new ConstructorBinder(ci).Bind(new Parameter[] { parameter }, container).Instantiate();
+
+        Assert.Equal(1, parameter.Calls);
+        Assert.NotNull(instance.Dependency);
+    }
+
+    [Fact]
+    public void AutowiredArgumentsAreResolvedOnlyWhenInstantiated()
+    {
+        var resolved = 0;
+        var builder = new ContainerBuilder();
+        builder.Register(c =>
+        {
+            resolved++;
+            return new Dependency();
+        });
+        var container = builder.Build();
+        var parameters = new Parameter[] { new AutowiringParameter() };
+
+        var cannotBind = typeof(CtorWithDependencyAndMissing).GetTypeInfo().DeclaredConstructors.Single();
+        Assert.False(new ConstructorBinder(cannotBind).Bind(parameters, container).CanInstantiate);
+        Assert.Equal(0, resolved);
+
+        var canBind = typeof(CtorWithDependency).GetTypeInfo().DeclaredConstructors.Single();
+        var bound = new ConstructorBinder(canBind).Bind(parameters, container);
+        Assert.Equal(0, resolved);
+
+        bound.Instantiate();
+        Assert.Equal(1, resolved);
+    }
+
+    [Fact]
+    public void ForBindSuccessInstantiatesWithValueRetrievers()
+    {
+        var binder = new ConstructorBinder(typeof(CtorWithInt).GetTypeInfo().DeclaredConstructors.Single());
+        var bound = BoundConstructor.ForBindSuccess(binder, args => new CtorWithInt((int)args[0]!), new Func<object?>[] { () => 42 });
+
+        var instance = (CtorWithInt)bound.Instantiate();
 
         Assert.Equal(42, instance.Value);
     }

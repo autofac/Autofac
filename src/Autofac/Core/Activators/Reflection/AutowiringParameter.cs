@@ -36,8 +36,28 @@ public class AutowiringParameter : Parameter
             throw new ArgumentNullException(nameof(context));
         }
 
-        Service service;
+        if (TryGetServiceRegistration(pi, context, typedService: null, out var service, out var implementation))
+        {
+            valueProvider = CreateValueProvider(context, service, implementation);
+            return true;
+        }
 
+        valueProvider = null;
+        return false;
+    }
+
+    /// <summary>
+    /// Finds the registration that supplies an autowired value for a parameter. Shared by <see cref="CanSupplyValue"/>
+    /// and <see cref="ConstructorBinder"/>, which binds autowired constructor arguments without creating a delegate.
+    /// </summary>
+    /// <param name="pi">The parameter to supply.</param>
+    /// <param name="context">The component context in which the value is being provided.</param>
+    /// <param name="typedService">A cached <see cref="TypedService"/> for the parameter type, or <see langword="null"/> to create one.</param>
+    /// <param name="service">The service that supplies the value.</param>
+    /// <param name="implementation">The registration for <paramref name="service"/>, if found.</param>
+    /// <returns>True if a registration was found; otherwise, false.</returns>
+    internal static bool TryGetServiceRegistration(ParameterInfo pi, IComponentContext context, TypedService? typedService, out Service service, out ServiceRegistration implementation)
+    {
         if (context is ResolveRequestContext ctx
             && (ctx.Registration.Options & Registration.RegistrationOptions.Composite) == Registration.RegistrationOptions.Composite
             && ctx.Service is KeyedService keyedService
@@ -48,23 +68,28 @@ public class AutowiringParameter : Parameter
         }
         else
         {
-            service = new TypedService(pi.ParameterType);
+            service = typedService ?? new TypedService(pi.ParameterType);
         }
 
-        if (context.ComponentRegistry.TryGetServiceRegistration(service, out var implementation))
-        {
-            valueProvider = CreateValueProvider(context, service, implementation);
-            return true;
-        }
+        return context.ComponentRegistry.TryGetServiceRegistration(service, out implementation);
+    }
 
-        valueProvider = null;
-        return false;
+    /// <summary>
+    /// Resolves an autowired value from a registration found by <see cref="TryGetServiceRegistration"/>.
+    /// </summary>
+    /// <param name="context">The component context in which the value is being provided.</param>
+    /// <param name="service">The service that supplies the value.</param>
+    /// <param name="implementation">The registration for <paramref name="service"/>.</param>
+    /// <returns>The resolved value.</returns>
+    internal static object ResolveValue(IComponentContext context, Service service, ServiceRegistration implementation)
+    {
+        return context.ResolveComponent(new ResolveRequest(service, implementation, Enumerable.Empty<Parameter>()));
     }
 
     // Kept separate from CanSupplyValue: a lambda capturing parameters allocates its closure on method entry,
     // which would otherwise cost every call an allocation, including those that cannot supply a value.
     private static Func<object?> CreateValueProvider(IComponentContext context, Service service, ServiceRegistration implementation)
     {
-        return () => context.ResolveComponent(new ResolveRequest(service, implementation, Enumerable.Empty<Parameter>()));
+        return () => ResolveValue(context, service, implementation);
     }
 }
