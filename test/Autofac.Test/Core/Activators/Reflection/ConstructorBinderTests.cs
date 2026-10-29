@@ -92,6 +92,17 @@ public class ConstructorBinderTests
     }
 
     [Fact]
+    public void ParametersCanBeProvidedAsAnyEnumerable()
+    {
+        var ci = typeof(CtorWithInt).GetTypeInfo().DeclaredConstructors.Single();
+        var parameters = new List<Parameter> { new PositionalParameter(0, 42) };
+        var cpb = new ConstructorBinder(ci).Bind(parameters, new ContainerBuilder().Build());
+        var instance = (CtorWithInt)cpb.Instantiate();
+
+        Assert.Equal(42, instance.Value);
+    }
+
+    [Fact]
     public void WhenUsingByRefParameterExceptionIsThrownForIllegalParameter() // added for issue 1126
     {
         var constructorInfo = typeof(ServiceWithInParameter).GetTypeInfo().DeclaredConstructors.Single();
