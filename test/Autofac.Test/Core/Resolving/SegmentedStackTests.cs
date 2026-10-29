@@ -121,6 +121,38 @@ public class SegmentedStackTests
     }
 
     [Fact]
+    public void CanGrowInsideSegment()
+    {
+        var stack = new SegmentedStack<string>();
+
+        stack.Push("1");
+        stack.Push("2");
+        stack.Push("3");
+
+        var items = Enumerable.Range(4, 20).Select(i => i.ToString(CultureInfo.InvariantCulture)).ToArray();
+
+        using (stack.EnterSegment())
+        {
+            foreach (var item in items)
+            {
+                stack.Push(item);
+            }
+
+            Assert.Equal(items.Length, stack.Count);
+            Assert.Equal(Enumerable.Reverse(items), stack);
+
+            foreach (var item in Enumerable.Reverse(items))
+            {
+                Assert.Equal(item, stack.Pop());
+            }
+
+            Assert.Empty(stack);
+        }
+
+        Assert.Equal(new[] { "3", "2", "1" }, stack);
+    }
+
+    [Fact]
     public void StackTracksCountForSegmentsCorrectly()
     {
         var stack = new SegmentedStack<string>();
