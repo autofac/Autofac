@@ -15,7 +15,9 @@ namespace Autofac.Core.Resolving;
 internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
 {
     private const int SuccessListInitialCapacity = 32;
-    private readonly List<DefaultResolveRequestContext> _successfulRequests = new(SuccessListInitialCapacity);
+
+    // Created on first successful request; operations served from the shared-instance fast path never need it.
+    private List<DefaultResolveRequestContext>? _successfulRequests;
     private bool _ended;
     private int _nextCompleteSuccessfulRequestStartPos;
 
@@ -263,12 +265,17 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
             throw new DependencyResolutionException(ResolveOperationResources.PipelineCompletedWithNoInstance);
         }
 
-        _successfulRequests.Add(requestContext);
+        (_successfulRequests ??= new(SuccessListInitialCapacity)).Add(requestContext);
     }
 
     private void CompleteRequests()
     {
         var completed = _successfulRequests;
+        if (completed is null)
+        {
+            return;
+        }
+
         var count = completed.Count;
         var startPosition = _nextCompleteSuccessfulRequestStartPos;
         ResetSuccessfulRequests();
@@ -281,7 +288,7 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
 
     private void ResetSuccessfulRequests()
     {
-        _nextCompleteSuccessfulRequestStartPos = _successfulRequests.Count;
+        _nextCompleteSuccessfulRequestStartPos = _successfulRequests?.Count ?? 0;
     }
 
     private void End(Exception? exception = null)
