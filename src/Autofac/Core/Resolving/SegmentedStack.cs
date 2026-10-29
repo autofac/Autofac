@@ -16,7 +16,10 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     where T : class
 {
     private const int InitialCapacity = 16;
-    private T[] _array;
+
+    // Items are wrapped in a struct so stores skip the covariant array type check
+    // (T is typically an abstract type holding a derived instance, the slow path).
+    private Entry[] _array;
     private int _next;
     private int _activeSegmentBase;
 
@@ -26,7 +29,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     public SegmentedStack()
     {
         // Allocated on first push; many resolve operations (e.g. cached shared instances) never push.
-        _array = Array.Empty<T>();
+        _array = Array.Empty<Entry>();
     }
 
     /// <summary>
@@ -47,7 +50,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         // Array bounds checking cast.
         if ((uint)next < (uint)arr.Length)
         {
-            arr[next] = item;
+            arr[next].Item = item;
             _next = next + 1;
         }
         else
@@ -73,8 +76,8 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         }
 
         _next = next;
-        var item = array[next];
-        array[next] = null!;
+        var item = array[next].Item;
+        array[next].Item = null!;
         return item;
     }
 
@@ -108,7 +111,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     private void PushWithResize(T item)
     {
         Array.Resize(ref _array, Math.Max(InitialCapacity, 2 * _array.Length));
-        _array[_next] = item;
+        _array[_next].Item = item;
         _next++;
     }
 
@@ -183,7 +186,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
 
                 if (index > _activeSegmentBase)
                 {
-                    _currentElement = _stack._array[index];
+                    _currentElement = _stack._array[index].Item;
                     return true;
                 }
 
@@ -198,7 +201,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
 
             if (--index >= _activeSegmentBase)
             {
-                _currentElement = _stack._array[index];
+                _currentElement = _stack._array[index].Item;
                 _index = index;
                 return true;
             }
@@ -212,5 +215,10 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
             _index = -2;
             _currentElement = null!;
         }
+    }
+
+    private struct Entry
+    {
+        public T Item;
     }
 }
