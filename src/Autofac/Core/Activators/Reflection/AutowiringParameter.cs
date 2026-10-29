@@ -53,11 +53,18 @@ public class AutowiringParameter : Parameter
 
         if (context.ComponentRegistry.TryGetServiceRegistration(service, out var implementation))
         {
-            valueProvider = () => context.ResolveComponent(new ResolveRequest(service, implementation, Enumerable.Empty<Parameter>()));
+            valueProvider = CreateValueProvider(context, service, implementation);
             return true;
         }
 
         valueProvider = null;
         return false;
+    }
+
+    // Kept separate from CanSupplyValue: a lambda capturing parameters allocates its closure on method entry,
+    // which would otherwise cost every call an allocation, including those that cannot supply a value.
+    private static Func<object?> CreateValueProvider(IComponentContext context, Service service, ServiceRegistration implementation)
+    {
+        return () => context.ResolveComponent(new ResolveRequest(service, implementation, Enumerable.Empty<Parameter>()));
     }
 }
