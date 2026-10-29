@@ -11,7 +11,6 @@ namespace Autofac.Core.Resolving.Pipeline;
 /// </summary>
 internal sealed class DefaultResolveRequestContext : ResolveRequestContext
 {
-    private readonly ResolveRequest _resolveRequest;
     private object? _instance;
 
     /// <summary>
@@ -32,7 +31,11 @@ internal sealed class DefaultResolveRequestContext : ResolveRequestContext
         Operation = owningOperation;
         ActivationScope = scope;
         Parameters = KeyedServiceParameterInjector.AddKeyedServiceParameter(request.Service, request.Parameters, request.Registration);
-        _resolveRequest = request;
+
+        // Store only the parts of the request the context exposes, rather than copying the whole struct.
+        Registration = request.Registration;
+        Service = request.Service;
+        DecoratorTarget = request.DecoratorTarget;
         PhaseReached = PipelinePhase.ResolveRequestStart;
         DiagnosticSource = diagnosticSource;
     }
@@ -53,13 +56,22 @@ internal sealed class DefaultResolveRequestContext : ResolveRequestContext
     }
 
     /// <inheritdoc />
-    public override IComponentRegistration Registration => _resolveRequest.Registration;
+    public override IComponentRegistration Registration
+    {
+        get;
+    }
 
     /// <inheritdoc />
-    public override Service Service => _resolveRequest.Service;
+    public override Service Service
+    {
+        get;
+    }
 
     /// <inheritdoc />
-    public override IComponentRegistration? DecoratorTarget => _resolveRequest.DecoratorTarget;
+    public override IComponentRegistration? DecoratorTarget
+    {
+        get;
+    }
 
     /// <inheritdoc />
     [DisallowNull]

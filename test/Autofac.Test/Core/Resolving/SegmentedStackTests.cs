@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Globalization;
 using Autofac.Core.Resolving;
 
 namespace Autofac.Test.Core.Resolving;
@@ -30,6 +31,31 @@ public class SegmentedStackTests
         Assert.Equal("2", stack.Pop());
         Assert.Equal("1", stack.Pop());
         Assert.Throws<InvalidOperationException>(() => stack.Pop());
+    }
+
+    [Fact]
+    public void NewStackIsEmpty()
+    {
+        var stack = new SegmentedStack<string>();
+
+        Assert.Equal(0, stack.Count);
+        Assert.Empty(stack);
+        Assert.Throws<InvalidOperationException>(() => stack.Pop());
+    }
+
+    [Fact]
+    public void CanGrowBeyondInitialCapacity()
+    {
+        var stack = new SegmentedStack<string>();
+        var items = Enumerable.Range(0, 100).Select(i => i.ToString(CultureInfo.InvariantCulture)).ToArray();
+
+        foreach (var item in items)
+        {
+            stack.Push(item);
+        }
+
+        Assert.Equal(items.Length, stack.Count);
+        Assert.Equal(Enumerable.Reverse(items), stack);
     }
 
     [Fact]
@@ -71,6 +97,59 @@ public class SegmentedStackTests
         }
 
         Assert.Equal(stack, new[] { "3", "2", "1" });
+    }
+
+    [Fact]
+    public void CanEnumerateSingleItem()
+    {
+        var stack = new SegmentedStack<string>();
+
+        stack.Push("1");
+
+        Assert.Equal(new[] { "1" }, stack);
+
+        stack.Push("2");
+
+        using (stack.EnterSegment())
+        {
+            stack.Push("3");
+
+            Assert.Equal(new[] { "3" }, stack);
+
+            stack.Pop();
+        }
+    }
+
+    [Fact]
+    public void CanGrowInsideSegment()
+    {
+        var stack = new SegmentedStack<string>();
+
+        stack.Push("1");
+        stack.Push("2");
+        stack.Push("3");
+
+        var items = Enumerable.Range(4, 20).Select(i => i.ToString(CultureInfo.InvariantCulture)).ToArray();
+
+        using (stack.EnterSegment())
+        {
+            foreach (var item in items)
+            {
+                stack.Push(item);
+            }
+
+            Assert.Equal(items.Length, stack.Count);
+            Assert.Equal(Enumerable.Reverse(items), stack);
+
+            foreach (var item in Enumerable.Reverse(items))
+            {
+                Assert.Equal(item, stack.Pop());
+            }
+
+            Assert.Empty(stack);
+        }
+
+        Assert.Equal(new[] { "3", "2", "1" }, stack);
     }
 
     [Fact]

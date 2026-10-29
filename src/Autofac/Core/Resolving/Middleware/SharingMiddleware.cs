@@ -37,17 +37,7 @@ internal class SharingMiddleware : IResolveMiddleware
             {
                 // Assign the result of CreateSharedInstance onto the context, because if concurrency causes CreateSharedInstance to return
                 // the existing instance, the rest of the pipeline shouldn't run.
-                context.Instance = context.ActivationScope.CreateSharedInstance(registration.Id, decoratorRegistration?.Id, () =>
-                {
-                    next(context);
-
-                    if (context.Instance is null)
-                    {
-                        throw new InvalidOperationException("Instance null after pipeline invoke.");
-                    }
-
-                    return context.Instance;
-                });
+                context.Instance = CreateSharedInstance(context, next, registration.Id, decoratorRegistration?.Id);
             }
             else
             {
@@ -58,4 +48,21 @@ internal class SharingMiddleware : IResolveMiddleware
 
     /// <inheritdoc />
     public override string ToString() => nameof(SharingMiddleware);
+
+    // Kept separate from Execute: a lambda capturing parameters allocates its closure on method entry,
+    // which would otherwise cost every non-shared request an allocation.
+    private static object CreateSharedInstance(ResolveRequestContext context, Action<ResolveRequestContext> next, Guid id, Guid? qualifyingId)
+    {
+        return context.ActivationScope.CreateSharedInstance(id, qualifyingId, () =>
+        {
+            next(context);
+
+            if (context.Instance is null)
+            {
+                throw new InvalidOperationException("Instance null after pipeline invoke.");
+            }
+
+            return context.Instance;
+        });
+    }
 }

@@ -102,6 +102,8 @@ public class ConstructorBinder
             return BoundConstructor.ForBindFailure(this, _illegalParameter);
         }
 
+        // Iterate an array; foreach over IEnumerable<T> would allocate an enumerator per constructor argument.
+        var parameters = availableParameters as Parameter[] ?? availableParameters.ToArray();
         var valueRetrievers = new Func<object?>[constructorArgLength];
 
         for (var idx = 0; idx < constructorArgLength; idx++)
@@ -109,7 +111,7 @@ public class ConstructorBinder
             var pi = constructorArgs[idx];
             var foundValue = false;
 
-            foreach (var param in availableParameters)
+            foreach (var param in parameters)
             {
                 if (param.CanSupplyValue(pi, context, out var valueRetriever))
                 {
