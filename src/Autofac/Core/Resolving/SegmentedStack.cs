@@ -25,7 +25,8 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     /// </summary>
     public SegmentedStack()
     {
-        _array = new T[InitialCapacity];
+        // Allocated on first push; many resolve operations (e.g. cached shared instances) never push.
+        _array = Array.Empty<T>();
     }
 
     /// <summary>
@@ -106,7 +107,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void PushWithResize(T item)
     {
-        Array.Resize(ref _array, 2 * _array.Length);
+        Array.Resize(ref _array, Math.Max(InitialCapacity, 2 * _array.Length));
         _array[_next] = item;
         _next++;
     }
