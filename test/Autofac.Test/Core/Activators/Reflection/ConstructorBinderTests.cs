@@ -196,6 +196,14 @@ public class ConstructorBinderTests
     }
 
     [Fact]
+    public void ForBindSuccessRequiresValueRetrievers()
+    {
+        var binder = new ConstructorBinder(typeof(CtorWithInt).GetTypeInfo().DeclaredConstructors.Single());
+
+        Assert.Throws<ArgumentNullException>(() => BoundConstructor.ForBindSuccess(binder, args => new CtorWithInt((int)args[0]!), null!));
+    }
+
+    [Fact]
     public void WhenUsingByRefParameterExceptionIsThrownForIllegalParameter() // added for issue 1126
     {
         var constructorInfo = typeof(ServiceWithInParameter).GetTypeInfo().DeclaredConstructors.Single();
