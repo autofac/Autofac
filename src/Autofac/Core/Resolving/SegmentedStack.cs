@@ -50,7 +50,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         // Array bounds checking cast.
         if ((uint)next < (uint)arr.Length)
         {
-            arr[next].Item = item;
+            arr[next]._item = item;
             _next = next + 1;
         }
         else
@@ -76,8 +76,8 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         }
 
         _next = next;
-        var item = array[next].Item;
-        array[next].Item = null!;
+        var item = array[next]._item;
+        array[next]._item = null!;
         return item;
     }
 
@@ -111,7 +111,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
     private void PushWithResize(T item)
     {
         Array.Resize(ref _array, Math.Max(InitialCapacity, 2 * _array.Length));
-        _array[_next].Item = item;
+        _array[_next]._item = item;
         _next++;
     }
 
@@ -186,7 +186,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
 
                 if (index >= _activeSegmentBase)
                 {
-                    _currentElement = _stack._array[index].Item;
+                    _currentElement = _stack._array[index]._item;
                     return true;
                 }
 
@@ -201,7 +201,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
 
             if (--index >= _activeSegmentBase)
             {
-                _currentElement = _stack._array[index].Item;
+                _currentElement = _stack._array[index]._item;
                 _index = index;
                 return true;
             }
@@ -219,6 +219,6 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
 
     private struct Entry
     {
-        public T Item;
+        public T _item;
     }
 }
