@@ -102,19 +102,29 @@ public class ConstructorBinder
             return BoundConstructor.ForBindFailure(this, _illegalParameter);
         }
 
+        // Iterate an array; foreach over IEnumerable<T> would allocate an enumerator per constructor argument.
+        var parameters = availableParameters as Parameter[] ?? availableParameters.ToArray();
         var valueRetrievers = new Func<object?>[constructorArgLength];
 
         for (var idx = 0; idx < constructorArgLength; idx++)
         {
             var pi = constructorArgs[idx];
-            var valueRetriever = FindValueRetriever(availableParameters, pi, context);
+            var foundValue = false;
 
-            if (valueRetriever is null)
+            foreach (var param in parameters)
+            {
+                if (param.CanSupplyValue(pi, context, out var valueRetriever))
+                {
+                    valueRetrievers[idx] = valueRetriever;
+                    foundValue = true;
+                    break;
+                }
+            }
+
+            if (!foundValue)
             {
                 return BoundConstructor.ForBindFailure(this, pi);
             }
-
-            valueRetrievers[idx] = valueRetriever;
         }
 
         return BoundConstructor.ForBindSuccess(this, _factory!, valueRetrievers);
@@ -130,33 +140,6 @@ public class ConstructorBinder
     internal Func<object?[], object>? GetConstructorInvoker()
     {
         return _factory;
-    }
-
-    private static Func<object?>? FindValueRetriever(IEnumerable<Parameter> availableParameters, ParameterInfo pi, IComponentContext context)
-    {
-        // Index arrays (the common case) directly; foreach over IEnumerable<T> allocates an enumerator per constructor argument.
-        if (availableParameters is Parameter[] parameterArray)
-        {
-            foreach (var param in parameterArray)
-            {
-                if (param.CanSupplyValue(pi, context, out var valueRetriever))
-                {
-                    return valueRetriever;
-                }
-            }
-
-            return null;
-        }
-
-        foreach (var param in availableParameters)
-        {
-            if (param.CanSupplyValue(pi, context, out var valueRetriever))
-            {
-                return valueRetriever;
-            }
-        }
-
-        return null;
     }
 
     private static Func<object?[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)

@@ -288,34 +288,17 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         return boundConstructors;
     }
 
-    private IEnumerable<Parameter> GetAllParameters(IEnumerable<Parameter> parameters)
+    private Parameter[] GetAllParameters(IEnumerable<Parameter> parameters)
     {
-        // Most often, there will be no `parameters` and/or no `_defaultParameters`; in both of those cases we can avoid allocating.
+        // Most often, there will be no `parameters`, in which case we can avoid allocating.
         // Do a reference compare with the NoParameters constant; faster than an Any() check for the common case.
         if (ReferenceEquals(ResolveRequest.NoParameters, parameters))
         {
             return _defaultParameters;
         }
 
-        if (parameters.Any())
-        {
-            return EnumerateParameters(parameters);
-        }
-
-        return _defaultParameters;
-    }
-
-    private IEnumerable<Parameter> EnumerateParameters(IEnumerable<Parameter> parameters)
-    {
-        foreach (var param in parameters)
-        {
-            yield return param;
-        }
-
-        foreach (var defaultParam in _defaultParameters)
-        {
-            yield return defaultParam;
-        }
+        // Build one array per resolve so constructor binding iterates an array rather than an enumerable per argument.
+        return parameters.Concat(_defaultParameters).ToArray();
     }
 
     private string GetBindingFailureMessage(BoundConstructor[] constructorBindings)
