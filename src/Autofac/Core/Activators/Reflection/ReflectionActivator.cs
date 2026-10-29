@@ -292,7 +292,8 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     {
         // Most often, there will be no `parameters`, in which case we can avoid allocating.
         // Do a reference compare with the NoParameters constant; faster than an Any() check for the common case.
-        if (ReferenceEquals(ResolveRequest.NoParameters, parameters))
+        // Empty collections (e.g. the new empty array generated Func<T> factories pass on each call) take the same path.
+        if (ReferenceEquals(ResolveRequest.NoParameters, parameters) || parameters is ICollection<Parameter> { Count: 0 })
         {
             return _defaultParameters;
         }
