@@ -16,7 +16,8 @@ namespace Autofac.Core.Activators.Reflection;
 public class BoundConstructor
 {
     private readonly Func<object?[], object>? _factory;
-    private readonly Func<object?>[]? _valueRetrievers;
+    private readonly BoundArgument[]? _arguments;
+    private readonly IComponentContext? _context;
     private readonly ParameterInfo? _firstNonBindableParameter;
 
     /// <summary>
@@ -26,11 +27,24 @@ public class BoundConstructor
     /// <param name="factory">The instance factory.</param>
     /// <param name="valueRetrievers">The set of value-retrieval functions.</param>
     internal BoundConstructor(ConstructorBinder binder, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
+        : this(binder, factory, ToArguments(valueRetrievers), context: null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BoundConstructor"/> class for a successful bind.
+    /// </summary>
+    /// <param name="binder">The binder that generated this binding.</param>
+    /// <param name="factory">The instance factory.</param>
+    /// <param name="arguments">The sources of the argument values.</param>
+    /// <param name="context">The context to resolve autowired arguments from.</param>
+    internal BoundConstructor(ConstructorBinder binder, Func<object?[], object> factory, BoundArgument[] arguments, IComponentContext? context)
     {
         CanInstantiate = true;
         Binder = binder;
         _factory = factory ?? throw new ArgumentNullException(nameof(factory));
-        _valueRetrievers = valueRetrievers ?? throw new ArgumentNullException(nameof(valueRetrievers));
+        _arguments = arguments;
+        _context = context;
         _firstNonBindableParameter = null;
     }
 
@@ -45,7 +59,8 @@ public class BoundConstructor
         CanInstantiate = false;
         _firstNonBindableParameter = firstNonBindableParameter ?? throw new ArgumentNullException(nameof(firstNonBindableParameter));
         _factory = null;
-        _valueRetrievers = null;
+        _arguments = null;
+        _context = null;
     }
 
     /// <summary>
@@ -120,13 +135,14 @@ public class BoundConstructor
         }
 
         object?[] values;
+        var arguments = _arguments!;
 
-        if (_valueRetrievers!.Length != 0)
+        if (arguments.Length != 0)
         {
-            values = new object?[_valueRetrievers!.Length];
-            for (var i = 0; i < _valueRetrievers.Length; ++i)
+            values = new object?[arguments.Length];
+            for (var i = 0; i < arguments.Length; ++i)
             {
-                values[i] = _valueRetrievers[i]();
+                values[i] = arguments[i].GetValue(_context);
             }
         }
         else
@@ -153,5 +169,26 @@ public class BoundConstructor
     public override string ToString()
     {
         return Description;
+    }
+
+    private static BoundArgument[] ToArguments(Func<object?>[] valueRetrievers)
+    {
+        if (valueRetrievers is null)
+        {
+            throw new ArgumentNullException(nameof(valueRetrievers));
+        }
+
+        if (valueRetrievers.Length == 0)
+        {
+            return Array.Empty<BoundArgument>();
+        }
+
+        var arguments = new BoundArgument[valueRetrievers.Length];
+        for (var i = 0; i < valueRetrievers.Length; i++)
+        {
+            arguments[i] = new BoundArgument(valueRetrievers[i]);
+        }
+
+        return arguments;
     }
 }
