@@ -184,7 +184,7 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
                 // Start the enumerator.
                 _index = index = _stack._next - 1;
 
-                if (index > _activeSegmentBase)
+                if (index >= _activeSegmentBase)
                 {
                     _currentElement = _stack._array[index].Item;
                     return true;

@@ -19,4 +19,23 @@ public class CircularDependencyTests
         var de = Assert.Throws<DependencyResolutionException>(() => container.Resolve<ID>());
         Assert.Contains("Autofac.Test.Scenarios.Dependencies.Circularity.D -> Autofac.Test.Scenarios.Dependencies.Circularity.A -> Autofac.Test.Scenarios.Dependencies.Circularity.BC -> Autofac.Test.Scenarios.Dependencies.Circularity.A", de.ToString(), StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void DetectsSelfDependencyOnFirstRepeat()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<SelfDependent>();
+        var container = builder.Build();
+        var de = Assert.Throws<DependencyResolutionException>(() => container.Resolve<SelfDependent>());
+        var name = typeof(SelfDependent).FullName;
+        Assert.Contains($"{name} -> {name}", de.ToString(), StringComparison.Ordinal);
+        Assert.DoesNotContain($"{name} -> {name} -> {name}", de.ToString(), StringComparison.Ordinal);
+    }
+
+    private sealed class SelfDependent
+    {
+        public SelfDependent(SelfDependent self)
+        {
+        }
+    }
 }

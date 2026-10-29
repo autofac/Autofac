@@ -100,6 +100,27 @@ public class SegmentedStackTests
     }
 
     [Fact]
+    public void CanEnumerateSingleItem()
+    {
+        var stack = new SegmentedStack<string>();
+
+        stack.Push("1");
+
+        Assert.Equal(new[] { "1" }, stack);
+
+        stack.Push("2");
+
+        using (stack.EnterSegment())
+        {
+            stack.Push("3");
+
+            Assert.Equal(new[] { "3" }, stack);
+
+            stack.Pop();
+        }
+    }
+
+    [Fact]
     public void StackTracksCountForSegmentsCorrectly()
     {
         var stack = new SegmentedStack<string>();
