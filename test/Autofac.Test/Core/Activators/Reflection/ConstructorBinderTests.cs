@@ -100,6 +100,16 @@ public class ConstructorBinderTests
         }
     }
 
+    // Breaks the CanSupplyValue contract, which binding has always tolerated until the constructor is invoked.
+    private class NullValueProviderParameter : Parameter
+    {
+        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, [NotNullWhen(returnValue: true)] out Func<object?>? valueProvider)
+        {
+            valueProvider = null!;
+            return true;
+        }
+    }
+
     [Fact]
     public void WhenAnExceptionIsThrownFromAConstructor_TheInnerExceptionIsWrapped()
     {
@@ -211,6 +221,17 @@ public class ConstructorBinderTests
         var ex = Assert.Throws<ArgumentNullException>(() => BoundConstructor.ForBindSuccess(binder, null!, null!));
 
         Assert.Equal("factory", ex.ParamName);
+    }
+
+    [Fact]
+    public void ParameterWithNullValueProviderBindsButFailsToInstantiate()
+    {
+        var ci = typeof(CtorWithInt).GetTypeInfo().DeclaredConstructors.Single();
+
+        var bound = new ConstructorBinder(ci).Bind(new Parameter[] { new NullValueProviderParameter() }, new ContainerBuilder().Build());
+
+        Assert.True(bound.CanInstantiate);
+        Assert.Throws<NullReferenceException>(() => bound.Instantiate());
     }
 
     [Fact]
