@@ -96,10 +96,7 @@ internal class DecoratorMiddleware : IResolveMiddleware
         // decorated instance (which would otherwise throw an InvalidCastException).
         var currentInstance = context.DecoratorContext.CurrentInstance;
         var typedServiceParameter = new TypedParameter(serviceType, currentInstance);
-        var compatibleServiceParameter = new ResolvedParameter(
-            (pi, ctx) => serviceType.IsAssignableFrom(pi.ParameterType)
-                && pi.ParameterType.IsInstanceOfType(currentInstance),
-            (pi, ctx) => currentInstance);
+        var compatibleServiceParameter = new CompatibleServiceParameter(serviceType, currentInstance);
         var contextParameter = new TypedParameter(typeof(IDecoratorContext), context.DecoratorContext);
 
         Parameter[] resolveParameters;

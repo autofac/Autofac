@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core;
+using Autofac.Features.Decorators;
 
 namespace Autofac.Test.Features.Decorators;
 
@@ -342,6 +343,52 @@ public class DecoratorTests
         var container = builder.Build();
 
         Assert.Throws<DependencyResolutionException>(() => container.Resolve<IBase>());
+    }
+
+    [Fact]
+    public void DecoratorReceivesResolveParametersThenDecoratorParameters()
+    {
+        Parameter[]? received = null;
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<IDecoratedService>((c, p, i) =>
+        {
+            received = p.ToArray();
+            return new DecoratorA(i);
+        });
+
+        var container = builder.Build();
+        var resolveParameter = new NamedParameter("name", 1);
+
+        var decorator = Assert.IsType<DecoratorA>(container.Resolve<IDecoratedService>(resolveParameter));
+        var instance = Assert.IsType<ImplementorA>(decorator.Decorated);
+
+        Assert.NotNull(received);
+        Assert.Collection(
+            received,
+            p => Assert.Same(resolveParameter, p),
+            p =>
+            {
+                var typed = Assert.IsType<TypedParameter>(p);
+                Assert.Equal(typeof(IDecoratedService), typed.Type);
+                Assert.Same(instance, typed.Value);
+            },
+            p => Assert.IsAssignableFrom<ResolvedParameter>(p),
+            p =>
+            {
+                var typed = Assert.IsType<TypedParameter>(p);
+                Assert.Equal(typeof(IDecoratorContext), typed.Type);
+                Assert.Same(instance, Assert.IsAssignableFrom<IDecoratorContext>(typed.Value).CurrentInstance);
+            });
+
+        // The compatible service parameter supplies the instance only to parameters it can be assigned to.
+        var compatible = received[2];
+        var decoratedParameter = typeof(DecoratorA).GetConstructors()[0].GetParameters()[0];
+        Assert.True(compatible.CanSupplyValue(decoratedParameter, container, out var valueProvider));
+        Assert.Same(instance, valueProvider());
+
+        var unrelatedParameter = typeof(DerivedDependencyDecorator).GetConstructors()[0].GetParameters()[1];
+        Assert.False(compatible.CanSupplyValue(unrelatedParameter, container, out _));
     }
 
     private abstract class Decorator : IDecoratedService
