@@ -220,14 +220,7 @@ public static partial class RegistrationExtensions
 
         var service = new DecoratorService(typeof(TService), condition);
 
-        var rb = RegistrationBuilder.ForDelegate((c, p) =>
-        {
-            var instance = (TService?)p
-                .OfType<TypedParameter>()
-                .FirstOrDefault(tp => tp.Type == typeof(TService))
-                ?.Value ?? throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));
-            return decorator(c, p, instance);
-        }).As(service);
+        var rb = RegistrationBuilder.ForDelegate((c, p) => decorator(c, p, GetDecoratedInstance<TService>(p))).As(service);
 
         var decoratorRegistration = rb.CreateRegistration();
 
@@ -317,4 +310,25 @@ public static partial class RegistrationExtensions
 
         builder.RegisterServiceMiddlewareSource(new OpenGenericDecoratorMiddlewareSource(decoratorService, genericRegistration.RegistrationData, genericRegistration.ActivatorData));
     }
+
+    // The decorated instance is the first TypedParameter for the service type. Looked up without LINQ,
+    // which allocated an iterator and an enumerator on every decoration.
+    private static TService GetDecoratedInstance<TService>(IEnumerable<Parameter> parameters)
+        where TService : class
+    {
+        var parameterArray = parameters as Parameter[] ?? parameters.ToArray();
+
+        foreach (var parameter in parameterArray)
+        {
+            if (parameter is TypedParameter typedParameter && typedParameter.Type == typeof(TService))
+            {
+                return (TService?)typedParameter.Value ?? throw DecoratorRequiresInstanceParameter<TService>();
+            }
+        }
+
+        throw DecoratorRequiresInstanceParameter<TService>();
+    }
+
+    private static DependencyResolutionException DecoratorRequiresInstanceParameter<TService>()
+        => new(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));
 }

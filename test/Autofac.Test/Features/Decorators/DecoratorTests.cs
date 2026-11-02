@@ -391,6 +391,35 @@ public class DecoratorTests
         Assert.False(compatible.CanSupplyValue(unrelatedParameter, container, out _));
     }
 
+    [Fact]
+    public void LambdaDecoratorUsesTheFirstTypedParameterForTheService()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<IDecoratedService>((c, p, i) => new DecoratorA(i));
+        var container = builder.Build();
+        var supplied = new ImplementorA();
+
+        // Resolve parameters come before the decorator's own, so the supplied instance is the one decorated.
+        var decorator = Assert.IsType<DecoratorA>(container.Resolve<IDecoratedService>(TypedParameter.From<IDecoratedService>(supplied)));
+
+        Assert.Same(supplied, decorator.Decorated);
+    }
+
+    [Fact]
+    public void LambdaDecoratorThrowsWhenTheFirstTypedParameterForTheServiceIsNull()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<IDecoratedService>((c, p, i) => new DecoratorA(i));
+        var container = builder.Build();
+
+        var exception = Assert.Throws<DependencyResolutionException>(
+            () => container.Resolve<IDecoratedService>(new TypedParameter(typeof(IDecoratedService), null)));
+
+        Assert.Contains("A decorator for 'IDecoratedService'", exception.ToString(), StringComparison.Ordinal);
+    }
+
     private abstract class Decorator : IDecoratedService
     {
         protected Decorator(IDecoratedService decorated)
