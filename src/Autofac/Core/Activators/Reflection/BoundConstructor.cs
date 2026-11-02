@@ -27,7 +27,7 @@ public class BoundConstructor
     /// <param name="factory">The instance factory.</param>
     /// <param name="valueRetrievers">The set of value-retrieval functions.</param>
     internal BoundConstructor(ConstructorBinder binder, Func<object?[], object> factory, Func<object?>[] valueRetrievers)
-        : this(binder, factory, ToArguments(valueRetrievers), context: null)
+        : this(binder, factory ?? throw new ArgumentNullException(nameof(factory)), ToArguments(valueRetrievers), context: null)
     {
     }
 
@@ -108,7 +108,9 @@ public class BoundConstructor
     /// </summary>
     /// <param name="binder">The binder that generated this binding.</param>
     /// <param name="factory">The instance factory.</param>
-    /// <param name="valueRetrievers">The set of value-retrieval functions.</param>
+    /// <param name="valueRetrievers">
+    /// The set of value-retrieval functions. The array is copied, so later changes to it do not affect the binding.
+    /// </param>
     /// <returns>A <see cref="BoundConstructor"/> with details about the successful bind.</returns>
     [SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "Validated in constructor.")]
     public static BoundConstructor ForBindSuccess(ConstructorBinder binder, Func<object?[], object> factory, Func<object?>[] valueRetrievers)

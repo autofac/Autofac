@@ -204,6 +204,16 @@ public class ConstructorBinderTests
     }
 
     [Fact]
+    public void ForBindSuccessChecksTheFactoryFirst()
+    {
+        var binder = new ConstructorBinder(typeof(CtorWithInt).GetTypeInfo().DeclaredConstructors.Single());
+
+        var ex = Assert.Throws<ArgumentNullException>(() => BoundConstructor.ForBindSuccess(binder, null!, null!));
+
+        Assert.Equal("factory", ex.ParamName);
+    }
+
+    [Fact]
     public void WhenUsingByRefParameterExceptionIsThrownForIllegalParameter() // added for issue 1126
     {
         var constructorInfo = typeof(ServiceWithInParameter).GetTypeInfo().DeclaredConstructors.Single();
