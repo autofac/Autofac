@@ -36,6 +36,7 @@ public static class BenchmarkSet
         typeof(OpenGenericBenchmark),
         typeof(OpenGenericMultiServiceBenchmark),
         typeof(MultiConstructorBenchmark),
+        typeof(ConstructorParameterBenchmark),
         typeof(LambdaResolveBenchmark),
         typeof(RequiredPropertyBenchmark),
         typeof(ModuleRegistrationBenchmark),

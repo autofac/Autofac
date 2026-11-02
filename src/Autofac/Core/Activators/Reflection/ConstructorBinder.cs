@@ -3,6 +3,7 @@
 
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 using Autofac.Util;
 
@@ -18,6 +19,10 @@ public class ConstructorBinder
     private readonly ParameterInfo[] _constructorArgs;
     private readonly Func<object?[], object>? _factory;
     private readonly ParameterInfo? _illegalParameter;
+
+    // The service each argument autowires to, created on first bind rather than on every bind. Not in the
+    // constructor: binders for registrations in short-lived child scopes are often never bound.
+    private TypedService[]? _argumentServices;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ConstructorBinder"/> class.
@@ -104,30 +109,28 @@ public class ConstructorBinder
 
         // Iterate an array; foreach over IEnumerable<T> would allocate an enumerator per constructor argument.
         var parameters = availableParameters as Parameter[] ?? availableParameters.ToArray();
-        var valueRetrievers = new Func<object?>[constructorArgLength];
 
-        for (var idx = 0; idx < constructorArgLength; idx++)
+        // Concurrent first binds may each create the services; any of the results is equivalent.
+        var argumentServices = _argumentServices ??= CreateArgumentServices(constructorArgs);
+
+        // Bind the first argument before allocating, so a candidate constructor that fails on it allocates nothing.
+        if (!TryBindArgument(parameters, constructorArgs[0], argumentServices[0], context, out var firstArgument))
         {
-            var pi = constructorArgs[idx];
-            var foundValue = false;
+            return BoundConstructor.ForBindFailure(this, constructorArgs[0]);
+        }
 
-            foreach (var param in parameters)
-            {
-                if (param.CanSupplyValue(pi, context, out var valueRetriever))
-                {
-                    valueRetrievers[idx] = valueRetriever;
-                    foundValue = true;
-                    break;
-                }
-            }
+        var arguments = new BoundArgument[constructorArgLength];
+        arguments[0] = firstArgument;
 
-            if (!foundValue)
+        for (var idx = 1; idx < constructorArgLength; idx++)
+        {
+            if (!TryBindArgument(parameters, constructorArgs[idx], argumentServices[idx], context, out arguments[idx]))
             {
-                return BoundConstructor.ForBindFailure(this, pi);
+                return BoundConstructor.ForBindFailure(this, constructorArgs[idx]);
             }
         }
 
-        return BoundConstructor.ForBindSuccess(this, _factory!, valueRetrievers);
+        return new BoundConstructor(this, _factory!, arguments, context);
     }
 
     /// <summary>
@@ -140,6 +143,45 @@ public class ConstructorBinder
     internal Func<object?[], object>? GetConstructorInvoker()
     {
         return _factory;
+    }
+
+    private static TypedService[] CreateArgumentServices(ParameterInfo[] constructorArgs)
+    {
+        var services = new TypedService[constructorArgs.Length];
+        for (var idx = 0; idx < constructorArgs.Length; idx++)
+        {
+            services[idx] = new TypedService(constructorArgs[idx].ParameterType);
+        }
+
+        return services;
+    }
+
+    // Not inlined: the JIT would otherwise inline every parameter check into Bind, spilling its loop to the stack.
+    // Measured on net10.0; rerun MultiConstructorBenchmark.OneValidCtorOneFailingOnFirstArg when revisiting this.
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static bool TryBindArgument(Parameter[] parameters, ParameterInfo pi, TypedService argumentService, IComponentContext context, out BoundArgument argument)
+    {
+        foreach (var param in parameters)
+        {
+            // Bind autowired arguments to their registration directly rather than through a delegate. Only the exact
+            // type qualifies, since a subclass may override CanSupplyValue.
+            if (param.GetType() == typeof(AutowiringParameter))
+            {
+                if (AutowiringParameter.TryGetServiceRegistration(pi, context, argumentService, out var service, out var implementation))
+                {
+                    argument = new BoundArgument(service, implementation);
+                    return true;
+                }
+            }
+            else if (param.CanSupplyValue(pi, context, out var valueRetriever))
+            {
+                argument = new BoundArgument(valueRetriever);
+                return true;
+            }
+        }
+
+        argument = default;
+        return false;
     }
 
     private static Func<object?[], object> GetConstructorInvoker(ConstructorInfo constructorInfo)

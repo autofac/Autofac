@@ -58,6 +58,58 @@ public class ConstructorBinderTests
         }
     }
 
+    private class Dependency
+    {
+    }
+
+    private class Missing
+    {
+    }
+
+    private class CtorWithDependency
+    {
+        public CtorWithDependency(Dependency dependency)
+        {
+            Dependency = dependency;
+        }
+
+        public Dependency Dependency
+        {
+            get;
+        }
+    }
+
+    private class CtorWithDependencyAndMissing
+    {
+        public CtorWithDependencyAndMissing(Dependency dependency, Missing missing)
+        {
+        }
+    }
+
+    private class CountingAutowiringParameter : AutowiringParameter
+    {
+        public int Calls
+        {
+            get; private set;
+        }
+
+        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, [NotNullWhen(returnValue: true)] out Func<object?>? valueProvider)
+        {
+            Calls++;
+            return base.CanSupplyValue(pi, context, out valueProvider);
+        }
+    }
+
+    // Breaks the CanSupplyValue contract, which binding has always tolerated until the constructor is invoked.
+    private class NullValueProviderParameter : Parameter
+    {
+        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, [NotNullWhen(returnValue: true)] out Func<object?>? valueProvider)
+        {
+            valueProvider = null!;
+            return true;
+        }
+    }
+
     [Fact]
     public void WhenAnExceptionIsThrownFromAConstructor_TheInnerExceptionIsWrapped()
     {
@@ -100,6 +152,86 @@ public class ConstructorBinderTests
         var instance = (CtorWithInt)cpb.Instantiate();
 
         Assert.Equal(42, instance.Value);
+    }
+
+    [Fact]
+    public void AutowiringParameterSubclassIsStillAsked()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Dependency>();
+        var container = builder.Build();
+        var parameter = new CountingAutowiringParameter();
+        var ci = typeof(CtorWithDependency).GetTypeInfo().DeclaredConstructors.Single();
+
+        var instance = (CtorWithDependency)new ConstructorBinder(ci).Bind(new Parameter[] { parameter }, container).Instantiate();
+
+        Assert.Equal(1, parameter.Calls);
+        Assert.NotNull(instance.Dependency);
+    }
+
+    [Fact]
+    public void AutowiredArgumentsAreResolvedOnlyWhenInstantiated()
+    {
+        var resolved = 0;
+        var builder = new ContainerBuilder();
+        builder.Register(c =>
+        {
+            resolved++;
+            return new Dependency();
+        });
+        var container = builder.Build();
+        var parameters = new Parameter[] { new AutowiringParameter() };
+
+        var cannotBind = typeof(CtorWithDependencyAndMissing).GetTypeInfo().DeclaredConstructors.Single();
+        Assert.False(new ConstructorBinder(cannotBind).Bind(parameters, container).CanInstantiate);
+        Assert.Equal(0, resolved);
+
+        var canBind = typeof(CtorWithDependency).GetTypeInfo().DeclaredConstructors.Single();
+        var bound = new ConstructorBinder(canBind).Bind(parameters, container);
+        Assert.Equal(0, resolved);
+
+        bound.Instantiate();
+        Assert.Equal(1, resolved);
+    }
+
+    [Fact]
+    public void ForBindSuccessInstantiatesWithValueRetrievers()
+    {
+        var binder = new ConstructorBinder(typeof(CtorWithInt).GetTypeInfo().DeclaredConstructors.Single());
+        var bound = BoundConstructor.ForBindSuccess(binder, args => new CtorWithInt((int)args[0]!), new Func<object?>[] { () => 42 });
+
+        var instance = (CtorWithInt)bound.Instantiate();
+
+        Assert.Equal(42, instance.Value);
+    }
+
+    [Fact]
+    public void ForBindSuccessRequiresValueRetrievers()
+    {
+        var binder = new ConstructorBinder(typeof(CtorWithInt).GetTypeInfo().DeclaredConstructors.Single());
+
+        Assert.Throws<ArgumentNullException>(() => BoundConstructor.ForBindSuccess(binder, args => new CtorWithInt((int)args[0]!), null!));
+    }
+
+    [Fact]
+    public void ForBindSuccessChecksTheFactoryFirst()
+    {
+        var binder = new ConstructorBinder(typeof(CtorWithInt).GetTypeInfo().DeclaredConstructors.Single());
+
+        var ex = Assert.Throws<ArgumentNullException>(() => BoundConstructor.ForBindSuccess(binder, null!, null!));
+
+        Assert.Equal("factory", ex.ParamName);
+    }
+
+    [Fact]
+    public void ParameterWithNullValueProviderBindsButFailsToInstantiate()
+    {
+        var ci = typeof(CtorWithInt).GetTypeInfo().DeclaredConstructors.Single();
+
+        var bound = new ConstructorBinder(ci).Bind(new Parameter[] { new NullValueProviderParameter() }, new ContainerBuilder().Build());
+
+        Assert.True(bound.CanInstantiate);
+        Assert.Throws<NullReferenceException>(() => bound.Instantiate());
     }
 
     [Fact]

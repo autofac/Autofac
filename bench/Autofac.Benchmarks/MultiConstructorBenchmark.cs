@@ -16,6 +16,7 @@ public class MultiConstructorBenchmark
         builder.RegisterType<ThreeConstructors>();
         builder.RegisterType<TwoValidConstructorsOneInvalid>();
         builder.RegisterType<FourConstructors>();
+        builder.RegisterType<OneValidConstructorOneFailingOnFirstArg>();
         builder.RegisterType<D1>();
         builder.RegisterType<D2>();
         builder.RegisterType<D3>();
@@ -52,6 +53,12 @@ public class MultiConstructorBenchmark
     public void FourCtors()
     {
         _container.Resolve<FourConstructors>();
+    }
+
+    [Benchmark]
+    public void OneValidCtorOneFailingOnFirstArg()
+    {
+        _container.Resolve<OneValidConstructorOneFailingOnFirstArg>();
     }
 
     private class OneConstructor
@@ -117,6 +124,17 @@ public class MultiConstructorBenchmark
         }
 
         public FourConstructors(D1 d1, D2 d2, D3 d3, D4 d4)
+        {
+        }
+    }
+
+    private class OneValidConstructorOneFailingOnFirstArg
+    {
+        public OneValidConstructorOneFailingOnFirstArg(D1 d1)
+        {
+        }
+
+        public OneValidConstructorOneFailingOnFirstArg(object notRegistered, D1 d1)
         {
         }
     }
