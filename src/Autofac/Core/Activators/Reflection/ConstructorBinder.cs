@@ -109,12 +109,20 @@ public class ConstructorBinder
 
         // Iterate an array; foreach over IEnumerable<T> would allocate an enumerator per constructor argument.
         var parameters = availableParameters as Parameter[] ?? availableParameters.ToArray();
-        var arguments = new BoundArgument[constructorArgLength];
 
         // Concurrent first binds may each create the services; any of the results is equivalent.
         var argumentServices = _argumentServices ??= CreateArgumentServices(constructorArgs);
 
-        for (var idx = 0; idx < constructorArgLength; idx++)
+        // Bind the first argument before allocating, so a candidate constructor that fails on it allocates nothing.
+        if (!TryBindArgument(parameters, constructorArgs[0], argumentServices[0], context, out var firstArgument))
+        {
+            return BoundConstructor.ForBindFailure(this, constructorArgs[0]);
+        }
+
+        var arguments = new BoundArgument[constructorArgLength];
+        arguments[0] = firstArgument;
+
+        for (var idx = 1; idx < constructorArgLength; idx++)
         {
             if (!TryBindArgument(parameters, constructorArgs[idx], argumentServices[idx], context, out arguments[idx]))
             {
@@ -149,6 +157,7 @@ public class ConstructorBinder
     }
 
     // Not inlined: the JIT would otherwise inline every parameter check into Bind, spilling its loop to the stack.
+    // Measured on net10.0; rerun MultiConstructorBenchmark.OneValidCtorOneFailingOnFirstArg when revisiting this.
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static bool TryBindArgument(Parameter[] parameters, ParameterInfo pi, TypedService argumentService, IComponentContext context, out BoundArgument argument)
     {
