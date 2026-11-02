@@ -17,6 +17,13 @@ public class EnumerableResolveBenchmark
         builder.RegisterType<D>().As<IService>();
         builder.RegisterType<E>().As<IService>();
         builder.RegisterType<F>().As<IService>();
+
+        // More than 16 elements, so sorting them by registration order doesn't use insertion sort.
+        for (var i = 0; i < 20; i++)
+        {
+            builder.RegisterType<A>().As<IManyService>();
+        }
+
         _container = builder.Build();
     }
 
@@ -38,11 +45,27 @@ public class EnumerableResolveBenchmark
         return _container.Resolve<IService[]>();
     }
 
+    [Benchmark]
+    public object ResolveIEnumerableOfLazy()
+    {
+        return _container.Resolve<IEnumerable<Lazy<IService>>>();
+    }
+
+    [Benchmark]
+    public object ResolveIEnumerableOfTwenty()
+    {
+        return _container.Resolve<IEnumerable<IManyService>>();
+    }
+
     internal interface IService
     {
     }
 
-    internal class A : IService
+    internal interface IManyService
+    {
+    }
+
+    internal class A : IService, IManyService
     {
     }
 
