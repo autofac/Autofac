@@ -84,13 +84,18 @@ public sealed class DecoratorContext : IDecoratorContext
     /// <returns>A new context.</returns>
     internal DecoratorContext UpdateContext(object decoratorInstance)
     {
-        var appliedDecorators = new List<object>(AppliedDecorators.Count + 1);
-        appliedDecorators.AddRange(AppliedDecorators);
-        appliedDecorators.Add(decoratorInstance);
+        var count = AppliedDecorators.Count;
+        var appliedDecorators = new object[count + 1];
+        var appliedDecoratorTypes = new Type[count + 1];
 
-        var appliedDecoratorTypes = new List<Type>(AppliedDecoratorTypes.Count + 1);
-        appliedDecoratorTypes.AddRange(AppliedDecoratorTypes);
-        appliedDecoratorTypes.Add(decoratorInstance.GetType());
+        for (var i = 0; i < count; i++)
+        {
+            appliedDecorators[i] = AppliedDecorators[i];
+            appliedDecoratorTypes[i] = AppliedDecoratorTypes[i];
+        }
+
+        appliedDecorators[count] = decoratorInstance;
+        appliedDecoratorTypes[count] = decoratorInstance.GetType();
 
         return new DecoratorContext(_componentContext, ImplementationType, ServiceType, decoratorInstance, appliedDecoratorTypes, appliedDecorators);
     }
