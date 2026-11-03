@@ -311,9 +311,14 @@ public static partial class RegistrationExtensions
         builder.RegisterServiceMiddlewareSource(new OpenGenericDecoratorMiddlewareSource(decoratorService, genericRegistration.RegistrationData, genericRegistration.ActivatorData));
     }
 
-    // The decorated instance is the first TypedParameter for the service type. Looked up without LINQ,
-    // which allocated an iterator and an enumerator on every decoration.
-    private static TService GetDecoratedInstance<TService>(IEnumerable<Parameter> parameters)
+    /// <summary>
+    /// Finds the decorated instance, the first <see cref="TypedParameter"/> for the service type. Looked up without
+    /// LINQ, which allocated an iterator and an enumerator on every decoration.
+    /// </summary>
+    /// <typeparam name="TService">The service type being decorated.</typeparam>
+    /// <param name="parameters">The parameters passed to the decorator.</param>
+    /// <returns>The decorated instance.</returns>
+    internal static TService GetDecoratedInstance<TService>(IEnumerable<Parameter> parameters)
         where TService : class
     {
         var parameterArray = parameters as Parameter[] ?? parameters.ToArray();
