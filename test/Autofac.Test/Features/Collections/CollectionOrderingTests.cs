@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Globalization;
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Features.Metadata;
@@ -120,6 +121,38 @@ public class CollectionOrderingTests
         Assert.IsType<Implementer1>(services[0]);
         Assert.IsType<Implementer2>(services[1]);
         Assert.IsType<Implementer3>(services[2]);
+    }
+
+    [Fact]
+    public void WhenMoreThanSixteenAreRegistered()
+    {
+        // Sorting more than 16 elements doesn't use insertion sort.
+        var expected = Enumerable.Range(0, 20).Select(i => i.ToString(CultureInfo.InvariantCulture)).ToArray();
+        var cb = new ContainerBuilder();
+        foreach (var value in expected)
+        {
+            cb.RegisterInstance(value);
+        }
+
+        var c = cb.Build();
+
+        Assert.Equal(expected, c.Resolve<IEnumerable<string>>());
+        Assert.Equal(expected, c.Resolve<IList<string>>());
+    }
+
+    [Fact]
+    public void WhenMoreThanSixteenAreKeyedAndResolvedWithAnyKey()
+    {
+        var expected = Enumerable.Range(0, 20).Select(i => i.ToString(CultureInfo.InvariantCulture)).ToArray();
+        var cb = new ContainerBuilder();
+        foreach (var value in expected)
+        {
+            cb.RegisterInstance(value).Keyed<string>(value);
+        }
+
+        var c = cb.Build();
+
+        Assert.Equal(expected, c.ResolveKeyed<IEnumerable<string>>(KeyedService.AnyKey));
     }
 
     [Fact]
