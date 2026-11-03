@@ -61,4 +61,21 @@ public sealed class ServiceRegistrationInfoTests
 
         Assert.False(info.IsSourceQueued(source));
     }
+
+    [Fact]
+    public void SourcesFromAStackAreQueriedInStackOrder()
+    {
+        var first = new ObjectRegistrationSource();
+        var second = new ObjectRegistrationSource();
+        var sources = new Stack<IRegistrationSource>();
+        sources.Push(first);
+        sources.Push(second);
+        var info = new ServiceRegistrationInfo(new TypedService(typeof(object)));
+
+        info.BeginInitialization(sources);
+
+        Assert.Same(second, info.DequeueNextSource());
+        Assert.Same(first, info.DequeueNextSource());
+        Assert.False(info.HasSourcesToQuery);
+    }
 }

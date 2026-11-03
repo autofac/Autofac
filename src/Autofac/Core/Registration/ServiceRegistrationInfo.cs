@@ -269,7 +269,7 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     public void BeginInitialization(IEnumerable<IRegistrationSource> sources)
     {
         IsInitialized = false;
-        _sourcesToQuery = new Queue<IRegistrationSource>(sources);
+        _sourcesToQuery = sources is Stack<IRegistrationSource> stack ? CopyToQueue(stack) : new Queue<IRegistrationSource>(sources);
 
         // Build the pipeline during service info initialization, so that sources can access it
         // while getting a registration recursively.
@@ -382,6 +382,18 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         }
 
         return _customPipelineBuilder.Clone();
+    }
+
+    private static Queue<IRegistrationSource> CopyToQueue(Stack<IRegistrationSource> sources)
+    {
+        // The queue can't size itself from a stack, so it would grow its array while copying.
+        var queue = new Queue<IRegistrationSource>(sources.Count);
+        foreach (var source in sources)
+        {
+            queue.Enqueue(source);
+        }
+
+        return queue;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
