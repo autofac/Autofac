@@ -29,7 +29,6 @@ internal static class OpenGenericServiceBinder
         "Trimming",
         "IL2055:MakeGenericType",
         Justification = "Constructs the closed implementation and service types from the open generic registration's runtime type arguments. The implementation type's activatable members are preserved by its [DynamicallyAccessedMembers] annotation; the consumer that registered the open generic is responsible for the closed type.")]
-    [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
     public static bool TryBindOpenGenericTypedService(
         IServiceWithType serviceWithType,
         IEnumerable<Service> configuredOpenGenericServices,
@@ -37,28 +36,24 @@ internal static class OpenGenericServiceBinder
         [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)][NotNullWhen(returnValue: true)] out Type? constructedImplementationType,
         [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
     {
-        if (serviceWithType.ServiceType.IsGenericType && !serviceWithType.ServiceType.IsGenericTypeDefinition)
+        var serviceType = serviceWithType.ServiceType;
+        if (IsClosedGenericType(serviceType))
         {
-            var definitionService = (IServiceWithType)serviceWithType.ChangeType(serviceWithType.ServiceType.GetGenericTypeDefinition());
-            var serviceGenericArguments = serviceWithType.ServiceType.GetGenericArguments();
+            var definitionService = (IServiceWithType)serviceWithType.ChangeType(serviceType.GetGenericTypeDefinition());
 
-            if (configuredOpenGenericServices.OfType<IServiceWithType>().Any(s => s.Equals(definitionService)))
+            if (IsConfigured(configuredOpenGenericServices, definitionService))
             {
+                var serviceGenericArguments = serviceType.GetGenericArguments();
                 var implementorGenericArguments = TryMapImplementationGenericArguments(
-                    openGenericImplementationType, serviceWithType.ServiceType, definitionService.ServiceType, serviceGenericArguments);
+                    openGenericImplementationType, serviceType, definitionService.ServiceType, serviceGenericArguments);
 
-                if (implementorGenericArguments.All(a => a is not null) &&
+                if (AllMapped(implementorGenericArguments) &&
                     openGenericImplementationType.IsCompatibleWithGenericParameterConstraints(implementorGenericArguments!))
                 {
                     var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments!);
 
-                    var implementedServices = configuredOpenGenericServices
-                        .OfType<IServiceWithType>()
-                        .Where(s => s.ServiceType.GetGenericArguments().Length == serviceGenericArguments.Length)
-                        .Select(s => new { ServiceWithType = s, GenericService = s.ServiceType.MakeGenericType(serviceGenericArguments) })
-                        .Where(p => p.GenericService.IsAssignableFrom(constructedImplementationTypeTmp))
-                        .Select(p => p.ServiceWithType.ChangeType(p.GenericService))
-                        .ToArray();
+                    var implementedServices = BuildImplementedServices(
+                        configuredOpenGenericServices, serviceType, definitionService.ServiceType, serviceGenericArguments, constructedImplementationTypeTmp);
 
                     if (implementedServices.Length > 0)
                     {
@@ -86,7 +81,6 @@ internal static class OpenGenericServiceBinder
     /// <param name="constructedServices">The built closed generic services.</param>
     /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
     [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
-    [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
     public static bool TryBindOpenGenericDelegateService(
         IServiceWithType serviceWithType,
         IEnumerable<Service> configuredOpenGenericServices,
@@ -103,17 +97,17 @@ internal static class OpenGenericServiceBinder
         }
 
         var definitionService = (IServiceWithType)serviceWithType.ChangeType(GetGenericTypeDefinition(serviceWithTypeServiceType));
-        var serviceGenericArguments = serviceWithTypeServiceType.GetGenericArguments();
 
-        if (!configuredOpenGenericServices.OfType<IServiceWithType>().Any(s => s.Equals(definitionService)))
+        if (!IsConfigured(configuredOpenGenericServices, definitionService))
         {
             constructedFactory = null;
             constructedServices = null;
             return false;
         }
 
+        var serviceGenericArguments = serviceWithTypeServiceType.GetGenericArguments();
         constructedFactory = (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
-        constructedServices = BuildImplementedServices(configuredOpenGenericServices, serviceGenericArguments);
+        constructedServices = BuildImplementedServices(configuredOpenGenericServices, serviceWithTypeServiceType, definitionService.ServiceType, serviceGenericArguments, null);
         return true;
     }
 
@@ -173,29 +167,97 @@ internal static class OpenGenericServiceBinder
     private static bool IsClosedGenericType(Type serviceType)
         => serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition;
 
+    private static bool IsConfigured(IEnumerable<Service> configuredOpenGenericServices, IServiceWithType definitionService)
+    {
+        foreach (var service in configuredOpenGenericServices)
+        {
+            if (service is IServiceWithType serviceWithType && serviceWithType.Equals(definitionService))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool AllMapped(Type?[] genericArguments)
+    {
+        foreach (var genericArgument in genericArguments)
+        {
+            if (genericArgument is null)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Closes each configured open generic service over the requested service's generic arguments. When an
+    /// implementation type is given, services it can't be assigned to are left out.
+    /// </summary>
     [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2055:MakeGenericType",
         Justification = "Constructs the closed service types from the open generic registration's runtime type arguments. The consumer that registered the open generic is responsible for preserving the closed types.")]
-    private static Service[] BuildImplementedServices(IEnumerable<Service> configuredOpenGenericServices, Type[] serviceGenericArguments)
+    private static Service[] BuildImplementedServices(
+        IEnumerable<Service> configuredOpenGenericServices,
+        Type serviceType,
+        Type serviceTypeDefinition,
+        Type[] serviceGenericArguments,
+        Type? constructedImplementationType)
     {
-        var serviceGenericArgumentsLength = serviceGenericArguments.Length;
-        var implementedServices = new List<Service>();
+        Service? firstService = null;
+        List<Service>? implementedServices = null;
 
-        foreach (var service in configuredOpenGenericServices.OfType<IServiceWithType>())
+        foreach (var service in configuredOpenGenericServices)
         {
-            var serviceType = service.ServiceType;
-            if (serviceType.GetGenericArguments().Length != serviceGenericArgumentsLength)
+            if (service is not IServiceWithType serviceWithType)
             {
                 continue;
             }
 
-            var genericService = serviceType.MakeGenericType(serviceGenericArguments);
-            implementedServices.Add(service.ChangeType(genericService));
+            var openServiceType = serviceWithType.ServiceType;
+            Type genericService;
+            if (openServiceType == serviceTypeDefinition)
+            {
+                // Closing the requested service's definition over its own arguments gives back the requested type.
+                genericService = serviceType;
+            }
+            else if (openServiceType.GetGenericArguments().Length == serviceGenericArguments.Length)
+            {
+                genericService = openServiceType.MakeGenericType(serviceGenericArguments);
+            }
+            else
+            {
+                continue;
+            }
+
+            if (constructedImplementationType is not null && !genericService.IsAssignableFrom(constructedImplementationType))
+            {
+                continue;
+            }
+
+            var implementedService = serviceWithType.ChangeType(genericService);
+            if (firstService is null)
+            {
+                firstService = implementedService;
+            }
+            else
+            {
+                implementedServices ??= new List<Service> { firstService };
+                implementedServices.Add(implementedService);
+            }
         }
 
-        return implementedServices.ToArray();
+        if (implementedServices is not null)
+        {
+            return implementedServices.ToArray();
+        }
+
+        return firstService is null ? Array.Empty<Service>() : new[] { firstService };
     }
 
     private static Type GetGenericTypeDefinition(Type type) => ReflectionCacheSet.Shared.Internal.GenericTypeDefinitionByType.GetOrAdd(type, static t => t.GetGenericTypeDefinition());
