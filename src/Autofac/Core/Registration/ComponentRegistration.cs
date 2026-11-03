@@ -354,11 +354,21 @@ public class ComponentRegistration : Disposable, IComponentRegistration
         // Do not call the base, otherwise the standard Dispose will fire.
     }
 
+    private static bool IsStartableService(Service service)
+        => service is TypedService typed && typed.ServiceType == typeof(IStartable);
+
     private bool HasStartableService()
     {
+        // Registrations built by the registration builders hold an array, which avoids an
+        // enumerator allocation per registration.
+        if (Services is Service[] services)
+        {
+            return Array.Exists(services, IsStartableService);
+        }
+
         foreach (var service in Services)
         {
-            if ((service is TypedService typed) && typed.ServiceType == typeof(IStartable))
+            if (IsStartableService(service))
             {
                 return true;
             }

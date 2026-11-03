@@ -187,6 +187,24 @@ public class RegistrationData
         _defaultServiceOverridden = true;
     }
 
+    /// <summary>
+    /// Copies <see cref="Services"/> into a new array, in the same order.
+    /// </summary>
+    /// <returns>The services.</returns>
+    internal Service[] ServicesToArray()
+    {
+        var includeDefault = !_defaultServiceOverridden && !_services.Contains(_defaultService);
+        var services = new Service[_services.Count + (includeDefault ? 1 : 0)];
+
+        if (includeDefault)
+        {
+            services[0] = _defaultService;
+        }
+
+        _services.CopyTo(services, includeDefault ? 1 : 0);
+        return services;
+    }
+
     private static void AddAll<T>(ICollection<T> to, IEnumerable<T> from)
     {
         foreach (var item in from)
