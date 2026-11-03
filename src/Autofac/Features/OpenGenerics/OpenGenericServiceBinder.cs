@@ -264,7 +264,7 @@ internal static class OpenGenericServiceBinder
 
     [UnconditionalSuppressMessage(
         "Trimming",
-        "IL2067:UnrecognizedReflectionPattern",
+        "IL2070:UnrecognizedReflectionPattern",
         Justification = "Inspects the interfaces of the open generic implementation type to map its generic arguments. The implementation type comes from an open generic registration whose consumer is responsible for preserving its interfaces.")]
     private static Type?[] TryMapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
     {
@@ -310,43 +310,59 @@ internal static class OpenGenericServiceBinder
             }
 
             return TryFindServiceArgumentsForImplementation(
-                    implementationType,
+                    implementationType.GetGenericArguments(),
                     serviceGenericArguments,
                     baseType.GenericTypeArguments);
         }
 
-        var availableArguments = GetInterfaces(implementationType, serviceType)
-            .Select(t => TryFindServiceArgumentsForImplementation(
-                implementationType,
-                serviceGenericArguments,
-                t.GenericTypeArguments))
-            .ToArray();
+        var implementationGenericArgumentDefinitions = implementationType.GetGenericArguments();
+        Type?[]? firstMatch = null;
+        Type?[]? completeMatch = null;
 
-        var exactMatch = availableArguments.FirstOrDefault(a => a.SequenceEqual(serviceGenericArguments));
-        if (exactMatch is not null)
+        foreach (var implementedInterface in implementationType.GetInterfaces())
         {
-            return exactMatch;
+            if (implementedInterface.Name != serviceType.Name || implementedInterface.Namespace != serviceType.Namespace)
+            {
+                continue;
+            }
+
+            var availableArguments = TryFindServiceArgumentsForImplementation(
+                implementationGenericArgumentDefinitions,
+                serviceGenericArguments,
+                implementedInterface.GenericTypeArguments);
+
+            if (availableArguments.SequenceEqual(serviceGenericArguments))
+            {
+                return availableArguments;
+            }
+
+            firstMatch ??= availableArguments;
+
+            // When no exact match exists, prefer the first candidate that produces a complete
+            // mapping (no null entries), so that a non-mappable interface appearing earlier in
+            // the interface list does not shadow a valid one that appears later.
+            if (completeMatch is null && AllMapped(availableArguments))
+            {
+                completeMatch = availableArguments;
+            }
         }
 
-        // When no exact match exists, prefer the first candidate that produces a complete
-        // mapping (no null entries), so that a non-mappable interface appearing earlier in
-        // the interface list does not shadow a valid one that appears later. Fall back to
-        // availableArguments[0] when no candidate fully maps (preserves prior behavior for
-        // genuinely un-bindable registrations, where the caller's null check handles it).
-        var completeMatch = availableArguments.FirstOrDefault(a => a.All(arg => arg is not null));
-        return completeMatch ?? availableArguments[0];
+        // Fall back to the first candidate when no candidate fully maps (preserves prior behavior
+        // for genuinely un-bindable registrations, where the caller's null check handles it).
+        // EnforceBindable has checked that at least one interface matches.
+        return completeMatch ?? firstMatch!;
     }
 
-    private static Type?[] TryFindServiceArgumentsForImplementation(Type implementationType, IEnumerable<Type> serviceGenericArguments, IEnumerable<Type> serviceArgumentDefinitions)
+    private static Type?[] TryFindServiceArgumentsForImplementation(Type[] implementationGenericArgumentDefinitions, Type[] serviceGenericArguments, Type[] serviceArgumentDefinitions)
     {
-        var serviceArgumentDefinitionToArgumentMapping =
-            serviceArgumentDefinitions.Zip(serviceGenericArguments, (a, b) => new KeyValuePair<Type, Type>(a, b));
+        var implementorGenericArguments = new Type?[implementationGenericArgumentDefinitions.Length];
+        for (var i = 0; i < implementorGenericArguments.Length; i++)
+        {
+            implementorGenericArguments[i] = TryFindServiceArgumentForImplementationArgumentDefinition(
+                implementationGenericArgumentDefinitions[i], serviceArgumentDefinitions, serviceGenericArguments);
+        }
 
-        var implementationGenericArgumentDefinitions = implementationType.GetGenericArguments();
-        return implementationGenericArgumentDefinitions
-            .Select(implementationGenericArgumentDefinition => TryFindServiceArgumentForImplementationArgumentDefinition(
-                implementationGenericArgumentDefinition, serviceArgumentDefinitionToArgumentMapping))
-            .ToArray();
+        return implementorGenericArguments;
     }
 
     private static Type? GetGenericBaseType(Type implementationType, Type serviceTypeDefinition)
@@ -370,25 +386,47 @@ internal static class OpenGenericServiceBinder
             .Where(i => i.Name == serviceType.Name && i.Namespace == serviceType.Namespace)
             .ToArray();
 
-    [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
-    private static Type? TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<KeyValuePair<Type, Type>> serviceArgumentDefinitionToArgument)
+    /// <summary>
+    /// Finds the argument that an implementation generic argument definition maps to, pairing each service
+    /// argument definition with the argument at the same position and searching nested generics when no
+    /// definition matches by name.
+    /// </summary>
+    private static Type? TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, Type[] serviceArgumentDefinitions, Type[] serviceArguments)
     {
-        var matchingRegularType = serviceArgumentDefinitionToArgument
-            .Where(argdef => !argdef.Key.IsGenericType && implementationGenericArgumentDefinition.Name == argdef.Key.Name)
-            .Select(argdef => argdef.Value)
-            .FirstOrDefault();
+        var pairCount = Math.Min(serviceArgumentDefinitions.Length, serviceArguments.Length);
 
-        if (matchingRegularType is not null)
+        for (var i = 0; i < pairCount; i++)
         {
-            return matchingRegularType;
+            var serviceArgumentDefinition = serviceArgumentDefinitions[i];
+            if (!serviceArgumentDefinition.IsGenericType && implementationGenericArgumentDefinition.Name == serviceArgumentDefinition.Name)
+            {
+                return serviceArguments[i];
+            }
         }
 
-        return serviceArgumentDefinitionToArgument
-            .Where(argdef => argdef.Key.IsGenericType && argdef.Value.GenericTypeArguments.Length > 0)
-            .Select(argdef => TryFindServiceArgumentForImplementationArgumentDefinition(
-                implementationGenericArgumentDefinition, argdef.Key.GenericTypeArguments.Zip(
-                    argdef.Value.GenericTypeArguments, (a, b) => new KeyValuePair<Type, Type>(a, b))))
-            .FirstOrDefault(x => x is not null);
+        for (var i = 0; i < pairCount; i++)
+        {
+            var serviceArgumentDefinition = serviceArgumentDefinitions[i];
+            if (!serviceArgumentDefinition.IsGenericType)
+            {
+                continue;
+            }
+
+            var nestedServiceArguments = serviceArguments[i].GenericTypeArguments;
+            if (nestedServiceArguments.Length == 0)
+            {
+                continue;
+            }
+
+            var nestedMatch = TryFindServiceArgumentForImplementationArgumentDefinition(
+                implementationGenericArgumentDefinition, serviceArgumentDefinition.GenericTypeArguments, nestedServiceArguments);
+            if (nestedMatch is not null)
+            {
+                return nestedMatch;
+            }
+        }
+
+        return null;
     }
 
     private static bool IsCompatibleGenericClassDefinition(Type implementor, Type serviceType)
