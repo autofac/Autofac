@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using Autofac.Core;
+using Autofac.Util.Cache;
 
 namespace Autofac.Features.Metadata;
 
@@ -14,13 +15,26 @@ namespace Autofac.Features.Metadata;
 /// </summary>
 internal static class MetadataViewProvider
 {
+    private const string ReflectionCacheName = $"{nameof(MetadataViewProvider)}.Cache";
+
     private static readonly MethodInfo _getMetadataValueMethod = typeof(MetadataViewProvider).GetDeclaredMethod(nameof(GetMetadataValue));
 
     /// <summary>
     /// Generate a provider function that takes a dictionary of metadata, and outputs a typed metadata object.
     /// </summary>
+    /// <remarks>
+    /// The provider is compiled once per metadata type. Each lifetime scope that adapts a
+    /// registration to <c>Meta&lt;T, TMetadata&gt;</c> or <c>Lazy&lt;T, TMetadata&gt;</c> asks for it again.
+    /// </remarks>
     /// <typeparam name="TMetadata">The metadata type.</typeparam>
     /// <returns>A provider function.</returns>
+    public static Func<IDictionary<string, object?>, TMetadata> GetMetadataViewProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] TMetadata>()
+    {
+        var cache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheDictionary<Type, Delegate>>(ReflectionCacheName);
+
+        return (Func<IDictionary<string, object?>, TMetadata>)cache.GetOrAdd(typeof(TMetadata), static _ => CreateMetadataViewProvider<TMetadata>());
+    }
+
     [UnconditionalSuppressMessage(
         "AOT",
         "IL3050:RequiresDynamicCode",
@@ -33,7 +47,7 @@ internal static class MetadataViewProvider
         "Trimming",
         "IL2087:UnrecognizedReflectionPattern",
         Justification = "GetRuntimeProperties also enumerates non-public properties, but only public settable properties of the metadata view are populated (and those are preserved by the PublicProperties annotation). Non-public properties are not part of the supported metadata-view surface.")]
-    public static Func<IDictionary<string, object?>, TMetadata> GetMetadataViewProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] TMetadata>()
+    private static Func<IDictionary<string, object?>, TMetadata> CreateMetadataViewProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] TMetadata>()
     {
         if (typeof(TMetadata) == typeof(IDictionary<string, object>))
         {

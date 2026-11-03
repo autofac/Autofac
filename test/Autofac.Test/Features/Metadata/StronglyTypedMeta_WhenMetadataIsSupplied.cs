@@ -48,6 +48,34 @@ public class StronglyTypedMeta_WhenMetadataIsSupplied
     }
 
     [Fact]
+    public void ValuesProvidedAreUniqueToEachRegistrationInSiblingScopes()
+    {
+        using var scope1 = _container.BeginLifetimeScope(b => b.RegisterType<string>().WithMetadata("TheInt", 1));
+        using var scope2 = _container.BeginLifetimeScope(b => b.RegisterType<string>().WithMetadata("TheInt", 2));
+
+        Assert.Equal(1, scope1.Resolve<Meta<string, MyMeta>>().Metadata.TheInt);
+        Assert.Equal(2, scope2.Resolve<Meta<string, MyMeta>>().Metadata.TheInt);
+        Assert.Equal(1, scope1.Resolve<Lazy<string, MyMeta>>().Metadata.TheInt);
+        Assert.Equal(2, scope2.Resolve<Lazy<string, MyMeta>>().Metadata.TheInt);
+    }
+
+    [Fact]
+    public void EachResolveCreatesANewMetadataView()
+    {
+        var meta1 = _container.Resolve<Meta<object, MyMeta>>();
+        var meta2 = _container.Resolve<Meta<object, MyMeta>>();
+
+        Assert.NotSame(meta1.Metadata, meta2.Metadata);
+    }
+
+    [Fact]
+    public void MetadataViewProviderIsCompiledOncePerMetadataType()
+    {
+        Assert.Same(MetadataViewProvider.GetMetadataViewProvider<MyMeta>(), MetadataViewProvider.GetMetadataViewProvider<MyMeta>());
+        Assert.NotSame(MetadataViewProvider.GetMetadataViewProvider<MyMeta>(), MetadataViewProvider.GetMetadataViewProvider<MyMetaWithDefault>());
+    }
+
+    [Fact]
     public void ValuesProvidedFromMetadataOverrideDefaults()
     {
         var meta = _container.Resolve<Meta<object, MyMetaWithDefault>>();
