@@ -34,11 +34,29 @@ public class ContainerBuildBenchmark
         GC.KeepAlive(container);
     }
 
+    [Benchmark]
+    public void BuildWithThreeServices()
+    {
+        var builder = new ContainerBuilder();
+
+        for (var i = 0; i < RegistrationCount; i++)
+        {
+            builder.RegisterType<Component>().AsSelf().As<IComponent>().As<IOtherComponent>();
+        }
+
+        using var container = builder.Build();
+        GC.KeepAlive(container);
+    }
+
     private interface IComponent
     {
     }
 
-    private sealed class Component : IComponent
+    private interface IOtherComponent
+    {
+    }
+
+    private sealed class Component : IComponent, IOtherComponent
     {
     }
 }
