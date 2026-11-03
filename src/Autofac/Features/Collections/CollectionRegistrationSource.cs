@@ -124,13 +124,13 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
             buildInfo.LimitType,
             (c, p) =>
             {
-                var registrationTuples = isAnyKeyQuery
-                    ? GetAllSpecificKeyedRegistrations(c.ComponentRegistry, buildInfo.ElementType)
-                    : BuildStandardRegistrationList(c.ComponentRegistry, elementTypeService);
+                var elements = isAnyKeyQuery
+                    ? new CollectionElements(GetAllSpecificKeyedRegistrations(c.ComponentRegistry, buildInfo.ElementType))
+                    : GetStandardElements(c.ComponentRegistry, elementTypeService);
 
                 var (collectionKind, collectionDetail) = GetCollectionMetricsDetails(isAnyKeyQuery, buildInfo.ElementType, elementTypeService);
 
-                return BuildCollection(c, buildInfo.Factory, registrationTuples, p, collectionKind, collectionDetail);
+                return BuildCollection(c, buildInfo.Factory, elements, p, collectionKind, collectionDetail);
             });
 
         var registration = new ComponentRegistration(
@@ -271,9 +271,55 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
         => !serviceRegistration.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections)
             && !serviceRegistration.Registration.Metadata.ContainsKey(MetadataKeys.AnyKeyAdapter);
 
-    private static List<(long Order, Service Service, ServiceRegistration Registration)> BuildStandardRegistrationList(IComponentRegistry registry, Service elementTypeService)
+    private static CollectionElements GetStandardElements(IComponentRegistry registry, Service elementTypeService)
     {
         var registrations = registry.ServiceRegistrationsFor(elementTypeService);
+
+        // The registry usually returns the registrations newest first, so most collections need no sorted copy.
+        if (registrations is List<ServiceRegistration> list && IsInStrictRegistrationOrder(list, out var descending))
+        {
+            return new CollectionElements(elementTypeService, list, descending);
+        }
+
+        return new CollectionElements(BuildStandardRegistrationList(registrations, elementTypeService));
+    }
+
+    /// <summary>
+    /// Checks whether no registration is excluded and the registration orders strictly ascend or strictly
+    /// descend, so reading the list forwards or backwards gives the order sorting would.
+    /// </summary>
+    private static bool IsInStrictRegistrationOrder(List<ServiceRegistration> registrations, out bool descending)
+    {
+        descending = false;
+        var previous = 0L;
+
+        for (var i = 0; i < registrations.Count; i++)
+        {
+            var registration = registrations[i];
+            if (registration.Registration.Options.HasOption(RegistrationOptions.ExcludeFromCollections))
+            {
+                return false;
+            }
+
+            var order = registration.GetRegistrationOrder();
+            if (i == 1)
+            {
+                descending = order < previous;
+            }
+
+            if (i > 0 && (order == previous || order < previous != descending))
+            {
+                return false;
+            }
+
+            previous = order;
+        }
+
+        return true;
+    }
+
+    private static List<(long Order, Service Service, ServiceRegistration Registration)> BuildStandardRegistrationList(IEnumerable<ServiceRegistration> registrations, Service elementTypeService)
+    {
         List<(long Order, Service Service, ServiceRegistration Registration)> result;
 
         if (registrations is List<ServiceRegistration> list)
@@ -318,7 +364,7 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
     private static IList BuildCollection(
         IComponentContext context,
         Func<int, IList> factory,
-        List<(long Order, Service Service, ServiceRegistration Registration)> registrations,
+        CollectionElements elements,
         IEnumerable<Parameter> parameters,
         string? collectionKind,
         string? collectionDetail)
@@ -331,14 +377,13 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
             instrumentationTimer = ValueStopwatch.StartNew();
         }
 
-        var output = factory(registrations.Count);
+        var count = elements.Count;
+        var output = factory(count);
         var isFixedSize = output.IsFixedSize;
 
-        for (var i = 0; i < registrations.Count; i++)
+        for (var i = 0; i < count; i++)
         {
-            var (_, service, registration) = registrations[i];
-            var resolveRequest = new ResolveRequest(service, registration, parameters);
-            var component = context.ResolveComponent(resolveRequest);
+            var component = context.ResolveComponent(elements.CreateRequest(i, parameters));
 
             if (isFixedSize)
             {
@@ -355,10 +400,51 @@ internal class CollectionRegistrationSource : IRegistrationSource, IPerScopeRegi
             AutofacMetrics.RecordCollectionBuild(
                 kind: collectionKind!,
                 detail: collectionDetail,
-                itemCount: registrations.Count,
+                itemCount: count,
                 elapsed: instrumentationTimer.GetElapsedTime());
         }
 
         return output;
+    }
+
+    /// <summary>
+    /// The elements of a collection in registration order: a registry list that is already in order, read
+    /// forwards or backwards, or a sorted copy.
+    /// </summary>
+    private readonly struct CollectionElements
+    {
+        private readonly List<(long Order, Service Service, ServiceRegistration Registration)>? _sorted;
+
+        private readonly List<ServiceRegistration>? _registrations;
+
+        private readonly Service? _service;
+
+        private readonly bool _descending;
+
+        public CollectionElements(List<(long Order, Service Service, ServiceRegistration Registration)> sorted)
+        {
+            _sorted = sorted;
+        }
+
+        public CollectionElements(Service service, List<ServiceRegistration> registrations, bool descending)
+        {
+            _service = service;
+            _registrations = registrations;
+            _descending = descending;
+        }
+
+        public int Count => _sorted?.Count ?? _registrations!.Count;
+
+        public ResolveRequest CreateRequest(int index, IEnumerable<Parameter> parameters)
+        {
+            if (_sorted is not null)
+            {
+                var (_, service, registration) = _sorted[index];
+                return new ResolveRequest(service, registration, parameters);
+            }
+
+            var position = _descending ? _registrations!.Count - 1 - index : index;
+            return new ResolveRequest(_service!, _registrations![position], parameters);
+        }
     }
 }
