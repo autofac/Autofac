@@ -47,6 +47,26 @@ public class LazyWithMetadata_WhenMetadataIsSupplied
     }
 
     [Fact]
+    public void ValueIsResolvedOnlyWhenRequested()
+    {
+        var builder = new ContainerBuilder();
+        var activations = 0;
+        builder.Register(c =>
+        {
+            activations++;
+            return new object();
+        }).WithMetadata("TheInt", SuppliedValue);
+        _container = builder.Build();
+
+        var lazy = _container.Resolve<Lazy<object, MyMeta>>();
+
+        Assert.IsType<Lazy<object, MyMeta>>(lazy);
+        Assert.Equal(0, activations);
+        Assert.Same(lazy.Value, lazy.Value);
+        Assert.Equal(1, activations);
+    }
+
+    [Fact]
     public void ValuesBubbleUpThroughAdapters()
     {
         var meta = _container.Resolve<Lazy<Func<object>, MyMeta>>();
