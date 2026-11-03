@@ -178,6 +178,41 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         _preserveDefaultImplementations is not null;
 
     /// <summary>
+    /// Copies <see cref="Implementations"/> into a new list, converting each one.
+    /// </summary>
+    /// <typeparam name="TState">The type of the state passed to <paramref name="select"/>.</typeparam>
+    /// <typeparam name="TResult">The type of the list items.</typeparam>
+    /// <param name="state">The state passed to <paramref name="select"/>.</param>
+    /// <param name="select">Converts an implementation into a list item.</param>
+    /// <returns>The converted implementations, in the order <see cref="Implementations"/> has.</returns>
+    public List<TResult> ImplementationsToList<TState, TResult>(TState state, Func<TState, IComponentRegistration, TResult> select)
+    {
+        RequiresInitialization();
+
+        var defaultImpls = _defaultImplementations;
+        var count = (_fixedRegistration is null ? 0 : 1) +
+            defaultImpls.Count +
+            (_sourceImplementations?.Count ?? 0) +
+            (_preserveDefaultImplementations?.Count ?? 0);
+        var list = new List<TResult>(count);
+
+        if (_fixedRegistration is not null)
+        {
+            list.Add(select(state, _fixedRegistration));
+        }
+
+        for (var defaultReverseIdx = defaultImpls.Count - 1; defaultReverseIdx >= 0; defaultReverseIdx--)
+        {
+            list.Add(select(state, defaultImpls[defaultReverseIdx]));
+        }
+
+        AddAll(list, _sourceImplementations, state, select);
+        AddAll(list, _preserveDefaultImplementations, state, select);
+
+        return list;
+    }
+
+    /// <summary>
     /// Add an implementation for the service.
     /// </summary>
     /// <param name="registration">The component registration.</param>
@@ -394,6 +429,23 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         }
 
         return queue;
+    }
+
+    private static void AddAll<TState, TResult>(
+        List<TResult> list,
+        List<IComponentRegistration>? implementations,
+        TState state,
+        Func<TState, IComponentRegistration, TResult> select)
+    {
+        if (implementations is null)
+        {
+            return;
+        }
+
+        foreach (var item in implementations)
+        {
+            list.Add(select(state, item));
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

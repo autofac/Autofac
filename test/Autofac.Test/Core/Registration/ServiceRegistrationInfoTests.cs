@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
 using Autofac.Test.Scenarios.RegistrationSources;
@@ -63,6 +64,29 @@ public sealed class ServiceRegistrationInfoTests
     }
 
     [Fact]
+    public void ImplementationsToListKeepsTheOrderOfImplementations()
+    {
+        var info = new ServiceRegistrationInfo(new TypedService(typeof(object)));
+        var default1 = Registration();
+        var default2 = Registration();
+        var fromSource = Registration();
+        var preserved = Registration();
+        var fixedRegistration = Registration(RegistrationOptions.Fixed);
+
+        info.AddImplementation(default1, preserveDefaults: false, originatedFromSource: false);
+        info.AddImplementation(preserved, preserveDefaults: true, originatedFromSource: false);
+        info.AddImplementation(fromSource, preserveDefaults: true, originatedFromSource: true);
+        info.AddImplementation(default2, preserveDefaults: false, originatedFromSource: false);
+        info.AddImplementation(fixedRegistration, preserveDefaults: false, originatedFromSource: false);
+        info.BeginInitialization(Array.Empty<IRegistrationSource>());
+        info.CompleteInitialization();
+
+        var expected = new[] { fixedRegistration, default2, default1, fromSource, preserved };
+        Assert.Equal(expected, info.Implementations);
+        Assert.Equal(expected, info.ImplementationsToList(0, static (_, r) => r));
+    }
+
+    [Fact]
     public void SourcesFromAStackAreQueriedInStackOrder()
     {
         var first = new ObjectRegistrationSource();
@@ -77,5 +101,12 @@ public sealed class ServiceRegistrationInfoTests
         Assert.Same(second, info.DequeueNextSource());
         Assert.Same(first, info.DequeueNextSource());
         Assert.False(info.HasSourcesToQuery);
+    }
+
+    private static IComponentRegistration Registration(RegistrationOptions options = RegistrationOptions.None)
+    {
+        var builder = RegistrationBuilder.ForType<object>();
+        builder.RegistrationData.Options = options;
+        return builder.CreateRegistration();
     }
 }

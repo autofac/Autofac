@@ -232,7 +232,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         var info = GetInitializedServiceInfo(service);
-        return info.Implementations.ToList();
+        return info.ImplementationsToList<object?, IComponentRegistration>(null, static (_, implementation) => implementation);
     }
 
     /// <inheritdoc/>
@@ -244,15 +244,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         var info = GetInitializedServiceInfo(service);
-
-        var list = new List<ServiceRegistration>();
-
-        foreach (var implementation in info.Implementations)
-        {
-            list.Add(new ServiceRegistration(info.ServicePipeline, implementation));
-        }
-
-        return list;
+        return info.ImplementationsToList(info, static (info, implementation) => new ServiceRegistration(info.ServicePipeline, implementation));
     }
 
     /// <inheritdoc/>
