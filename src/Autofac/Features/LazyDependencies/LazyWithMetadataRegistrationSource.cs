@@ -21,6 +21,8 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 {
     private const string ReflectionCacheName = $"{nameof(LazyWithMetadataRegistrationSource)}.Cache";
 
+    private static readonly TypedService _componentContextService = new(typeof(IComponentContext));
+
     private static readonly MethodInfo _createLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetDeclaredMethod(nameof(CreateLazyRegistration));
 
     private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo);
@@ -95,7 +97,7 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
         var rb = RegistrationBuilder.ForDelegate(
             (c, p) =>
             {
-                var context = c.Resolve<IComponentContext>();
+                var context = (IComponentContext)c.ResolveService(_componentContextService);
                 var request = new ResolveRequest(valueService, registrationResolveInfo, p);
                 var valueFactory = new Func<T>(() => (T)context.ResolveComponent(request));
                 var metadata = metadataProvider(registrationResolveInfo.Registration.Target.Metadata);
