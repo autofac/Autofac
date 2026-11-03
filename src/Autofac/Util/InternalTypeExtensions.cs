@@ -77,9 +77,7 @@ internal static class InternalTypeExtensions
             var genericArg = genericArgumentDefinitions[i];
             var parameter = parameters[i];
 
-            if (genericArg.GetGenericParameterConstraints()
-                .Select(constraint => SubstituteGenericParameterConstraint(parameters, constraint))
-                .Any(constraint => !ParameterCompatibleWithTypeConstraint(parameter, constraint)))
+            if (!ParameterCompatibleWithTypeConstraints(parameter, genericArg, parameters))
             {
                 return false;
             }
@@ -313,6 +311,20 @@ internal static class InternalTypeExtensions
     {
         return TypesAssignableFrom(candidateType)
             .Where(t => t.IsClosedTypeOf(openGenericServiceType));
+    }
+
+    [RequiresDynamicCode(OpenGenericConstraintDynamicCodeWarning)]
+    private static bool ParameterCompatibleWithTypeConstraints([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type parameter, Type genericArg, Type[] parameters)
+    {
+        foreach (var constraint in genericArg.GetGenericParameterConstraints())
+        {
+            if (!ParameterCompatibleWithTypeConstraint(parameter, SubstituteGenericParameterConstraint(parameters, constraint)))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static Type SubstituteGenericParameterConstraint(Type[] parameters, Type constraint)
