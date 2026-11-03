@@ -84,6 +84,17 @@ public class RegistrationDataTests
     }
 
     [Fact]
+    public void ClearingASingleServiceLeavesNoServices()
+    {
+        var data = new RegistrationData(_defaultService);
+        data.AddService(_a);
+
+        data.ClearServices();
+
+        AssertServices(data);
+    }
+
+    [Fact]
     public void EmptyAddServicesClearsTheDefaultService()
     {
         var data = new RegistrationData(_defaultService);
