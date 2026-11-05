@@ -51,6 +51,12 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     /// </remarks>
     private List<IComponentRegistration>? _registrationsBeforeComplete;
 
+    /// <summary>
+    /// The registration sources in the order services query them, shared by every service that begins
+    /// initializing until another source is added.
+    /// </summary>
+    private IRegistrationSource[]? _sourcesToQuery;
+
     private Dictionary<Service, ServiceRegistrationInfo>? _ephemeralServiceInfo;
     private bool _trackerPopulationComplete;
 
@@ -185,6 +191,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         _dynamicRegistrationSources.Push(source);
+        _sourcesToQuery = null;
 
         var handler = RegistrationSourceAdded;
         handler?.Invoke(this, source);
@@ -622,7 +629,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     {
         if (!info.IsInitializing)
         {
-            BeginServiceInfoInitialization(service, info, _dynamicRegistrationSources);
+            BeginServiceInfoInitialization(service, info, SourcesToQuery());
         }
 
         info.InitializationDepth++;
@@ -787,7 +794,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         // not removed: it is consumed in order when the additional service is initialized.
         if (!additionalInfo.IsInitializing)
         {
-            BeginServiceInfoInitialization(additionalService, additionalInfo, _dynamicRegistrationSources);
+            BeginServiceInfoInitialization(additionalService, additionalInfo, SourcesToQuery());
         }
 
         if (additionalInfo.IsSourceQueued(source))
@@ -814,6 +821,12 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         info.BeginInitialization(registrationSources);
+    }
+
+    private IRegistrationSource[] SourcesToQuery()
+    {
+        // Enumerating the stack gives the sources most recently added first, the order to query them in.
+        return _sourcesToQuery ??= _dynamicRegistrationSources.ToArray();
     }
 
     /// <summary>

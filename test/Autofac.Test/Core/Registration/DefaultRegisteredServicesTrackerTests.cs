@@ -4,6 +4,7 @@
 using Autofac.Builder;
 using Autofac.Core;
 using Autofac.Core.Registration;
+using Autofac.Test.Scenarios.RegistrationSources;
 
 namespace Autofac.Test.Core.Registration;
 
@@ -63,6 +64,31 @@ public class DefaultRegisteredServicesTrackerTests
         Assert.NotSame(serviceRegistrations, registry.ServiceRegistrationsFor(service));
     }
 
+    [Fact]
+    public void SourceAddedAfterAServiceBeganInitializingIsQueriedForTheNextService()
+    {
+        using var tracker = new DefaultRegisteredServicesTracker();
+        tracker.AddRegistrationSource(new ObjectRegistrationSource());
+        Assert.False(tracker.IsRegistered(new TypedService(typeof(string))));
+
+        tracker.AddRegistrationSource(new StringRegistrationSource());
+
+        Assert.True(tracker.IsRegistered(new TypedService(typeof(string))));
+    }
+
     private static IComponentRegistration Registration()
         => RegistrationBuilder.ForType<object>().CreateRegistration();
+
+    private sealed class StringRegistrationSource : IRegistrationSource
+    {
+        public bool IsAdapterForIndividualComponents => false;
+
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
+        {
+            if (service == new TypedService(typeof(string)))
+            {
+                yield return RegistrationBuilder.ForDelegate((c, p) => "value").CreateRegistration();
+            }
+        }
+    }
 }

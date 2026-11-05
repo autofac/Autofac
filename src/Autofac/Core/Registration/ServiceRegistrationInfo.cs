@@ -39,9 +39,13 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     private IComponentRegistration? _defaultImplementation;
 
     /// <summary>
-    /// Used for bookkeeping so that the same source is not queried twice (may be null).
+    /// Used for bookkeeping so that the same source is not queried twice (may be null). The array
+    /// can be shared with other services and is never written to; sources before
+    /// <see cref="_nextSourceToQuery"/> have been queried.
     /// </summary>
-    private Queue<IRegistrationSource>? _sourcesToQuery;
+    private IRegistrationSource[]? _sourcesToQuery;
+
+    private int _nextSourceToQuery;
 
     private IResolvePipeline? _resolvePipeline;
 
@@ -176,7 +180,7 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     /// <summary>
     /// Gets a value indicating whether there are any sources left to query.
     /// </summary>
-    public bool HasSourcesToQuery => IsInitializing && _sourcesToQuery!.Count != 0;
+    public bool HasSourcesToQuery => IsInitializing && _nextSourceToQuery < _sourcesToQuery!.Length;
 
     /// <inheritdoc/>
     IEnumerable<IResolveMiddleware> IResolvePipelineBuilder.Middleware => ServiceMiddleware;
@@ -313,11 +317,12 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     /// <summary>
     /// Begin the initialization process for this service info, given the set of dynamic sources.
     /// </summary>
-    /// <param name="sources">The set of sources.</param>
+    /// <param name="sources">The set of sources. An array is kept rather than copied, and must not change.</param>
     public void BeginInitialization(IEnumerable<IRegistrationSource> sources)
     {
         IsInitialized = false;
-        _sourcesToQuery = sources is Stack<IRegistrationSource> stack ? CopyToQueue(stack) : new Queue<IRegistrationSource>(sources);
+        _sourcesToQuery = sources as IRegistrationSource[] ?? sources.ToArray();
+        _nextSourceToQuery = 0;
 
         // Build the pipeline during service info initialization, so that sources can access it
         // while getting a registration recursively.
@@ -332,7 +337,7 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     /// <param name="source">The source to look for.</param>
     /// <returns><see langword="true"/> if the source is still waiting to be queried for this service.</returns>
     public bool IsSourceQueued(IRegistrationSource source)
-        => IsInitializing && _sourcesToQuery!.Contains(source);
+        => IsInitializing && Array.IndexOf(_sourcesToQuery!, source, _nextSourceToQuery) >= 0;
 
     /// <summary>
     /// Dequeue the next registration source.
@@ -343,7 +348,7 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         EnforceDuringInitialization();
 
         // _sourcesToQuery always non-null during initialization
-        return _sourcesToQuery!.Dequeue();
+        return _sourcesToQuery![_nextSourceToQuery++];
     }
 
     /// <summary>
@@ -433,18 +438,6 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         }
 
         return _customPipelineBuilder.Clone();
-    }
-
-    private static Queue<IRegistrationSource> CopyToQueue(Stack<IRegistrationSource> sources)
-    {
-        // The queue can't size itself from a stack, so it would grow its array while copying.
-        var queue = new Queue<IRegistrationSource>(sources.Count);
-        foreach (var source in sources)
-        {
-            queue.Enqueue(source);
-        }
-
-        return queue;
     }
 
     private static void AddAll<TState, TResult>(
