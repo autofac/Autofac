@@ -29,6 +29,10 @@ internal static class OpenGenericServiceBinder
         "Trimming",
         "IL2055:MakeGenericType",
         Justification = "Constructs the closed implementation and service types from the open generic registration's runtime type arguments. The implementation type's activatable members are preserved by its [DynamicallyAccessedMembers] annotation; the consumer that registered the open generic is responsible for the closed type.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "When the requested service's definition is the implementation type, the requested service type is the closed implementation type that MakeGenericType would otherwise construct, so the same responsibility for the closed type applies.")]
     public static bool TryBindOpenGenericTypedService(
         IServiceWithType serviceWithType,
         IEnumerable<Service> configuredOpenGenericServices,
@@ -52,7 +56,10 @@ internal static class OpenGenericServiceBinder
                     InternalTypeExtensions.IsCompatibleWithGenericParameterConstraints(
                         implementation.GenericArguments, implementation.GenericParameterConstraints, implementorGenericArguments!))
                 {
-                    var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments!);
+                    // Closing the implementation type over the requested service's own arguments gives back the requested type.
+                    var constructedImplementationTypeTmp = serviceTypeDefinition == openGenericImplementationType
+                        ? serviceType
+                        : openGenericImplementationType.MakeGenericType(implementorGenericArguments!);
 
                     var implementedServices = BuildImplementedServices(
                         configuredOpenGenericServices, serviceWithType, serviceTypeDefinition, serviceGenericArguments, constructedImplementationTypeTmp);
@@ -446,6 +453,11 @@ internal static class OpenGenericServiceBinder
 
     private static Type?[] TryFindServiceArgumentsForImplementation(Type[] implementationGenericArgumentDefinitions, Type[] serviceGenericArguments, Type[] serviceArgumentDefinitions)
     {
+        if (MapsByPosition(implementationGenericArgumentDefinitions, serviceGenericArguments, serviceArgumentDefinitions))
+        {
+            return serviceGenericArguments;
+        }
+
         var implementorGenericArguments = new Type?[implementationGenericArgumentDefinitions.Length];
         for (var i = 0; i < implementorGenericArguments.Length; i++)
         {
@@ -454,6 +466,38 @@ internal static class OpenGenericServiceBinder
         }
 
         return implementorGenericArguments;
+    }
+
+    /// <summary>
+    /// Checks whether the service passes the implementation's generic parameters through in order, so that each one
+    /// maps to the service argument at its position. A parameter only maps by position when no earlier parameter has
+    /// the same name, since the mapping matches parameters by name.
+    /// </summary>
+    private static bool MapsByPosition(Type[] implementationGenericArgumentDefinitions, Type[] serviceGenericArguments, Type[] serviceArgumentDefinitions)
+    {
+        if (serviceArgumentDefinitions.Length != implementationGenericArgumentDefinitions.Length ||
+            serviceGenericArguments.Length != implementationGenericArgumentDefinitions.Length)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < serviceArgumentDefinitions.Length; i++)
+        {
+            if (serviceArgumentDefinitions[i] != implementationGenericArgumentDefinitions[i])
+            {
+                return false;
+            }
+
+            for (var j = 0; j < i; j++)
+            {
+                if (serviceArgumentDefinitions[j].Name == serviceArgumentDefinitions[i].Name)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private static Type[]? GetGenericBaseTypeArguments(OpenGenericImplementationInfo implementation, Type serviceTypeDefinition)
