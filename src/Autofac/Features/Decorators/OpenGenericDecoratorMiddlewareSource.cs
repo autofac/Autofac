@@ -18,6 +18,7 @@ internal class OpenGenericDecoratorMiddlewareSource : IServiceMiddlewareSource
     private readonly DecoratorService _decoratorService;
     private readonly RegistrationData _registrationData;
     private readonly ReflectionActivatorData _activatorData;
+    private readonly Type[] _openServiceTypes;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OpenGenericDecoratorMiddlewareSource"/> class.
@@ -32,6 +33,8 @@ internal class OpenGenericDecoratorMiddlewareSource : IServiceMiddlewareSource
         _activatorData = activatorData ?? throw new ArgumentNullException(nameof(activatorData));
 
         OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
+
+        _openServiceTypes = OpenGenericServiceBinder.GetOpenServiceTypes(registrationData.Services);
     }
 
     /// <inheritdoc/>
@@ -41,7 +44,7 @@ internal class OpenGenericDecoratorMiddlewareSource : IServiceMiddlewareSource
         Justification = "This middleware source is only ever added to the container by the [RequiresDynamicCode] RegisterGenericDecorator API, so the dynamic-code requirement has already been surfaced to the caller at registration time. The resolve-time binding here cannot be reached without that opt-in.")]
     public void ProvideMiddleware(Service service, IComponentRegistryServices availableServices, IResolvePipelineBuilder pipelineBuilder)
     {
-        if (service is IServiceWithType swt)
+        if (service is IServiceWithType swt && OpenGenericServiceBinder.IsClosedFromAny(swt.ServiceType, _openServiceTypes))
         {
             var closedDecoratorService = new DecoratorService(swt.ServiceType, _decoratorService.Condition);
 

@@ -57,4 +57,29 @@ public class RegistrationExtensionsTests
 
         Assert.Equal("serviceType", exception.ParamName);
     }
+
+    [Fact]
+    public void DecoratedInstanceIsTheFirstTypedParameterForTheService()
+    {
+        var instance = new object();
+        var parameters = new List<Parameter>
+        {
+            new NamedParameter("name", new object()),
+            new TypedParameter(typeof(string), "other"),
+            new TypedParameter(typeof(object), instance),
+            new TypedParameter(typeof(object), new object()),
+        };
+
+        Assert.Same(instance, RegistrationExtensions.GetDecoratedInstance<object>(parameters));
+        Assert.Same(instance, RegistrationExtensions.GetDecoratedInstance<object>(parameters.ToArray()));
+    }
+
+    [Fact]
+    public void DecoratedInstanceIsRequired()
+    {
+        Assert.Throws<DependencyResolutionException>(
+            () => RegistrationExtensions.GetDecoratedInstance<object>(new List<Parameter> { new TypedParameter(typeof(string), "other") }));
+        Assert.Throws<DependencyResolutionException>(
+            () => RegistrationExtensions.GetDecoratedInstance<object>(new Parameter[] { new TypedParameter(typeof(string), "other") }));
+    }
 }
