@@ -17,6 +17,7 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
     private readonly RegistrationData _registrationData;
     private readonly OpenGenericDecoratorActivatorData _activatorData;
     private readonly IResolvePipelineBuilder _existingPipeline;
+    private readonly Type[] _openServiceTypes;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OpenGenericDecoratorRegistrationSource"/> class.
@@ -49,6 +50,9 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
         _registrationData = registrationData;
         _activatorData = activatorData;
         _existingPipeline = existingPipelineBuilder;
+
+        // The source is created when the container is built, so the services no longer change.
+        _openServiceTypes = registrationData.Services.OfType<IServiceWithType>().Select(s => s.ServiceType).ToArray();
     }
 
     /// <inheritdoc/>
@@ -71,7 +75,7 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
             throw new ArgumentNullException(nameof(registrationAccessor));
         }
 
-        if (service is not IServiceWithType swt)
+        if (service is not IServiceWithType swt || !IsClosedFromAny(swt.ServiceType, _openServiceTypes))
         {
             return Enumerable.Empty<IComponentRegistration>();
         }
@@ -117,5 +121,26 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
         }
 
         return resultArray;
+    }
+
+    // A necessary condition for binding, checked first so that services this source cannot
+    // decorate are rejected without allocating.
+    private static bool IsClosedFromAny(Type serviceType, Type[] openServiceTypes)
+    {
+        if (!serviceType.IsGenericType || serviceType.IsGenericTypeDefinition)
+        {
+            return false;
+        }
+
+        var definition = serviceType.GetGenericTypeDefinition();
+        foreach (var openServiceType in openServiceTypes)
+        {
+            if (openServiceType == definition)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
