@@ -392,6 +392,33 @@ public class DecoratorTests
     }
 
     [Fact]
+    public void DecoratorReceivesResolveParametersPassedAsAList()
+    {
+        Parameter[]? received = null;
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<IDecoratedService>((c, p, i) =>
+        {
+            received = p.ToArray();
+            return new DecoratorA(i);
+        });
+
+        var container = builder.Build();
+        var first = new NamedParameter("first", 1);
+        var second = new NamedParameter("second", 2);
+
+        container.Resolve<IDecoratedService>(new List<Parameter> { first, second });
+
+        Assert.NotNull(received);
+        Assert.Equal(5, received.Length);
+        Assert.Same(first, received[0]);
+        Assert.Same(second, received[1]);
+        Assert.Equal(typeof(IDecoratedService), Assert.IsType<TypedParameter>(received[2]).Type);
+        Assert.IsAssignableFrom<ResolvedParameter>(received[3]);
+        Assert.Equal(typeof(IDecoratorContext), Assert.IsType<TypedParameter>(received[4]).Type);
+    }
+
+    [Fact]
     public void LambdaDecoratorUsesTheFirstTypedParameterForTheService()
     {
         var builder = new ContainerBuilder();

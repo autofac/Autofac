@@ -101,15 +101,15 @@ internal class DecoratorMiddleware : IResolveMiddleware
 
         Parameter[] resolveParameters;
 
-        var parameterCount = context.Parameters.Count();
-
-        if (parameterCount == 0)
+        if (context.Parameters is Parameter[] existingParameters)
         {
-            resolveParameters = new Parameter[] { typedServiceParameter, compatibleServiceParameter, contextParameter };
+            // Copying the array directly avoids allocating an enumerator for it.
+            resolveParameters = new Parameter[existingParameters.Length + 3];
+            existingParameters.CopyTo(resolveParameters, 0);
         }
         else
         {
-            resolveParameters = new Parameter[parameterCount + 3];
+            resolveParameters = new Parameter[context.Parameters.Count() + 3];
             var idx = 0;
 
             foreach (var existing in context.Parameters)
@@ -117,11 +117,11 @@ internal class DecoratorMiddleware : IResolveMiddleware
                 resolveParameters[idx] = existing;
                 idx++;
             }
-
-            resolveParameters[idx++] = typedServiceParameter;
-            resolveParameters[idx++] = compatibleServiceParameter;
-            resolveParameters[idx] = contextParameter;
         }
+
+        resolveParameters[resolveParameters.Length - 3] = typedServiceParameter;
+        resolveParameters[resolveParameters.Length - 2] = compatibleServiceParameter;
+        resolveParameters[resolveParameters.Length - 1] = contextParameter;
 
         // We're going to define a service registration that does not contain any service
         // pipeline additions.
