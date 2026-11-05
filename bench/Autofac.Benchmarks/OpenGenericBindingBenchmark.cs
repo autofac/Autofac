@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Features.Variance;
+
 namespace Autofac.Benchmarks;
 
 /// <summary>
@@ -57,6 +59,53 @@ public class OpenGenericBindingBenchmark
     {
         using var scope = _container.BeginLifetimeScope(b => b.RegisterGeneric(typeof(ConstrainedService<,>)).As(typeof(IService<,>)));
         GC.KeepAlive(scope.Resolve<IService<Model, List<Model>>>());
+    }
+
+    /// <summary>
+    /// The interface declared first also closes the service, with other arguments, so binding has to look
+    /// past it for the interface that maps to the service arguments.
+    /// </summary>
+    [Benchmark]
+    public void ReversedArguments()
+    {
+        using var scope = _container.BeginLifetimeScope(b => b.RegisterGeneric(typeof(Reversed<,>)).As(typeof(IService<,>)));
+        GC.KeepAlive(scope.Resolve<IService<string, List<int>>>());
+    }
+
+    /// <summary>
+    /// The constraint is met through a generic base class two levels up.
+    /// </summary>
+    [Benchmark]
+    public void ConstraintOnGenericBaseClass()
+    {
+        using var scope = _container.BeginLifetimeScope(b => b.RegisterGeneric(typeof(EntityHandler<,>)).As(typeof(IService<,>)));
+        GC.KeepAlive(scope.Resolve<IService<DerivedEntity, Model>>());
+    }
+
+    /// <summary>
+    /// The constraint isn't met, so the check walks the whole base chain and interface list of the argument
+    /// before the source declines.
+    /// </summary>
+    [Benchmark]
+    public void ConstraintRejected()
+    {
+        using var scope = _container.BeginLifetimeScope(b => b.RegisterGeneric(typeof(ValueSourceHandler<,>)).As(typeof(IService<,>)));
+        GC.KeepAlive(scope.ResolveOptional<IService<ReferenceOnlyEntity, int>>());
+    }
+
+    /// <summary>
+    /// The contravariant source checks the service's constraints for each type the argument can be
+    /// substituted with: its base types, of which <see cref="object"/> is rejected, and its interfaces.
+    /// </summary>
+    [Benchmark]
+    public void ContravariantConstraint()
+    {
+        using var scope = _container.BeginLifetimeScope(b =>
+        {
+            b.RegisterSource(new ContravariantRegistrationSource());
+            b.RegisterType<ModelEntityConsumer>().As<IConsumer<ModelEntity>>();
+        });
+        GC.KeepAlive(scope.Resolve<IConsumer<DerivedEntity>>());
     }
 
     [Benchmark]
@@ -120,6 +169,19 @@ public class OpenGenericBindingBenchmark
     {
     }
 
+    private interface IConsumer<in TEntity>
+        where TEntity : Entity<Model>
+    {
+    }
+
+    private interface IReference<T>
+    {
+    }
+
+    private interface IValueSource<T>
+    {
+    }
+
     private class Service<T> : IService<T>
     {
     }
@@ -155,6 +217,41 @@ public class OpenGenericBindingBenchmark
     }
 
     private class Model
+    {
+    }
+
+    private class Reversed<T1, T2> : IService<T2, List<T1>>, IService<T1, T2>
+    {
+    }
+
+    private class Entity<TModel>
+    {
+    }
+
+    private class ModelEntity : Entity<Model>
+    {
+    }
+
+    private class DerivedEntity : ModelEntity
+    {
+    }
+
+    private class ReferenceOnlyEntity : DerivedEntity, IReference<string>
+    {
+    }
+
+    private class EntityHandler<TEntity, TModel> : IService<TEntity, TModel>
+        where TEntity : Entity<TModel>
+    {
+    }
+
+    private class ValueSourceHandler<TEntity, TValue> : IService<TEntity, TValue>
+        where TEntity : IValueSource<TValue>
+        where TValue : struct
+    {
+    }
+
+    private class ModelEntityConsumer : IConsumer<ModelEntity>
     {
     }
 }
