@@ -35,7 +35,7 @@ namespace Autofac;
 /// via extension methods in <see cref="RegistrationExtensions"/>.</remarks>
 /// <seealso cref="IContainer"/>
 /// <see cref="RegistrationExtensions"/>
-[SuppressMessage("Microsoft.Design", "CA1001", Justification = "Ownership of the registry builder passes to the registry it builds.")]
+[SuppressMessage("Microsoft.Design", "CA1001", Justification = "Responsibility for disposing the registry builder passes to the registry it builds. A module's builder is never built, and its registry builder holds only managed state.")]
 public sealed class ContainerBuilder
 {
     private static int _builderAlreadyAllocated;
@@ -52,8 +52,6 @@ public sealed class ContainerBuilder
     public ContainerBuilder()
         : this(new Dictionary<string, object?>())
     {
-        _componentRegistryBuilder = new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), Properties);
-
         // If this is not the first container builder we have constructed in this process,
         // it's entirely likely we are going to create more (for example, in unit tests).
         // So, all container builders after the first will preserve cache's that
@@ -68,8 +66,6 @@ public sealed class ContainerBuilder
     /// <param name="properties">The properties used during component registration.</param>
     internal ContainerBuilder(IDictionary<string, object?> properties)
     {
-        // A module's builder is applied to the parent registry, so its own registry builder is
-        // only created if the module asks for it.
         Properties = properties;
     }
 
@@ -100,6 +96,8 @@ public sealed class ContainerBuilder
     {
         get
         {
+            // Created on first use: a module's builder is applied to the parent registry, and
+            // rarely uses its own registry builder.
             return _componentRegistryBuilder ??= new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), Properties);
         }
     }
