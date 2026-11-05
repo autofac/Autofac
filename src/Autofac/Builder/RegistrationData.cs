@@ -17,7 +17,6 @@ public class RegistrationData
     // The services form a set kept in the order they were added. Most registrations have one,
     // so it is held in a field, and the set is only created for a second.
     private Service? _firstService;
-    private int _firstServiceHashCode;
     private HashSet<Service>? _moreServices;
     private bool _defaultServiceOverridden;
     private Service _defaultService;
@@ -251,17 +250,15 @@ public class RegistrationData
     /// <param name="service">The service to add.</param>
     private void AddToServices(Service service)
     {
-        var hashCode = service.GetHashCode();
-
         if (_firstService is null)
         {
+            // Rejects a service that can't compute a hash code, as the set would.
+            _ = service.GetHashCode();
             _firstService = service;
-            _firstServiceHashCode = hashCode;
         }
-        else if (!IsFirstService(service, hashCode))
+        else if (!EqualityComparer<Service>.Default.Equals(_firstService, service))
         {
-            _moreServices ??= new HashSet<Service>();
-            _moreServices.Add(service);
+            (_moreServices ??= new HashSet<Service>()).Add(service);
         }
     }
 
@@ -277,9 +274,6 @@ public class RegistrationData
             return false;
         }
 
-        return IsFirstService(service, service.GetHashCode()) || (_moreServices?.Contains(service) ?? false);
+        return EqualityComparer<Service>.Default.Equals(_firstService, service) || (_moreServices?.Contains(service) ?? false);
     }
-
-    private bool IsFirstService(Service service, int hashCode)
-        => hashCode == _firstServiceHashCode && EqualityComparer<Service>.Default.Equals(_firstService!, service);
 }
