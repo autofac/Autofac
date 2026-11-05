@@ -104,6 +104,36 @@ public class OpenGenericServiceBinderTests
         Assert.Null(services);
     }
 
+    [Theory]
+    [MemberData(nameof(RequestsForCustomServices))]
+    public void TypedServicesSkipServicesWithoutATypeAndCloseCustomServicesInConfiguredOrder(Service request)
+    {
+        Assert.True(OpenGenericServiceBinder.TryBindOpenGenericTypedService(
+            (IServiceWithType)request, ConfiguredWithCustomServices(), typeof(FirstAndSecond<>), out _, out var services));
+
+        AssertClosedCustomServices(services);
+    }
+
+    [Theory]
+    [MemberData(nameof(RequestsForCustomServices))]
+    public void DelegateServicesSkipServicesWithoutATypeAndCloseCustomServicesInConfiguredOrder(Service request)
+    {
+        Assert.True(OpenGenericServiceBinder.TryBindOpenGenericDelegateService(
+            (IServiceWithType)request, ConfiguredWithCustomServices(), (context, types, parameters) => types, out _, out var services));
+
+        AssertClosedCustomServices(services);
+    }
+
+    public static IEnumerable<object[]> RequestsForCustomServices()
+    {
+        // Matches the configured typed service.
+        yield return new object[] { new TypedService(typeof(ISecond<int>)) };
+
+        // Matches the configured custom service, through its Equals.
+        yield return new object[] { new TypedService(typeof(IFirst<int>)) };
+        yield return new object[] { new CustomService(typeof(IFirst<int>)) };
+    }
+
     [Fact]
     public void InterfaceThatMapsToTheServiceArgumentsIsPreferredOverAnEarlierCompleteMapping()
     {
@@ -153,6 +183,21 @@ public class OpenGenericServiceBinderTests
         Assert.False(container.IsRegistered<IHandler<ReferenceOnlyEntity, int>>());
     }
 
+    private static Service[] ConfiguredWithCustomServices() => new Service[]
+    {
+        new PlainService(),
+        new CustomService(typeof(IFirst<>)),
+        new TypedService(typeof(ISecond<>)),
+    };
+
+    private static void AssertClosedCustomServices(Service[] services)
+    {
+        Assert.Collection(
+            services,
+            service => Assert.Equal(typeof(IFirst<int>), Assert.IsType<CustomService>(service).ServiceType),
+            service => Assert.Equal(new TypedService(typeof(ISecond<int>)), service));
+    }
+
     private interface IFirst<T>
     {
     }
@@ -180,6 +225,42 @@ public class OpenGenericServiceBinderTests
 
     private class FirstAndSecond<T> : IFirst<T>, ISecond<T>
     {
+    }
+
+    /// <summary>
+    /// A service that has no service type, which binding skips.
+    /// </summary>
+    private sealed class PlainService : Service
+    {
+        public override string Description => "Plain";
+
+        public override bool Equals(object? obj) => obj is PlainService;
+
+        public override int GetHashCode() => 0;
+    }
+
+    /// <summary>
+    /// A service with its own type change, that also counts a typed service of the same type as equal.
+    /// </summary>
+    private sealed class CustomService : Service, IServiceWithType
+    {
+        public CustomService(Type serviceType)
+        {
+            ServiceType = serviceType;
+        }
+
+        public Type ServiceType
+        {
+            get;
+        }
+
+        public override string Description => "Custom " + ServiceType;
+
+        public Service ChangeType(Type newType) => new CustomService(newType);
+
+        public override bool Equals(object? obj) => obj is CustomService or TypedService && ((IServiceWithType)obj).ServiceType == ServiceType;
+
+        public override int GetHashCode() => ServiceType.GetHashCode();
     }
 
     private class FirstAndSecondOfEnumerable<T> : IFirst<T>, ISecond<IEnumerable<T>>
