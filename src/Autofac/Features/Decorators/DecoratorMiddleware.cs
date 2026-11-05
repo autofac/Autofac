@@ -67,11 +67,12 @@ internal class DecoratorMiddleware : IResolveMiddleware
         {
             context.DecoratorContext = DecoratorContext.Create(context, context.Instance.GetType(), serviceType, context.Instance);
         }
-        else
+        else if (context.DecoratorContext.DecoratorApplied)
         {
             // Update the context with the previous decorator's output.
             // Doing this here, rather than in the decorator middleware that resulted in the instance
             // means we do not need to needlessly update the decorator context on the final decorator.
+            // A previous decorator whose condition was not met produced no output, so there is nothing to record.
             context.DecoratorContext = context.DecoratorContext.UpdateContext(context.Instance);
         }
 
@@ -141,5 +142,7 @@ internal class DecoratorMiddleware : IResolveMiddleware
 
             context.Instance = decoratedInstance;
         }
+
+        context.DecoratorContext.DecoratorApplied = true;
     }
 }
