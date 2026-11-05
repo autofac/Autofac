@@ -151,6 +151,51 @@ public class LifetimeScopeTests
         Assert.Same(scope2RegisteredInstance, scope2ResolvedInstance);
     }
 
+    [Fact]
+    public void ResolvingCachedSharedInstancesDoesNotAllocate()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Test>().As<ITest>().SingleInstance();
+        builder.RegisterType<Person>().InstancePerLifetimeScope();
+        using var container = builder.Build();
+        using var scope = container.BeginLifetimeScope();
+
+        // Warm up so the instances are cached and first-run allocations happen before we measure.
+        var singleton = container.Resolve<ITest>();
+        var scoped = scope.Resolve<Person>();
+        Assert.Same(singleton, scope.Resolve<ITest>());
+
+        var before = GC.GetAllocatedBytesForCurrentThread();
+        for (var i = 0; i < 100; i++)
+        {
+            container.Resolve<ITest>();
+            scope.Resolve<ITest>();
+            scope.Resolve<Person>();
+        }
+
+        var allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+        Assert.Equal(0, allocated);
+        Assert.Same(scoped, scope.Resolve<Person>());
+    }
+
+    [Fact]
+    public void ResolveEventsAreRaisedForCachedSharedInstances()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Test>().As<ITest>().SingleInstance();
+        using var container = builder.Build();
+        var singleton = container.Resolve<ITest>();
+        using var scope = container.BeginLifetimeScope();
+
+        var requestedServices = new List<Service>();
+        scope.ResolveOperationBeginning += (sender, args) =>
+            args.ResolveOperation.ResolveRequestBeginning += (operation, requestArgs) => requestedServices.Add(requestArgs.RequestContext.Service);
+
+        Assert.Same(singleton, scope.Resolve<ITest>());
+        Assert.Equal(new TypedService(typeof(ITest)), Assert.Single(requestedServices));
+    }
+
     private interface ITest
     {
     }
