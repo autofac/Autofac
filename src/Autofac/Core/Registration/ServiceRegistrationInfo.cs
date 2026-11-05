@@ -11,13 +11,13 @@ namespace Autofac.Core.Registration;
 /// </summary>
 internal class ServiceRegistrationInfo : IResolvePipelineBuilder
 {
+    private readonly Service _service;
+
     /// <summary>
     ///  List of implicit default service implementations. Overriding default implementations are appended to the end,
     ///  so the enumeration should begin from the end too, and the most default implementation comes last.
     /// </summary>
-    private readonly List<IComponentRegistration> _defaultImplementations = new();
-
-    private readonly Service _service;
+    private List<IComponentRegistration>? _defaultImplementations;
 
     private volatile bool _isInitialized;
 
@@ -88,9 +88,9 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
 
             var defaultImpls = _defaultImplementations;
 
-            for (var defaultReverseIdx = defaultImpls.Count - 1; defaultReverseIdx >= 0; defaultReverseIdx--)
+            for (var defaultReverseIdx = (defaultImpls?.Count ?? 0) - 1; defaultReverseIdx >= 0; defaultReverseIdx--)
             {
-                yield return defaultImpls[defaultReverseIdx];
+                yield return defaultImpls![defaultReverseIdx];
             }
 
             if (_sourceImplementations is not null)
@@ -173,7 +173,7 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     PipelineType IResolvePipelineBuilder.Type => PipelineType.Service;
 
     private bool Any
-        => _defaultImplementations.Count > 0 ||
+        => _defaultImplementations is not null ||
         _sourceImplementations is not null ||
         _preserveDefaultImplementations is not null;
 
@@ -191,7 +191,7 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
 
         var defaultImpls = _defaultImplementations;
         var count = (_fixedRegistration is null ? 0 : 1) +
-            defaultImpls.Count +
+            (defaultImpls?.Count ?? 0) +
             (_sourceImplementations?.Count ?? 0) +
             (_preserveDefaultImplementations?.Count ?? 0);
         var list = new List<TResult>(count);
@@ -201,9 +201,9 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
             list.Add(select(state, _fixedRegistration));
         }
 
-        for (var defaultReverseIdx = defaultImpls.Count - 1; defaultReverseIdx >= 0; defaultReverseIdx--)
+        for (var defaultReverseIdx = (defaultImpls?.Count ?? 0) - 1; defaultReverseIdx >= 0; defaultReverseIdx--)
         {
-            list.Add(select(state, defaultImpls[defaultReverseIdx]));
+            list.Add(select(state, defaultImpls![defaultReverseIdx]));
         }
 
         AddAll(list, _sourceImplementations, state, select);
@@ -247,6 +247,7 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
                 throw new ArgumentOutOfRangeException(nameof(originatedFromSource));
             }
 
+            _defaultImplementations ??= new List<IComponentRegistration>();
             _defaultImplementations.Add(registration);
         }
 
@@ -290,7 +291,7 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
         RequiresInitialization();
 
         registration = _defaultImplementation ??= _fixedRegistration ??
-                                                  _defaultImplementations.LastOrDefault() ??
+                                                  _defaultImplementations?.LastOrDefault() ??
                                                   (_sourceImplementations?.Count > 0 ? _sourceImplementations[0] : null) ??
                                                   (_preserveDefaultImplementations?.Count > 0 ? _preserveDefaultImplementations[0] : null);
 
@@ -378,7 +379,10 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
             copy._preserveDefaultImplementations = new List<IComponentRegistration>(_preserveDefaultImplementations);
         }
 
-        copy._defaultImplementations.AddRange(_defaultImplementations);
+        if (_defaultImplementations is not null)
+        {
+            copy._defaultImplementations = new List<IComponentRegistration>(_defaultImplementations);
+        }
 
         if (_customPipelineBuilder is object)
         {
