@@ -29,6 +29,8 @@ public static class BenchmarkSet
         typeof(KeylessSimpleLambdaBenchmark),
         typeof(KeylessSimpleSharedInstanceLambdaBenchmark),
         typeof(KeylessConditionalBenchmark),
+        typeof(KeylessParameterBenchmark),
+        typeof(KeylessGenericUnmatchedBenchmark),
         typeof(CompositeBenchmark),
         typeof(DeepGraphResolveBenchmark),
         typeof(EnumerableResolveBenchmark),
