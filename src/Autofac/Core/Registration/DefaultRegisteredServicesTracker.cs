@@ -637,18 +637,38 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     {
         // This ensures that multiple services provided by the same
         // component share a single component (we don't re-query for them)
-        foreach (var additionalService in provided.Services)
+        if (provided.Services is Service[] services)
         {
-            var additionalInfo = GetServiceInfo(additionalService);
-            if (additionalInfo.IsInitialized || additionalInfo == info)
+            foreach (var additionalService in services)
             {
-                continue;
+                PopulateAdditionalService(service, info, source, provided, additionalService);
             }
-
-            additionalInfo = UseEphemeralAdditionalInfoIfNeeded(service, info, additionalInfo);
-
-            HoldOrApplyForAdditionalService(additionalService, additionalInfo, source, provided);
         }
+        else
+        {
+            foreach (var additionalService in provided.Services)
+            {
+                PopulateAdditionalService(service, info, source, provided, additionalService);
+            }
+        }
+    }
+
+    private void PopulateAdditionalService(
+        Service service,
+        ServiceRegistrationInfo info,
+        IRegistrationSource source,
+        IComponentRegistration provided,
+        Service additionalService)
+    {
+        var additionalInfo = GetServiceInfo(additionalService);
+        if (additionalInfo.IsInitialized || additionalInfo == info)
+        {
+            return;
+        }
+
+        additionalInfo = UseEphemeralAdditionalInfoIfNeeded(service, info, additionalInfo);
+
+        HoldOrApplyForAdditionalService(additionalService, additionalInfo, source, provided);
     }
 
     private ServiceRegistrationInfo UseEphemeralAdditionalInfoIfNeeded(
