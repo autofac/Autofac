@@ -58,20 +58,22 @@ internal class ExternalRegistrySource : IRegistrationSource
             serviceForLookup = new ScopeIsolatedService(service);
         }
 
-        // The registry hands back a list, so this neither boxes its enumerator nor, when the
-        // service has no registrations there, creates an iterator to wrap them.
-        var found = _registry.RegistrationsFor(serviceForLookup);
-        var registrations = found as List<IComponentRegistration> ?? new List<IComponentRegistration>(found);
+        // Taking the registrations as a list means a service with none there needs no iterator to
+        // wrap them, and enumerating them doesn't box an enumerator.
+        var registrations = _registry is ComponentRegistry registry
+            ? registry.RegistrationsOrEmptyFor(serviceForLookup)
+            : new List<IComponentRegistration>(_registry.RegistrationsFor(serviceForLookup));
 
         return registrations.Count == 0 ? Array.Empty<IComponentRegistration>() : WrapRegistrations(service, registrations);
     }
 
-    private static IEnumerable<IComponentRegistration> WrapRegistrations(Service service, List<IComponentRegistration> registrations)
+    private static IEnumerable<IComponentRegistration> WrapRegistrations(Service service, IReadOnlyList<IComponentRegistration> registrations)
     {
         // Issue #272: Taking from the registry the following registrations:
         //   - non-adapting own registrations: wrap them with ExternalComponentRegistration
-        foreach (var registration in registrations)
+        for (var i = 0; i < registrations.Count; i++)
         {
+            var registration = registrations[i];
             if (registration is ExternalComponentRegistration || !registration.IsAdapting())
             {
                 yield return new ExternalComponentRegistration(service, registration);

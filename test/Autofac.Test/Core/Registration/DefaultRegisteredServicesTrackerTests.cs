@@ -47,6 +47,22 @@ public class DefaultRegisteredServicesTrackerTests
         Assert.Equal(new[] { first, second }, tracker.Registrations);
     }
 
+    [Fact]
+    public void RegistrationsForAServiceWithNoneAreAListOfTheirOwn()
+    {
+        using var container = new ContainerBuilder().Build();
+        var registry = container.ComponentRegistry;
+        var service = new TypedService(typeof(string));
+
+        var registrations = registry.RegistrationsFor(service);
+        var serviceRegistrations = registry.ServiceRegistrationsFor(service);
+
+        Assert.Empty(Assert.IsType<List<IComponentRegistration>>(registrations));
+        Assert.NotSame(registrations, registry.RegistrationsFor(service));
+        Assert.Empty(Assert.IsType<List<ServiceRegistration>>(serviceRegistrations));
+        Assert.NotSame(serviceRegistrations, registry.ServiceRegistrationsFor(service));
+    }
+
     private static IComponentRegistration Registration()
         => RegistrationBuilder.ForType<object>().CreateRegistration();
 }

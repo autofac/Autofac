@@ -20,7 +20,7 @@ internal static class BuildCallbackManager
     /// <param name="scope">The new scope/container.</param>
     internal static void RunBuildCallbacks(ILifetimeScope scope)
     {
-        var buildCallbackServices = StartableManager.ToList(scope.ComponentRegistry.ServiceRegistrationsFor(_callbackServiceType));
+        var buildCallbackServices = StartableManager.ServiceRegistrationsFor(scope.ComponentRegistry, _callbackServiceType);
 
         for (var i = 0; i < buildCallbackServices.Count; i++)
         {

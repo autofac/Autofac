@@ -3,6 +3,7 @@
 
 using System.Globalization;
 using Autofac.Core;
+using Autofac.Core.Registration;
 
 namespace Autofac.Builder;
 
@@ -31,7 +32,7 @@ internal static class StartableManager
             // We track which registrations have already been auto-activated by adding
             // a metadata value. If the value is present, we won't re-activate. This helps
             // in the container update situation.
-            var startables = ToList(componentRegistry.ServiceRegistrationsFor(_startableService));
+            var startables = ServiceRegistrationsFor(componentRegistry, _startableService);
             for (var i = 0; i < startables.Count; i++)
             {
                 var registration = startables[i];
@@ -52,7 +53,7 @@ internal static class StartableManager
                 }
             }
 
-            var autoActivated = ToList(componentRegistry.ServiceRegistrationsFor(_autoActivateService));
+            var autoActivated = ServiceRegistrationsFor(componentRegistry, _autoActivateService);
             for (var i = 0; i < autoActivated.Count; i++)
             {
                 var registration = autoActivated[i];
@@ -87,12 +88,15 @@ internal static class StartableManager
     }
 
     /// <summary>
-    /// Gets registrations from a registry as a list, without copying the list the registry returns.
+    /// Gets the registrations for a service as a list, which for an Autofac registry is shared when empty.
     /// </summary>
-    /// <param name="registrations">The registrations the registry returned.</param>
+    /// <param name="componentRegistry">The registry.</param>
+    /// <param name="service">The service for which registrations are sought.</param>
     /// <returns>The registrations.</returns>
-    internal static IReadOnlyList<ServiceRegistration> ToList(IEnumerable<ServiceRegistration> registrations)
-        => registrations as IReadOnlyList<ServiceRegistration> ?? new List<ServiceRegistration>(registrations);
+    internal static IReadOnlyList<ServiceRegistration> ServiceRegistrationsFor(IComponentRegistry componentRegistry, Service service)
+        => componentRegistry is ComponentRegistry registry
+            ? registry.ServiceRegistrationsOrEmptyFor(service)
+            : new List<ServiceRegistration>(componentRegistry.ServiceRegistrationsFor(service));
 
     private static void SetStartOnActivate(IDictionary<string, object?> properties, ref bool startOnActivateSet)
     {

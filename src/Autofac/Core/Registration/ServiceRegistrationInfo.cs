@@ -129,6 +129,18 @@ internal class ServiceRegistrationInfo : IResolvePipelineBuilder
     }
 
     /// <summary>
+    /// Gets a value indicating whether any implementations are known, including a fixed registration.
+    /// </summary>
+    public bool HasImplementations
+    {
+        get
+        {
+            RequiresInitialization();
+            return _fixedRegistration is not null || Any;
+        }
+    }
+
+    /// <summary>
     /// Gets a value indicating whether this registration info has any custom service middleware registered.
     /// </summary>
     public bool HasCustomServiceMiddleware

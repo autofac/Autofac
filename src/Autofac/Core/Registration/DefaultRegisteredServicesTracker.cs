@@ -254,17 +254,20 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     /// <inheritdoc />
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
     {
-        if (service == null)
-        {
-            throw new ArgumentNullException(nameof(service));
-        }
-
-        var info = GetInitializedServiceInfo(service);
-        return info.ImplementationsToList<object?, IComponentRegistration>(null, static (_, implementation) => implementation);
+        // Callers outside the tracker get a list of their own, even an empty one.
+        var registrations = RegistrationsOrEmptyFor(service);
+        return registrations.Count == 0 ? new List<IComponentRegistration>() : registrations;
     }
 
     /// <inheritdoc/>
     public IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service)
+    {
+        var registrations = ServiceRegistrationsOrEmptyFor(service);
+        return registrations.Count == 0 ? new List<ServiceRegistration>() : registrations;
+    }
+
+    /// <inheritdoc/>
+    public IReadOnlyList<IComponentRegistration> RegistrationsOrEmptyFor(Service service)
     {
         if (service == null)
         {
@@ -272,6 +275,28 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         var info = GetInitializedServiceInfo(service);
+        if (!info.HasImplementations)
+        {
+            return Array.Empty<IComponentRegistration>();
+        }
+
+        return info.ImplementationsToList<object?, IComponentRegistration>(null, static (_, implementation) => implementation);
+    }
+
+    /// <inheritdoc/>
+    public IReadOnlyList<ServiceRegistration> ServiceRegistrationsOrEmptyFor(Service service)
+    {
+        if (service == null)
+        {
+            throw new ArgumentNullException(nameof(service));
+        }
+
+        var info = GetInitializedServiceInfo(service);
+        if (!info.HasImplementations)
+        {
+            return Array.Empty<ServiceRegistration>();
+        }
+
         return info.ImplementationsToList(info, static (info, implementation) => new ServiceRegistration(info.ServicePipeline, implementation));
     }
 
