@@ -12,20 +12,22 @@ public sealed class DecoratorContext : IDecoratorContext
 {
     private readonly IComponentContext _componentContext;
 
+    // Built from AppliedDecorators on first read, since most decorations never read it.
+    private Type[]? _appliedDecoratorTypes;
+
     private DecoratorContext(
         IComponentContext componentContext,
         Type implementationType,
         Type serviceType,
         object currentInstance,
-        IReadOnlyList<Type>? appliedDecoratorTypes = null,
-        IReadOnlyList<object>? appliedDecorators = null)
+        object[]? appliedDecorators = null)
     {
         _componentContext = componentContext;
         ImplementationType = implementationType;
         ServiceType = serviceType;
         CurrentInstance = currentInstance;
-        AppliedDecoratorTypes = appliedDecoratorTypes ?? Array.Empty<Type>();
         AppliedDecorators = appliedDecorators ?? Array.Empty<object>();
+        _appliedDecoratorTypes = appliedDecorators is null ? Array.Empty<Type>() : null;
     }
 
     /// <inheritdoc />
@@ -41,10 +43,7 @@ public sealed class DecoratorContext : IDecoratorContext
     }
 
     /// <inheritdoc />
-    public IReadOnlyList<Type> AppliedDecoratorTypes
-    {
-        get; private set;
-    }
+    public IReadOnlyList<Type> AppliedDecoratorTypes => _appliedDecoratorTypes ??= GetAppliedDecoratorTypes();
 
     /// <inheritdoc />
     public IReadOnlyList<object> AppliedDecorators
@@ -86,17 +85,26 @@ public sealed class DecoratorContext : IDecoratorContext
     {
         var count = AppliedDecorators.Count;
         var appliedDecorators = new object[count + 1];
-        var appliedDecoratorTypes = new Type[count + 1];
 
         for (var i = 0; i < count; i++)
         {
             appliedDecorators[i] = AppliedDecorators[i];
-            appliedDecoratorTypes[i] = AppliedDecoratorTypes[i];
         }
 
         appliedDecorators[count] = decoratorInstance;
-        appliedDecoratorTypes[count] = decoratorInstance.GetType();
 
-        return new DecoratorContext(_componentContext, ImplementationType, ServiceType, decoratorInstance, appliedDecoratorTypes, appliedDecorators);
+        return new DecoratorContext(_componentContext, ImplementationType, ServiceType, decoratorInstance, appliedDecorators);
+    }
+
+    private Type[] GetAppliedDecoratorTypes()
+    {
+        var appliedDecoratorTypes = new Type[AppliedDecorators.Count];
+
+        for (var i = 0; i < appliedDecoratorTypes.Length; i++)
+        {
+            appliedDecoratorTypes[i] = AppliedDecorators[i].GetType();
+        }
+
+        return appliedDecoratorTypes;
     }
 }
