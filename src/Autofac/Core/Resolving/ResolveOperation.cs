@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Autofac.Core.Lifetime;
 using Autofac.Core.Resolving.Pipeline;
 using Autofac.Diagnostics;
 
@@ -117,14 +118,11 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
         }
 
         // Fast-path: if the registration is shared and already cached, skip the entire
-        // pipeline (context allocation, middleware chain, etc.). Only safe when:
-        //  - no event handlers or diagnostics are observing,
-        //  - the service pipeline is the default (no decorators or custom service middleware).
-        if (request.Registration.Sharing == InstanceSharing.Shared &&
-            request.ResolvePipeline == ServicePipelines.DefaultServicePipeline &&
-            ResolveRequestBeginning is null &&
+        // pipeline (context allocation, middleware chain, etc.). Only safe when
+        // no event handlers or diagnostics are observing.
+        if (ResolveRequestBeginning is null &&
             !DiagnosticSource.IsEnabled() &&
-            currentOperationScope.TryGetSharedInstance(request.Registration.Id, request.DecoratorTarget?.Id, out var cached))
+            TryGetCachedSharedInstance(currentOperationScope, request, out var cached))
         {
             return cached;
         }
@@ -187,6 +185,33 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
         // InvokePipeline throws if the instance is null but
         // analyzers don't pick that up and get mad.
         return requestContext.Instance!;
+    }
+
+    /// <summary>
+    /// Gets the instance the default service pipeline would return from its sharing stage, if one is already cached.
+    /// Callers must check that nothing observes the request (event handlers or diagnostics) before using it.
+    /// </summary>
+    /// <param name="currentOperationScope">The scope the request is made in.</param>
+    /// <param name="request">The resolve request.</param>
+    /// <param name="instance">The cached instance.</param>
+    /// <returns>True if the request can be answered without running its pipeline.</returns>
+    internal static bool TryGetCachedSharedInstance(ISharingLifetimeScope currentOperationScope, in ResolveRequest request, [NotNullWhen(true)] out object? instance)
+    {
+        var registration = request.Registration;
+
+        // A custom service pipeline (decorators or service middleware) has to run.
+        if (registration.Sharing != InstanceSharing.Shared || request.ResolvePipeline != ServicePipelines.DefaultServicePipeline)
+        {
+            instance = null;
+            return false;
+        }
+
+        // Singletons live in the root scope, which is where the default pipeline's scope selection would look.
+        var scope = ReferenceEquals(registration.Lifetime, RootScopeLifetime.Instance)
+            ? currentOperationScope.RootLifetimeScope
+            : currentOperationScope;
+
+        return scope.TryGetSharedInstance(registration.Id, request.DecoratorTarget?.Id, out instance);
     }
 
     /// <summary>
