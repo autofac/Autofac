@@ -21,7 +21,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     /// <summary>
     /// Keeps track of the status of registered services.
     /// </summary>
-    private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new();
+    private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo;
 
     /// <summary>
     /// External registration sources.
@@ -71,7 +71,17 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker"/> class.
     /// </summary>
     public DefaultRegisteredServicesTracker()
+        : this(new ConcurrentDictionary<Service, ServiceRegistrationInfo>())
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker"/> class.
+    /// </summary>
+    /// <param name="serviceInfo">The dictionary that keeps the status of registered services.</param>
+    private protected DefaultRegisteredServicesTracker(ConcurrentDictionary<Service, ServiceRegistrationInfo> serviceInfo)
+    {
+        _serviceInfo = serviceInfo;
         _registrationAccessor = ServiceRegistrationsFor;
 
         // Hold a reference to the reflection cache here so the current instance stays

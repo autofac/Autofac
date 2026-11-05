@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Collections.Concurrent;
 using Autofac.Core.Lifetime;
 
 namespace Autofac.Core.Registration;
@@ -10,6 +11,13 @@ namespace Autofac.Core.Registration;
 /// </summary>
 internal sealed class ScopeRestrictedRegisteredServicesTracker : DefaultRegisteredServicesTracker
 {
+    // A child scope's registry only adds a service the first time the scope looks it up, so one lock
+    // serves it instead of the lock per processor a default ConcurrentDictionary allocates. Reads
+    // take no lock either way. The capacity is the ConcurrentDictionary default.
+    private const int ChildScopeConcurrencyLevel = 1;
+
+    private const int DefaultCapacity = 31;
+
     private readonly IComponentLifetime _restrictedRootScopeLifetime;
 
     /// <summary>
@@ -17,6 +25,7 @@ internal sealed class ScopeRestrictedRegisteredServicesTracker : DefaultRegister
     /// </summary>
     /// <param name="restrictedRootScopeLifetime">The scope to which registrations are restricted.</param>
     internal ScopeRestrictedRegisteredServicesTracker(IComponentLifetime restrictedRootScopeLifetime)
+        : base(new ConcurrentDictionary<Service, ServiceRegistrationInfo>(ChildScopeConcurrencyLevel, DefaultCapacity))
     {
         _restrictedRootScopeLifetime = restrictedRootScopeLifetime;
     }
