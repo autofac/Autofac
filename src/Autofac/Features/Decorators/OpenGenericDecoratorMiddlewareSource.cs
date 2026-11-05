@@ -34,7 +34,7 @@ internal class OpenGenericDecoratorMiddlewareSource : IServiceMiddlewareSource
 
         OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
 
-        _openServiceTypes = registrationData.Services.OfType<IServiceWithType>().Select(s => s.ServiceType).ToArray();
+        _openServiceTypes = OpenGenericServiceBinder.GetOpenServiceTypes(registrationData.Services);
     }
 
     /// <inheritdoc/>
@@ -44,7 +44,7 @@ internal class OpenGenericDecoratorMiddlewareSource : IServiceMiddlewareSource
         Justification = "This middleware source is only ever added to the container by the [RequiresDynamicCode] RegisterGenericDecorator API, so the dynamic-code requirement has already been surfaced to the caller at registration time. The resolve-time binding here cannot be reached without that opt-in.")]
     public void ProvideMiddleware(Service service, IComponentRegistryServices availableServices, IResolvePipelineBuilder pipelineBuilder)
     {
-        if (service is IServiceWithType swt && IsClosedFromAny(swt.ServiceType, _openServiceTypes))
+        if (service is IServiceWithType swt && OpenGenericServiceBinder.IsClosedFromAny(swt.ServiceType, _openServiceTypes))
         {
             var closedDecoratorService = new DecoratorService(swt.ServiceType, _decoratorService.Condition);
 
@@ -68,26 +68,5 @@ internal class OpenGenericDecoratorMiddlewareSource : IServiceMiddlewareSource
                 pipelineBuilder.Use(new DecoratorMiddleware(closedDecoratorService, registration), MiddlewareInsertionMode.StartOfPhase);
             }
         }
-    }
-
-    // A necessary condition for binding, checked first so that services this source cannot
-    // decorate are rejected without allocating.
-    private static bool IsClosedFromAny(Type serviceType, Type[] openServiceTypes)
-    {
-        if (!serviceType.IsGenericType || serviceType.IsGenericTypeDefinition)
-        {
-            return false;
-        }
-
-        var definition = serviceType.GetGenericTypeDefinition();
-        foreach (var openServiceType in openServiceTypes)
-        {
-            if (openServiceType == definition)
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
