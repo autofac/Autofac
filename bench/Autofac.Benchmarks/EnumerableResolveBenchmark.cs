@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Core;
+
 namespace Autofac.Benchmarks;
 
 public class EnumerableResolveBenchmark
@@ -23,6 +25,14 @@ public class EnumerableResolveBenchmark
         {
             builder.RegisterType<A>().As<IManyService>();
         }
+
+        // Three elements under each of two keys, for the specific-key and any-key collections.
+        builder.RegisterType<A>().Keyed<IKeyedService>("first");
+        builder.RegisterType<B>().Keyed<IKeyedService>("first");
+        builder.RegisterType<C>().Keyed<IKeyedService>("first");
+        builder.RegisterType<D>().Keyed<IKeyedService>("second");
+        builder.RegisterType<E>().Keyed<IKeyedService>("second");
+        builder.RegisterType<F>().Keyed<IKeyedService>("second");
 
         _container = builder.Build();
     }
@@ -57,7 +67,28 @@ public class EnumerableResolveBenchmark
         return _container.Resolve<IEnumerable<IManyService>>();
     }
 
+    [Benchmark]
+    public object ResolveKeyedIEnumerable()
+    {
+        return _container.ResolveKeyed<IEnumerable<IKeyedService>>("first");
+    }
+
+    /// <summary>
+    /// An any-key collection is shared within its scope, so each operation resolves it in a new scope
+    /// to measure building it.
+    /// </summary>
+    [Benchmark]
+    public object ResolveAnyKeyIEnumerableInNewScope()
+    {
+        using var scope = _container.BeginLifetimeScope();
+        return scope.ResolveKeyed<IEnumerable<IKeyedService>>(KeyedService.AnyKey);
+    }
+
     internal interface IService
+    {
+    }
+
+    internal interface IKeyedService
     {
     }
 
@@ -65,27 +96,27 @@ public class EnumerableResolveBenchmark
     {
     }
 
-    internal class A : IService, IManyService
+    internal class A : IService, IManyService, IKeyedService
     {
     }
 
-    internal class B : IService
+    internal class B : IService, IKeyedService
     {
     }
 
-    internal class C : IService
+    internal class C : IService, IKeyedService
     {
     }
 
-    internal class D : IService
+    internal class D : IService, IKeyedService
     {
     }
 
-    internal class E : IService
+    internal class E : IService, IKeyedService
     {
     }
 
-    internal class F : IService
+    internal class F : IService, IKeyedService
     {
     }
 }
