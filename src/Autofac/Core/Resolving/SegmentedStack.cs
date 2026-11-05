@@ -106,6 +106,27 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         return new Enumerator(this);
     }
 
+    /// <summary>
+    /// Determines whether any item in the active segment matches, without allocating an enumerator.
+    /// </summary>
+    /// <typeparam name="TArg">The type of the argument passed to <paramref name="match"/>.</typeparam>
+    /// <param name="arg">The argument passed to <paramref name="match"/>.</param>
+    /// <param name="match">The predicate; pass a static lambda so it isn't allocated per call.</param>
+    /// <returns>True if an item matches.</returns>
+    internal bool Any<TArg>(TArg arg, Func<T, TArg, bool> match)
+    {
+        var array = _array;
+        for (var i = _next - 1; i >= _activeSegmentBase; i--)
+        {
+            if (match(array[i]._item, arg))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // Do not inline; makes it easier to profile stack resizing.
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void PushWithResize(T item)
