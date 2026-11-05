@@ -2,7 +2,10 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Collections.ObjectModel;
+using Autofac.Core;
+using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
+using Autofac.Core.Resolving.Pipeline;
 using Autofac.Test.Util;
 
 namespace Autofac.Test.Features.Collections;
@@ -250,6 +253,62 @@ public class CollectionRegistrationSourceTests
         var c = cb.Build();
 
         Assert.Throws<ComponentNotRegisteredException>(() => c.Resolve<ReadOnlyCollection<string>>());
+    }
+
+    [Fact]
+    public void CollectionIsBuiltWhenTheRegistryDoesNotReturnAList()
+    {
+        // The built-in registry returns a List<ServiceRegistration>; a custom registry may return any sequence.
+        var cb = new ContainerBuilder();
+        cb.RegisterType<Foo1>().As<IFoo>();
+        cb.RegisterType<Foo2>().As<IFoo>();
+        using var container = cb.Build();
+        using var registry = new ArrayReturningRegistry(container.ComponentRegistry);
+        using var scope = new LifetimeScope(registry);
+
+        var collection = scope.Resolve<IEnumerable<IFoo>>();
+
+        Assert.Collection(
+            collection,
+            item => Assert.IsType<Foo1>(item),
+            item => Assert.IsType<Foo2>(item));
+    }
+
+    private sealed class ArrayReturningRegistry : IComponentRegistry
+    {
+        private readonly IComponentRegistry _inner;
+
+        public ArrayReturningRegistry(IComponentRegistry inner) => _inner = inner;
+
+        public IDictionary<string, object?> Properties => _inner.Properties;
+
+        public IEnumerable<IComponentRegistration> Registrations => _inner.Registrations;
+
+        public IEnumerable<IRegistrationSource> Sources => _inner.Sources;
+
+        public IEnumerable<IServiceMiddlewareSource> ServiceMiddlewareSources => _inner.ServiceMiddlewareSources;
+
+        public bool HasLocalComponents => _inner.HasLocalComponents;
+
+        public bool TryGetRegistration(Service service, [NotNullWhen(true)] out IComponentRegistration? registration)
+            => _inner.TryGetRegistration(service, out registration);
+
+        public bool TryGetServiceRegistration(Service service, out ServiceRegistration serviceRegistration)
+            => _inner.TryGetServiceRegistration(service, out serviceRegistration);
+
+        public bool IsRegistered(Service service) => _inner.IsRegistered(service);
+
+        public IEnumerable<IResolveMiddleware> ServiceMiddlewareFor(Service service) => _inner.ServiceMiddlewareFor(service);
+
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service) => _inner.RegistrationsFor(service);
+
+        public IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service) => _inner.ServiceRegistrationsFor(service).ToArray();
+
+        public void Dispose()
+        {
+        }
+
+        public ValueTask DisposeAsync() => default;
     }
 
     private class Foo1 : IFoo

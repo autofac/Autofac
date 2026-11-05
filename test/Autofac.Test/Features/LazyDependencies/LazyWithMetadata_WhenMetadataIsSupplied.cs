@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Globalization;
+using Autofac.Core;
+using Autofac.Features.Metadata;
 using Autofac.Test.Features.Metadata.TestTypes;
 
 namespace Autofac.Test.Features.LazyDependencies;
@@ -44,6 +47,60 @@ public class LazyWithMetadata_WhenMetadataIsSupplied
     {
         var meta = _container.Resolve<Lazy<object, MyMetaWithDefault>>();
         Assert.Equal(SuppliedValue, meta.Metadata.TheInt);
+    }
+
+    [Fact]
+    public void MutableDefaultValuesAreNotSharedBetweenRegistrations()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<object>();
+        builder.RegisterType<object>();
+        var container = builder.Build();
+
+        var lazies = container.Resolve<IEnumerable<Lazy<object, MyMetaWithMutableDefault>>>().ToArray();
+        lazies[0].Metadata.TheValues![0] = 99;
+
+        Assert.Equal(new[] { 1, 2 }, lazies[1].Metadata.TheValues);
+    }
+
+    [Fact]
+    public void ResolvingWithInvalidMetadataConstructorThrowsException()
+    {
+        var typeName = typeof(MyMetaWithInvalidConstructor).Name;
+        var message = string.Format(CultureInfo.InvariantCulture, MetadataViewProviderResources.InvalidViewImplementation, typeName);
+
+        // A second container throws the same exception, so a failed view factory isn't cached.
+        for (var i = 0; i < 2; i++)
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<object>();
+            using var container = builder.Build();
+
+            var exception = Assert.Throws<DependencyResolutionException>(
+                () => container.Resolve<Lazy<object, MyMetaWithInvalidConstructor>>());
+
+            Assert.Equal(message, exception.Message);
+        }
+    }
+
+    [Fact]
+    public void ValueIsResolvedOnlyWhenRequested()
+    {
+        var builder = new ContainerBuilder();
+        var activations = 0;
+        builder.Register(c =>
+        {
+            activations++;
+            return new object();
+        }).WithMetadata("TheInt", SuppliedValue);
+        _container = builder.Build();
+
+        var lazy = _container.Resolve<Lazy<object, MyMeta>>();
+
+        Assert.IsType<Lazy<object, MyMeta>>(lazy);
+        Assert.Equal(0, activations);
+        Assert.Same(lazy.Value, lazy.Value);
+        Assert.Equal(1, activations);
     }
 
     [Fact]

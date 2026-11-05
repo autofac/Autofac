@@ -13,6 +13,8 @@ namespace Autofac.Features.LazyDependencies;
 /// </summary>
 internal class LazyRegistrationSource : ImplicitRegistrationSource
 {
+    private static readonly TypedService _componentContextService = new(typeof(IComponentContext));
+
     /// <summary>
     /// Initializes a new instance of the <see cref="LazyRegistrationSource"/> class.
     /// </summary>
@@ -31,7 +33,7 @@ internal class LazyRegistrationSource : ImplicitRegistrationSource
         Justification = "Lazy<T> nominally wants a public parameterless constructor on T, but this Lazy is constructed with an explicit value factory that resolves T through the container - T's own constructor is never invoked by Lazy<T> here.")]
     protected override object ResolveInstance<T>(IComponentContext ctx, in ResolveRequest request)
     {
-        var capturedContext = ctx.Resolve<IComponentContext>();
+        var capturedContext = (IComponentContext)ctx.ResolveService(_componentContextService);
         var requestCopy = request;
         return new Lazy<T>(() => (T)capturedContext.ResolveComponent(requestCopy));
     }
