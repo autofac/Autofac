@@ -150,6 +150,47 @@ public class OpenGenericServiceBinderTests
     }
 
     [Fact]
+    public void KeyedServiceWithAnEqualKeyIsClosedWithTheConfiguredKey()
+    {
+        object configuredKey = 1;
+        object requestedKey = 1;
+
+        Assert.True(OpenGenericServiceBinder.TryBindOpenGenericTypedService(
+            new KeyedService(requestedKey, typeof(IFirst<int>)),
+            new Service[] { new KeyedService(configuredKey, typeof(IFirst<>)) },
+            typeof(FirstAndSecond<>),
+            out _,
+            out var services));
+
+        Assert.Same(configuredKey, Assert.IsType<KeyedService>(Assert.Single(services)).ServiceKey);
+    }
+
+    [Fact]
+    public void ImplementationParametersWithTheSameNameAreMappedByName()
+    {
+        // Both of Inner's parameters are named T, so both map by name to the service's first argument, and
+        // Outer<int>.Inner<int> doesn't implement the requested Outer<int>.INested<string>.
+        Assert.False(OpenGenericServiceBinder.TryBindOpenGenericTypedService(
+            new TypedService(typeof(Outer<int>.INested<string>)),
+            new Service[] { new TypedService(typeof(Outer<>.INested<>)) },
+            typeof(Outer<>.Inner<>),
+            out _,
+            out _));
+    }
+
+    [Fact]
+    public void ConstructorConstraintNeedsADeclaredPublicParameterlessConstructor()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterGeneric(typeof(NewHandler<>)).As(typeof(IFirst<>));
+        var container = builder.Build();
+
+        Assert.True(container.IsRegistered<IFirst<ParameterlessAndParameterized>>());
+        Assert.False(container.IsRegistered<IFirst<OnlyProtectedParameterless>>());
+        Assert.False(container.IsRegistered<IFirst<OnlyParameterized>>());
+    }
+
+    [Fact]
     public void ConstraintOnAnotherParameterChecksTheConcreteArgumentsOfTheMatchingInterface()
     {
         var builder = new ContainerBuilder();
@@ -314,4 +355,49 @@ public class OpenGenericServiceBinderTests
         where TValue : struct
     {
     }
+
+    private class NewHandler<T> : IFirst<T>
+        where T : new()
+    {
+    }
+
+    private class ParameterlessAndParameterized
+    {
+        public ParameterlessAndParameterized()
+        {
+        }
+
+        public ParameterlessAndParameterized(int value)
+        {
+            _ = value;
+        }
+    }
+
+    private class OnlyProtectedParameterless
+    {
+        protected OnlyProtectedParameterless()
+        {
+        }
+    }
+
+    private class OnlyParameterized
+    {
+        public OnlyParameterized(int value)
+        {
+            _ = value;
+        }
+    }
+
+#pragma warning disable CS0693 // Inner deliberately reuses the name of Outer's parameter.
+    private class Outer<T>
+    {
+        public interface INested<TNested>
+        {
+        }
+
+        public class Inner<T> : INested<T>
+        {
+        }
+    }
+#pragma warning restore CS0693
 }
