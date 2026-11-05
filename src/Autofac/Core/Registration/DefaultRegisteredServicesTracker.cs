@@ -29,7 +29,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     private readonly Stack<IRegistrationSource> _dynamicRegistrationSources = new();
 
     /// <summary>
-    /// All registrations.
+    /// Registrations added once the tracker is complete, which registration sources can do from any thread.
     /// </summary>
     private readonly ConcurrentQueue<IComponentRegistration> _registrations = new();
 
@@ -40,6 +40,16 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         "IDE0052:Remove unread private members",
         Justification = "Intentionally holding a reference to the reflection cache in the tracker to keep the shared instance 'alive'.")]
     private readonly ReflectionCacheSet _capturedReflectionCache;
+
+    /// <summary>
+    /// Registrations added before the tracker is complete, while the registry is built on one thread.
+    /// </summary>
+    /// <remarks>
+    /// These aren't kept in <see cref="_registrations"/> because building the registry enumerates
+    /// them, and enumerating a <see cref="ConcurrentQueue{T}"/> stops it reusing its segment, so the
+    /// first registration a source added afterwards would allocate a new one.
+    /// </remarks>
+    private List<IComponentRegistration>? _registrationsBeforeComplete;
 
     private Dictionary<Service, ServiceRegistrationInfo>? _ephemeralServiceInfo;
     private bool _trackerPopulationComplete;
@@ -85,7 +95,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     {
         get
         {
-            return _registrations;
+            return EnumerateRegistrations();
         }
     }
 
@@ -137,7 +147,15 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
             // build pipelines for them.
             // The Registrations collection is only available to consumers once the tracker is contained with a ContainerRegistry
             // and the Complete method has been called.
-            _registrations.Enqueue(registration);
+            if (_trackerPopulationComplete)
+            {
+                _registrations.Enqueue(registration);
+            }
+            else
+            {
+                (_registrationsBeforeComplete ??= new List<IComponentRegistration>()).Add(registration);
+            }
+
             var handler = Registered;
             handler?.Invoke(this, registration);
 
@@ -256,7 +274,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        foreach (var registration in _registrations)
+        foreach (var registration in Registrations)
         {
             registration.Dispose();
         }
@@ -267,7 +285,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     /// <inheritdoc />
     protected override async ValueTask DisposeAsync(bool disposing)
     {
-        foreach (var registration in _registrations)
+        foreach (var registration in Registrations)
         {
             await registration.DisposeAsync().ConfigureAwait(false);
         }
@@ -437,6 +455,30 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         info.AddImplementation(registration, preserveDefaults, originatingSource is not null);
+    }
+
+    private IEnumerable<IComponentRegistration> EnumerateRegistrations()
+    {
+        var registrationsBeforeComplete = _registrationsBeforeComplete;
+        if (registrationsBeforeComplete is not null)
+        {
+            // Registrations added while this runs aren't included, as with enumerating the queue.
+            var count = registrationsBeforeComplete.Count;
+            for (var i = 0; i < count; i++)
+            {
+                yield return registrationsBeforeComplete[i];
+            }
+        }
+
+        // Checking first leaves the queue reusable while nothing has been added since completion,
+        // which is the case while the registry is built.
+        if (!_registrations.IsEmpty)
+        {
+            foreach (var registration in _registrations)
+            {
+                yield return registration;
+            }
+        }
     }
 
     /// <summary>
