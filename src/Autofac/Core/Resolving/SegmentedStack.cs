@@ -17,6 +17,11 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
 {
     private const int InitialCapacity = 16;
 
+    // An emptied stack hands its array to the next stack on the same thread, so a resolve operation
+    // doesn't allocate one each time. Arrays move rather than being shared, so this is thread-safe.
+    [ThreadStatic]
+    private static Entry[]? _spareArray;
+
     // Items are wrapped in a struct so stores skip the covariant array type check
     // (T is typically an abstract type holding a derived instance, the slow path).
     private Entry[] _array;
@@ -78,6 +83,14 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         _next = next;
         var item = array[next]._item;
         array[next]._item = null!;
+
+        if (next == 0)
+        {
+            // Every slot is clear now.
+            _array = Array.Empty<Entry>();
+            ReturnSpareArray(array);
+        }
+
         return item;
     }
 
@@ -127,11 +140,28 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         return false;
     }
 
+    private static Entry[]? TakeSpareArray()
+    {
+        var spare = _spareArray;
+        _spareArray = null;
+        return spare;
+    }
+
+    private static void ReturnSpareArray(Entry[] array) => _spareArray = array;
+
     // Do not inline; makes it easier to profile stack resizing.
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void PushWithResize(T item)
     {
-        Array.Resize(ref _array, Math.Max(InitialCapacity, 2 * _array.Length));
+        if (_array.Length == 0 && TakeSpareArray() is { } spare)
+        {
+            _array = spare;
+        }
+        else
+        {
+            Array.Resize(ref _array, Math.Max(InitialCapacity, 2 * _array.Length));
+        }
+
         _array[_next]._item = item;
         _next++;
     }
