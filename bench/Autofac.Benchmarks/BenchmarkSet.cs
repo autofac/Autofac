@@ -13,6 +13,7 @@ public static class BenchmarkSet
         typeof(KeyedAnyKeyChildScopeBenchmark),
         typeof(ContainerBuildBenchmark),
         typeof(ContainerBuildInheritedMembersBenchmark),
+        typeof(AssemblyScanningBenchmark),
         typeof(ConcurrencyBenchmark),
         typeof(ConcurrencyNestedScopeBenchmark),
         typeof(KeyedGenericBenchmark),
