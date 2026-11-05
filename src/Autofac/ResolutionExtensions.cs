@@ -173,7 +173,7 @@ public static class ResolutionExtensions
     public static bool IsRegistered<TService>(this IComponentContext context)
         where TService : notnull
     {
-        return IsRegistered(context, typeof(TService));
+        return IsRegisteredService(context, TypedServiceCache<TService>.Service);
     }
 
     /// <summary>
@@ -294,7 +294,7 @@ public static class ResolutionExtensions
     public static TService Resolve<TService>(this IComponentContext context, IEnumerable<Parameter> parameters)
         where TService : notnull
     {
-        return CastInstance<TService>(Resolve(context, typeof(TService), parameters));
+        return CastInstance<TService>(ResolveService(context, TypedServiceCache<TService>.Service, parameters));
     }
 
     /// <summary>
@@ -667,7 +667,7 @@ public static class ResolutionExtensions
     public static TService? ResolveOptional<TService>(this IComponentContext context, IEnumerable<Parameter> parameters)
         where TService : class
     {
-        return CastInstance<TService?>(ResolveOptionalService(context, new TypedService(typeof(TService)), parameters));
+        return CastInstance<TService?>(ResolveOptionalService(context, TypedServiceCache<TService>.Service, parameters));
     }
 
     /// <summary>
@@ -1019,7 +1019,7 @@ public static class ResolutionExtensions
         where T : class
     {
         // Null annotation attributes only work if placed directly in an if statement.
-        if (context.TryResolve(typeof(T), out var component))
+        if (context.TryResolveService(TypedServiceCache<T>.Service, ResolveRequest.NoParameters, out var component))
         {
             instance = CastInstance<T>(component);
 
@@ -1242,5 +1242,14 @@ public static class ResolutionExtensions
                     typeof(TService)),
                 castException);
         }
+    }
+
+    /// <summary>
+    /// Holds one <see cref="TypedService"/> per service type, so the generic overloads do not allocate one per call.
+    /// </summary>
+    /// <typeparam name="TService">The service type.</typeparam>
+    private static class TypedServiceCache<TService>
+    {
+        public static readonly TypedService Service = new(typeof(TService));
     }
 }

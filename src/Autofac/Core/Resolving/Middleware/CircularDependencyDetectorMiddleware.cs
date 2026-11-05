@@ -71,15 +71,13 @@ internal class CircularDependencyDetectorMiddleware : IResolveMiddleware
         {
             var registration = context.Registration;
 
-            foreach (var requestEntry in requestStack)
+            // Avoids the enumerator allocation a foreach over the stack would cost.
+            if (requestStack.Any(registration, static (requestEntry, target) => requestEntry.Registration == target))
             {
-                if (requestEntry.Registration == registration)
-                {
-                    throw new DependencyResolutionException(string.Format(
-                        CultureInfo.CurrentCulture,
-                        CircularDependencyDetectorMessages.CircularDependency,
-                        CreateDependencyGraphTo(registration, requestStack)));
-                }
+                throw new DependencyResolutionException(string.Format(
+                    CultureInfo.CurrentCulture,
+                    CircularDependencyDetectorMessages.CircularDependency,
+                    CreateDependencyGraphTo(registration, requestStack)));
             }
         }
 

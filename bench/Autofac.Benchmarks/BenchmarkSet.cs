@@ -15,6 +15,7 @@ public static class BenchmarkSet
         typeof(ContainerBuildInheritedMembersBenchmark),
         typeof(ConcurrencyBenchmark),
         typeof(ConcurrencyNestedScopeBenchmark),
+        typeof(CoreResolvePathBenchmark),
         typeof(KeyedGenericBenchmark),
         typeof(KeyedAnyKeySimpleBenchmark),
         typeof(KeyedNestedBenchmark),

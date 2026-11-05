@@ -199,6 +199,22 @@ public class SegmentedStackTests
     }
 
     [Fact]
+    public void EmptiedStackDoesNotShareItemsWithOtherStacks()
+    {
+        // An emptied stack hands its array on to the next stack that pushes on the same thread.
+        var first = new SegmentedStack<string>();
+        first.Push("1");
+        first.Pop();
+
+        var second = new SegmentedStack<string>();
+        second.Push("2");
+        first.Push("3");
+
+        Assert.Equal(new[] { "2" }, second);
+        Assert.Equal(new[] { "3" }, first);
+    }
+
+    [Fact]
     public void CannotExitSegmentWithUnpoppedItems()
     {
         var stack = new SegmentedStack<string>();
