@@ -206,12 +206,36 @@ internal sealed class ResolveOperation : IDependencyTrackingResolveOperation
             return false;
         }
 
-        // Singletons live in the root scope, which is where the default pipeline's scope selection would look.
-        var scope = ReferenceEquals(registration.Lifetime, RootScopeLifetime.Instance)
-            ? currentOperationScope.RootLifetimeScope
-            : currentOperationScope;
+        var scope = FindSharingScope(registration.Lifetime, currentOperationScope);
+        if (scope is null)
+        {
+            // No matching scope; the pipeline reports that.
+            instance = null;
+            return false;
+        }
 
         return scope.TryGetSharedInstance(registration.Id, request.DecoratorTarget?.Id, out instance);
+    }
+
+    /// <summary>
+    /// Finds the scope the default pipeline's scope selection would pick for the built-in lifetimes, without throwing.
+    /// Any other lifetime is looked up in the current scope.
+    /// </summary>
+    private static ISharingLifetimeScope? FindSharingScope(IComponentLifetime lifetime, ISharingLifetimeScope currentOperationScope)
+    {
+        // Singletons live in the root scope.
+        if (ReferenceEquals(lifetime, RootScopeLifetime.Instance))
+        {
+            return currentOperationScope.RootLifetimeScope;
+        }
+
+        // Exact type: a derived class could re-implement IComponentLifetime.FindScope differently.
+        if (lifetime.GetType() == typeof(MatchingScopeLifetime))
+        {
+            return ((MatchingScopeLifetime)lifetime).TryFindScope(currentOperationScope);
+        }
+
+        return currentOperationScope;
     }
 
     /// <summary>

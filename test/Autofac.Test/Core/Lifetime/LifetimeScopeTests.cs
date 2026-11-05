@@ -180,6 +180,42 @@ public class LifetimeScopeTests
     }
 
     [Fact]
+    public void ResolvingCachedInstancesFromScopesNestedBelowTheirScopeDoesNotAllocate()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Test>().As<ITest>().InstancePerMatchingLifetimeScope("request");
+        using var container = builder.Build();
+        using var request = container.BeginLifetimeScope("request");
+        using var nested = request.BeginLifetimeScope();
+        using var configured = container.BeginLifetimeScope(b => b.RegisterType<Person>().SingleInstance());
+        using var configuredNested = configured.BeginLifetimeScope();
+
+        // Warm up so the instances are cached and first-run allocations happen before we measure.
+        var perRequest = request.Resolve<ITest>();
+        var configuredSingleton = configured.Resolve<Person>();
+        Assert.Same(perRequest, nested.Resolve<ITest>());
+        Assert.Same(configuredSingleton, configuredNested.Resolve<Person>());
+
+        var before = GC.GetAllocatedBytesForCurrentThread();
+        for (var i = 0; i < 100; i++)
+        {
+            nested.Resolve<ITest>();
+            configuredNested.Resolve<Person>();
+        }
+
+        var allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+        Assert.Equal(0, allocated);
+
+        using var otherRequest = container.BeginLifetimeScope("request");
+        using var otherNested = otherRequest.BeginLifetimeScope();
+        Assert.NotSame(perRequest, otherNested.Resolve<ITest>());
+
+        using var unmatched = container.BeginLifetimeScope();
+        Assert.Throws<DependencyResolutionException>(() => unmatched.Resolve<ITest>());
+    }
+
+    [Fact]
     public void ResolveEventsAreRaisedForCachedSharedInstances()
     {
         var builder = new ContainerBuilder();

@@ -11,6 +11,8 @@ public class CoreResolvePathBenchmark
 {
     private IContainer _container = default!;
     private ILifetimeScope _scope = default!;
+    private ILifetimeScope _requestScope = default!;
+    private ILifetimeScope _nestedInRequestScope = default!;
 
     [GlobalSetup]
     public void Setup()
@@ -23,17 +25,24 @@ public class CoreResolvePathBenchmark
         builder.RegisterType<Dependency3>();
         builder.RegisterType<ThreeDependencies>();
         builder.RegisterType<Scoped>().InstancePerLifetimeScope();
+        builder.RegisterType<PerRequest>().InstancePerMatchingLifetimeScope("request");
         builder.RegisterType<DisposableTransient>();
         _container = builder.Build();
         _scope = _container.BeginLifetimeScope();
 
+        _requestScope = _container.BeginLifetimeScope("request");
+        _nestedInRequestScope = _requestScope.BeginLifetimeScope();
+
         _container.Resolve<Singleton>();
         _scope.Resolve<Scoped>();
+        _requestScope.Resolve<PerRequest>();
     }
 
     [GlobalCleanup]
     public void Cleanup()
     {
+        _nestedInRequestScope.Dispose();
+        _requestScope.Dispose();
         _scope.Dispose();
         _container.Dispose();
     }
@@ -46,6 +55,9 @@ public class CoreResolvePathBenchmark
 
     [Benchmark]
     public Scoped CachedScopedInChildScope() => _scope.Resolve<Scoped>();
+
+    [Benchmark]
+    public PerRequest CachedMatchingScopeFromNestedScope() => _nestedInRequestScope.Resolve<PerRequest>();
 
     [Benchmark]
     public Transient TransientNoDependencies() => _container.Resolve<Transient>();
@@ -81,6 +93,10 @@ public class CoreResolvePathBenchmark
     }
 
     public sealed class Scoped
+    {
+    }
+
+    public sealed class PerRequest
     {
     }
 
