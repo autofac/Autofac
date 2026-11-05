@@ -106,7 +106,7 @@ internal static class OpenGenericServiceBinder
         }
 
         var serviceGenericArguments = serviceWithTypeServiceType.GetGenericArguments();
-        constructedFactory = (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
+        constructedFactory = CloseFactory(openGenericFactory, serviceGenericArguments);
         constructedServices = BuildImplementedServices(configuredOpenGenericServices, serviceWithTypeServiceType, serviceTypeDefinition, serviceGenericArguments, null);
         return true;
     }
@@ -163,6 +163,12 @@ internal static class OpenGenericServiceBinder
             }
         }
     }
+
+    // Builds the closure here rather than in the caller, which would allocate it on every call, even for services it doesn't bind.
+    private static Func<IComponentContext, IEnumerable<Parameter>, object> CloseFactory(
+        Func<IComponentContext, Type[], IEnumerable<Parameter>, object> openGenericFactory,
+        Type[] serviceGenericArguments)
+        => (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
 
     private static bool IsClosedGenericType(Type serviceType)
         => serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition;
