@@ -47,6 +47,20 @@ public class LazyWithMetadata_WhenMetadataIsSupplied
     }
 
     [Fact]
+    public void MutableDefaultValuesAreNotSharedBetweenRegistrations()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<object>();
+        builder.RegisterType<object>();
+        var container = builder.Build();
+
+        var lazies = container.Resolve<IEnumerable<Lazy<object, MyMetaWithMutableDefault>>>().ToArray();
+        lazies[0].Metadata.TheValues![0] = 99;
+
+        Assert.Equal(new[] { 1, 2 }, lazies[1].Metadata.TheValues);
+    }
+
+    [Fact]
     public void ValueIsResolvedOnlyWhenRequested()
     {
         var builder = new ContainerBuilder();

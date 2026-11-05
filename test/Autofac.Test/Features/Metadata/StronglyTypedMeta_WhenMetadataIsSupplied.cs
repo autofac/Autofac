@@ -69,10 +69,59 @@ public class StronglyTypedMeta_WhenMetadataIsSupplied
     }
 
     [Fact]
-    public void MetadataViewProviderIsCompiledOncePerMetadataType()
+    public void MetadataViewFactoryIsCompiledOncePerMetadataType()
     {
-        Assert.Same(MetadataViewProvider.GetMetadataViewProvider<MyMeta>(), MetadataViewProvider.GetMetadataViewProvider<MyMeta>());
-        Assert.NotSame(MetadataViewProvider.GetMetadataViewProvider<MyMeta>(), MetadataViewProvider.GetMetadataViewProvider<MyMetaWithDefault>());
+        var factories = ReflectionCacheSet.Shared.Internal.MetadataViewFactories;
+
+        MetadataViewProvider.GetMetadataViewProvider<MyMeta>();
+        var factory = factories[typeof(MyMeta)].Factory;
+        MetadataViewProvider.GetMetadataViewProvider<MyMeta>();
+        MetadataViewProvider.GetMetadataViewProvider<MyMetaWithDefault>();
+
+        Assert.Same(factory, factories[typeof(MyMeta)].Factory);
+        Assert.NotSame(factory, factories[typeof(MyMetaWithDefault)].Factory);
+    }
+
+    [Fact]
+    public void MetadataViewFactoryCacheIsClearedByReflectionCacheSetClear()
+    {
+        // Uses a fresh ReflectionCacheSet instance to avoid mutating process-global shared state.
+        var set = new ReflectionCacheSet();
+        var cache = set.Internal.MetadataViewFactories;
+        cache[typeof(MyMeta)] = default;
+
+        set.Clear();
+
+        Assert.Empty(cache);
+    }
+
+    [Fact]
+    public void MetadataViewFactoryCacheIsClearedByReflectionCacheSetPredicateClear()
+    {
+        // Uses a fresh ReflectionCacheSet instance to avoid mutating process-global shared state.
+        var set = new ReflectionCacheSet();
+        var cache = set.Internal.MetadataViewFactories;
+        cache[typeof(MyMeta)] = default;
+        cache[typeof(MyMetaWithDefault)] = default;
+
+        set.Clear((member, _) => member == typeof(MyMeta));
+
+        Assert.False(cache.ContainsKey(typeof(MyMeta)));
+        Assert.True(cache.ContainsKey(typeof(MyMetaWithDefault)));
+    }
+
+    [Fact]
+    public void MutableDefaultValuesAreNotSharedBetweenRegistrations()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<object>();
+        builder.RegisterType<object>();
+        var container = builder.Build();
+
+        var metas = container.Resolve<IEnumerable<Meta<object, MyMetaWithMutableDefault>>>().ToArray();
+        metas[0].Metadata.TheValues![0] = 99;
+
+        Assert.Equal(new[] { 1, 2 }, metas[1].Metadata.TheValues);
     }
 
     [Fact]

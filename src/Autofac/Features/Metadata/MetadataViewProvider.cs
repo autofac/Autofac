@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Reflection;
 using Autofac.Core;
-using Autofac.Util.Cache;
 
 namespace Autofac.Features.Metadata;
 
@@ -15,24 +14,33 @@ namespace Autofac.Features.Metadata;
 /// </summary>
 internal static class MetadataViewProvider
 {
-    private const string ReflectionCacheName = $"{nameof(MetadataViewProvider)}.Cache";
-
     private static readonly MethodInfo _getMetadataValueMethod = typeof(MetadataViewProvider).GetDeclaredMethod(nameof(GetMetadataValue));
 
     /// <summary>
     /// Generate a provider function that takes a dictionary of metadata, and outputs a typed metadata object.
     /// </summary>
     /// <remarks>
-    /// The provider is compiled once per metadata type. Each lifetime scope that adapts a
-    /// registration to <c>Meta&lt;T, TMetadata&gt;</c> or <c>Lazy&lt;T, TMetadata&gt;</c> asks for it again.
+    /// The view factory is compiled once per metadata type. Each lifetime scope that adapts a
+    /// registration to <c>Meta&lt;T, TMetadata&gt;</c> or <c>Lazy&lt;T, TMetadata&gt;</c> asks for a provider again.
+    /// Each provider reads its own <see cref="DefaultValueAttribute"/> instances, so a mutable default
+    /// is shared only by the views of one registration.
     /// </remarks>
     /// <typeparam name="TMetadata">The metadata type.</typeparam>
     /// <returns>A provider function.</returns>
     public static Func<IDictionary<string, object?>, TMetadata> GetMetadataViewProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] TMetadata>()
     {
-        var cache = ReflectionCacheSet.Shared.GetOrCreateCache<ReflectionCacheDictionary<Type, Delegate>>(ReflectionCacheName);
+        var (properties, factory) = ReflectionCacheSet.Shared.Internal.MetadataViewFactories.GetOrAdd(
+            typeof(TMetadata),
+            static _ => CreateMetadataViewFactory<TMetadata>());
 
-        return (Func<IDictionary<string, object?>, TMetadata>)cache.GetOrAdd(typeof(TMetadata), static _ => CreateMetadataViewProvider<TMetadata>());
+        var create = (Func<IDictionary<string, object?>, DefaultValueAttribute?[], TMetadata>)factory;
+        var defaults = new DefaultValueAttribute?[properties.Length];
+        for (var i = 0; i < properties.Length; i++)
+        {
+            defaults[i] = properties[i].GetCustomAttribute<DefaultValueAttribute>(false);
+        }
+
+        return metadata => create(metadata, defaults);
     }
 
     [UnconditionalSuppressMessage(
@@ -47,11 +55,11 @@ internal static class MetadataViewProvider
         "Trimming",
         "IL2087:UnrecognizedReflectionPattern",
         Justification = "GetRuntimeProperties also enumerates non-public properties, but only public settable properties of the metadata view are populated (and those are preserved by the PublicProperties annotation). Non-public properties are not part of the supported metadata-view surface.")]
-    private static Func<IDictionary<string, object?>, TMetadata> CreateMetadataViewProvider<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] TMetadata>()
+    private static (PropertyInfo[] Properties, Delegate Factory) CreateMetadataViewFactory<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] TMetadata>()
     {
         if (typeof(TMetadata) == typeof(IDictionary<string, object>))
         {
-            return m => (TMetadata)m;
+            return (Array.Empty<PropertyInfo>(), new Func<IDictionary<string, object?>, DefaultValueAttribute?[], TMetadata>((m, _) => (TMetadata)m));
         }
 
         if (!typeof(TMetadata).IsClass)
@@ -69,13 +77,17 @@ internal static class MetadataViewProvider
             return ps.Length == 1 && ps[0].ParameterType == typeof(IDictionary<string, object>);
         });
 
+        var defaultsArg = Expression.Parameter(typeof(DefaultValueAttribute?[]), "defaults");
+
         if (dictionaryConstructor is not null)
         {
             var providerArg = Expression.Parameter(typeof(IDictionary<string, object?>), "metadata");
-            return Expression.Lambda<Func<IDictionary<string, object?>, TMetadata>>(
+            var factory = Expression.Lambda<Func<IDictionary<string, object?>, DefaultValueAttribute?[], TMetadata>>(
                     Expression.New(dictionaryConstructor, providerArg),
-                    providerArg)
+                    providerArg,
+                    defaultsArg)
                 .Compile();
+            return (Array.Empty<PropertyInfo>(), factory);
         }
 
         var parameterlessConstructor = publicConstructors.SingleOrDefault(ci => ci.GetParameters().Length == 0);
@@ -87,12 +99,16 @@ internal static class MetadataViewProvider
             var resultAssignment = Expression.Assign(resultVar, Expression.New(parameterlessConstructor));
             var blockExprs = new List<Expression> { resultAssignment };
 
-            foreach (var prop in typeof(TMetadata).GetRuntimeProperties()
+            var properties = typeof(TMetadata).GetRuntimeProperties()
                 .Where(prop =>
                     prop.GetMethod is not null && !prop.GetMethod.IsStatic &&
-                    prop.SetMethod is not null && !prop.SetMethod.IsStatic))
+                    prop.SetMethod is not null && !prop.SetMethod.IsStatic)
+                .ToArray();
+
+            for (var i = 0; i < properties.Length; i++)
             {
-                var dva = Expression.Constant(prop.GetCustomAttribute<DefaultValueAttribute>(false), typeof(DefaultValueAttribute));
+                var prop = properties[i];
+                var dva = Expression.ArrayIndex(defaultsArg, Expression.Constant(i));
                 var name = Expression.Constant(prop.Name, typeof(string));
                 var m = _getMetadataValueMethod.MakeGenericMethod(prop.PropertyType);
                 var assign = Expression.Assign(
@@ -103,9 +119,10 @@ internal static class MetadataViewProvider
 
             blockExprs.Add(resultVar);
 
-            return Expression.Lambda<Func<IDictionary<string, object?>, TMetadata>>(
-                    Expression.Block(new[] { resultVar }, blockExprs), providerArg)
+            var factory = Expression.Lambda<Func<IDictionary<string, object?>, DefaultValueAttribute?[], TMetadata>>(
+                    Expression.Block(new[] { resultVar }, blockExprs), providerArg, defaultsArg)
                 .Compile();
+            return (properties, factory);
         }
 
         throw new DependencyResolutionException(
