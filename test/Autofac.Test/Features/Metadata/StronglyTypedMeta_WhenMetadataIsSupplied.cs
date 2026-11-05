@@ -148,13 +148,21 @@ public class StronglyTypedMeta_WhenMetadataIsSupplied
     [Fact]
     public void ResolvingStronglyTypedMetadataWithInvalidConstructorThrowsException()
     {
-        var exception = Assert.Throws<DependencyResolutionException>(
-            () => _container.Resolve<Meta<object, MyMetaWithInvalidConstructor>>());
-
         var typeName = typeof(MyMetaWithInvalidConstructor).Name;
         var message = string.Format(CultureInfo.InvariantCulture, MetadataViewProviderResources.InvalidViewImplementation, typeName);
 
-        Assert.Equal(message, exception.Message);
+        // A second container throws the same exception, so a failed view factory isn't cached.
+        for (var i = 0; i < 2; i++)
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<object>();
+            using var container = builder.Build();
+
+            var exception = Assert.Throws<DependencyResolutionException>(
+                () => container.Resolve<Meta<object, MyMetaWithInvalidConstructor>>());
+
+            Assert.Equal(message, exception.Message);
+        }
     }
 
     [Fact]
