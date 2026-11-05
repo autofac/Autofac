@@ -20,7 +20,7 @@ public class EnumerableResolveBenchmark
         builder.RegisterType<E>().As<IService>();
         builder.RegisterType<F>().As<IService>();
 
-        // More than 16 elements, so sorting them by registration order doesn't use insertion sort.
+        // Twenty elements. The registry returns them newest first, so they're read in reverse without sorting.
         for (var i = 0; i < 20; i++)
         {
             builder.RegisterType<A>().As<IManyService>();
