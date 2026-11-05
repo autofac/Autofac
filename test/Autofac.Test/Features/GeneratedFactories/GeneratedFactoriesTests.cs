@@ -415,6 +415,33 @@ public class GeneratedFactoriesTests
         }
     }
 
+    [Fact]
+    public void KeyedFactoryWithoutArgumentsInjectsTheServiceKey()
+    {
+        // An argument-less factory passes the shared empty parameters, which the service key injector
+        // handles separately from other parameter collections.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceWithKey>().Keyed<ServiceWithKey>("k");
+        using var container = builder.Build();
+
+        var factory = container.ResolveKeyed<Func<ServiceWithKey>>("k");
+
+        Assert.Equal("k", factory().Id);
+    }
+
+    private class ServiceWithKey
+    {
+        public ServiceWithKey([ServiceKey] string id)
+        {
+            Id = id;
+        }
+
+        public string Id
+        {
+            get;
+        }
+    }
+
     // #1461 — types used by the regression tests below.
     private class Dependency1461
     {
