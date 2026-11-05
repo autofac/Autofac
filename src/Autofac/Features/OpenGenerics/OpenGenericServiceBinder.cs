@@ -39,13 +39,13 @@ internal static class OpenGenericServiceBinder
         var serviceType = serviceWithType.ServiceType;
         if (IsClosedGenericType(serviceType))
         {
-            var definitionService = (IServiceWithType)serviceWithType.ChangeType(serviceType.GetGenericTypeDefinition());
+            var serviceTypeDefinition = serviceType.GetGenericTypeDefinition();
 
-            if (IsConfigured(configuredOpenGenericServices, definitionService))
+            if (IsConfigured(configuredOpenGenericServices, serviceWithType, serviceTypeDefinition))
             {
                 var serviceGenericArguments = serviceType.GetGenericArguments();
                 var implementorGenericArguments = TryMapImplementationGenericArguments(
-                    openGenericImplementationType, serviceType, definitionService.ServiceType, serviceGenericArguments);
+                    openGenericImplementationType, serviceType, serviceTypeDefinition, serviceGenericArguments);
 
                 if (AllMapped(implementorGenericArguments) &&
                     openGenericImplementationType.IsCompatibleWithGenericParameterConstraints(implementorGenericArguments!))
@@ -53,7 +53,7 @@ internal static class OpenGenericServiceBinder
                     var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments!);
 
                     var implementedServices = BuildImplementedServices(
-                        configuredOpenGenericServices, serviceType, definitionService.ServiceType, serviceGenericArguments, constructedImplementationTypeTmp);
+                        configuredOpenGenericServices, serviceType, serviceTypeDefinition, serviceGenericArguments, constructedImplementationTypeTmp);
 
                     if (implementedServices.Length > 0)
                     {
@@ -96,9 +96,9 @@ internal static class OpenGenericServiceBinder
             return false;
         }
 
-        var definitionService = (IServiceWithType)serviceWithType.ChangeType(GetGenericTypeDefinition(serviceWithTypeServiceType));
+        var serviceTypeDefinition = GetGenericTypeDefinition(serviceWithTypeServiceType);
 
-        if (!IsConfigured(configuredOpenGenericServices, definitionService))
+        if (!IsConfigured(configuredOpenGenericServices, serviceWithType, serviceTypeDefinition))
         {
             constructedFactory = null;
             constructedServices = null;
@@ -107,7 +107,7 @@ internal static class OpenGenericServiceBinder
 
         var serviceGenericArguments = serviceWithTypeServiceType.GetGenericArguments();
         constructedFactory = (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
-        constructedServices = BuildImplementedServices(configuredOpenGenericServices, serviceWithTypeServiceType, definitionService.ServiceType, serviceGenericArguments, null);
+        constructedServices = BuildImplementedServices(configuredOpenGenericServices, serviceWithTypeServiceType, serviceTypeDefinition, serviceGenericArguments, null);
         return true;
     }
 
@@ -167,14 +167,17 @@ internal static class OpenGenericServiceBinder
     private static bool IsClosedGenericType(Type serviceType)
         => serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition;
 
-    private static bool IsConfigured(IEnumerable<Service> configuredOpenGenericServices, IServiceWithType definitionService)
+    private static bool IsConfigured(IEnumerable<Service> configuredOpenGenericServices, IServiceWithType serviceWithType, Type serviceTypeDefinition)
     {
+        // Built only to compare against configured services that aren't typed or keyed services.
+        IServiceWithType? definitionService = null;
+
         // The registration sources pass an array, which can be looped over without allocating an enumerator.
         if (configuredOpenGenericServices is Service[] services)
         {
             foreach (var service in services)
             {
-                if (IsDefinitionService(service))
+                if (IsDefinitionService(service, serviceWithType, serviceTypeDefinition, ref definitionService))
                 {
                     return true;
                 }
@@ -185,16 +188,31 @@ internal static class OpenGenericServiceBinder
 
         foreach (var service in configuredOpenGenericServices)
         {
-            if (IsDefinitionService(service))
+            if (IsDefinitionService(service, serviceWithType, serviceTypeDefinition, ref definitionService))
             {
                 return true;
             }
         }
 
         return false;
-
-        bool IsDefinitionService(Service service) => service is IServiceWithType serviceWithType && serviceWithType.Equals(definitionService);
     }
+
+    /// <summary>
+    /// Checks whether a configured service equals the requested service changed to the definition type. When both are
+    /// typed or keyed services, that is the comparison their Equals would make, so the definition service isn't built.
+    /// </summary>
+    private static bool IsDefinitionService(
+        Service service,
+        IServiceWithType serviceWithType,
+        Type serviceTypeDefinition,
+        ref IServiceWithType? definitionService) => (service, serviceWithType) switch
+        {
+            (TypedService typed, TypedService) => typed.ServiceType == serviceTypeDefinition,
+            (KeyedService keyed, KeyedService keyedRequest) => keyed.ServiceKey.Equals(keyedRequest.ServiceKey) && keyed.ServiceType == serviceTypeDefinition,
+            (TypedService or KeyedService, TypedService or KeyedService) => false,
+            (IServiceWithType configured, _) => configured.Equals(definitionService ??= (IServiceWithType)serviceWithType.ChangeType(serviceTypeDefinition)),
+            _ => false,
+        };
 
     private static bool AllMapped(Type?[] genericArguments)
     {
