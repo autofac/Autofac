@@ -66,15 +66,31 @@ internal static class InternalTypeExtensions
         "IL2062:UnrecognizedReflectionPattern",
         Justification = "The generic argument constraints and candidate parameter types are caller-supplied runtime types from an open generic registration. Their members cannot be statically annotated; preserving them is the responsibility of the consumer that opted into open generic registration (which carries [RequiresUnreferencedCode]/[RequiresDynamicCode]).")]
     public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
-    {
-        var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
+        => IsCompatibleWithGenericParameterConstraints(genericTypeDefinition.GetGenericArguments(), null, parameters);
 
+    /// <summary>
+    /// Determines whether generic parameters are compatible with the specified type parameters (i.e. is it possible
+    /// to create a closed generic type from those parameters).
+    /// </summary>
+    /// <param name="genericArgumentDefinitions">The generic parameters of the generic type definition.</param>
+    /// <param name="genericParameterConstraints">
+    /// The type constraints of each generic parameter, or null to read them from the generic parameters.
+    /// </param>
+    /// <param name="parameters">The set of parameters to check against.</param>
+    /// <returns>True if the parameters match the generic parameter constraints.</returns>
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2062:UnrecognizedReflectionPattern",
+        Justification = "The generic argument constraints and candidate parameter types are caller-supplied runtime types from an open generic registration. Their members cannot be statically annotated; preserving them is the responsibility of the consumer that opted into open generic registration (which carries [RequiresUnreferencedCode]/[RequiresDynamicCode]).")]
+    public static bool IsCompatibleWithGenericParameterConstraints(Type[] genericArgumentDefinitions, Type[][]? genericParameterConstraints, Type[] parameters)
+    {
         for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
         {
             var genericArg = genericArgumentDefinitions[i];
             var parameter = parameters[i];
+            var constraints = genericParameterConstraints?[i] ?? genericArg.GetGenericParameterConstraints();
 
-            if (!ParameterCompatibleWithTypeConstraints(parameter, genericArg, parameters))
+            if (!ParameterCompatibleWithTypeConstraints(parameter, constraints, parameters))
             {
                 return false;
             }
@@ -310,9 +326,9 @@ internal static class InternalTypeExtensions
             .Where(t => t.IsClosedTypeOf(openGenericServiceType));
     }
 
-    private static bool ParameterCompatibleWithTypeConstraints([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type parameter, Type genericArg, Type[] parameters)
+    private static bool ParameterCompatibleWithTypeConstraints([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type parameter, Type[] constraints, Type[] parameters)
     {
-        foreach (var constraint in genericArg.GetGenericParameterConstraints())
+        foreach (var constraint in constraints)
         {
             if (!ParameterCompatibleWithTypeConstraint(parameter, SubstituteGenericParameterConstraint(parameters, constraint)))
             {

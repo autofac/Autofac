@@ -44,11 +44,13 @@ internal static class OpenGenericServiceBinder
             if (IsConfigured(configuredOpenGenericServices, serviceWithType, serviceTypeDefinition))
             {
                 var serviceGenericArguments = serviceType.GetGenericArguments();
+                var implementation = OpenGenericImplementationInfo.For(openGenericImplementationType);
                 var implementorGenericArguments = TryMapImplementationGenericArguments(
-                    openGenericImplementationType, serviceType, serviceTypeDefinition, serviceGenericArguments);
+                    openGenericImplementationType, implementation, serviceType, serviceTypeDefinition, serviceGenericArguments);
 
                 if (AllMapped(implementorGenericArguments) &&
-                    openGenericImplementationType.IsCompatibleWithGenericParameterConstraints(implementorGenericArguments!))
+                    InternalTypeExtensions.IsCompatibleWithGenericParameterConstraints(
+                        implementation.GenericArguments, implementation.GenericParameterConstraints, implementorGenericArguments!))
                 {
                     var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments!);
 
@@ -350,11 +352,12 @@ internal static class OpenGenericServiceBinder
 
     private static Type GetGenericTypeDefinition(Type type) => ReflectionCacheSet.Shared.Internal.GenericTypeDefinitionByType.GetOrAdd(type, static t => t.GetGenericTypeDefinition());
 
-    [UnconditionalSuppressMessage(
-        "Trimming",
-        "IL2070:UnrecognizedReflectionPattern",
-        Justification = "Inspects the interfaces of the open generic implementation type to map its generic arguments. The implementation type comes from an open generic registration whose consumer is responsible for preserving its interfaces.")]
-    private static Type?[] TryMapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
+    private static Type?[] TryMapImplementationGenericArguments(
+        Type implementationType,
+        OpenGenericImplementationInfo implementation,
+        Type serviceType,
+        Type serviceTypeDefinition,
+        Type[] serviceGenericArguments)
     {
         if (serviceTypeDefinition == implementationType)
         {
@@ -389,8 +392,8 @@ internal static class OpenGenericServiceBinder
              * rather than just typeof(MyInterface<,>), so the names all line
              * up.
              */
-            var baseType = GetGenericBaseType(implementationType, serviceTypeDefinition);
-            if (baseType == null)
+            var baseTypeGenericArguments = GetGenericBaseTypeArguments(implementation, serviceTypeDefinition);
+            if (baseTypeGenericArguments == null)
             {
                 // If it's not an interface, the implementation type MUST have derived from
                 // the generic service type at some point or there's no way to cast.
@@ -398,26 +401,26 @@ internal static class OpenGenericServiceBinder
             }
 
             return TryFindServiceArgumentsForImplementation(
-                    implementationType.GetGenericArguments(),
+                    implementation.GenericArguments,
                     serviceGenericArguments,
-                    baseType.GenericTypeArguments);
+                    baseTypeGenericArguments);
         }
 
-        var implementationGenericArgumentDefinitions = implementationType.GetGenericArguments();
         Type?[]? firstMatch = null;
         Type?[]? completeMatch = null;
 
-        foreach (var implementedInterface in implementationType.GetInterfaces())
+        for (var i = 0; i < implementation.Interfaces.Length; i++)
         {
+            var implementedInterface = implementation.Interfaces[i];
             if (implementedInterface.Name != serviceType.Name || implementedInterface.Namespace != serviceType.Namespace)
             {
                 continue;
             }
 
             var availableArguments = TryFindServiceArgumentsForImplementation(
-                implementationGenericArgumentDefinitions,
+                implementation.GenericArguments,
                 serviceGenericArguments,
-                implementedInterface.GenericTypeArguments);
+                implementation.InterfaceGenericArguments[i]);
 
             if (availableArguments.SequenceEqual(serviceGenericArguments))
             {
@@ -453,20 +456,17 @@ internal static class OpenGenericServiceBinder
         return implementorGenericArguments;
     }
 
-    private static Type? GetGenericBaseType(Type implementationType, Type serviceTypeDefinition)
+    private static Type[]? GetGenericBaseTypeArguments(OpenGenericImplementationInfo implementation, Type serviceTypeDefinition)
     {
-        var baseType = implementationType.BaseType;
-        while (baseType is not null)
+        foreach (var baseType in implementation.GenericBaseTypes)
         {
-            if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == serviceTypeDefinition)
+            if (baseType.Definition == serviceTypeDefinition)
             {
-                break;
+                return baseType.GenericArguments;
             }
-
-            baseType = baseType.BaseType;
         }
 
-        return baseType;
+        return null;
     }
 
     private static Type[] GetInterfaces([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type implementationType, Type serviceType)
