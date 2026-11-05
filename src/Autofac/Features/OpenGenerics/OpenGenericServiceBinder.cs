@@ -53,7 +53,7 @@ internal static class OpenGenericServiceBinder
                     var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments!);
 
                     var implementedServices = BuildImplementedServices(
-                        configuredOpenGenericServices, serviceType, serviceTypeDefinition, serviceGenericArguments, constructedImplementationTypeTmp);
+                        configuredOpenGenericServices, serviceWithType, serviceTypeDefinition, serviceGenericArguments, constructedImplementationTypeTmp);
 
                     if (implementedServices.Length > 0)
                     {
@@ -107,7 +107,7 @@ internal static class OpenGenericServiceBinder
 
         var serviceGenericArguments = serviceWithTypeServiceType.GetGenericArguments();
         constructedFactory = CloseFactory(openGenericFactory, serviceGenericArguments);
-        constructedServices = BuildImplementedServices(configuredOpenGenericServices, serviceWithTypeServiceType, serviceTypeDefinition, serviceGenericArguments, null);
+        constructedServices = BuildImplementedServices(configuredOpenGenericServices, serviceWithType, serviceTypeDefinition, serviceGenericArguments, null);
         return true;
     }
 
@@ -240,7 +240,7 @@ internal static class OpenGenericServiceBinder
     [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
     private static Service[] BuildImplementedServices(
         IEnumerable<Service> configuredOpenGenericServices,
-        Type serviceType,
+        IServiceWithType serviceWithType,
         Type serviceTypeDefinition,
         Type[] serviceGenericArguments,
         Type? constructedImplementationType)
@@ -272,7 +272,7 @@ internal static class OpenGenericServiceBinder
 
         void AddImplementedService(Service service)
         {
-            var implementedService = TryCloseService(service, serviceType, serviceTypeDefinition, serviceGenericArguments, constructedImplementationType);
+            var implementedService = TryCloseService(service, serviceWithType, serviceTypeDefinition, serviceGenericArguments, constructedImplementationType);
             if (implementedService is null)
             {
                 return;
@@ -297,7 +297,7 @@ internal static class OpenGenericServiceBinder
         Justification = "Constructs the closed service types from the open generic registration's runtime type arguments. The consumer that registered the open generic is responsible for preserving the closed types.")]
     private static Service? TryCloseService(
         Service service,
-        Type serviceType,
+        IServiceWithType requestedService,
         Type serviceTypeDefinition,
         Type[] serviceGenericArguments,
         Type? constructedImplementationType)
@@ -308,6 +308,7 @@ internal static class OpenGenericServiceBinder
         }
 
         var openServiceType = serviceWithType.ServiceType;
+        var serviceType = requestedService.ServiceType;
         Type genericService;
         if (openServiceType == serviceTypeDefinition)
         {
@@ -328,8 +329,24 @@ internal static class OpenGenericServiceBinder
             return null;
         }
 
+        if (genericService == serviceType && AsRequestedService(service, requestedService) is { } sameService)
+        {
+            return sameService;
+        }
+
         return serviceWithType.ChangeType(genericService);
     }
+
+    /// <summary>
+    /// Gets the requested service when closing the configured service over the requested type would build an
+    /// equal one: both typed, or both keyed with the same key object.
+    /// </summary>
+    private static Service? AsRequestedService(Service service, IServiceWithType requestedService) => (service, requestedService) switch
+    {
+        (TypedService, TypedService typedRequest) => typedRequest,
+        (KeyedService keyed, KeyedService keyedRequest) when ReferenceEquals(keyed.ServiceKey, keyedRequest.ServiceKey) => keyedRequest,
+        _ => null,
+    };
 
     private static Type GetGenericTypeDefinition(Type type) => ReflectionCacheSet.Shared.Internal.GenericTypeDefinitionByType.GetOrAdd(type, static t => t.GetGenericTypeDefinition());
 
