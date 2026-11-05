@@ -99,7 +99,7 @@ internal static class InternalTypeExtensions
 
             if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
                 != GenericParameterAttributes.None &&
-                !parameter.IsValueType && parameter.GetDeclaredPublicConstructors().All(c => c.GetParameters().Length > 0))
+                !parameter.IsValueType && !HasDeclaredPublicParameterlessConstructor(parameter))
             {
                 return false;
             }
@@ -362,24 +362,43 @@ internal static class InternalTypeExtensions
 
         var allGenericParametersMatch = false;
         var baseType = parameter.BaseType ?? parameter;
-        if (!constraint.IsInterface &&
-            baseType.IsGenericType &&
-            baseType.GenericTypeArguments.Length > 0 &&
-            baseType.GenericTypeArguments.Length == constraint.GenericTypeArguments.Length)
+        if (!constraint.IsInterface && baseType.IsGenericType)
         {
-            allGenericParametersMatch = true;
-            for (var i = 0; i < baseType.GenericTypeArguments.Length; i++)
+            // GenericTypeArguments returns a new array on every read.
+            var baseTypeArguments = baseType.GenericTypeArguments;
+            var constraintArguments = constraint.GenericTypeArguments;
+            if (baseTypeArguments.Length > 0 && baseTypeArguments.Length == constraintArguments.Length)
             {
-                var paramArg = baseType.GenericTypeArguments[i];
-                var constraintArg = constraint.GenericTypeArguments[i];
-                var constraintArgIsGeneric = constraintArg.IsGenericType;
-
-                allGenericParametersMatch &= paramArg.IsClosedTypeOf(constraintArgIsGeneric ? constraintArg.GetGenericTypeDefinition() : constraintArg);
+                allGenericParametersMatch = AllGenericArgumentsClose(baseTypeArguments, constraintArguments);
             }
         }
 
         return allGenericParametersMatch || HasTypeEqualToConstraint(parameter, constraint);
     }
+
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2062:UnrecognizedReflectionPattern",
+        Justification = "The generic type arguments inspected here come from caller-supplied runtime types in an open generic registration. They cannot carry static annotations; preserving them is the responsibility of the consumer that opted into open generic registration.")]
+    private static bool AllGenericArgumentsClose(Type[] baseTypeArguments, Type[] constraintArguments)
+    {
+        var allGenericParametersMatch = true;
+        for (var i = 0; i < baseTypeArguments.Length; i++)
+        {
+            var paramArg = baseTypeArguments[i];
+            var constraintArg = constraintArguments[i];
+            var constraintArgIsGeneric = constraintArg.IsGenericType;
+
+            allGenericParametersMatch &= paramArg.IsClosedTypeOf(constraintArgIsGeneric ? constraintArg.GetGenericTypeDefinition() : constraintArg);
+        }
+
+        return allGenericParametersMatch;
+    }
+
+    // The same check as looking for a declared public instance constructor without parameters among
+    // GetDeclaredPublicConstructors, without building the array of constructors.
+    private static bool HasDeclaredPublicParameterlessConstructor([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
+        => type.GetConstructor(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null) is not null;
 
     private static bool HasTypeEqualToConstraint([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type parameter, Type constraint)
     {
