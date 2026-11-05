@@ -15,6 +15,7 @@ namespace Autofac.Features.OpenGenerics;
 internal class OpenGenericDelegateRegistrationSource : IRegistrationSource
 {
     private readonly RegistrationData _registrationData;
+    private readonly Service[] _services;
     private readonly IResolvePipelineBuilder _existingPipelineBuilder;
     private readonly OpenGenericDelegateActivatorData _activatorData;
 
@@ -30,6 +31,7 @@ internal class OpenGenericDelegateRegistrationSource : IRegistrationSource
         OpenGenericDelegateActivatorData activatorData)
     {
         _registrationData = registrationData ?? throw new ArgumentNullException(nameof(registrationData));
+        _services = registrationData.Services.ToArray();
         _existingPipelineBuilder = existingPipelineBuilder;
         _activatorData = activatorData ?? throw new ArgumentNullException(nameof(activatorData));
     }
@@ -55,7 +57,7 @@ internal class OpenGenericDelegateRegistrationSource : IRegistrationSource
         }
 
         if (service is not IServiceWithType swt ||
-            !OpenGenericServiceBinder.TryBindOpenGenericDelegateService(swt, _registrationData.Services, _activatorData.Factory, out var constructedFactory, out var services))
+            !OpenGenericServiceBinder.TryBindOpenGenericDelegateService(swt, _services, _activatorData.Factory, out var constructedFactory, out var services))
         {
             return Array.Empty<IComponentRegistration>();
         }

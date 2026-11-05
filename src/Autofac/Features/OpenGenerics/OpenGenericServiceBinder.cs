@@ -169,15 +169,31 @@ internal static class OpenGenericServiceBinder
 
     private static bool IsConfigured(IEnumerable<Service> configuredOpenGenericServices, IServiceWithType definitionService)
     {
+        // The registration sources pass an array, which can be looped over without allocating an enumerator.
+        if (configuredOpenGenericServices is Service[] services)
+        {
+            foreach (var service in services)
+            {
+                if (IsDefinitionService(service))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         foreach (var service in configuredOpenGenericServices)
         {
-            if (service is IServiceWithType serviceWithType && serviceWithType.Equals(definitionService))
+            if (IsDefinitionService(service))
             {
                 return true;
             }
         }
 
         return false;
+
+        bool IsDefinitionService(Service service) => service is IServiceWithType serviceWithType && serviceWithType.Equals(definitionService);
     }
 
     private static bool AllMapped(Type?[] genericArguments)
@@ -198,10 +214,6 @@ internal static class OpenGenericServiceBinder
     /// implementation type is given, services it can't be assigned to are left out.
     /// </summary>
     [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
-    [UnconditionalSuppressMessage(
-        "Trimming",
-        "IL2055:MakeGenericType",
-        Justification = "Constructs the closed service types from the open generic registration's runtime type arguments. The consumer that registered the open generic is responsible for preserving the closed types.")]
     private static Service[] BuildImplementedServices(
         IEnumerable<Service> configuredOpenGenericServices,
         Type serviceType,
@@ -212,35 +224,36 @@ internal static class OpenGenericServiceBinder
         Service? firstService = null;
         List<Service>? implementedServices = null;
 
-        foreach (var service in configuredOpenGenericServices)
+        if (configuredOpenGenericServices is Service[] services)
         {
-            if (service is not IServiceWithType serviceWithType)
+            foreach (var service in services)
             {
-                continue;
+                AddImplementedService(service);
+            }
+        }
+        else
+        {
+            foreach (var service in configuredOpenGenericServices)
+            {
+                AddImplementedService(service);
+            }
+        }
+
+        if (implementedServices is not null)
+        {
+            return implementedServices.ToArray();
+        }
+
+        return firstService is null ? Array.Empty<Service>() : new[] { firstService };
+
+        void AddImplementedService(Service service)
+        {
+            var implementedService = TryCloseService(service, serviceType, serviceTypeDefinition, serviceGenericArguments, constructedImplementationType);
+            if (implementedService is null)
+            {
+                return;
             }
 
-            var openServiceType = serviceWithType.ServiceType;
-            Type genericService;
-            if (openServiceType == serviceTypeDefinition)
-            {
-                // Closing the requested service's definition over its own arguments gives back the requested type.
-                genericService = serviceType;
-            }
-            else if (openServiceType.GetGenericArguments().Length == serviceGenericArguments.Length)
-            {
-                genericService = openServiceType.MakeGenericType(serviceGenericArguments);
-            }
-            else
-            {
-                continue;
-            }
-
-            if (constructedImplementationType is not null && !genericService.IsAssignableFrom(constructedImplementationType))
-            {
-                continue;
-            }
-
-            var implementedService = serviceWithType.ChangeType(genericService);
             if (firstService is null)
             {
                 firstService = implementedService;
@@ -251,13 +264,47 @@ internal static class OpenGenericServiceBinder
                 implementedServices.Add(implementedService);
             }
         }
+    }
 
-        if (implementedServices is not null)
+    [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2055:MakeGenericType",
+        Justification = "Constructs the closed service types from the open generic registration's runtime type arguments. The consumer that registered the open generic is responsible for preserving the closed types.")]
+    private static Service? TryCloseService(
+        Service service,
+        Type serviceType,
+        Type serviceTypeDefinition,
+        Type[] serviceGenericArguments,
+        Type? constructedImplementationType)
+    {
+        if (service is not IServiceWithType serviceWithType)
         {
-            return implementedServices.ToArray();
+            return null;
         }
 
-        return firstService is null ? Array.Empty<Service>() : new[] { firstService };
+        var openServiceType = serviceWithType.ServiceType;
+        Type genericService;
+        if (openServiceType == serviceTypeDefinition)
+        {
+            // Closing the requested service's definition over its own arguments gives back the requested type.
+            genericService = serviceType;
+        }
+        else if (openServiceType.GetGenericArguments().Length == serviceGenericArguments.Length)
+        {
+            genericService = openServiceType.MakeGenericType(serviceGenericArguments);
+        }
+        else
+        {
+            return null;
+        }
+
+        if (constructedImplementationType is not null && !genericService.IsAssignableFrom(constructedImplementationType))
+        {
+            return null;
+        }
+
+        return serviceWithType.ChangeType(genericService);
     }
 
     private static Type GetGenericTypeDefinition(Type type) => ReflectionCacheSet.Shared.Internal.GenericTypeDefinitionByType.GetOrAdd(type, static t => t.GetGenericTypeDefinition());
