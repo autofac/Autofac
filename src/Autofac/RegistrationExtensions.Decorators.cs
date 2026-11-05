@@ -321,18 +321,37 @@ public static partial class RegistrationExtensions
     internal static TService GetDecoratedInstance<TService>(IEnumerable<Parameter> parameters)
         where TService : class
     {
-        var parameterArray = parameters as Parameter[] ?? parameters.ToArray();
-
-        foreach (var parameter in parameterArray)
+        // An array is looped over directly, which avoids allocating an enumerator for it.
+        if (parameters is Parameter[] parameterArray)
         {
-            if (parameter is TypedParameter typedParameter && typedParameter.Type == typeof(TService))
+            foreach (var parameter in parameterArray)
             {
-                return (TService?)typedParameter.Value ?? throw DecoratorRequiresInstanceParameter<TService>();
+                if (IsInstanceParameter<TService>(parameter))
+                {
+                    return GetInstance<TService>(parameter);
+                }
+            }
+        }
+        else
+        {
+            foreach (var parameter in parameters)
+            {
+                if (IsInstanceParameter<TService>(parameter))
+                {
+                    return GetInstance<TService>(parameter);
+                }
             }
         }
 
         throw DecoratorRequiresInstanceParameter<TService>();
     }
+
+    private static bool IsInstanceParameter<TService>(Parameter parameter)
+        => parameter is TypedParameter typedParameter && typedParameter.Type == typeof(TService);
+
+    private static TService GetInstance<TService>(Parameter parameter)
+        where TService : class
+        => (TService?)((TypedParameter)parameter).Value ?? throw DecoratorRequiresInstanceParameter<TService>();
 
     private static DependencyResolutionException DecoratorRequiresInstanceParameter<TService>()
         => new(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));

@@ -71,6 +71,7 @@ public class RegistrationExtensionsTests
         };
 
         Assert.Same(instance, RegistrationExtensions.GetDecoratedInstance<object>(parameters));
+        Assert.Same(instance, RegistrationExtensions.GetDecoratedInstance<object>(parameters.ToArray()));
     }
 
     [Fact]
@@ -78,5 +79,7 @@ public class RegistrationExtensionsTests
     {
         Assert.Throws<DependencyResolutionException>(
             () => RegistrationExtensions.GetDecoratedInstance<object>(new List<Parameter> { new TypedParameter(typeof(string), "other") }));
+        Assert.Throws<DependencyResolutionException>(
+            () => RegistrationExtensions.GetDecoratedInstance<object>(new Parameter[] { new TypedParameter(typeof(string), "other") }));
     }
 }
