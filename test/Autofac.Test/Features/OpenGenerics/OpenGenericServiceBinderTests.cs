@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Globalization;
 using Autofac.Core;
 using Autofac.Features.OpenGenerics;
 
@@ -188,6 +189,32 @@ public class OpenGenericServiceBinderTests
         Assert.True(container.IsRegistered<IFirst<ParameterlessAndParameterized>>());
         Assert.False(container.IsRegistered<IFirst<OnlyProtectedParameterless>>());
         Assert.False(container.IsRegistered<IFirst<OnlyParameterized>>());
+    }
+
+    [Fact]
+    public void EnforceBindableRejectsAClassServiceOutsideTheBaseChain()
+    {
+        var service = new TypedService(typeof(UnrelatedBase<>));
+
+        var exception = Assert.Throws<ArgumentException>(
+            () => OpenGenericServiceBinder.EnforceBindable(typeof(GrandChild<>), new Service[] { service }));
+
+        Assert.Equal(
+            string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.TypesAreNotConvertible, typeof(GrandChild<>), service),
+            exception.Message);
+    }
+
+    [Fact]
+    public void ClassServiceTwoLevelsUpTheBaseChainIsBindable()
+    {
+        var services = new Service[] { new TypedService(typeof(Root<>)) };
+
+        OpenGenericServiceBinder.EnforceBindable(typeof(GrandChild<>), services);
+
+        Assert.True(OpenGenericServiceBinder.TryBindOpenGenericTypedService(
+            new TypedService(typeof(Root<int>)), services, typeof(GrandChild<>), out var implementationType, out var closedServices));
+        Assert.Equal(typeof(GrandChild<int>), implementationType);
+        Assert.Equal(new TypedService(typeof(Root<int>)), Assert.Single(closedServices));
     }
 
     [Fact]
@@ -386,6 +413,22 @@ public class OpenGenericServiceBinderTests
         {
             _ = value;
         }
+    }
+
+    private class Root<T>
+    {
+    }
+
+    private class Child<T> : Root<T>
+    {
+    }
+
+    private class GrandChild<T> : Child<T>
+    {
+    }
+
+    private class UnrelatedBase<T>
+    {
     }
 
 #pragma warning disable CS0693 // Inner deliberately reuses the name of Outer's parameter.
