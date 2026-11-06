@@ -376,4 +376,36 @@ public class ComponentRegistryTests
         Assert.Same(registryBuilder, args.ComponentRegistry);
         Assert.Same(source, args.RegistrationSource);
     }
+
+    [Fact]
+    [SuppressMessage("CA2000", "CA2000", Justification = "The container disposes of the registrations and their activators.")]
+    public void RegistrationWhoseServicesAreNotAnArrayIsRegisteredAndStarted()
+    {
+        // The registration builders create registrations that hold an array of services; a registration created
+        // directly may hold any sequence.
+        var startable = new StartableComponent();
+        var builder = new ContainerBuilder();
+        builder.RegisterComponent(Factory.CreateSingletonRegistration(
+            new List<Service> { new TypedService(typeof(StartableComponent)), new TypedService(typeof(IStartable)) },
+            Factory.CreateProvidedInstanceActivator(startable)));
+        builder.RegisterComponent(Factory.CreateSingletonRegistration(
+            new List<Service> { new TypedService(typeof(object)) },
+            Factory.CreateReflectionActivator(typeof(object))));
+
+        using var container = builder.Build();
+
+        Assert.Equal(1, startable.StartCount);
+        Assert.Same(startable, container.Resolve<StartableComponent>());
+        Assert.IsType<object>(container.Resolve<object>());
+    }
+
+    private sealed class StartableComponent : IStartable
+    {
+        public int StartCount
+        {
+            get; private set;
+        }
+
+        public void Start() => StartCount++;
+    }
 }
