@@ -2,7 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Autofac.Core;
-using Autofac.Util.Cache;
 
 namespace Autofac.Features.OpenGenerics;
 
@@ -90,7 +89,5 @@ internal sealed class OpenGenericImplementationInfo
     /// <param name="implementationType">The open generic implementation type.</param>
     /// <returns>The reflection data.</returns>
     public static OpenGenericImplementationInfo For(Type implementationType)
-        => ReflectionCacheSet.Shared
-            .GetOrCreateCache<ReflectionCacheDictionary<Type, OpenGenericImplementationInfo>>(nameof(OpenGenericImplementationInfo))
-            .GetOrAdd(implementationType, static type => new OpenGenericImplementationInfo(type));
+        => ReflectionCacheSet.Shared.Internal.OpenGenericImplementationInfoByType.GetOrAdd(implementationType, static type => new OpenGenericImplementationInfo(type));
 }
