@@ -21,6 +21,19 @@ public class AssemblyScanningBenchmark
         GC.KeepAlive(container);
     }
 
+    [Benchmark]
+    public void BuildWithTemplateServices()
+    {
+        // The services are on the scanning template, so each scanned type copies them.
+        var builder = new ContainerBuilder();
+        builder.RegisterAssemblyTypes(typeof(AssemblyScanningBenchmark).Assembly)
+            .Where(t => t.DeclaringType == typeof(AssemblyScanningBenchmark))
+            .As<IFirst>().As<ISecond>().As<IThird>();
+
+        using var container = builder.Build();
+        GC.KeepAlive(container);
+    }
+
     private interface IFirst
     {
     }
