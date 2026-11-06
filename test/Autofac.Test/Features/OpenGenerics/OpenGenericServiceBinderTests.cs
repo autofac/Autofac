@@ -192,6 +192,27 @@ public class OpenGenericServiceBinderTests
     }
 
     [Fact]
+    public void ConstructorConstraintAcceptsAStruct()
+    {
+        // A struct has no parameterless constructor in its metadata, so only the value type check lets it pass.
+        var builder = new ContainerBuilder();
+        builder.RegisterGeneric(typeof(NewHandler<>)).As(typeof(IFirst<>));
+        var container = builder.Build();
+
+        Assert.True(container.IsRegistered<IFirst<ParameterlessStruct>>());
+    }
+
+    [Fact]
+    public void ConstructorConstraintIgnoresTheParameterlessConstructorOfABaseClass()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterGeneric(typeof(NewHandler<>)).As(typeof(IFirst<>));
+        var container = builder.Build();
+
+        Assert.False(container.IsRegistered<IFirst<ParameterizedDerivedFromParameterless>>());
+    }
+
+    [Fact]
     public void EnforceBindableRejectsAClassServiceOutsideTheBaseChain()
     {
         var service = new TypedService(typeof(UnrelatedBase<>));
@@ -413,6 +434,18 @@ public class OpenGenericServiceBinderTests
         {
             _ = value;
         }
+    }
+
+    private class ParameterizedDerivedFromParameterless : ParameterlessAndParameterized
+    {
+        public ParameterizedDerivedFromParameterless(int value)
+            : base(value)
+        {
+        }
+    }
+
+    private struct ParameterlessStruct
+    {
     }
 
     private class Root<T>
