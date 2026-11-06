@@ -28,7 +28,7 @@ internal static class OpenGenericServiceBinder
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2055:MakeGenericType",
-        Justification = "Constructs the closed implementation and service types from the open generic registration's runtime type arguments. The implementation type's activatable members are preserved by its [DynamicallyAccessedMembers] annotation; the consumer that registered the open generic is responsible for the closed type.")]
+        Justification = "Constructs the closed implementation type from the open generic registration's runtime type arguments. The implementation type's activatable members are preserved by its [DynamicallyAccessedMembers] annotation; the consumer that registered the open generic is responsible for the closed type.")]
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2072:UnrecognizedReflectionPattern",
@@ -216,7 +216,7 @@ internal static class OpenGenericServiceBinder
 
     private static bool IsConfigured(IEnumerable<Service> configuredOpenGenericServices, IServiceWithType serviceWithType, Type serviceTypeDefinition)
     {
-        // Built only to compare against configured services that aren't typed or keyed services.
+        // Built only when the configured or the requested service isn't a typed or keyed service.
         IServiceWithType? definitionService = null;
 
         // The registration sources pass an array, which can be looped over without allocating an enumerator.

@@ -61,10 +61,6 @@ internal static class InternalTypeExtensions
     /// <param name="genericTypeDefinition">The generic type definition.</param>
     /// <param name="parameters">The set of parameters to check against.</param>
     /// <returns>True if the parameters match the generic parameter constraints.</returns>
-    [UnconditionalSuppressMessage(
-        "Trimming",
-        "IL2062:UnrecognizedReflectionPattern",
-        Justification = "The generic argument constraints and candidate parameter types are caller-supplied runtime types from an open generic registration. Their members cannot be statically annotated; preserving them is the responsibility of the consumer that opted into open generic registration (which carries [RequiresUnreferencedCode]/[RequiresDynamicCode]).")]
     public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
         => IsCompatibleWithGenericParameterConstraints(genericTypeDefinition.GetGenericArguments(), null, parameters);
 
