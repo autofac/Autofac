@@ -12,6 +12,9 @@ namespace Autofac.Benchmarks;
 /// </summary>
 public class OpenGenericBindingBenchmark
 {
+    // Equal to the registered key but not the same object, as a key built at runtime would be.
+    private static readonly string _equalKey = new('k', 3);
+
     private IContainer _container = default!;
 
     [GlobalSetup]
@@ -127,6 +130,24 @@ public class OpenGenericBindingBenchmark
     }
 
     [Benchmark]
+    public void KeyedWithEqualKey()
+    {
+        using var scope = _container.BeginLifetimeScope(b => b.RegisterGeneric(typeof(Service<>)).Keyed("kkk", typeof(IService<>)));
+        GC.KeepAlive(scope.ResolveKeyed<IService<string>>(_equalKey));
+    }
+
+    [Benchmark]
+    public void Decorator()
+    {
+        using var scope = _container.BeginLifetimeScope(b =>
+        {
+            b.RegisterGeneric(typeof(Service<>)).As(typeof(IService<>));
+            b.RegisterGenericDecorator(typeof(ServiceDecorator<>), typeof(IService<>));
+        });
+        GC.KeepAlive(scope.Resolve<IService<string>>());
+    }
+
+    [Benchmark]
     public void Delegate()
     {
         using var scope = _container.BeginLifetimeScope(b => b.RegisterGeneric((context, types) => new Service<string>()).As(typeof(IService<>)));
@@ -184,6 +205,19 @@ public class OpenGenericBindingBenchmark
 
     private class Service<T> : IService<T>
     {
+    }
+
+    private class ServiceDecorator<T> : IService<T>
+    {
+        public ServiceDecorator(IService<T> inner)
+        {
+            Inner = inner;
+        }
+
+        public IService<T> Inner
+        {
+            get;
+        }
     }
 
     private class OtherService<T> : IOtherService<T>
