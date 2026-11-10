@@ -12,8 +12,6 @@ namespace Autofac.Util;
 /// </summary>
 internal static class InternalTypeExtensions
 {
-    private const string OpenGenericConstraintDynamicCodeWarning = "Validating open generic constraints constructs candidate closed generic types at runtime via MakeGenericType, which may require dynamic code generation when closed over value types and is not compatible with native AOT.";
-
     /// <summary>
     /// For a delegate type, outputs the return type of the delegate.
     /// </summary>
@@ -63,23 +61,32 @@ internal static class InternalTypeExtensions
     /// <param name="genericTypeDefinition">The generic type definition.</param>
     /// <param name="parameters">The set of parameters to check against.</param>
     /// <returns>True if the parameters match the generic parameter constraints.</returns>
-    [RequiresDynamicCode(OpenGenericConstraintDynamicCodeWarning)]
+    public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
+        => IsCompatibleWithGenericParameterConstraints(genericTypeDefinition.GetGenericArguments(), null, parameters);
+
+    /// <summary>
+    /// Determines whether generic parameters are compatible with the specified type parameters (i.e. is it possible
+    /// to create a closed generic type from those parameters).
+    /// </summary>
+    /// <param name="genericArgumentDefinitions">The generic parameters of the generic type definition.</param>
+    /// <param name="genericParameterConstraints">
+    /// The type constraints of each generic parameter, or null to read them from the generic parameters.
+    /// </param>
+    /// <param name="parameters">The set of parameters to check against.</param>
+    /// <returns>True if the parameters match the generic parameter constraints.</returns>
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2062:UnrecognizedReflectionPattern",
         Justification = "The generic argument constraints and candidate parameter types are caller-supplied runtime types from an open generic registration. Their members cannot be statically annotated; preserving them is the responsibility of the consumer that opted into open generic registration (which carries [RequiresUnreferencedCode]/[RequiresDynamicCode]).")]
-    public static bool IsCompatibleWithGenericParameterConstraints(this Type genericTypeDefinition, Type[] parameters)
+    public static bool IsCompatibleWithGenericParameterConstraints(Type[] genericArgumentDefinitions, Type[][]? genericParameterConstraints, Type[] parameters)
     {
-        var genericArgumentDefinitions = genericTypeDefinition.GetGenericArguments();
-
         for (var i = 0; i < genericArgumentDefinitions.Length; ++i)
         {
             var genericArg = genericArgumentDefinitions[i];
             var parameter = parameters[i];
+            var constraints = genericParameterConstraints?[i] ?? genericArg.GetGenericParameterConstraints();
 
-            if (genericArg.GetGenericParameterConstraints()
-                .Select(constraint => SubstituteGenericParameterConstraint(parameters, constraint))
-                .Any(constraint => !ParameterCompatibleWithTypeConstraint(parameter, constraint)))
+            if (!ParameterCompatibleWithTypeConstraints(parameter, constraints, parameters))
             {
                 return false;
             }
@@ -88,7 +95,7 @@ internal static class InternalTypeExtensions
 
             if ((specialConstraints & GenericParameterAttributes.DefaultConstructorConstraint)
                 != GenericParameterAttributes.None &&
-                !parameter.IsValueType && parameter.GetDeclaredPublicConstructors().All(c => c.GetParameters().Length > 0))
+                !parameter.IsValueType && !HasDeclaredPublicParameterlessConstructor(parameter))
             {
                 return false;
             }
@@ -315,6 +322,19 @@ internal static class InternalTypeExtensions
             .Where(t => t.IsClosedTypeOf(openGenericServiceType));
     }
 
+    private static bool ParameterCompatibleWithTypeConstraints([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type parameter, Type[] constraints, Type[] parameters)
+    {
+        foreach (var constraint in constraints)
+        {
+            if (!ParameterCompatibleWithTypeConstraint(parameter, SubstituteGenericParameterConstraint(parameters, constraint)))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private static Type SubstituteGenericParameterConstraint(Type[] parameters, Type constraint)
     {
         if (!constraint.IsGenericParameter)
@@ -325,7 +345,6 @@ internal static class InternalTypeExtensions
         return parameters[constraint.GenericParameterPosition];
     }
 
-    [RequiresDynamicCode(OpenGenericConstraintDynamicCodeWarning)]
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2062:UnrecognizedReflectionPattern",
@@ -339,68 +358,89 @@ internal static class InternalTypeExtensions
 
         var allGenericParametersMatch = false;
         var baseType = parameter.BaseType ?? parameter;
-        if (!constraint.IsInterface &&
-            baseType.IsGenericType &&
-            baseType.GenericTypeArguments.Length > 0 &&
-            baseType.GenericTypeArguments.Length == constraint.GenericTypeArguments.Length)
+        if (!constraint.IsInterface && baseType.IsGenericType)
         {
-            allGenericParametersMatch = true;
-            for (var i = 0; i < baseType.GenericTypeArguments.Length; i++)
+            // GenericTypeArguments returns a new array on every read.
+            var baseTypeArguments = baseType.GenericTypeArguments;
+            var constraintArguments = constraint.GenericTypeArguments;
+            if (baseTypeArguments.Length > 0 && baseTypeArguments.Length == constraintArguments.Length)
             {
-                var paramArg = baseType.GenericTypeArguments[i];
-                var constraintArg = constraint.GenericTypeArguments[i];
-                var constraintArgIsGeneric = constraintArg.IsGenericType;
-
-                allGenericParametersMatch &= paramArg.IsClosedTypeOf(constraintArgIsGeneric ? constraintArg.GetGenericTypeDefinition() : constraintArg);
+                allGenericParametersMatch = AllGenericArgumentsClose(baseTypeArguments, constraintArguments);
             }
         }
 
-        return allGenericParametersMatch ||
-            Traverse.Across(parameter, p => p.BaseType!)
-                   .Concat(parameter.GetInterfaces())
-                   .Any(p => ParameterEqualsConstraint(p, constraint));
+        return allGenericParametersMatch || HasTypeEqualToConstraint(parameter, constraint);
     }
 
-#if NET6_0_OR_GREATER
-    [SuppressMessage("Microsoft.Design", "CA1031", Justification = "Implementing a real TryMakeGenericType is not worth the effort.")]
-#endif
-    [RequiresDynamicCode(OpenGenericConstraintDynamicCodeWarning)]
     [UnconditionalSuppressMessage(
         "Trimming",
-        "IL2055:MakeGenericType",
-        Justification = "The constraint type definition and its generic arguments are caller-supplied runtime types from an open generic registration. Preserving the closed type is the responsibility of the consumer that opted into open generic registration.")]
-    private static bool ParameterEqualsConstraint(Type parameter, Type constraint)
+        "IL2062:UnrecognizedReflectionPattern",
+        Justification = "The generic type arguments inspected here come from caller-supplied runtime types in an open generic registration. They cannot carry static annotations; preserving them is the responsibility of the consumer that opted into open generic registration.")]
+    private static bool AllGenericArgumentsClose(Type[] baseTypeArguments, Type[] constraintArguments)
     {
-        var genericArguments = parameter.GenericTypeArguments;
-        if (genericArguments.Length > 0 && constraint.IsGenericType)
+        var allGenericParametersMatch = true;
+        for (var i = 0; i < baseTypeArguments.Length; i++)
         {
-            var typeDefinition = constraint.GetGenericTypeDefinition();
-            if (typeDefinition.GetGenericArguments().Length == genericArguments.Length)
+            var paramArg = baseTypeArguments[i];
+            var constraintArg = constraintArguments[i];
+            var constraintArgIsGeneric = constraintArg.IsGenericType;
+
+            allGenericParametersMatch &= paramArg.IsClosedTypeOf(constraintArgIsGeneric ? constraintArg.GetGenericTypeDefinition() : constraintArg);
+        }
+
+        return allGenericParametersMatch;
+    }
+
+    // The same check as looking for a declared public instance constructor without parameters among
+    // GetDeclaredPublicConstructors, without building the array of constructors.
+    private static bool HasDeclaredPublicParameterlessConstructor([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
+        => type.GetConstructor(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly, null, Type.EmptyTypes, null) is not null;
+
+    private static bool HasTypeEqualToConstraint([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type parameter, Type constraint)
+    {
+        for (var type = parameter; type is not null; type = type.BaseType)
+        {
+            if (ParameterEqualsConstraint(type, constraint))
             {
-                try
-                {
-                    var genericType = typeDefinition.MakeGenericType(genericArguments);
-                    var constraintArguments = constraint.GenericTypeArguments;
+                return true;
+            }
+        }
 
-                    for (var i = 0; i < constraintArguments.Length; i++)
-                    {
-                        var constraintArgument = constraintArguments[i];
-                        if (!constraintArgument.IsGenericParameter && !constraintArgument.IsAssignableFrom(genericArguments[i]))
-                        {
-                            return false;
-                        }
-                    }
-
-                    return genericType == parameter;
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
+        foreach (var implementedInterface in parameter.GetInterfaces())
+        {
+            if (ParameterEqualsConstraint(implementedInterface, constraint))
+            {
+                return true;
             }
         }
 
         return false;
+    }
+
+    private static bool ParameterEqualsConstraint(Type parameter, Type constraint)
+    {
+        // Same as closing the constraint's definition over the parameter's generic arguments and comparing
+        // the result with the parameter, which can only be equal when both share a definition.
+        if (!parameter.IsConstructedGenericType ||
+            !constraint.IsGenericType ||
+            parameter.GetGenericTypeDefinition() != constraint.GetGenericTypeDefinition())
+        {
+            return false;
+        }
+
+        var genericArguments = parameter.GenericTypeArguments;
+        var constraintArguments = constraint.GenericTypeArguments;
+
+        for (var i = 0; i < constraintArguments.Length; i++)
+        {
+            var constraintArgument = constraintArguments[i];
+            if (!constraintArgument.IsGenericParameter && !constraintArgument.IsAssignableFrom(genericArguments[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static IEnumerable<Type> TypesAssignableFrom([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type candidateType)

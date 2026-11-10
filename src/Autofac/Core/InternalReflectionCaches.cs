@@ -4,6 +4,7 @@
 using System.Reflection;
 using Autofac.Core.Activators.Reflection;
 using Autofac.Features.GeneratedFactories;
+using Autofac.Features.OpenGenerics;
 using Autofac.Util;
 using Autofac.Util.Cache;
 
@@ -40,6 +41,7 @@ internal class InternalReflectionCaches
         IsGenericListOrCollectionInterfaceType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(IsGenericListOrCollectionInterfaceType));
         IsGenericTypeDefinedBy = set.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, bool>>(nameof(IsGenericTypeDefinedBy));
         IsGenericTypeContainingType = set.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, bool>>(nameof(IsGenericTypeContainingType));
+        OpenGenericImplementationInfoByType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, OpenGenericImplementationInfo>>(nameof(OpenGenericImplementationInfoByType));
         ConstructorBinderFactory = set.GetOrCreateCache<ReflectionCacheDictionary<ConstructorInfo, Func<object?[], object>>>(nameof(ConstructorBinderFactory));
         AutowiringPropertySetters = set.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, Action<object, object?>>>(nameof(AutowiringPropertySetters));
         AutowiringInjectableProperties = set.GetOrCreateCache<ReflectionCacheDictionary<Type, IReadOnlyList<PropertyInfo>>>(nameof(AutowiringInjectableProperties));
@@ -102,6 +104,14 @@ internal class InternalReflectionCaches
     /// Gets the cache used by <see cref="InternalTypeExtensions.IsGenericTypeContainingType"/>.
     /// </summary>
     public ReflectionCacheTupleDictionary<Type, bool> IsGenericTypeContainingType
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets the cache used by <see cref="OpenGenericImplementationInfo.For"/>.
+    /// </summary>
+    public ReflectionCacheDictionary<Type, OpenGenericImplementationInfo> OpenGenericImplementationInfoByType
     {
         get;
     }
