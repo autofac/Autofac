@@ -17,6 +17,7 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
     private readonly RegistrationData _registrationData;
     private readonly OpenGenericDecoratorActivatorData _activatorData;
     private readonly IResolvePipelineBuilder _existingPipeline;
+    private readonly Type[] _openServiceTypes;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OpenGenericDecoratorRegistrationSource"/> class.
@@ -49,6 +50,9 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
         _registrationData = registrationData;
         _activatorData = activatorData;
         _existingPipeline = existingPipelineBuilder;
+
+        // The source is created when the container is built, so the services no longer change.
+        _openServiceTypes = OpenGenericServiceBinder.GetOpenServiceTypes(registrationData.Services);
     }
 
     /// <inheritdoc/>
@@ -71,7 +75,7 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
             throw new ArgumentNullException(nameof(registrationAccessor));
         }
 
-        if (service is not IServiceWithType swt)
+        if (service is not IServiceWithType swt || !OpenGenericServiceBinder.IsClosedFromAny(swt.ServiceType, _openServiceTypes))
         {
             return Enumerable.Empty<IComponentRegistration>();
         }

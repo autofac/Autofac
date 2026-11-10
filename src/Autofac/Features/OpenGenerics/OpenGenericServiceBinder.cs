@@ -170,6 +170,41 @@ internal static class OpenGenericServiceBinder
         }
     }
 
+    /// <summary>
+    /// Gets the service types of the configured open generic services, for <see cref="IsClosedFromAny"/>.
+    /// </summary>
+    /// <param name="configuredOpenGenericServices">The set of configured open generic services.</param>
+    /// <returns>The service types of the services that have one.</returns>
+    public static Type[] GetOpenServiceTypes(IEnumerable<Service> configuredOpenGenericServices)
+        => configuredOpenGenericServices.OfType<IServiceWithType>().Select(s => s.ServiceType).ToArray();
+
+    /// <summary>
+    /// Determines whether a service type is a closed generic type built from one of the open service types.
+    /// <see cref="TryBindOpenGenericTypedService"/> only binds a service that passes this check, so callers
+    /// can use it to reject other services without allocating.
+    /// </summary>
+    /// <param name="serviceType">The service type being requested.</param>
+    /// <param name="openServiceTypes">The open service types, from <see cref="GetOpenServiceTypes"/>.</param>
+    /// <returns>True if the service type is closed from one of the open service types. False otherwise.</returns>
+    public static bool IsClosedFromAny(Type serviceType, Type[] openServiceTypes)
+    {
+        if (!IsClosedGenericType(serviceType))
+        {
+            return false;
+        }
+
+        var definition = serviceType.GetGenericTypeDefinition();
+        foreach (var openServiceType in openServiceTypes)
+        {
+            if (openServiceType == definition)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static bool IsClosedGenericType(Type serviceType)
         => serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition;
 
