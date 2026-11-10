@@ -134,7 +134,7 @@ public static class RegistrationBuilder
             builder.RegistrationData,
             builder.ActivatorData.Activator,
             builder.ResolvePipeline,
-            builder.RegistrationData.Services.ToArray(),
+            builder.RegistrationData.ServicesToArray(),
             builder.RegistrationStyle.Target);
     }
 
@@ -272,14 +272,21 @@ public static class RegistrationBuilder
             throw new ArgumentNullException(nameof(cr));
         }
 
+        // The registry takes ownership of the registration.
+#pragma warning disable CA2000 // Dispose objects before losing scope
         var registration = CreateRegistration(builder);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
         cr.Register(registration, builder.RegistrationStyle.PreserveDefaults);
 
-        var registeredEventArgs = new ComponentRegisteredEventArgs(cr, registration);
-        foreach (var rh in builder.RegistrationStyle.RegisteredHandlers)
+        var registeredHandlers = builder.RegistrationStyle.RegisteredHandlers;
+        if (registeredHandlers.Count != 0)
         {
-            rh(cr, registeredEventArgs);
+            var registeredEventArgs = new ComponentRegisteredEventArgs(cr, registration);
+            foreach (var rh in registeredHandlers)
+            {
+                rh(cr, registeredEventArgs);
+            }
         }
     }
 }

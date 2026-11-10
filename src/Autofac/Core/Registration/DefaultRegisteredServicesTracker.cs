@@ -114,29 +114,21 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     {
         var originatedFromDynamicSource = originatingSource is not null;
 
-        foreach (var service in registration.Services)
+        // Registrations built by the registration builders hold an array, which avoids an
+        // enumerator allocation per registration.
+        if (registration.Services is Service[] services)
         {
-            var info = GetServiceInfo(service);
-
-            // We are in an ephemeral initialization; use the ephemeral set.
-            if (_ephemeralServiceInfo is not null)
+            foreach (var service in services)
             {
-                info = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+                AddImplementation(service, registration, preserveDefaults, originatingSource);
             }
-
-            // A service this component exposes may have had the implementation held back because it
-            // has not drained this source yet, in which case it must not take it now - that would
-            // place it ahead of the higher-priority sources still to be queried. Only a
-            // multi-service component can hold anything, so the field is null for most containers.
-            var held = _deferredSourceImplementations;
-            if (held is not null &&
-                originatingSource is not null &&
-                WasDeferred(held, info, originatingSource, registration))
+        }
+        else
+        {
+            foreach (var service in registration.Services)
             {
-                continue;
+                AddImplementation(service, registration, preserveDefaults, originatingSource);
             }
-
-            info.AddImplementation(registration, preserveDefaults, originatedFromDynamicSource);
         }
 
         if (_ephemeralServiceInfo is null)
@@ -240,7 +232,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         var info = GetInitializedServiceInfo(service);
-        return info.Implementations.ToList();
+        return info.ImplementationsToList<object?, IComponentRegistration>(null, static (_, implementation) => implementation);
     }
 
     /// <inheritdoc/>
@@ -252,15 +244,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         var info = GetInitializedServiceInfo(service);
-
-        var list = new List<ServiceRegistration>();
-
-        foreach (var implementation in info.Implementations)
-        {
-            list.Add(new ServiceRegistration(info.ServicePipeline, implementation));
-        }
-
-        return list;
+        return info.ImplementationsToList(info, static (info, implementation) => new ServiceRegistration(info.ServicePipeline, implementation));
     }
 
     /// <inheritdoc/>
@@ -428,6 +412,31 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
                 grown[existing.Count] = registration;
                 return grown;
             });
+    }
+
+    private void AddImplementation(Service service, IComponentRegistration registration, bool preserveDefaults, IRegistrationSource? originatingSource)
+    {
+        var info = GetServiceInfo(service);
+
+        // We are in an ephemeral initialization; use the ephemeral set.
+        if (_ephemeralServiceInfo is not null)
+        {
+            info = GetEphemeralServiceInfo(_ephemeralServiceInfo, service, info);
+        }
+
+        // A service this component exposes may have had the implementation held back because it
+        // has not drained this source yet, in which case it must not take it now - that would
+        // place it ahead of the higher-priority sources still to be queried. Only a
+        // multi-service component can hold anything, so the field is null for most containers.
+        var held = _deferredSourceImplementations;
+        if (held is not null &&
+            originatingSource is not null &&
+            WasDeferred(held, info, originatingSource, registration))
+        {
+            return;
+        }
+
+        info.AddImplementation(registration, preserveDefaults, originatingSource is not null);
     }
 
     /// <summary>
