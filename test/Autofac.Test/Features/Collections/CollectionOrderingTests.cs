@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Globalization;
 using System.Reflection;
 using Autofac.Core;
 using Autofac.Features.Metadata;
@@ -123,6 +124,60 @@ public class CollectionOrderingTests
     }
 
     [Fact]
+    public void WhenMoreThanSixteenAreRegistered()
+    {
+        // The registry returns these newest first, so they're read in reverse without sorting.
+        var expected = Enumerable.Range(0, 20).Select(i => i.ToString(CultureInfo.InvariantCulture)).ToArray();
+        var cb = new ContainerBuilder();
+        foreach (var value in expected)
+        {
+            cb.RegisterInstance(value);
+        }
+
+        var c = cb.Build();
+
+        Assert.Equal(expected, c.Resolve<IEnumerable<string>>());
+        Assert.Equal(expected, c.Resolve<IList<string>>());
+    }
+
+    [Fact]
+    public void WhenMoreThanSixteenAreRegisteredAndNeedSorting()
+    {
+        // PreserveExistingDefaults puts one registration after the defaults, so the list isn't in order and
+        // is sorted. Sorting more than 16 elements doesn't use insertion sort.
+        var expected = Enumerable.Range(0, 20).Select(i => i.ToString(CultureInfo.InvariantCulture)).ToArray();
+        var cb = new ContainerBuilder();
+        foreach (var value in expected)
+        {
+            var registration = cb.RegisterInstance(value);
+            if (value == "10")
+            {
+                registration.PreserveExistingDefaults();
+            }
+        }
+
+        var c = cb.Build();
+
+        Assert.Equal(expected, c.Resolve<IEnumerable<string>>());
+        Assert.Equal(expected, c.Resolve<IList<string>>());
+    }
+
+    [Fact]
+    public void WhenMoreThanSixteenAreKeyedAndResolvedWithAnyKey()
+    {
+        var expected = Enumerable.Range(0, 20).Select(i => i.ToString(CultureInfo.InvariantCulture)).ToArray();
+        var cb = new ContainerBuilder();
+        foreach (var value in expected)
+        {
+            cb.RegisterInstance(value).Keyed<string>(value);
+        }
+
+        var c = cb.Build();
+
+        Assert.Equal(expected, c.ResolveKeyed<IEnumerable<string>>(KeyedService.AnyKey));
+    }
+
+    [Fact]
     public void WhenRegisteredWithRegisterDelegate()
     {
         var cb = new ContainerBuilder();
@@ -184,6 +239,34 @@ public class CollectionOrderingTests
         Assert.Equal(S1, services[0]);
         Assert.Equal(S2, services[1]);
         Assert.Equal(S3, services[2]);
+    }
+
+    [Fact]
+    public void WhenKeyedWithPreviousPreserveExistingDefaults()
+    {
+        var cb = new ContainerBuilder();
+        cb.RegisterInstance(S1).Keyed<string>("k");
+        cb.RegisterInstance(S2).Keyed<string>("k").PreserveExistingDefaults();
+        cb.RegisterInstance(S3).Keyed<string>("k");
+        var c = cb.Build();
+
+        var services = c.ResolveKeyed<IEnumerable<string>>("k").ToArray();
+
+        Assert.Equal(new[] { S1, S2, S3 }, services);
+    }
+
+    [Fact]
+    public void WhenKeyedInNestedLifetimeScope()
+    {
+        var cb = new ContainerBuilder();
+        cb.RegisterInstance(S1).Keyed<string>("k");
+        cb.RegisterInstance(S2).Keyed<string>("k");
+        var c = cb.Build();
+        var ls = c.BeginLifetimeScope(b => b.RegisterInstance(S3).Keyed<string>("k"));
+
+        var services = ls.ResolveKeyed<IEnumerable<string>>("k").ToArray();
+
+        Assert.Equal(new[] { S1, S2, S3 }, services);
     }
 
     [Fact]

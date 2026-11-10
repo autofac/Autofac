@@ -13,6 +13,7 @@ public static class BenchmarkSet
         typeof(KeyedAnyKeyChildScopeBenchmark),
         typeof(ContainerBuildBenchmark),
         typeof(ContainerBuildInheritedMembersBenchmark),
+        typeof(AssemblyScanningBenchmark),
         typeof(ConcurrencyBenchmark),
         typeof(ConcurrencyNestedScopeBenchmark),
         typeof(KeyedGenericBenchmark),
@@ -28,6 +29,10 @@ public static class BenchmarkSet
         typeof(KeylessSimpleSharedInstanceBenchmark),
         typeof(KeylessSimpleLambdaBenchmark),
         typeof(KeylessSimpleSharedInstanceLambdaBenchmark),
+        typeof(KeylessConditionalBenchmark),
+        typeof(KeylessParameterBenchmark),
+        typeof(KeylessGenericUnmatchedBenchmark),
+        typeof(CompositeBenchmark),
         typeof(DeepGraphResolveBenchmark),
         typeof(EnumerableResolveBenchmark),
         typeof(PropertyInjectionBenchmark),
@@ -42,5 +47,6 @@ public static class BenchmarkSet
         typeof(RequiredPropertyBenchmark),
         typeof(ModuleRegistrationBenchmark),
         typeof(GeneratedFactoryChildScopeBenchmark),
+        typeof(ImplicitRelationshipBenchmark),
     };
 }

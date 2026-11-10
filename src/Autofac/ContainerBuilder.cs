@@ -35,6 +35,7 @@ namespace Autofac;
 /// via extension methods in <see cref="RegistrationExtensions"/>.</remarks>
 /// <seealso cref="IContainer"/>
 /// <see cref="RegistrationExtensions"/>
+[SuppressMessage("Microsoft.Design", "CA1001", Justification = "Responsibility for disposing the registry builder passes to the registry it builds. A module's builder is never built, and its registry builder holds only managed state.")]
 public sealed class ContainerBuilder
 {
     private static int _builderAlreadyAllocated;
@@ -42,6 +43,7 @@ public sealed class ContainerBuilder
     private readonly bool _clearRegistrationCaches;
     private readonly List<DeferredCallback> _configurationCallbacks = new List<DeferredCallback>();
     private BuildCallbackService? _buildCallbacks;
+    private IComponentRegistryBuilder? _componentRegistryBuilder;
     private bool _wasBuilt;
 
     /// <summary>
@@ -63,8 +65,8 @@ public sealed class ContainerBuilder
     /// </summary>
     /// <param name="properties">The properties used during component registration.</param>
     internal ContainerBuilder(IDictionary<string, object?> properties)
-        : this(properties, new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), properties))
     {
+        Properties = properties;
     }
 
     /// <summary>
@@ -84,7 +86,7 @@ public sealed class ContainerBuilder
     internal ContainerBuilder(IDictionary<string, object?> properties, IComponentRegistryBuilder componentRegistryBuilder)
     {
         Properties = properties;
-        ComponentRegistryBuilder = componentRegistryBuilder;
+        _componentRegistryBuilder = componentRegistryBuilder;
     }
 
     /// <summary>
@@ -92,7 +94,12 @@ public sealed class ContainerBuilder
     /// </summary>
     public IComponentRegistryBuilder ComponentRegistryBuilder
     {
-        get;
+        get
+        {
+            // Created on first use: a module's builder is applied to the parent registry, and
+            // rarely uses its own registry builder.
+            return _componentRegistryBuilder ??= new ComponentRegistryBuilder(new DefaultRegisteredServicesTracker(), Properties);
+        }
     }
 
     /// <summary>

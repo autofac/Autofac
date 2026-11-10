@@ -41,4 +41,23 @@ public class DecoratorContextTests
         Assert.Equal(context.AppliedDecoratorTypes, new[] { typeof(string), typeof(string) });
         Assert.Equal(context.AppliedDecorators, new[] { DecoratorA, DecoratorB });
     }
+
+    [Fact]
+    public void UpdateLeavesThePreviousContextUnchanged()
+    {
+        const string ImplementationInstance = "Initial";
+        const string DecoratorA = "DecoratorA";
+        const string DecoratorB = "DecoratorB";
+        var initial = DecoratorContext.Create(Factory.CreateEmptyContext(), typeof(string), typeof(string), ImplementationInstance);
+        var first = initial.UpdateContext(DecoratorA);
+
+        var second = first.UpdateContext(DecoratorB);
+
+        Assert.Empty(initial.AppliedDecorators);
+        Assert.Empty(initial.AppliedDecoratorTypes);
+        Assert.Equal(DecoratorA, first.CurrentInstance);
+        Assert.Equal(new[] { DecoratorA }, first.AppliedDecorators);
+        Assert.Equal(new[] { typeof(string) }, first.AppliedDecoratorTypes);
+        Assert.Equal(new[] { DecoratorA, DecoratorB }, second.AppliedDecorators);
+    }
 }

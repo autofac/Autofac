@@ -220,14 +220,7 @@ public static partial class RegistrationExtensions
 
         var service = new DecoratorService(typeof(TService), condition);
 
-        var rb = RegistrationBuilder.ForDelegate((c, p) =>
-        {
-            var instance = (TService?)p
-                .OfType<TypedParameter>()
-                .FirstOrDefault(tp => tp.Type == typeof(TService))
-                ?.Value ?? throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));
-            return decorator(c, p, instance);
-        }).As(service);
+        var rb = RegistrationBuilder.ForDelegate((c, p) => decorator(c, p, GetDecoratedInstance<TService>(p))).As(service);
 
         var decoratorRegistration = rb.CreateRegistration();
 
@@ -317,4 +310,49 @@ public static partial class RegistrationExtensions
 
         builder.RegisterServiceMiddlewareSource(new OpenGenericDecoratorMiddlewareSource(decoratorService, genericRegistration.RegistrationData, genericRegistration.ActivatorData));
     }
+
+    /// <summary>
+    /// Finds the decorated instance, the first <see cref="TypedParameter"/> for the service type. Looked up without
+    /// LINQ, which allocated an iterator and an enumerator on every decoration.
+    /// </summary>
+    /// <typeparam name="TService">The service type being decorated.</typeparam>
+    /// <param name="parameters">The parameters passed to the decorator.</param>
+    /// <returns>The decorated instance.</returns>
+    internal static TService GetDecoratedInstance<TService>(IEnumerable<Parameter> parameters)
+        where TService : class
+    {
+        // An array is looped over directly, which avoids allocating an enumerator for it.
+        if (parameters is Parameter[] parameterArray)
+        {
+            foreach (var parameter in parameterArray)
+            {
+                if (IsInstanceParameter<TService>(parameter))
+                {
+                    return GetInstance<TService>(parameter);
+                }
+            }
+        }
+        else
+        {
+            foreach (var parameter in parameters)
+            {
+                if (IsInstanceParameter<TService>(parameter))
+                {
+                    return GetInstance<TService>(parameter);
+                }
+            }
+        }
+
+        throw DecoratorRequiresInstanceParameter<TService>();
+    }
+
+    private static bool IsInstanceParameter<TService>(Parameter parameter)
+        => parameter is TypedParameter typedParameter && typedParameter.Type == typeof(TService);
+
+    private static TService GetInstance<TService>(Parameter parameter)
+        where TService : class
+        => (TService?)((TypedParameter)parameter).Value ?? throw DecoratorRequiresInstanceParameter<TService>();
+
+    private static DependencyResolutionException DecoratorRequiresInstanceParameter<TService>()
+        => new(string.Format(CultureInfo.CurrentCulture, RegistrationExtensionsResources.DecoratorRequiresInstanceParameter, typeof(TService).Name));
 }

@@ -51,6 +51,7 @@ internal class InternalReflectionCaches
         ServiceKeyParameterAttributes = set.GetOrCreateCache<ReflectionCacheParameterDictionary<bool>>(nameof(ServiceKeyParameterAttributes));
         ServiceKeyPropertyAttributes = set.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, bool>>(nameof(ServiceKeyPropertyAttributes));
         ServiceKeyUsageByType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(ServiceKeyUsageByType));
+        MetadataViewFactories = set.GetOrCreateCache<ReflectionCacheDictionary<Type, (PropertyInfo[] Properties, Delegate Factory)>>(nameof(MetadataViewFactories));
 
         GeneratedFactoryServiceOnlyGenerators = set.GetOrCreateCache(
             nameof(GeneratedFactoryServiceOnlyGenerators),
@@ -183,6 +184,15 @@ internal class InternalReflectionCaches
     /// Gets a cache used to determine if a type uses <see cref="ServiceKeyAttribute"/>.
     /// </summary>
     public ReflectionCacheDictionary<Type, bool> ServiceKeyUsageByType
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Gets a cache of compiled metadata view factories, with the view properties whose default
+    /// values each metadata view provider reads.
+    /// </summary>
+    public ReflectionCacheDictionary<Type, (PropertyInfo[] Properties, Delegate Factory)> MetadataViewFactories
     {
         get;
     }
