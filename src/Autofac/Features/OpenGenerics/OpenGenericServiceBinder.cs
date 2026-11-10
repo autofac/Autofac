@@ -35,7 +35,7 @@ internal static class OpenGenericServiceBinder
         Justification = "When the requested service's definition is the implementation type, the requested service type is the closed implementation type that MakeGenericType would otherwise construct, so the same responsibility for the closed type applies.")]
     public static bool TryBindOpenGenericTypedService(
         IServiceWithType serviceWithType,
-        IEnumerable<Service> configuredOpenGenericServices,
+        Service[] configuredOpenGenericServices,
         [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type openGenericImplementationType,
         [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)][NotNullWhen(returnValue: true)] out Type? constructedImplementationType,
         [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
@@ -92,7 +92,7 @@ internal static class OpenGenericServiceBinder
     [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
     public static bool TryBindOpenGenericDelegateService(
         IServiceWithType serviceWithType,
-        IEnumerable<Service> configuredOpenGenericServices,
+        Service[] configuredOpenGenericServices,
         Func<IComponentContext, Type[], IEnumerable<Parameter>, object> openGenericFactory,
         [NotNullWhen(returnValue: true)] out Func<IComponentContext, IEnumerable<Parameter>, object>? constructedFactory,
         [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
@@ -249,24 +249,10 @@ internal static class OpenGenericServiceBinder
     private static bool IsClosedGenericType(Type serviceType)
         => serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition;
 
-    private static bool IsConfigured(IEnumerable<Service> configuredOpenGenericServices, IServiceWithType serviceWithType, Type serviceTypeDefinition)
+    private static bool IsConfigured(Service[] configuredOpenGenericServices, IServiceWithType serviceWithType, Type serviceTypeDefinition)
     {
         // Built only when the configured or the requested service isn't a typed or keyed service.
         IServiceWithType? definitionService = null;
-
-        // The registration sources pass an array, which can be looped over without allocating an enumerator.
-        if (configuredOpenGenericServices is Service[] services)
-        {
-            foreach (var service in services)
-            {
-                if (IsDefinitionService(service, serviceWithType, serviceTypeDefinition, ref definitionService))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         foreach (var service in configuredOpenGenericServices)
         {
@@ -315,7 +301,7 @@ internal static class OpenGenericServiceBinder
     /// </summary>
     [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
     private static Service[] BuildImplementedServices(
-        IEnumerable<Service> configuredOpenGenericServices,
+        Service[] configuredOpenGenericServices,
         IServiceWithType serviceWithType,
         Type serviceTypeDefinition,
         Type[] serviceGenericArguments,
@@ -324,19 +310,9 @@ internal static class OpenGenericServiceBinder
         Service? firstService = null;
         List<Service>? implementedServices = null;
 
-        if (configuredOpenGenericServices is Service[] services)
+        foreach (var service in configuredOpenGenericServices)
         {
-            foreach (var service in services)
-            {
-                AddImplementedService(service);
-            }
-        }
-        else
-        {
-            foreach (var service in configuredOpenGenericServices)
-            {
-                AddImplementedService(service);
-            }
+            AddImplementedService(service);
         }
 
         if (implementedServices is not null)
