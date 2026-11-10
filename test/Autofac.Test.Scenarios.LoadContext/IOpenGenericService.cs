@@ -3,8 +3,6 @@
 
 namespace A;
 
-#pragma warning disable CA1040 // Only registered and resolved, so it needs no members.
 public interface IOpenGenericService<T>
-#pragma warning restore CA1040
 {
 }
