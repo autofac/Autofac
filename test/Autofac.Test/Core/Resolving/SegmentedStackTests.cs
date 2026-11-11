@@ -215,6 +215,76 @@ public class SegmentedStackTests
     }
 
     [Fact]
+    public void AnyFindsNothingInEmptyStack()
+    {
+        var stack = new SegmentedStack<string>();
+
+        Assert.False(stack.Any("1", static (item, target) => item == target));
+    }
+
+    [Fact]
+    public void AnyFindsMatchingItem()
+    {
+        var stack = new SegmentedStack<string>();
+        stack.Push("1");
+        stack.Push("2");
+        stack.Push("3");
+
+        Assert.True(stack.Any("1", static (item, target) => item == target));
+        Assert.True(stack.Any("3", static (item, target) => item == target));
+        Assert.False(stack.Any("4", static (item, target) => item == target));
+    }
+
+    [Fact]
+    public void AnyOnlySearchesActiveSegment()
+    {
+        var stack = new SegmentedStack<string>();
+        stack.Push("1");
+        stack.Push("2");
+
+        using (stack.EnterSegment())
+        {
+            Assert.False(stack.Any("1", static (item, target) => item == target));
+
+            stack.Push("3");
+
+            Assert.True(stack.Any("3", static (item, target) => item == target));
+            Assert.False(stack.Any("2", static (item, target) => item == target));
+
+            stack.Pop();
+        }
+
+        Assert.True(stack.Any("2", static (item, target) => item == target));
+    }
+
+    [Fact]
+    public void EmptiedStackCanGrowAgain()
+    {
+        // Grow past the initial capacity so the spare array is a resized one.
+        var items = Enumerable.Range(0, 40).Select(i => i.ToString(CultureInfo.InvariantCulture)).ToArray();
+        var first = new SegmentedStack<string>();
+        foreach (var item in items)
+        {
+            first.Push(item);
+        }
+
+        while (first.Count > 0)
+        {
+            first.Pop();
+        }
+
+        var second = new SegmentedStack<string>();
+        foreach (var item in items)
+        {
+            first.Push(item);
+            second.Push(item);
+        }
+
+        Assert.Equal(Enumerable.Reverse(items), first);
+        Assert.Equal(Enumerable.Reverse(items), second);
+    }
+
+    [Fact]
     public void CannotExitSegmentWithUnpoppedItems()
     {
         var stack = new SegmentedStack<string>();
