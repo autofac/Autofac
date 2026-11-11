@@ -103,6 +103,45 @@ public class DefaultDiagnosticTracerTests
         Assert.Equal(0, tracer.OperationsInProgress);
     }
 
+    [Fact]
+    public void DiagnosticTracerRaisesEventsForCachedSharedInstances()
+    {
+        var tracer = new DefaultDiagnosticTracer();
+
+        var containerBuilder = new ContainerBuilder();
+        containerBuilder.RegisterType<Implementor>().SingleInstance();
+        containerBuilder.RegisterType<Consumer>();
+
+        var container = containerBuilder.Build();
+        using var scope = container.BeginLifetimeScope();
+
+        container.SubscribeToDiagnostics(tracer);
+
+        var completed = new List<string>();
+        tracer.OperationCompleted += (sender, args) => completed.Add(args.TraceContent);
+
+        container.Resolve<Implementor>();
+        container.Resolve<Implementor>();
+        scope.Resolve<Implementor>();
+
+        // A cached dependency still shows up as a request within the operation.
+        container.Resolve<Consumer>();
+
+        Assert.Equal(4, completed.Count);
+        Assert.Equal(2, CountOccurrences(completed[3], "Resolve Request Starting"));
+    }
+
+    private static int CountOccurrences(string text, string value)
+    {
+        var count = 0;
+        for (var index = text.IndexOf(value, StringComparison.Ordinal); index >= 0; index = text.IndexOf(value, index + value.Length, StringComparison.Ordinal))
+        {
+            count++;
+        }
+
+        return count;
+    }
+
     private interface IService
     {
     }
@@ -122,5 +161,18 @@ public class DefaultDiagnosticTracerTests
 
     private class Implementor : IService
     {
+    }
+
+    private class Consumer
+    {
+        public Consumer(Implementor implementor)
+        {
+            Implementor = implementor;
+        }
+
+        public Implementor Implementor
+        {
+            get;
+        }
     }
 }
