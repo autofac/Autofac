@@ -17,7 +17,9 @@ internal class OpenGenericDecoratorMiddlewareSource : IServiceMiddlewareSource
 {
     private readonly DecoratorService _decoratorService;
     private readonly RegistrationData _registrationData;
+    private readonly Service[] _services;
     private readonly ReflectionActivatorData _activatorData;
+    private readonly Type[] _openServiceTypes;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OpenGenericDecoratorMiddlewareSource"/> class.
@@ -31,7 +33,10 @@ internal class OpenGenericDecoratorMiddlewareSource : IServiceMiddlewareSource
         _registrationData = registrationData ?? throw new ArgumentNullException(nameof(registrationData));
         _activatorData = activatorData ?? throw new ArgumentNullException(nameof(activatorData));
 
-        OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
+        // The source is created when the container is built, so the services no longer change.
+        _services = registrationData.Services.ToArray();
+        OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, _services);
+        _openServiceTypes = OpenGenericServiceBinder.GetOpenServiceTypes(_services);
     }
 
     /// <inheritdoc/>
@@ -41,12 +46,12 @@ internal class OpenGenericDecoratorMiddlewareSource : IServiceMiddlewareSource
         Justification = "This middleware source is only ever added to the container by the [RequiresDynamicCode] RegisterGenericDecorator API, so the dynamic-code requirement has already been surfaced to the caller at registration time. The resolve-time binding here cannot be reached without that opt-in.")]
     public void ProvideMiddleware(Service service, IComponentRegistryServices availableServices, IResolvePipelineBuilder pipelineBuilder)
     {
-        if (service is IServiceWithType swt)
+        if (service is IServiceWithType swt && OpenGenericServiceBinder.IsClosedFromAny(swt.ServiceType, _openServiceTypes))
         {
             var closedDecoratorService = new DecoratorService(swt.ServiceType, _decoratorService.Condition);
 
             // Try to bind to the service.
-            if (OpenGenericServiceBinder.TryBindOpenGenericTypedService(closedDecoratorService, _registrationData.Services, _activatorData.ImplementationType, out var constructedImplementationType, out var services))
+            if (OpenGenericServiceBinder.TryBindOpenGenericTypedService(closedDecoratorService, _services, _activatorData.ImplementationType, out var constructedImplementationType, out var services))
             {
                 // Create a new closed-generic registration.
                 var registration = new ComponentRegistration(

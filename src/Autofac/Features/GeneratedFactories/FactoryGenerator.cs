@@ -22,6 +22,9 @@ public class FactoryGenerator
     private static readonly ConstructorInfo _requestConstructor
         = ReflectionExtensions.GetConstructor(() => new ResolveRequest(default!, default!, default!, default));
 
+    private static readonly FieldInfo _noParametersField
+        = typeof(ResolveRequest).GetField(nameof(ResolveRequest.NoParameters), BindingFlags.NonPublic | BindingFlags.Static)!;
+
     private readonly Func<IComponentContext, IEnumerable<Parameter>, Delegate> _generator;
 
     /// <summary>
@@ -188,11 +191,11 @@ public class FactoryGenerator
             {
                 activatorContextParam,
                 serviceParam,
-                Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),
+                CreateParametersExpression(resolveParameterArray),
             };
 
             var resolveCall = Expression.Call(
-                ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveService(default!, default!)),
+                ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveService(default!, ResolveRequest.NoParameters)),
                 resolveParams);
 
             resolveCast = Expression.Convert(resolveCall, invoke.ReturnType);
@@ -258,7 +261,7 @@ public class FactoryGenerator
                 _requestConstructor,
                 serviceParam,
                 serviceRegistrationParam,
-                Expression.NewArrayInit(typeof(Parameter), resolveParameterArray),
+                CreateParametersExpression(resolveParameterArray),
                 Expression.Constant(null, typeof(IComponentRegistration)));
 
             // c.ResolveComponent(new ResolveRequest(...))
@@ -284,6 +287,13 @@ public class FactoryGenerator
 
         return activator.Compile();
     }
+
+    // A factory without arguments passes the shared empty parameters instead of a new empty array on each call.
+    [RequiresDynamicCode(DynamicCodeWarning)]
+    private static Expression CreateParametersExpression(Expression[] parameters)
+        => parameters.Length == 0
+            ? Expression.Field(null, _noParametersField)
+            : Expression.NewArrayInit(typeof(Parameter), parameters);
 
     private static Expression[] MapParameters(IEnumerable<ParameterExpression> creatorParams, ParameterMapping pm)
     {

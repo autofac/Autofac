@@ -21,6 +21,8 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
 {
     private const string ReflectionCacheName = $"{nameof(LazyWithMetadataRegistrationSource)}.Cache";
 
+    private static readonly TypedService _componentContextService = new(typeof(IComponentContext));
+
     private static readonly MethodInfo _createLazyRegistrationMethod = typeof(LazyWithMetadataRegistrationSource).GetDeclaredMethod(nameof(CreateLazyRegistration));
 
     private delegate IComponentRegistration RegistrationCreator(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo);
@@ -86,8 +88,8 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
         Justification = "Builds a strongly-typed Lazy<T, TMetadata> metadata view via expression compilation. Reached only when a consumer resolves that relationship through this always-registered implicit source (dispatched by relationship type, which cannot surface the requirement at the consumer's call site). Consumers that resolve Lazy<T, TMetadata> take on the dynamic-code requirement.")]
     [UnconditionalSuppressMessage(
         "Trimming",
-        "IL2072:UnrecognizedReflectionPattern",
-        Justification = "lazyType is the closed Lazy<T, TMetadata> the consumer requested. Activator.CreateInstance invokes its (T factory, metadata) constructor, which is intrinsic to Lazy<,> and always present; the consumer that resolves the relationship is responsible for that type.")]
+        "IL2091:UnrecognizedReflectionPattern",
+        Justification = "Lazy<T, TMetadata> nominally wants a public parameterless constructor on T, but this Lazy is constructed with an explicit value factory that resolves T through the container - T's own constructor is never invoked by Lazy<T, TMetadata> here.")]
     private static IComponentRegistration CreateLazyRegistration<T, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] TMeta>(Service providedService, Service valueService, ServiceRegistration registrationResolveInfo)
     {
         var metadataProvider = MetadataViewProvider.GetMetadataViewProvider<TMeta>();
@@ -95,12 +97,11 @@ internal class LazyWithMetadataRegistrationSource : IRegistrationSource
         var rb = RegistrationBuilder.ForDelegate(
             (c, p) =>
             {
-                var context = c.Resolve<IComponentContext>();
-                var lazyType = ((IServiceWithType)providedService).ServiceType;
+                var context = (IComponentContext)c.ResolveService(_componentContextService);
                 var request = new ResolveRequest(valueService, registrationResolveInfo, p);
                 var valueFactory = new Func<T>(() => (T)context.ResolveComponent(request));
                 var metadata = metadataProvider(registrationResolveInfo.Registration.Target.Metadata);
-                return Activator.CreateInstance(lazyType, valueFactory, metadata)!;
+                return new Lazy<T, TMeta>(valueFactory, metadata);
             })
             .As(providedService)
             .Targeting(registrationResolveInfo.Registration);

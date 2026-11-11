@@ -12,6 +12,8 @@ namespace Autofac.Features.OwnedInstances;
 /// </summary>
 internal class OwnedInstanceRegistrationSource : ImplicitRegistrationSource
 {
+    private static readonly TypedService _lifetimeScopeService = new(typeof(ILifetimeScope));
+
     /// <summary>
     /// Initializes a new instance of the <see cref="OwnedInstanceRegistrationSource"/> class.
     /// </summary>
@@ -26,7 +28,7 @@ internal class OwnedInstanceRegistrationSource : ImplicitRegistrationSource
     /// <inheritdoc/>
     protected override object ResolveInstance<T>(IComponentContext ctx, in ResolveRequest request)
     {
-        var lifetime = ctx.Resolve<ILifetimeScope>().BeginLifetimeScope(request.Service);
+        var lifetime = ((ILifetimeScope)ctx.ResolveService(_lifetimeScopeService)).BeginLifetimeScope(request.Service);
         try
         {
             var value = (T)lifetime.ResolveComponent(request);

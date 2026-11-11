@@ -28,37 +28,41 @@ internal static class OpenGenericServiceBinder
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2055:MakeGenericType",
-        Justification = "Constructs the closed implementation and service types from the open generic registration's runtime type arguments. The implementation type's activatable members are preserved by its [DynamicallyAccessedMembers] annotation; the consumer that registered the open generic is responsible for the closed type.")]
-    [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
+        Justification = "Constructs the closed implementation type from the open generic registration's runtime type arguments. The implementation type's activatable members are preserved by its [DynamicallyAccessedMembers] annotation; the consumer that registered the open generic is responsible for the closed type.")]
+    [UnconditionalSuppressMessage(
+        "Trimming",
+        "IL2072:UnrecognizedReflectionPattern",
+        Justification = "When the requested service's definition is the implementation type, the requested service type is the closed implementation type that MakeGenericType would otherwise construct, so the same responsibility for the closed type applies.")]
     public static bool TryBindOpenGenericTypedService(
         IServiceWithType serviceWithType,
-        IEnumerable<Service> configuredOpenGenericServices,
+        Service[] configuredOpenGenericServices,
         [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)] Type openGenericImplementationType,
         [DynamicallyAccessedMembers(ActivatorMemberTypes.ActivatedType)][NotNullWhen(returnValue: true)] out Type? constructedImplementationType,
         [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
     {
-        if (serviceWithType.ServiceType.IsGenericType && !serviceWithType.ServiceType.IsGenericTypeDefinition)
+        var serviceType = serviceWithType.ServiceType;
+        if (IsClosedGenericType(serviceType))
         {
-            var definitionService = (IServiceWithType)serviceWithType.ChangeType(serviceWithType.ServiceType.GetGenericTypeDefinition());
-            var serviceGenericArguments = serviceWithType.ServiceType.GetGenericArguments();
+            var serviceTypeDefinition = serviceType.GetGenericTypeDefinition();
 
-            if (configuredOpenGenericServices.OfType<IServiceWithType>().Any(s => s.Equals(definitionService)))
+            if (IsConfigured(configuredOpenGenericServices, serviceWithType, serviceTypeDefinition))
             {
+                var serviceGenericArguments = serviceType.GetGenericArguments();
+                var implementation = OpenGenericImplementationInfo.For(openGenericImplementationType);
                 var implementorGenericArguments = TryMapImplementationGenericArguments(
-                    openGenericImplementationType, serviceWithType.ServiceType, definitionService.ServiceType, serviceGenericArguments);
+                    openGenericImplementationType, implementation, serviceType, serviceTypeDefinition, serviceGenericArguments);
 
-                if (implementorGenericArguments.All(a => a is not null) &&
-                    openGenericImplementationType.IsCompatibleWithGenericParameterConstraints(implementorGenericArguments!))
+                if (AllMapped(implementorGenericArguments) &&
+                    InternalTypeExtensions.IsCompatibleWithGenericParameterConstraints(
+                        implementation.GenericArguments, implementation.GenericParameterConstraints, implementorGenericArguments!))
                 {
-                    var constructedImplementationTypeTmp = openGenericImplementationType.MakeGenericType(implementorGenericArguments!);
+                    // Closing the implementation type over the requested service's own arguments gives back the requested type.
+                    var constructedImplementationTypeTmp = serviceTypeDefinition == openGenericImplementationType
+                        ? serviceType
+                        : openGenericImplementationType.MakeGenericType(implementorGenericArguments!);
 
-                    var implementedServices = configuredOpenGenericServices
-                        .OfType<IServiceWithType>()
-                        .Where(s => s.ServiceType.GetGenericArguments().Length == serviceGenericArguments.Length)
-                        .Select(s => new { ServiceWithType = s, GenericService = s.ServiceType.MakeGenericType(serviceGenericArguments) })
-                        .Where(p => p.GenericService.IsAssignableFrom(constructedImplementationTypeTmp))
-                        .Select(p => p.ServiceWithType.ChangeType(p.GenericService))
-                        .ToArray();
+                    var implementedServices = BuildImplementedServices(
+                        configuredOpenGenericServices, serviceWithType, serviceTypeDefinition, serviceGenericArguments, constructedImplementationTypeTmp);
 
                     if (implementedServices.Length > 0)
                     {
@@ -86,10 +90,9 @@ internal static class OpenGenericServiceBinder
     /// <param name="constructedServices">The built closed generic services.</param>
     /// <returns>True if the closed generic service can be bound. False otherwise.</returns>
     [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
-    [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
     public static bool TryBindOpenGenericDelegateService(
         IServiceWithType serviceWithType,
-        IEnumerable<Service> configuredOpenGenericServices,
+        Service[] configuredOpenGenericServices,
         Func<IComponentContext, Type[], IEnumerable<Parameter>, object> openGenericFactory,
         [NotNullWhen(returnValue: true)] out Func<IComponentContext, IEnumerable<Parameter>, object>? constructedFactory,
         [NotNullWhen(returnValue: true)] out Service[]? constructedServices)
@@ -102,18 +105,18 @@ internal static class OpenGenericServiceBinder
             return false;
         }
 
-        var definitionService = (IServiceWithType)serviceWithType.ChangeType(GetGenericTypeDefinition(serviceWithTypeServiceType));
-        var serviceGenericArguments = serviceWithTypeServiceType.GetGenericArguments();
+        var serviceTypeDefinition = GetGenericTypeDefinition(serviceWithTypeServiceType);
 
-        if (!configuredOpenGenericServices.OfType<IServiceWithType>().Any(s => s.Equals(definitionService)))
+        if (!IsConfigured(configuredOpenGenericServices, serviceWithType, serviceTypeDefinition))
         {
             constructedFactory = null;
             constructedServices = null;
             return false;
         }
 
-        constructedFactory = (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
-        constructedServices = BuildImplementedServices(configuredOpenGenericServices, serviceGenericArguments);
+        var serviceGenericArguments = serviceWithTypeServiceType.GetGenericArguments();
+        constructedFactory = CloseFactory(openGenericFactory, serviceGenericArguments);
+        constructedServices = BuildImplementedServices(configuredOpenGenericServices, serviceWithType, serviceTypeDefinition, serviceGenericArguments, null);
         return true;
     }
 
@@ -122,10 +125,6 @@ internal static class OpenGenericServiceBinder
     /// </summary>
     /// <param name="implementationType">The open generic implementation type.</param>
     /// <param name="services">The set of open generic services.</param>
-    [UnconditionalSuppressMessage(
-        "Trimming",
-        "IL2067:UnrecognizedReflectionPattern",
-        Justification = "Inspects the interfaces of the open generic implementation type to validate it can implement the configured services. The implementation type comes from an open generic registration (RegisterGeneric / open generic scanning), whose consumer is responsible for preserving its interfaces.")]
     public static void EnforceBindable(Type implementationType, IEnumerable<Service> services)
     {
         if (implementationType == null)
@@ -144,67 +143,271 @@ internal static class OpenGenericServiceBinder
                 string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ImplementorMustBeOpenGenericTypeDefinition, implementationType));
         }
 
-        foreach (var service in services.OfType<IServiceWithType>())
-        {
-            if (!service.ServiceType.IsGenericTypeDefinition)
-            {
-                throw new ArgumentException(
-                    string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ServiceTypeMustBeOpenGenericTypeDefinition, service));
-            }
+        var implementation = OpenGenericImplementationInfo.For(implementationType);
 
-            if (service.ServiceType.IsInterface)
+        foreach (var service in services)
+        {
+            if (service is IServiceWithType serviceWithType)
             {
-                if (GetInterfaces(implementationType, service.ServiceType).Length == 0)
-                {
-                    var message = string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ImplementorDoesntImplementService, implementationType.FullName, service.ServiceType.FullName);
-                    throw new InvalidOperationException(message);
-                }
-            }
-            else
-            {
-                if (!Traverse.Across(implementationType, t => t.BaseType!).Any(t => IsCompatibleGenericClassDefinition(t, service.ServiceType)))
-                {
-                    throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.TypesAreNotConvertible, implementationType, service));
-                }
+                EnforceBindable(implementationType, implementation, serviceWithType);
             }
         }
     }
 
+    /// <summary>
+    /// Gets the service types of the configured open generic services, for <see cref="IsClosedFromAny"/>.
+    /// </summary>
+    /// <param name="configuredOpenGenericServices">The set of configured open generic services.</param>
+    /// <returns>The service types of the services that have one.</returns>
+    public static Type[] GetOpenServiceTypes(IEnumerable<Service> configuredOpenGenericServices)
+        => configuredOpenGenericServices.OfType<IServiceWithType>().Select(s => s.ServiceType).ToArray();
+
+    /// <summary>
+    /// Determines whether a service type is a closed generic type built from one of the open service types.
+    /// <see cref="TryBindOpenGenericTypedService"/> only binds a service that passes this check, so callers
+    /// can use it to reject other services without allocating.
+    /// </summary>
+    /// <param name="serviceType">The service type being requested.</param>
+    /// <param name="openServiceTypes">The open service types, from <see cref="GetOpenServiceTypes"/>.</param>
+    /// <returns>True if the service type is closed from one of the open service types. False otherwise.</returns>
+    public static bool IsClosedFromAny(Type serviceType, Type[] openServiceTypes)
+    {
+        if (!IsClosedGenericType(serviceType))
+        {
+            return false;
+        }
+
+        var definition = serviceType.GetGenericTypeDefinition();
+        foreach (var openServiceType in openServiceTypes)
+        {
+            if (openServiceType == definition)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static void EnforceBindable(Type implementationType, OpenGenericImplementationInfo implementation, IServiceWithType service)
+    {
+        if (!service.ServiceType.IsGenericTypeDefinition)
+        {
+            throw new ArgumentException(
+                string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ServiceTypeMustBeOpenGenericTypeDefinition, service));
+        }
+
+        if (service.ServiceType.IsInterface)
+        {
+            if (!HasInterfaceNamed(implementation, service.ServiceType))
+            {
+                var message = string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.ImplementorDoesntImplementService, implementationType.FullName, service.ServiceType.FullName);
+                throw new InvalidOperationException(message);
+            }
+        }
+        else
+        {
+            if (!IsOrDerivesFromGenericClassDefinition(implementationType, service.ServiceType))
+            {
+                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericServiceBinderResources.TypesAreNotConvertible, implementationType, service));
+            }
+        }
+    }
+
+    private static bool HasInterfaceNamed(OpenGenericImplementationInfo implementation, Type serviceType)
+    {
+        foreach (var implementedInterface in implementation.Interfaces)
+        {
+            if (implementedInterface.Name == serviceType.Name && implementedInterface.Namespace == serviceType.Namespace)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsOrDerivesFromGenericClassDefinition(Type implementationType, Type serviceType)
+    {
+        for (var type = implementationType; type is not null; type = type.BaseType)
+        {
+            if (IsCompatibleGenericClassDefinition(type, serviceType))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Builds the closure here rather than in the caller, which would allocate it on every call, even for services it doesn't bind.
+    private static Func<IComponentContext, IEnumerable<Parameter>, object> CloseFactory(
+        Func<IComponentContext, Type[], IEnumerable<Parameter>, object> openGenericFactory,
+        Type[] serviceGenericArguments)
+        => (ctx, parameters) => openGenericFactory(ctx, serviceGenericArguments, parameters);
+
     private static bool IsClosedGenericType(Type serviceType)
         => serviceType.IsGenericType && !serviceType.IsGenericTypeDefinition;
+
+    private static bool IsConfigured(Service[] configuredOpenGenericServices, IServiceWithType serviceWithType, Type serviceTypeDefinition)
+    {
+        // Built only when the configured or the requested service isn't a typed or keyed service.
+        IServiceWithType? definitionService = null;
+
+        foreach (var service in configuredOpenGenericServices)
+        {
+            if (IsDefinitionService(service, serviceWithType, serviceTypeDefinition, ref definitionService))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Checks whether a configured service equals the requested service changed to the definition type. When both are
+    /// typed or keyed services, that is the comparison their Equals would make, so the definition service isn't built.
+    /// </summary>
+    private static bool IsDefinitionService(
+        Service service,
+        IServiceWithType serviceWithType,
+        Type serviceTypeDefinition,
+        ref IServiceWithType? definitionService) => (service, serviceWithType) switch
+        {
+            (TypedService typed, TypedService) => typed.ServiceType == serviceTypeDefinition,
+            (KeyedService keyed, KeyedService keyedRequest) => keyed.ServiceKey.Equals(keyedRequest.ServiceKey) && keyed.ServiceType == serviceTypeDefinition,
+            (TypedService or KeyedService, TypedService or KeyedService) => false,
+            (IServiceWithType configured, _) => configured.Equals(definitionService ??= (IServiceWithType)serviceWithType.ChangeType(serviceTypeDefinition)),
+            _ => false,
+        };
+
+    private static bool AllMapped(Type?[] genericArguments)
+    {
+        foreach (var genericArgument in genericArguments)
+        {
+            if (genericArgument is null)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Closes each configured open generic service over the requested service's generic arguments. When an
+    /// implementation type is given, services it can't be assigned to are left out.
+    /// </summary>
+    [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
+    private static Service[] BuildImplementedServices(
+        Service[] configuredOpenGenericServices,
+        IServiceWithType serviceWithType,
+        Type serviceTypeDefinition,
+        Type[] serviceGenericArguments,
+        Type? constructedImplementationType)
+    {
+        Service? firstService = null;
+        List<Service>? implementedServices = null;
+
+        foreach (var service in configuredOpenGenericServices)
+        {
+            AddImplementedService(service);
+        }
+
+        if (implementedServices is not null)
+        {
+            return implementedServices.ToArray();
+        }
+
+        return firstService is null ? Array.Empty<Service>() : new[] { firstService };
+
+        void AddImplementedService(Service service)
+        {
+            var implementedService = TryCloseService(service, serviceWithType, serviceTypeDefinition, serviceGenericArguments, constructedImplementationType);
+            if (implementedService is null)
+            {
+                return;
+            }
+
+            if (firstService is null)
+            {
+                firstService = implementedService;
+            }
+            else
+            {
+                implementedServices ??= new List<Service> { firstService };
+                implementedServices.Add(implementedService);
+            }
+        }
+    }
 
     [RequiresDynamicCode(OpenGenericDynamicCodeWarning)]
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2055:MakeGenericType",
         Justification = "Constructs the closed service types from the open generic registration's runtime type arguments. The consumer that registered the open generic is responsible for preserving the closed types.")]
-    private static Service[] BuildImplementedServices(IEnumerable<Service> configuredOpenGenericServices, Type[] serviceGenericArguments)
+    private static Service? TryCloseService(
+        Service service,
+        IServiceWithType requestedService,
+        Type serviceTypeDefinition,
+        Type[] serviceGenericArguments,
+        Type? constructedImplementationType)
     {
-        var serviceGenericArgumentsLength = serviceGenericArguments.Length;
-        var implementedServices = new List<Service>();
-
-        foreach (var service in configuredOpenGenericServices.OfType<IServiceWithType>())
+        if (service is not IServiceWithType serviceWithType)
         {
-            var serviceType = service.ServiceType;
-            if (serviceType.GetGenericArguments().Length != serviceGenericArgumentsLength)
-            {
-                continue;
-            }
-
-            var genericService = serviceType.MakeGenericType(serviceGenericArguments);
-            implementedServices.Add(service.ChangeType(genericService));
+            return null;
         }
 
-        return implementedServices.ToArray();
+        var openServiceType = serviceWithType.ServiceType;
+        var serviceType = requestedService.ServiceType;
+        Type genericService;
+        if (openServiceType == serviceTypeDefinition)
+        {
+            // Closing the requested service's definition over its own arguments gives back the requested type.
+            genericService = serviceType;
+        }
+        else if (openServiceType.GetGenericArguments().Length == serviceGenericArguments.Length)
+        {
+            genericService = openServiceType.MakeGenericType(serviceGenericArguments);
+        }
+        else
+        {
+            return null;
+        }
+
+        if (constructedImplementationType is not null && !genericService.IsAssignableFrom(constructedImplementationType))
+        {
+            return null;
+        }
+
+        if (genericService == serviceType && AsRequestedService(service, requestedService) is { } sameService)
+        {
+            return sameService;
+        }
+
+        return serviceWithType.ChangeType(genericService);
     }
+
+    /// <summary>
+    /// Gets the requested service when closing the configured service over the requested type would build an
+    /// equal one: both typed, or both keyed with the same key object.
+    /// </summary>
+    private static Service? AsRequestedService(Service service, IServiceWithType requestedService) => (service, requestedService) switch
+    {
+        (TypedService, TypedService typedRequest) => typedRequest,
+        (KeyedService keyed, KeyedService keyedRequest) when ReferenceEquals(keyed.ServiceKey, keyedRequest.ServiceKey) => keyedRequest,
+        _ => null,
+    };
 
     private static Type GetGenericTypeDefinition(Type type) => ReflectionCacheSet.Shared.Internal.GenericTypeDefinitionByType.GetOrAdd(type, static t => t.GetGenericTypeDefinition());
 
-    [UnconditionalSuppressMessage(
-        "Trimming",
-        "IL2067:UnrecognizedReflectionPattern",
-        Justification = "Inspects the interfaces of the open generic implementation type to map its generic arguments. The implementation type comes from an open generic registration whose consumer is responsible for preserving its interfaces.")]
-    private static Type?[] TryMapImplementationGenericArguments(Type implementationType, Type serviceType, Type serviceTypeDefinition, Type[] serviceGenericArguments)
+    private static Type?[] TryMapImplementationGenericArguments(
+        Type implementationType,
+        OpenGenericImplementationInfo implementation,
+        Type serviceType,
+        Type serviceTypeDefinition,
+        Type[] serviceGenericArguments)
     {
         if (serviceTypeDefinition == implementationType)
         {
@@ -239,8 +442,8 @@ internal static class OpenGenericServiceBinder
              * rather than just typeof(MyInterface<,>), so the names all line
              * up.
              */
-            var baseType = GetGenericBaseType(implementationType, serviceTypeDefinition);
-            if (baseType == null)
+            var baseTypeGenericArguments = GetGenericBaseTypeArguments(implementation, serviceTypeDefinition);
+            if (baseTypeGenericArguments == null)
             {
                 // If it's not an interface, the implementation type MUST have derived from
                 // the generic service type at some point or there's no way to cast.
@@ -248,85 +451,152 @@ internal static class OpenGenericServiceBinder
             }
 
             return TryFindServiceArgumentsForImplementation(
-                    implementationType,
+                    implementation.GenericArguments,
                     serviceGenericArguments,
-                    baseType.GenericTypeArguments);
+                    baseTypeGenericArguments);
         }
 
-        var availableArguments = GetInterfaces(implementationType, serviceType)
-            .Select(t => TryFindServiceArgumentsForImplementation(
-                implementationType,
-                serviceGenericArguments,
-                t.GenericTypeArguments))
-            .ToArray();
+        Type?[]? firstMatch = null;
+        Type?[]? completeMatch = null;
 
-        var exactMatch = availableArguments.FirstOrDefault(a => a.SequenceEqual(serviceGenericArguments));
-        if (exactMatch is not null)
+        for (var i = 0; i < implementation.Interfaces.Length; i++)
         {
-            return exactMatch;
-        }
-
-        // When no exact match exists, prefer the first candidate that produces a complete
-        // mapping (no null entries), so that a non-mappable interface appearing earlier in
-        // the interface list does not shadow a valid one that appears later. Fall back to
-        // availableArguments[0] when no candidate fully maps (preserves prior behavior for
-        // genuinely un-bindable registrations, where the caller's null check handles it).
-        var completeMatch = availableArguments.FirstOrDefault(a => a.All(arg => arg is not null));
-        return completeMatch ?? availableArguments[0];
-    }
-
-    private static Type?[] TryFindServiceArgumentsForImplementation(Type implementationType, IEnumerable<Type> serviceGenericArguments, IEnumerable<Type> serviceArgumentDefinitions)
-    {
-        var serviceArgumentDefinitionToArgumentMapping =
-            serviceArgumentDefinitions.Zip(serviceGenericArguments, (a, b) => new KeyValuePair<Type, Type>(a, b));
-
-        var implementationGenericArgumentDefinitions = implementationType.GetGenericArguments();
-        return implementationGenericArgumentDefinitions
-            .Select(implementationGenericArgumentDefinition => TryFindServiceArgumentForImplementationArgumentDefinition(
-                implementationGenericArgumentDefinition, serviceArgumentDefinitionToArgumentMapping))
-            .ToArray();
-    }
-
-    private static Type? GetGenericBaseType(Type implementationType, Type serviceTypeDefinition)
-    {
-        var baseType = implementationType.BaseType;
-        while (baseType is not null)
-        {
-            if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == serviceTypeDefinition)
+            var implementedInterface = implementation.Interfaces[i];
+            if (implementedInterface.Name != serviceType.Name || implementedInterface.Namespace != serviceType.Namespace)
             {
-                break;
+                continue;
             }
 
-            baseType = baseType.BaseType;
+            var availableArguments = TryFindServiceArgumentsForImplementation(
+                implementation.GenericArguments,
+                serviceGenericArguments,
+                implementation.InterfaceGenericArguments[i]);
+
+            if (availableArguments.SequenceEqual(serviceGenericArguments))
+            {
+                return availableArguments;
+            }
+
+            firstMatch ??= availableArguments;
+
+            // When no exact match exists, prefer the first candidate that produces a complete
+            // mapping (no null entries), so that a non-mappable interface appearing earlier in
+            // the interface list does not shadow a valid one that appears later.
+            if (completeMatch is null && AllMapped(availableArguments))
+            {
+                completeMatch = availableArguments;
+            }
         }
 
-        return baseType;
+        // Fall back to the first candidate when no candidate fully maps (preserves prior behavior
+        // for genuinely un-bindable registrations, where the caller's null check handles it).
+        // EnforceBindable has checked that at least one interface matches.
+        return completeMatch ?? firstMatch!;
     }
 
-    private static Type[] GetInterfaces([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type implementationType, Type serviceType)
-        => implementationType.GetInterfaces()
-            .Where(i => i.Name == serviceType.Name && i.Namespace == serviceType.Namespace)
-            .ToArray();
-
-    [SuppressMessage("CA1851", "CA1851", Justification = "The CPU cost in enumerating the list of services is low, while allocating a new list saves little in CPU but costs a lot in allocations.")]
-    private static Type? TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, IEnumerable<KeyValuePair<Type, Type>> serviceArgumentDefinitionToArgument)
+    private static Type?[] TryFindServiceArgumentsForImplementation(Type[] implementationGenericArgumentDefinitions, Type[] serviceGenericArguments, Type[] serviceArgumentDefinitions)
     {
-        var matchingRegularType = serviceArgumentDefinitionToArgument
-            .Where(argdef => !argdef.Key.IsGenericType && implementationGenericArgumentDefinition.Name == argdef.Key.Name)
-            .Select(argdef => argdef.Value)
-            .FirstOrDefault();
-
-        if (matchingRegularType is not null)
+        if (MapsByPosition(implementationGenericArgumentDefinitions, serviceGenericArguments, serviceArgumentDefinitions))
         {
-            return matchingRegularType;
+            return serviceGenericArguments;
         }
 
-        return serviceArgumentDefinitionToArgument
-            .Where(argdef => argdef.Key.IsGenericType && argdef.Value.GenericTypeArguments.Length > 0)
-            .Select(argdef => TryFindServiceArgumentForImplementationArgumentDefinition(
-                implementationGenericArgumentDefinition, argdef.Key.GenericTypeArguments.Zip(
-                    argdef.Value.GenericTypeArguments, (a, b) => new KeyValuePair<Type, Type>(a, b))))
-            .FirstOrDefault(x => x is not null);
+        var implementorGenericArguments = new Type?[implementationGenericArgumentDefinitions.Length];
+        for (var i = 0; i < implementorGenericArguments.Length; i++)
+        {
+            implementorGenericArguments[i] = TryFindServiceArgumentForImplementationArgumentDefinition(
+                implementationGenericArgumentDefinitions[i], serviceArgumentDefinitions, serviceGenericArguments);
+        }
+
+        return implementorGenericArguments;
+    }
+
+    /// <summary>
+    /// Checks whether the service passes the implementation's generic parameters through in order, so that each one
+    /// maps to the service argument at its position. A parameter only maps by position when no earlier parameter has
+    /// the same name, since the mapping matches parameters by name.
+    /// </summary>
+    private static bool MapsByPosition(Type[] implementationGenericArgumentDefinitions, Type[] serviceGenericArguments, Type[] serviceArgumentDefinitions)
+    {
+        if (serviceArgumentDefinitions.Length != implementationGenericArgumentDefinitions.Length ||
+            serviceGenericArguments.Length != implementationGenericArgumentDefinitions.Length)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < serviceArgumentDefinitions.Length; i++)
+        {
+            if (serviceArgumentDefinitions[i] != implementationGenericArgumentDefinitions[i])
+            {
+                return false;
+            }
+
+            for (var j = 0; j < i; j++)
+            {
+                if (serviceArgumentDefinitions[j].Name == serviceArgumentDefinitions[i].Name)
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private static Type[]? GetGenericBaseTypeArguments(OpenGenericImplementationInfo implementation, Type serviceTypeDefinition)
+    {
+        foreach (var baseType in implementation.GenericBaseTypes)
+        {
+            if (baseType.Definition == serviceTypeDefinition)
+            {
+                return baseType.GenericArguments;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Finds the argument that an implementation generic argument definition maps to, pairing each service
+    /// argument definition with the argument at the same position and searching nested generics when no
+    /// definition matches by name.
+    /// </summary>
+    private static Type? TryFindServiceArgumentForImplementationArgumentDefinition(Type implementationGenericArgumentDefinition, Type[] serviceArgumentDefinitions, Type[] serviceArguments)
+    {
+        var pairCount = Math.Min(serviceArgumentDefinitions.Length, serviceArguments.Length);
+
+        for (var i = 0; i < pairCount; i++)
+        {
+            var serviceArgumentDefinition = serviceArgumentDefinitions[i];
+            if (!serviceArgumentDefinition.IsGenericType && implementationGenericArgumentDefinition.Name == serviceArgumentDefinition.Name)
+            {
+                return serviceArguments[i];
+            }
+        }
+
+        for (var i = 0; i < pairCount; i++)
+        {
+            var serviceArgumentDefinition = serviceArgumentDefinitions[i];
+            if (!serviceArgumentDefinition.IsGenericType)
+            {
+                continue;
+            }
+
+            var nestedServiceArguments = serviceArguments[i].GenericTypeArguments;
+            if (nestedServiceArguments.Length == 0)
+            {
+                continue;
+            }
+
+            var nestedMatch = TryFindServiceArgumentForImplementationArgumentDefinition(
+                implementationGenericArgumentDefinition, serviceArgumentDefinition.GenericTypeArguments, nestedServiceArguments);
+            if (nestedMatch is not null)
+            {
+                return nestedMatch;
+            }
+        }
+
+        return null;
     }
 
     private static bool IsCompatibleGenericClassDefinition(Type implementor, Type serviceType)

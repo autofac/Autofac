@@ -206,6 +206,60 @@ public class ModuleTests
         Assert.Equal("value", builder.Properties["prop"]);
     }
 
+    internal class RegistryBuilderCapturingModule : Module
+    {
+        public IComponentRegistryBuilder? First
+        {
+            get; private set;
+        }
+
+        public IComponentRegistryBuilder? Second
+        {
+            get; private set;
+        }
+
+        public List<IComponentRegistration> Seen { get; } = new();
+
+        protected override void Load(ContainerBuilder builder)
+        {
+            First = builder.ComponentRegistryBuilder;
+            Second = builder.ComponentRegistryBuilder;
+            First.Registered += (sender, e) => Seen.Add(e.ComponentRegistration);
+            builder.RegisterType<Service1>();
+        }
+    }
+
+    [Fact]
+    public void ModuleBuilderHasItsOwnRegistryBuilderSharingTheProperties()
+    {
+        // The module's builder is created without a registry builder of its own; the one it
+        // exposes is created on first use, and must stay the same object afterwards.
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        var module = new RegistryBuilderCapturingModule();
+
+        module.Configure(registryBuilder);
+
+        Assert.NotNull(module.First);
+        Assert.Same(module.First, module.Second);
+        Assert.NotSame(registryBuilder, module.First);
+        Assert.Same(registryBuilder.Properties, module.First.Properties);
+    }
+
+    [Fact]
+    public void HandlerAddedThroughModuleBuilderRegistryBuilderSeesTheModuleRegistrations()
+    {
+        // Registered handlers live in the shared properties, so one added through the module
+        // builder's registry builder is raised by the registry being configured.
+        using var registryBuilder = Factory.CreateEmptyComponentRegistryBuilder();
+        var module = new RegistryBuilderCapturingModule();
+
+        module.Configure(registryBuilder);
+        registryBuilder.Build();
+
+        var registration = Assert.Single(module.Seen);
+        Assert.Equal(typeof(Service1), registration.Activator.LimitType);
+    }
+
     // #1446: A module that overrides neither hook (the common case that caused the
     // O(N^2) performance issue) must not subscribe to the registry events at all.
     internal class NoHookModule : Module

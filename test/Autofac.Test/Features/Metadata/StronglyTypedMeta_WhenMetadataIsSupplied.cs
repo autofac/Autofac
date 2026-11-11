@@ -48,6 +48,83 @@ public class StronglyTypedMeta_WhenMetadataIsSupplied
     }
 
     [Fact]
+    public void ValuesProvidedAreUniqueToEachRegistrationInSiblingScopes()
+    {
+        using var scope1 = _container.BeginLifetimeScope(b => b.RegisterType<string>().WithMetadata("TheInt", 1));
+        using var scope2 = _container.BeginLifetimeScope(b => b.RegisterType<string>().WithMetadata("TheInt", 2));
+
+        Assert.Equal(1, scope1.Resolve<Meta<string, MyMeta>>().Metadata.TheInt);
+        Assert.Equal(2, scope2.Resolve<Meta<string, MyMeta>>().Metadata.TheInt);
+        Assert.Equal(1, scope1.Resolve<Lazy<string, MyMeta>>().Metadata.TheInt);
+        Assert.Equal(2, scope2.Resolve<Lazy<string, MyMeta>>().Metadata.TheInt);
+    }
+
+    [Fact]
+    public void EachResolveCreatesANewMetadataView()
+    {
+        var meta1 = _container.Resolve<Meta<object, MyMeta>>();
+        var meta2 = _container.Resolve<Meta<object, MyMeta>>();
+
+        Assert.NotSame(meta1.Metadata, meta2.Metadata);
+    }
+
+    [Fact]
+    public void MetadataViewFactoryIsCompiledOncePerMetadataType()
+    {
+        var factories = ReflectionCacheSet.Shared.Internal.MetadataViewFactories;
+
+        MetadataViewProvider.GetMetadataViewProvider<MyMeta>();
+        var factory = factories[typeof(MyMeta)].Factory;
+        MetadataViewProvider.GetMetadataViewProvider<MyMeta>();
+        MetadataViewProvider.GetMetadataViewProvider<MyMetaWithDefault>();
+
+        Assert.Same(factory, factories[typeof(MyMeta)].Factory);
+        Assert.NotSame(factory, factories[typeof(MyMetaWithDefault)].Factory);
+    }
+
+    [Fact]
+    public void MetadataViewFactoryCacheIsClearedByReflectionCacheSetClear()
+    {
+        // Uses a fresh ReflectionCacheSet instance to avoid mutating process-global shared state.
+        var set = new ReflectionCacheSet();
+        var cache = set.Internal.MetadataViewFactories;
+        cache[typeof(MyMeta)] = default;
+
+        set.Clear();
+
+        Assert.Empty(cache);
+    }
+
+    [Fact]
+    public void MetadataViewFactoryCacheIsClearedByReflectionCacheSetPredicateClear()
+    {
+        // Uses a fresh ReflectionCacheSet instance to avoid mutating process-global shared state.
+        var set = new ReflectionCacheSet();
+        var cache = set.Internal.MetadataViewFactories;
+        cache[typeof(MyMeta)] = default;
+        cache[typeof(MyMetaWithDefault)] = default;
+
+        set.Clear((member, _) => member == typeof(MyMeta));
+
+        Assert.False(cache.ContainsKey(typeof(MyMeta)));
+        Assert.True(cache.ContainsKey(typeof(MyMetaWithDefault)));
+    }
+
+    [Fact]
+    public void MutableDefaultValuesAreNotSharedBetweenRegistrations()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<object>();
+        builder.RegisterType<object>();
+        var container = builder.Build();
+
+        var metas = container.Resolve<IEnumerable<Meta<object, MyMetaWithMutableDefault>>>().ToArray();
+        metas[0].Metadata.TheValues![0] = 99;
+
+        Assert.Equal(new[] { 1, 2 }, metas[1].Metadata.TheValues);
+    }
+
+    [Fact]
     public void ValuesProvidedFromMetadataOverrideDefaults()
     {
         var meta = _container.Resolve<Meta<object, MyMetaWithDefault>>();
@@ -71,13 +148,21 @@ public class StronglyTypedMeta_WhenMetadataIsSupplied
     [Fact]
     public void ResolvingStronglyTypedMetadataWithInvalidConstructorThrowsException()
     {
-        var exception = Assert.Throws<DependencyResolutionException>(
-            () => _container.Resolve<Meta<object, MyMetaWithInvalidConstructor>>());
-
         var typeName = typeof(MyMetaWithInvalidConstructor).Name;
         var message = string.Format(CultureInfo.InvariantCulture, MetadataViewProviderResources.InvalidViewImplementation, typeName);
 
-        Assert.Equal(message, exception.Message);
+        // A second container throws the same exception, so a failed view factory isn't cached.
+        for (var i = 0; i < 2; i++)
+        {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<object>();
+            using var container = builder.Build();
+
+            var exception = Assert.Throws<DependencyResolutionException>(
+                () => container.Resolve<Meta<object, MyMetaWithInvalidConstructor>>());
+
+            Assert.Equal(message, exception.Message);
+        }
     }
 
     [Fact]

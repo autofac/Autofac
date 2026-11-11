@@ -146,6 +146,30 @@ public class LoadContextScopeTests
     }
 
     [Fact]
+    public void CanLoadInstanceOfOpenGenericAndUnloadIt()
+    {
+        using var rootContainer = new ContainerBuilder().Build();
+
+        LoadAssemblyAndTest(
+            rootContainer,
+            out var loadContextRef,
+            (builder, assembly) => builder
+                .RegisterGeneric(assembly.GetType("A.OpenGenericService`1")!)
+                .As(assembly.GetType("A.IOpenGenericService`1")!),
+            (scope, loadContext, assembly) =>
+            {
+                var serviceType = assembly.GetType("A.IOpenGenericService`1")!.MakeGenericType(assembly.GetType("A.Service1")!);
+
+                var instance = scope.Resolve(serviceType);
+
+                Assert.Equal(assembly.GetType("A.OpenGenericService`1")!.MakeGenericType(assembly.GetType("A.Service1")!), instance.GetType());
+                Assert.Contains(instance.GetType().Assembly, loadContext.Assemblies);
+            });
+
+        WaitForUnload(loadContextRef);
+    }
+
+    [Fact]
     public void EnumerableCanContainItemsFromParentAndLoadedScope()
     {
         var builder = new ContainerBuilder();

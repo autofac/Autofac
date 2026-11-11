@@ -15,8 +15,10 @@ namespace Autofac.Features.OpenGenerics;
 internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
 {
     private readonly RegistrationData _registrationData;
+    private readonly Service[] _services;
     private readonly OpenGenericDecoratorActivatorData _activatorData;
     private readonly IResolvePipelineBuilder _existingPipeline;
+    private readonly Type[] _openServiceTypes;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OpenGenericDecoratorRegistrationSource"/> class.
@@ -39,16 +41,20 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
             throw new ArgumentNullException(nameof(activatorData));
         }
 
-        OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
+        // The source is created when the container is built, so the services no longer change.
+        var services = registrationData.Services.ToArray();
+        OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, services);
 
-        if (registrationData.Services.Contains((Service)activatorData.FromService))
+        if (services.Contains((Service)activatorData.FromService))
         {
             throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, OpenGenericDecoratorRegistrationSourceResources.FromAndToMustDiffer, activatorData.FromService));
         }
 
         _registrationData = registrationData;
+        _services = services;
         _activatorData = activatorData;
         _existingPipeline = existingPipelineBuilder;
+        _openServiceTypes = OpenGenericServiceBinder.GetOpenServiceTypes(services);
     }
 
     /// <inheritdoc/>
@@ -71,12 +77,12 @@ internal class OpenGenericDecoratorRegistrationSource : IRegistrationSource
             throw new ArgumentNullException(nameof(registrationAccessor));
         }
 
-        if (service is not IServiceWithType swt)
+        if (service is not IServiceWithType swt || !OpenGenericServiceBinder.IsClosedFromAny(swt.ServiceType, _openServiceTypes))
         {
             return Enumerable.Empty<IComponentRegistration>();
         }
 
-        if (OpenGenericServiceBinder.TryBindOpenGenericTypedService(swt, _registrationData.Services, _activatorData.ImplementationType, out var constructedImplementationType, out var services))
+        if (OpenGenericServiceBinder.TryBindOpenGenericTypedService(swt, _services, _activatorData.ImplementationType, out var constructedImplementationType, out var services))
         {
             var fromService = _activatorData.FromService.ChangeType(swt.ServiceType);
 

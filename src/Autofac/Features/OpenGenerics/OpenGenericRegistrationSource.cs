@@ -15,6 +15,7 @@ namespace Autofac.Features.OpenGenerics;
 internal class OpenGenericRegistrationSource : IRegistrationSource
 {
     private readonly RegistrationData _registrationData;
+    private readonly Service[] _services;
     private readonly IResolvePipelineBuilder _existingPipelineBuilder;
     private readonly ReflectionActivatorData _activatorData;
 
@@ -39,9 +40,11 @@ internal class OpenGenericRegistrationSource : IRegistrationSource
             throw new ArgumentNullException(nameof(activatorData));
         }
 
-        OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, registrationData.Services);
+        var services = registrationData.Services.ToArray();
+        OpenGenericServiceBinder.EnforceBindable(activatorData.ImplementationType, services);
 
         _registrationData = registrationData;
+        _services = services;
         _existingPipelineBuilder = existingPipelineBuilder;
         _activatorData = activatorData;
     }
@@ -66,22 +69,23 @@ internal class OpenGenericRegistrationSource : IRegistrationSource
             throw new ArgumentNullException(nameof(registrationAccessor));
         }
 
-        if (service is not IServiceWithType swt)
+        if (service is not IServiceWithType swt ||
+            !OpenGenericServiceBinder.TryBindOpenGenericTypedService(swt, _services, _activatorData.ImplementationType, out var constructedImplementationType, out var services))
         {
-            yield break;
+            return Array.Empty<IComponentRegistration>();
         }
 
-        if (OpenGenericServiceBinder.TryBindOpenGenericTypedService(swt, _registrationData.Services, _activatorData.ImplementationType, out var constructedImplementationType, out var services))
+        // Pass the pipeline builder from the original registration to the 'CreateRegistration'.
+        // So the original registration will contain all of the pipeline stages originally added, plus anything we want to add.
+        return new[]
         {
-            // Pass the pipeline builder from the original registration to the 'CreateRegistration'.
-            // So the original registration will contain all of the pipeline stages originally added, plus anything we want to add.
-            yield return RegistrationBuilder.CreateRegistration(
+            RegistrationBuilder.CreateRegistration(
                 Guid.NewGuid(),
                 _registrationData,
                 new ReflectionActivator(constructedImplementationType, _activatorData.ConstructorFinder, _activatorData.ConstructorSelector, _activatorData.ConfiguredParameters, _activatorData.ConfiguredProperties),
                 _existingPipelineBuilder,
-                services);
-        }
+                services),
+        };
     }
 
     /// <inheritdoc/>
