@@ -60,6 +60,8 @@ public class DecoratorTests
     [Fact]
     public void SkippedDecoratorIsNotRecordedAsApplied()
     {
+        // #1514: A decorator whose condition is not met must not leave an entry
+        // in the context, or the next decorator's condition sees one too many.
         var builder = new ContainerBuilder();
         builder.RegisterType<ImplementorA>().As<IDecoratedService>();
         builder.RegisterDecorator<DecoratorA, IDecoratedService>(context => false);
@@ -75,6 +77,8 @@ public class DecoratorTests
     [Fact]
     public void SkippedDecoratorBetweenAppliedDecoratorsIsNotRecordedAsApplied()
     {
+        // #1514: Skipping a decorator between two applied ones must not record
+        // the earlier decorator a second time.
         var builder = new ContainerBuilder();
         builder.RegisterType<ImplementorA>().As<IDecoratedService>();
         builder.RegisterDecorator<DecoratorA, IDecoratedService>();
@@ -93,6 +97,8 @@ public class DecoratorTests
     [Fact]
     public void PassThroughDecoratorIsRecordedAsApplied()
     {
+        // #1514 regression guard: a decorator that returns the instance it was
+        // given was still applied, so it must continue to be recorded.
         var builder = new ContainerBuilder();
         builder.RegisterType<ImplementorA>().As<IDecoratedService>();
         builder.RegisterDecorator<IDecoratedService>((c, p, i) => i);
