@@ -84,6 +84,28 @@ public class DisposerTests
     }
 
     [Fact]
+    public async Task CannotAddInstancesWhileAsyncDisposalIsPending()
+    {
+        var semaphore = new SemaphoreSlim(1);
+        var pending = new AsyncDisposeTracker(semaphore);
+        await semaphore.WaitAsync();
+
+        var disposer = new Disposer();
+        disposer.AddInstanceForDisposal(pending);
+        var result = disposer.DisposeAsync();
+        Assert.False(result.IsCompleted);
+
+        var late = new DisposeTracker();
+        Assert.Throws<ObjectDisposedException>(() => disposer.AddInstanceForDisposal(late));
+
+        semaphore.Release();
+        await result;
+
+        Assert.True(pending.IsAsyncDisposed);
+        Assert.False(late.IsDisposed);
+    }
+
+    [Fact]
     public async Task DisposerDisposesOfObjectsSyncIfIDisposableOnly()
     {
         var instance = new DisposeTracker();
