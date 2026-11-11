@@ -17,6 +17,9 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
 {
     private const int InitialCapacity = 16;
 
+    // Deep enough for nearly every resolve operation; larger arrays aren't kept for reuse.
+    private const int MaxSpareCapacity = InitialCapacity * 4;
+
     // An emptied stack hands its array to the next stack on the same thread, so a resolve operation
     // doesn't allocate one each time. Arrays move rather than being shared, so this is thread-safe.
     [ThreadStatic]
@@ -86,9 +89,12 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
 
         if (next == 0)
         {
-            // Every slot is clear now.
+            // Every slot is clear now. Don't keep an unusually deep stack's array alive on the thread.
             _array = Array.Empty<Entry>();
-            ReturnSpareArray(array);
+            if (array.Length <= MaxSpareCapacity)
+            {
+                ReturnSpareArray(array);
+            }
         }
 
         return item;
