@@ -18,6 +18,10 @@ public class PropertyInjectionBenchmark
         builder.RegisterType<C2>().PropertiesAutowired();
         builder.RegisterType<D1>();
         builder.RegisterType<D2>();
+        builder.RegisterType<PreservingSetValues>().PropertiesAutowired(PropertyWiringOptions.PreserveSetValues);
+        builder.RegisterType<DelegateSelector>().PropertiesAutowired((property, instance) => true);
+        builder.RegisterType<AllowingCircularDependencies>().PropertiesAutowired(PropertyWiringOptions.AllowCircularDependencies);
+        builder.RegisterType<UnregisteredProperties>().PropertiesAutowired();
         _container = builder.Build();
     }
 
@@ -25,6 +29,41 @@ public class PropertyInjectionBenchmark
     public void Resolve()
     {
         var instance = _container.Resolve<A>();
+        GC.KeepAlive(instance);
+    }
+
+    [Benchmark]
+    public void ResolvePreservingSetValues()
+    {
+        var instance = _container.Resolve<PreservingSetValues>();
+        GC.KeepAlive(instance);
+    }
+
+    [Benchmark]
+    public void ResolveWithDelegateSelector()
+    {
+        var instance = _container.Resolve<DelegateSelector>();
+        GC.KeepAlive(instance);
+    }
+
+    [Benchmark]
+    public void ResolveAllowingCircularDependencies()
+    {
+        var instance = _container.Resolve<AllowingCircularDependencies>();
+        GC.KeepAlive(instance);
+    }
+
+    [Benchmark]
+    public void ResolveWithUnregisteredProperties()
+    {
+        var instance = _container.Resolve<UnregisteredProperties>();
+        GC.KeepAlive(instance);
+    }
+
+    [Benchmark]
+    public void InjectPropertiesWithParameter()
+    {
+        var instance = _container.InjectProperties(new DelegateSelector(), TypedParameter.From(new D1()));
         GC.KeepAlive(instance);
     }
 
@@ -79,5 +118,62 @@ public class PropertyInjectionBenchmark
 
     internal class D2
     {
+    }
+
+    internal class PreservingSetValues
+    {
+        public D1? D1
+        {
+            get; set;
+        }
+
+        public D2? D2
+        {
+            get; set;
+        }
+    }
+
+    internal class DelegateSelector
+    {
+        public D1? D1
+        {
+            get; set;
+        }
+
+        public D2? D2
+        {
+            get; set;
+        }
+    }
+
+    internal class AllowingCircularDependencies
+    {
+        public D1? D1
+        {
+            get; set;
+        }
+
+        public D2? D2
+        {
+            get; set;
+        }
+    }
+
+    internal class UnregisteredProperties
+    {
+        public D1? D1
+        {
+            get; set;
+        }
+
+        public IDisposable? Unregistered
+        {
+            get; set;
+        }
+
+        public string? AlsoUnregistered
+        {
+            get; set;
+        }
     }
 }
