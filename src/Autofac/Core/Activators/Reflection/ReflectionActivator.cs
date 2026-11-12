@@ -299,6 +299,15 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
 
         // Build one array per resolve so constructor binding iterates an array rather than an enumerable per argument.
+        if (parameters is ICollection<Parameter> collection)
+        {
+            // Copy straight into an array of the right size, without allocating a Concat iterator.
+            var all = new Parameter[collection.Count + _defaultParameters.Length];
+            collection.CopyTo(all, 0);
+            _defaultParameters.CopyTo(all, collection.Count);
+            return all;
+        }
+
         return parameters.Concat(_defaultParameters).ToArray();
     }
 

@@ -218,6 +218,32 @@ public class ReflectionActivatorTests
     }
 
     [Fact]
+    public void ResolveParameters_OverrideConfiguredParametersAndContext()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance(new object());
+        var container = builder.Build();
+
+        var configured = new object();
+        var supplied = new object();
+        using var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameter), new Parameter[] { new NamedParameter("p", configured) });
+
+        var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+        // A collection is copied into the parameter array directly; other sequences are enumerated.
+        var fromCollection = (AcceptsObjectParameter)invoker(container, new List<Parameter> { new NamedParameter("p", supplied) });
+        var fromSequence = (AcceptsObjectParameter)invoker(container, Sequence(new NamedParameter("p", supplied)));
+
+        Assert.Same(supplied, fromCollection.P);
+        Assert.Same(supplied, fromSequence.P);
+
+        static IEnumerable<Parameter> Sequence(Parameter parameter)
+        {
+            yield return parameter;
+        }
+    }
+
+    [Fact]
     public void SetsMultipleConfiguredProperties()
     {
         const int P1 = 1;
