@@ -136,15 +136,34 @@ public class BoundConstructor
             throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.CannotInstantiate, Description));
         }
 
+        return Instantiate(TargetConstructor, _factory!, _arguments!, _context);
+    }
+
+    /// <summary>Returns a System.String that represents the current System.Object.</summary>
+    /// <returns>A System.String that represents the current System.Object.</returns>
+    public override string ToString()
+    {
+        return Description;
+    }
+
+    /// <summary>
+    /// Invoke a constructor with bound arguments, without a <see cref="BoundConstructor"/> instance.
+    /// </summary>
+    /// <param name="targetConstructor">The constructor being invoked.</param>
+    /// <param name="factory">The constructor invoker.</param>
+    /// <param name="arguments">The bound arguments.</param>
+    /// <param name="context">The context the arguments were bound in.</param>
+    /// <returns>The constructed instance.</returns>
+    internal static object Instantiate(ConstructorInfo targetConstructor, Func<object?[], object> factory, BoundArgument[] arguments, IComponentContext? context)
+    {
         object?[] values;
-        var arguments = _arguments!;
 
         if (arguments.Length != 0)
         {
             values = new object?[arguments.Length];
             for (var i = 0; i < arguments.Length; ++i)
             {
-                values[i] = arguments[i].GetValue(_context);
+                values[i] = arguments[i].GetValue(context);
             }
         }
         else
@@ -154,23 +173,16 @@ public class BoundConstructor
 
         try
         {
-            return _factory!(values);
+            return factory(values);
         }
         catch (TargetInvocationException ex)
         {
-            throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType!.Name), ex.InnerException);
+            throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.ExceptionDuringInstantiation, targetConstructor, targetConstructor.DeclaringType!.Name), ex.InnerException);
         }
         catch (Exception ex)
         {
-            throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.ExceptionDuringInstantiation, TargetConstructor, TargetConstructor.DeclaringType!.Name), ex);
+            throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, BoundConstructorResources.ExceptionDuringInstantiation, targetConstructor, targetConstructor.DeclaringType!.Name), ex);
         }
-    }
-
-    /// <summary>Returns a System.String that represents the current System.Object.</summary>
-    /// <returns>A System.String that represents the current System.Object.</returns>
-    public override string ToString()
-    {
-        return Description;
     }
 
     private static BoundArgument[] ToArguments(Func<object?>[] valueRetrievers)

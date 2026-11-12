@@ -253,7 +253,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         var instance = selectedBinding.Instantiate();
 
-        InjectProperties(instance, context, selectedBinding, prioritizedParameters);
+        InjectProperties(instance, context, selectedBinding.SetsRequiredMembers, prioritizedParameters);
 
         if (recordMetrics)
         {
@@ -341,9 +341,9 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
     }
 
-    private void InjectProperties(object instance, IComponentContext context, BoundConstructor constructor, Parameter[] allParameters)
+    private void InjectProperties(object instance, IComponentContext context, bool setsRequiredMembers, Parameter[] allParameters)
     {
-        if (!ShouldInjectProperties(constructor))
+        if (!ShouldInjectProperties(setsRequiredMembers))
         {
             return;
         }
@@ -356,7 +356,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             ApplyConfiguredProperties(instance, context, workingSetOfProperties);
         }
 
-        if (!ShouldValidateRequiredProperties(constructor))
+        if (!ShouldValidateRequiredProperties(setsRequiredMembers))
         {
             return;
         }
@@ -479,10 +479,10 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
             var instance = boundConstructor.Instantiate();
 
-            if (ShouldInjectProperties(boundConstructor))
+            if (ShouldInjectProperties(boundConstructor.SetsRequiredMembers))
             {
                 var prioritizedParameters = GetAllParameters(context.Parameters);
-                InjectProperties(instance, context, boundConstructor, prioritizedParameters);
+                InjectProperties(instance, context, boundConstructor.SetsRequiredMembers, prioritizedParameters);
             }
 
             context.Instance = instance;
@@ -498,6 +498,9 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
     private void ConfigureBoundSingleConstructorActivation(IResolvePipelineBuilder pipelineBuilder, ConstructorBinder singleConstructor)
     {
+        // Null only for an illegal parameter, which fails to bind before the invoker is used.
+        var constructorInvoker = singleConstructor.GetConstructorInvoker();
+
         pipelineBuilder.Use(ToString(), PipelinePhase.Activation, MiddlewareInsertionMode.EndOfPhase, (context, next) =>
         {
             CheckNotDisposed();
@@ -511,16 +514,15 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
             var prioritizedParameters = GetAllParameters(context.Parameters);
 
-            var bound = singleConstructor.Bind(prioritizedParameters, context);
-
-            if (!bound.CanInstantiate)
+            // Bind without a BoundConstructor; one is only needed to describe a failure.
+            if (!singleConstructor.TryBindArguments(prioritizedParameters, context, out var arguments, out var failedParameter))
             {
-                throw new DependencyResolutionException(GetBindingFailureMessage(new[] { bound }));
+                throw new DependencyResolutionException(GetBindingFailureMessage(new[] { BoundConstructor.ForBindFailure(singleConstructor, failedParameter) }));
             }
 
-            var instance = bound.Instantiate();
+            var instance = BoundConstructor.Instantiate(singleConstructor.Constructor, constructorInvoker!, arguments, context);
 
-            InjectProperties(instance, context, bound, prioritizedParameters);
+            InjectProperties(instance, context, singleConstructor.SetsRequiredMembers, prioritizedParameters);
 
             context.Instance = instance;
 
@@ -556,8 +558,8 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
     }
 
-    private bool ShouldValidateRequiredProperties(BoundConstructor constructor)
-        => _anyRequiredMembers && !constructor.SetsRequiredMembers;
+    private bool ShouldValidateRequiredProperties(bool setsRequiredMembers)
+        => _anyRequiredMembers && !setsRequiredMembers;
 
     private void ValidateRequiredProperties(
         object instance,
@@ -638,14 +640,14 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         return false;
     }
 
-    private bool ShouldInjectProperties(BoundConstructor constructor)
+    private bool ShouldInjectProperties(bool setsRequiredMembers)
     {
         if (_defaultFoundPropertySet is null)
         {
             return false;
         }
 
-        return _configuredProperties.Length != 0 || !constructor.SetsRequiredMembers;
+        return _configuredProperties.Length != 0 || !setsRequiredMembers;
     }
 
     private string BuildRequiredPropertyResolutionMessage(IReadOnlyList<InjectableProperty> failingRequiredProperties)

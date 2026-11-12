@@ -212,6 +212,21 @@ public class RequiredPropertyTests
     }
 
     [Fact]
+    public void SetsRequiredMembersConstructorWithArgumentsSkipsRequiredProperties()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceB>();
+        builder.RegisterType<ArgumentConstructorComponent>();
+
+        var container = builder.Build();
+
+        var component = container.Resolve<ArgumentConstructorComponent>();
+
+        Assert.Null(component.ServiceA);
+        Assert.NotNull(component.ServiceB);
+    }
+
+    [Fact]
     public void SetsRequiredMembersConstructorSkipsRequiredPropertiesEvenWhenRegistered()
     {
         var builder = new ContainerBuilder();
@@ -311,6 +326,25 @@ public class RequiredPropertyTests
         [SetsRequiredMembers]
         public ConstructorComponent()
         {
+        }
+
+        public required ServiceA? ServiceA
+        {
+            get; set;
+        }
+
+        public required ServiceB? ServiceB
+        {
+            get; set;
+        }
+    }
+
+    private class ArgumentConstructorComponent
+    {
+        [SetsRequiredMembers]
+        public ArgumentConstructorComponent(ServiceB serviceB)
+        {
+            ServiceB = serviceB;
         }
 
         public required ServiceA? ServiceA

@@ -93,22 +93,43 @@ public class ConstructorBinder
             throw new ArgumentNullException(nameof(context));
         }
 
-        var constructorArgs = _constructorArgs;
-        var constructorArgLength = constructorArgs.Length;
-
-        if (constructorArgLength == 0)
+        if (_constructorArgs.Length == 0)
         {
             // No args, auto-bind with an empty value-retriever array to avoid the allocation.
             return BoundConstructor.ForBindSuccess(this, _factory!, Array.Empty<Func<object?>>());
         }
 
-        if (_illegalParameter is not null)
-        {
-            return BoundConstructor.ForBindFailure(this, _illegalParameter);
-        }
-
         // Iterate an array; foreach over IEnumerable<T> would allocate an enumerator per constructor argument.
         var parameters = availableParameters as Parameter[] ?? availableParameters.ToArray();
+
+        return TryBindArguments(parameters, context, out var arguments, out var failedParameter)
+            ? new BoundConstructor(this, _factory!, arguments, context)
+            : BoundConstructor.ForBindFailure(this, failedParameter);
+    }
+
+    /// <summary>
+    /// Binds the parameters to the arguments of a constructor that has at least one, without creating a <see cref="BoundConstructor"/>.
+    /// </summary>
+    /// <param name="parameters">The set of all parameters.</param>
+    /// <param name="context">The current component context.</param>
+    /// <param name="arguments">The bound arguments, on success.</param>
+    /// <param name="failedParameter">The first parameter that could not be bound, on failure.</param>
+    /// <returns>True if every argument was bound; otherwise, false.</returns>
+    internal bool TryBindArguments(
+        Parameter[] parameters,
+        IComponentContext context,
+        [NotNullWhen(returnValue: true)] out BoundArgument[]? arguments,
+        [NotNullWhen(returnValue: false)] out ParameterInfo? failedParameter)
+    {
+        arguments = null;
+
+        if (_illegalParameter is not null)
+        {
+            failedParameter = _illegalParameter;
+            return false;
+        }
+
+        var constructorArgs = _constructorArgs;
 
         // Concurrent first binds may each create the services; any of the results is equivalent.
         var argumentServices = _argumentServices ??= CreateArgumentServices(constructorArgs);
@@ -116,21 +137,25 @@ public class ConstructorBinder
         // Bind the first argument before allocating, so a candidate constructor that fails on it allocates nothing.
         if (!TryBindArgument(parameters, constructorArgs[0], argumentServices[0], context, out var firstArgument))
         {
-            return BoundConstructor.ForBindFailure(this, constructorArgs[0]);
+            failedParameter = constructorArgs[0];
+            return false;
         }
 
-        var arguments = new BoundArgument[constructorArgLength];
-        arguments[0] = firstArgument;
+        var bound = new BoundArgument[constructorArgs.Length];
+        bound[0] = firstArgument;
 
-        for (var idx = 1; idx < constructorArgLength; idx++)
+        for (var idx = 1; idx < constructorArgs.Length; idx++)
         {
-            if (!TryBindArgument(parameters, constructorArgs[idx], argumentServices[idx], context, out arguments[idx]))
+            if (!TryBindArgument(parameters, constructorArgs[idx], argumentServices[idx], context, out bound[idx]))
             {
-                return BoundConstructor.ForBindFailure(this, constructorArgs[idx]);
+                failedParameter = constructorArgs[idx];
+                return false;
             }
         }
 
-        return new BoundConstructor(this, _factory!, arguments, context);
+        arguments = bound;
+        failedParameter = null;
+        return true;
     }
 
     /// <summary>
