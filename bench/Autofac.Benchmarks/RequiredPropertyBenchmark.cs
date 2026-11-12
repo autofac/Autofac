@@ -16,6 +16,7 @@ public class RequiredPropertyBenchmark
         builder.RegisterType<ServiceB>();
         builder.RegisterType<ConstructorComponent>();
         builder.RegisterType<RequiredPropertyComponent>();
+        builder.RegisterType<ConfiguredPropertyComponent>().WithProperty(nameof(ConfiguredPropertyComponent.ServiceB), new ServiceB());
 
         _container = builder.Build();
     }
@@ -30,6 +31,12 @@ public class RequiredPropertyBenchmark
     public void RequiredProperties()
     {
         _container.Resolve<RequiredPropertyComponent>();
+    }
+
+    [Benchmark]
+    public void RequiredPropertiesWithConfiguredProperty()
+    {
+        _container.Resolve<ConfiguredPropertyComponent>();
     }
 
     private class ServiceA
@@ -67,6 +74,19 @@ public class RequiredPropertyBenchmark
         }
 
         public required ServiceA ServiceB
+        {
+            get; set;
+        }
+    }
+
+    private class ConfiguredPropertyComponent
+    {
+        public required ServiceA ServiceA
+        {
+            get; set;
+        }
+
+        public required ServiceB ServiceB
         {
             get; set;
         }

@@ -341,15 +341,20 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
     }
 
-    private void InjectProperties(object instance, IComponentContext context, BoundConstructor constructor, IEnumerable<Parameter> allParameters)
+    private void InjectProperties(object instance, IComponentContext context, BoundConstructor constructor, Parameter[] allParameters)
     {
         if (!ShouldInjectProperties(constructor))
         {
             return;
         }
 
-        var workingSetOfProperties = (InjectablePropertyState[])_defaultFoundPropertySet!.Clone();
-        ApplyConfiguredProperties(instance, context, workingSetOfProperties);
+        // Only configured properties mark properties as set, so without any the default set can be read as is.
+        var workingSetOfProperties = _defaultFoundPropertySet!;
+        if (_configuredProperties.Length != 0)
+        {
+            workingSetOfProperties = (InjectablePropertyState[])workingSetOfProperties.Clone();
+            ApplyConfiguredProperties(instance, context, workingSetOfProperties);
+        }
 
         if (!ShouldValidateRequiredProperties(constructor))
         {
@@ -557,7 +562,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     private void ValidateRequiredProperties(
         object instance,
         IComponentContext context,
-        IEnumerable<Parameter> allParameters,
+        Parameter[] allParameters,
         InjectablePropertyState[] workingSetOfProperties)
     {
         var failingRequiredProperties = FindUnresolvedRequiredProperties(instance, context, allParameters, workingSetOfProperties);
@@ -571,21 +576,21 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     private List<InjectableProperty>? FindUnresolvedRequiredProperties(
         object instance,
         IComponentContext context,
-        IEnumerable<Parameter> allParameters,
+        Parameter[] allParameters,
         InjectablePropertyState[] workingSetOfProperties)
     {
         List<InjectableProperty>? failingRequiredProperties = null;
 
         for (var propIdx = 0; propIdx < workingSetOfProperties.Length; propIdx++)
         {
-            ref var prop = ref workingSetOfProperties[propIdx];
+            var prop = workingSetOfProperties[propIdx];
 
             if (!ShouldAttemptRequiredPropertyPopulation(prop))
             {
                 continue;
             }
 
-            if (TryPopulateRequiredProperty(instance, context, allParameters, ref prop))
+            if (TryPopulateRequiredProperty(instance, context, allParameters, prop.Property))
             {
                 continue;
             }
@@ -606,14 +611,15 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     private bool TryPopulateRequiredProperty(
         object instance,
         IComponentContext context,
-        IEnumerable<Parameter> allParameters,
-        ref InjectablePropertyState prop)
+        Parameter[] allParameters,
+        InjectableProperty property)
     {
         if (!_anyRequiredMembers)
         {
             return false;
         }
 
+        // Each property is visited once, so it isn't marked as set; the working set may be the shared default set.
         foreach (var parameter in allParameters)
         {
             if (parameter is NamedParameter || parameter is PositionalParameter)
@@ -623,9 +629,8 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
                 continue;
             }
 
-            if (prop.Property.TrySupplyValue(instance, parameter, context))
+            if (property.TrySupplyValue(instance, parameter, context))
             {
-                prop.Set = true;
                 return true;
             }
         }

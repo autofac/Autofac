@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Reflection;
 using Autofac.Core;
+using Autofac.Core.Activators.Reflection;
 
 namespace Autofac.Specification.Test.Features;
 
@@ -92,6 +94,41 @@ public class RequiredPropertyTests
         var component = container.Resolve<Component>();
 
         Assert.Equal("custom", component.ServiceB.Tag);
+    }
+
+    [Fact]
+    public void ExplicitPropertyAppliedOnAllSubsequentResolves()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceA>();
+        builder.RegisterType<Component>().WithProperty(nameof(Component.ServiceB), new ServiceB { Tag = "custom" });
+
+        var container = builder.Build();
+
+        for (var i = 0; i < 3; i++)
+        {
+            var component = container.Resolve<Component>();
+
+            Assert.NotNull(component.ServiceA);
+            Assert.Equal("custom", component.ServiceB.Tag);
+        }
+    }
+
+    [Fact]
+    public void AutowiringParameterSubclassIsAskedForRequiredProperty()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceA>();
+        builder.RegisterType<ServiceB>();
+        builder.RegisterType<Component>();
+
+        var container = builder.Build();
+
+        var custom = new ServiceB { Tag = "custom" };
+        var component = container.Resolve<Component>(new SuppliesServiceBAutowiringParameter(custom));
+
+        Assert.Same(custom, component.ServiceB);
+        Assert.Equal("Default", component.ServiceA.Tag);
     }
 
     [Fact]
@@ -379,5 +416,26 @@ public class RequiredPropertyTests
 
     private class ServiceC
     {
+    }
+
+    private class SuppliesServiceBAutowiringParameter : AutowiringParameter
+    {
+        private readonly ServiceB _value;
+
+        public SuppliesServiceBAutowiringParameter(ServiceB value)
+        {
+            _value = value;
+        }
+
+        public override bool CanSupplyValue(ParameterInfo pi, IComponentContext context, [NotNullWhen(true)] out Func<object?>? valueProvider)
+        {
+            if (pi.ParameterType == typeof(ServiceB))
+            {
+                valueProvider = () => _value;
+                return true;
+            }
+
+            return base.CanSupplyValue(pi, context, out valueProvider);
+        }
     }
 }
