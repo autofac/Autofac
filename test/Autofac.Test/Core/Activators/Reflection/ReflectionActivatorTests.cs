@@ -230,10 +230,12 @@ public class ReflectionActivatorTests
 
         var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
 
-        // A collection is copied into the parameter array directly; other sequences are enumerated.
+        // An array is used as is; other collections and sequences are copied into one.
+        var fromArray = (AcceptsObjectParameter)invoker(container, new Parameter[] { new NamedParameter("p", supplied) });
         var fromCollection = (AcceptsObjectParameter)invoker(container, new List<Parameter> { new NamedParameter("p", supplied) });
         var fromSequence = (AcceptsObjectParameter)invoker(container, Sequence(new NamedParameter("p", supplied)));
 
+        Assert.Same(supplied, fromArray.P);
         Assert.Same(supplied, fromCollection.P);
         Assert.Same(supplied, fromSequence.P);
 

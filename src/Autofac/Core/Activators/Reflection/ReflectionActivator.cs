@@ -195,6 +195,49 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             type,
             _ => UsesServiceKeyAttribute(type));
 
+    // The parameters passed to a resolve, as an array so binding iterates without an enumerator. The configured and
+    // default parameters are tried after them, kept apart so they need not be concatenated on each resolve.
+    private static Parameter[] GetResolveParameters(IEnumerable<Parameter> parameters)
+    {
+        if (parameters is Parameter[] array)
+        {
+            return array;
+        }
+
+        // Most often, there will be no `parameters`, in which case we can avoid allocating.
+        // Empty collections (e.g. the new empty array generated Func<T> factories pass on each call) take the same path.
+        if (ReferenceEquals(ResolveRequest.NoParameters, parameters) || parameters is ICollection<Parameter> { Count: 0 })
+        {
+            return Array.Empty<Parameter>();
+        }
+
+        return parameters.ToArray();
+    }
+
+    private static bool TrySupplyRequiredProperty(
+        object instance,
+        IComponentContext context,
+        Parameter[] parameters,
+        InjectableProperty property)
+    {
+        foreach (var parameter in parameters)
+        {
+            if (parameter is NamedParameter || parameter is PositionalParameter)
+            {
+                // Skip Named and Positional parameters, because if someone uses 'value' as a
+                // constructor parameter name, it would also match the property, and cause confusion.
+                continue;
+            }
+
+            if (property.TrySupplyValue(instance, parameter, context))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private void UseSingleConstructorActivation(IResolvePipelineBuilder pipelineBuilder, ConstructorBinder singleConstructor)
     {
         if (singleConstructor.ParameterCount == 0)
@@ -237,9 +280,9 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             instrumentationTimer = ValueStopwatch.StartNew();
         }
 
-        var prioritizedParameters = GetAllParameters(parameters);
+        var resolveParameters = GetResolveParameters(parameters);
 
-        var allBindings = GetAllBindings(_constructorBinders!, context, prioritizedParameters);
+        var allBindings = GetAllBindings(_constructorBinders!, context, GetAllParameters(resolveParameters));
 
         var selectedBinding = ConstructorSelector.SelectConstructorBinding(allBindings, parameters);
 
@@ -253,7 +296,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
         var instance = selectedBinding.Instantiate();
 
-        InjectProperties(instance, context, selectedBinding.SetsRequiredMembers, prioritizedParameters);
+        InjectProperties(instance, context, selectedBinding.SetsRequiredMembers, resolveParameters);
 
         if (recordMetrics)
         {
@@ -288,27 +331,18 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         return boundConstructors;
     }
 
-    private Parameter[] GetAllParameters(IEnumerable<Parameter> parameters)
+    // Binding through the public Bind, as a constructor selector requires, takes every parameter in one sequence.
+    private Parameter[] GetAllParameters(Parameter[] resolveParameters)
     {
-        // Most often, there will be no `parameters`, in which case we can avoid allocating.
-        // Do a reference compare with the NoParameters constant; faster than an Any() check for the common case.
-        // Empty collections (e.g. the new empty array generated Func<T> factories pass on each call) take the same path.
-        if (ReferenceEquals(ResolveRequest.NoParameters, parameters) || parameters is ICollection<Parameter> { Count: 0 })
+        if (resolveParameters.Length == 0)
         {
             return _defaultParameters;
         }
 
-        // Build one array per resolve so constructor binding iterates an array rather than an enumerable per argument.
-        if (parameters is ICollection<Parameter> collection)
-        {
-            // Copy straight into an array of the right size, without allocating a Concat iterator.
-            var all = new Parameter[collection.Count + _defaultParameters.Length];
-            collection.CopyTo(all, 0);
-            _defaultParameters.CopyTo(all, collection.Count);
-            return all;
-        }
-
-        return parameters.Concat(_defaultParameters).ToArray();
+        var all = new Parameter[resolveParameters.Length + _defaultParameters.Length];
+        resolveParameters.CopyTo(all, 0);
+        _defaultParameters.CopyTo(all, resolveParameters.Length);
+        return all;
     }
 
     private string GetBindingFailureMessage(BoundConstructor[] constructorBindings)
@@ -341,7 +375,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
     }
 
-    private void InjectProperties(object instance, IComponentContext context, bool setsRequiredMembers, Parameter[] allParameters)
+    private void InjectProperties(object instance, IComponentContext context, bool setsRequiredMembers, Parameter[] resolveParameters)
     {
         if (!ShouldInjectProperties(setsRequiredMembers))
         {
@@ -361,7 +395,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
             return;
         }
 
-        ValidateRequiredProperties(instance, context, allParameters, workingSetOfProperties);
+        ValidateRequiredProperties(instance, context, resolveParameters, workingSetOfProperties);
     }
 
     private bool HasAnyRequiredMembers()
@@ -481,8 +515,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
 
             if (ShouldInjectProperties(boundConstructor.SetsRequiredMembers))
             {
-                var prioritizedParameters = GetAllParameters(context.Parameters);
-                InjectProperties(instance, context, boundConstructor.SetsRequiredMembers, prioritizedParameters);
+                InjectProperties(instance, context, boundConstructor.SetsRequiredMembers, GetResolveParameters(context.Parameters));
             }
 
             context.Instance = instance;
@@ -512,17 +545,17 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
                 instrumentationTimer = ValueStopwatch.StartNew();
             }
 
-            var prioritizedParameters = GetAllParameters(context.Parameters);
+            var resolveParameters = GetResolveParameters(context.Parameters);
 
             // Bind without a BoundConstructor; one is only needed to describe a failure.
-            if (!singleConstructor.TryBindArguments(prioritizedParameters, context, out var arguments, out var failedParameter))
+            if (!singleConstructor.TryBindArguments(resolveParameters, _defaultParameters, context, out var arguments, out var failedParameter))
             {
                 throw new DependencyResolutionException(GetBindingFailureMessage(new[] { BoundConstructor.ForBindFailure(singleConstructor, failedParameter) }));
             }
 
             var instance = BoundConstructor.Instantiate(singleConstructor.Constructor, constructorInvoker!, arguments, context);
 
-            InjectProperties(instance, context, singleConstructor.SetsRequiredMembers, prioritizedParameters);
+            InjectProperties(instance, context, singleConstructor.SetsRequiredMembers, resolveParameters);
 
             context.Instance = instance;
 
@@ -564,10 +597,10 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     private void ValidateRequiredProperties(
         object instance,
         IComponentContext context,
-        Parameter[] allParameters,
+        Parameter[] resolveParameters,
         InjectablePropertyState[] workingSetOfProperties)
     {
-        var failingRequiredProperties = FindUnresolvedRequiredProperties(instance, context, allParameters, workingSetOfProperties);
+        var failingRequiredProperties = FindUnresolvedRequiredProperties(instance, context, resolveParameters, workingSetOfProperties);
 
         if (failingRequiredProperties is not null)
         {
@@ -578,7 +611,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     private List<InjectableProperty>? FindUnresolvedRequiredProperties(
         object instance,
         IComponentContext context,
-        Parameter[] allParameters,
+        Parameter[] resolveParameters,
         InjectablePropertyState[] workingSetOfProperties)
     {
         List<InjectableProperty>? failingRequiredProperties = null;
@@ -592,7 +625,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
                 continue;
             }
 
-            if (TryPopulateRequiredProperty(instance, context, allParameters, prop.Property))
+            if (TryPopulateRequiredProperty(instance, context, resolveParameters, prop.Property))
             {
                 continue;
             }
@@ -613,7 +646,7 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
     private bool TryPopulateRequiredProperty(
         object instance,
         IComponentContext context,
-        Parameter[] allParameters,
+        Parameter[] resolveParameters,
         InjectableProperty property)
     {
         if (!_anyRequiredMembers)
@@ -622,22 +655,8 @@ public class ReflectionActivator : InstanceActivator, IInstanceActivator
         }
 
         // Each property is visited once, so it isn't marked as set; the working set may be the shared default set.
-        foreach (var parameter in allParameters)
-        {
-            if (parameter is NamedParameter || parameter is PositionalParameter)
-            {
-                // Skip Named and Positional parameters, because if someone uses 'value' as a
-                // constructor parameter name, it would also match the property, and cause confusion.
-                continue;
-            }
-
-            if (property.TrySupplyValue(instance, parameter, context))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return TrySupplyRequiredProperty(instance, context, resolveParameters, property)
+            || TrySupplyRequiredProperty(instance, context, _defaultParameters, property);
     }
 
     private bool ShouldInjectProperties(bool setsRequiredMembers)
