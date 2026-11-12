@@ -49,6 +49,18 @@ public class MatchingScopeLifetime : IComponentLifetime
             throw new ArgumentNullException(nameof(mostNestedVisibleScope));
         }
 
+        return TryFindScope(mostNestedVisibleScope) ?? throw new DependencyResolutionException(string.Format(
+            CultureInfo.CurrentCulture, MatchingScopeLifetimeResources.MatchingScopeNotFound, string.Join(", ", _tagsToMatch)));
+    }
+
+    /// <summary>
+    /// Given the most nested scope visible within the resolve operation, find
+    /// the scope for the component, or null if no scope matches.
+    /// </summary>
+    /// <param name="mostNestedVisibleScope">The most nested visible scope.</param>
+    /// <returns>The scope for the component, or null.</returns>
+    internal ISharingLifetimeScope? TryFindScope(ISharingLifetimeScope mostNestedVisibleScope)
+    {
         var next = mostNestedVisibleScope;
         while (next is not null)
         {
@@ -60,7 +72,6 @@ public class MatchingScopeLifetime : IComponentLifetime
             next = next.ParentLifetimeScope;
         }
 
-        throw new DependencyResolutionException(string.Format(
-            CultureInfo.CurrentCulture, MatchingScopeLifetimeResources.MatchingScopeNotFound, string.Join(", ", _tagsToMatch)));
+        return null;
     }
 }

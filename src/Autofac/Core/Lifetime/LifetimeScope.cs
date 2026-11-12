@@ -263,6 +263,14 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     {
         CheckNotDisposed();
 
+        // Nothing can observe an operation answered from the shared-instance cache, so don't create one.
+        if (ResolveOperationBeginning is null &&
+            !DiagnosticSource.IsEnabled() &&
+            ResolveOperation.TryGetCachedSharedInstance(this, request, out var cached))
+        {
+            return cached;
+        }
+
         var operation = new ResolveOperation(this, DiagnosticSource);
         var handler = ResolveOperationBeginning;
         handler?.Invoke(this, new ResolveOperationBeginningEventArgs(operation));

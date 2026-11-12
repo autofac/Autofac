@@ -17,6 +17,14 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
 {
     private const int InitialCapacity = 16;
 
+    // Deep enough for nearly every resolve operation; larger arrays aren't kept for reuse.
+    private const int MaxSpareCapacity = InitialCapacity * 4;
+
+    // An emptied stack hands its array to the next stack on the same thread, so a resolve operation
+    // doesn't allocate one each time. Arrays move rather than being shared, so this is thread-safe.
+    [ThreadStatic]
+    private static Entry[]? _spareArray;
+
     // Items are wrapped in a struct so stores skip the covariant array type check
     // (T is typically an abstract type holding a derived instance, the slow path).
     private Entry[] _array;
@@ -78,6 +86,17 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         _next = next;
         var item = array[next]._item;
         array[next]._item = null!;
+
+        if (next == 0)
+        {
+            // Every slot is clear now. Don't keep an unusually deep stack's array alive on the thread.
+            _array = Array.Empty<Entry>();
+            if (array.Length <= MaxSpareCapacity)
+            {
+                ReturnSpareArray(array);
+            }
+        }
+
         return item;
     }
 
@@ -106,11 +125,49 @@ public sealed class SegmentedStack<T> : IEnumerable<T>
         return new Enumerator(this);
     }
 
+    /// <summary>
+    /// Determines whether any item in the active segment matches, without allocating an enumerator.
+    /// </summary>
+    /// <typeparam name="TArg">The type of the argument passed to <paramref name="match"/>.</typeparam>
+    /// <param name="arg">The argument passed to <paramref name="match"/>.</param>
+    /// <param name="match">The predicate; pass a static lambda so it isn't allocated per call.</param>
+    /// <returns>True if an item matches.</returns>
+    internal bool Any<TArg>(TArg arg, Func<T, TArg, bool> match)
+    {
+        var array = _array;
+        for (var i = _next - 1; i >= _activeSegmentBase; i--)
+        {
+            if (match(array[i]._item, arg))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static Entry[]? TakeSpareArray()
+    {
+        var spare = _spareArray;
+        _spareArray = null;
+        return spare;
+    }
+
+    private static void ReturnSpareArray(Entry[] array) => _spareArray = array;
+
     // Do not inline; makes it easier to profile stack resizing.
     [MethodImpl(MethodImplOptions.NoInlining)]
     private void PushWithResize(T item)
     {
-        Array.Resize(ref _array, Math.Max(InitialCapacity, 2 * _array.Length));
+        if (_array.Length == 0 && TakeSpareArray() is { } spare)
+        {
+            _array = spare;
+        }
+        else
+        {
+            Array.Resize(ref _array, Math.Max(InitialCapacity, 2 * _array.Length));
+        }
+
         _array[_next]._item = item;
         _next++;
     }

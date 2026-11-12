@@ -217,6 +217,26 @@ public class ResolutionExtensionsTests
         Assert.Single(services);
     }
 
+    [Fact]
+    public void TryResolve_ReturnsInstanceWhenRegistered()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance("Hello");
+        using var container = builder.Build();
+
+        Assert.True(container.TryResolve<string>(out var instance));
+        Assert.Equal("Hello", instance);
+    }
+
+    [Fact]
+    public void TryResolve_ReturnsFalseWhenNotRegistered()
+    {
+        using var container = Factory.CreateEmptyContainer();
+
+        Assert.False(container.TryResolve<string>(out var instance));
+        Assert.Null(instance);
+    }
+
     private sealed class AnyKeyService
     {
     }

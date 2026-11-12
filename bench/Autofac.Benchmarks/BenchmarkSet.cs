@@ -16,6 +16,7 @@ public static class BenchmarkSet
         typeof(AssemblyScanningBenchmark),
         typeof(ConcurrencyBenchmark),
         typeof(ConcurrencyNestedScopeBenchmark),
+        typeof(CoreResolvePathBenchmark),
         typeof(KeyedGenericBenchmark),
         typeof(KeyedAnyKeySimpleBenchmark),
         typeof(KeyedNestedBenchmark),

@@ -12,14 +12,11 @@ namespace Autofac.Core;
 /// </summary>
 internal class Disposer : Disposable, IDisposer
 {
-    // Need to use a semaphore instead of a simple object to lock on, because
-    // we need to synchronize an awaitable block.
-    private readonly SemaphoreSlim _synchRoot = new(1, 1);
-
     /// <summary>
-    /// Contents all implement IDisposable or IAsyncDisposable.
+    /// Contents all implement IDisposable or IAsyncDisposable. Also locked on when adding or removing items;
+    /// items are disposed outside the lock, so an async dispose never holds it across an await.
     /// </summary>
-    private Stack<object> _items = new();
+    private readonly Stack<object> _items = new();
 
     /// <summary>
     /// Adds an object to the disposer, where that object only implements IAsyncDisposable. When the disposer is
@@ -53,42 +50,25 @@ internal class Disposer : Disposable, IDisposer
     {
         if (disposing)
         {
-            _synchRoot.Wait();
-            try
+            while (TryPop(out var item))
             {
-                while (_items.Count > 0)
+                // If we are in synchronous dispose, and an object implements IDisposable,
+                // then use it.
+                if (item is IDisposable disposable)
                 {
-                    var item = _items.Pop();
-
-                    // If we are in synchronous dispose, and an object implements IDisposable,
-                    // then use it.
-                    if (item is IDisposable disposable)
-                    {
-                        disposable.Dispose();
-                    }
-                    else if (item is IAsyncDisposable asyncDisposable)
-                    {
-                        Trace.TraceWarning(DisposerResources.TypeOnlyImplementsIAsyncDisposable, item.GetType().FullName);
-
-                        // Type only implements IAsyncDisposable. We will need to do sync-over-async.
-                        // We want to ensure we lose all context here, because if we don't we can deadlock.
-                        // So we push this disposal onto the thread pool.
-                        Task.Run(async () => await asyncDisposable.DisposeAsync().ConfigureAwait(false))
-                            .ConfigureAwait(false)
-                            .GetAwaiter().GetResult();
-                    }
+                    disposable.Dispose();
                 }
+                else if (item is IAsyncDisposable asyncDisposable)
+                {
+                    Trace.TraceWarning(DisposerResources.TypeOnlyImplementsIAsyncDisposable, item.GetType().FullName);
 
-                // Explicitly clear to null, which is slightly cheating the compiler,
-                // but I know this method will never enter again (because it derives from the Disposable, which prevents it).
-                _items = null!;
-            }
-            finally
-            {
-                _synchRoot.Release();
-
-                // We don't need the semaphore any more.
-                _synchRoot.Dispose();
+                    // Type only implements IAsyncDisposable. We will need to do sync-over-async.
+                    // We want to ensure we lose all context here, because if we don't we can deadlock.
+                    // So we push this disposal onto the thread pool.
+                    Task.Run(async () => await asyncDisposable.DisposeAsync().ConfigureAwait(false))
+                        .ConfigureAwait(false)
+                        .GetAwaiter().GetResult();
+                }
             }
         }
 
@@ -100,36 +80,18 @@ internal class Disposer : Disposable, IDisposer
     {
         if (disposing)
         {
-            // Acquire our semaphore.
-            await _synchRoot.WaitAsync().ConfigureAwait(false);
-            try
+            while (TryPop(out var item))
             {
-                while (_items.Count > 0)
+                // If the item implements IAsyncDisposable we will call its DisposeAsync Method.
+                if (item is IAsyncDisposable asyncDisposable)
                 {
-                    var item = _items.Pop();
-
-                    // If the item implements IAsyncDisposable we will call its DisposeAsync Method.
-                    if (item is IAsyncDisposable asyncDisposable)
-                    {
-                        await asyncDisposable.DisposeAsync().ConfigureAwait(false);
-                    }
-                    else if (item is IDisposable disposable)
-                    {
-                        // Call the standard Dispose.
-                        disposable.Dispose();
-                    }
+                    await asyncDisposable.DisposeAsync().ConfigureAwait(false);
                 }
-
-                // Explicitly clear to null, which is slightly cheating the compiler,
-                // but I know this method will never enter again (because it derives from the Disposable, which prevents it).
-                _items = null!;
-            }
-            finally
-            {
-                _synchRoot.Release();
-
-                // We don't need the semaphore any more.
-                _synchRoot.Dispose();
+                else if (item is IDisposable disposable)
+                {
+                    // Call the standard Dispose.
+                    disposable.Dispose();
+                }
             }
         }
     }
@@ -141,19 +103,31 @@ internal class Disposer : Disposable, IDisposer
             throw new ArgumentNullException(nameof(instance));
         }
 
-        if (IsDisposed)
+        lock (_items)
         {
-            throw new ObjectDisposedException(nameof(Disposer), DisposerResources.CannotAddToDisposedDisposer);
-        }
+            // Checked under the lock: the disposed flag is set before disposal starts popping,
+            // so an item can't be added once disposal may have emptied the stack.
+            if (IsDisposed)
+            {
+                throw new ObjectDisposedException(nameof(Disposer), DisposerResources.CannotAddToDisposedDisposer);
+            }
 
-        _synchRoot.Wait();
-        try
-        {
             _items.Push(instance);
         }
-        finally
+    }
+
+    private bool TryPop([NotNullWhen(true)] out object? item)
+    {
+        lock (_items)
         {
-            _synchRoot.Release();
+            if (_items.Count > 0)
+            {
+                item = _items.Pop();
+                return true;
+            }
         }
+
+        item = null;
+        return false;
     }
 }
