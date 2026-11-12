@@ -60,6 +60,15 @@ public sealed class DecoratorContext : IDecoratorContext
     /// <inheritdoc />
     public IComponentRegistry ComponentRegistry => _componentContext.ComponentRegistry;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether a decorator was applied to <see cref="CurrentInstance"/>,
+    /// meaning its output must be recorded by <see cref="UpdateContext"/> before the next decorator runs.
+    /// </summary>
+    internal bool DecoratorApplied
+    {
+        get; set;
+    }
+
     /// <inheritdoc />
     public object ResolveComponent(in ResolveRequest request) => _componentContext.ResolveComponent(request);
 

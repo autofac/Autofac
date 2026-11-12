@@ -58,6 +58,61 @@ public class DecoratorTests
     }
 
     [Fact]
+    public void SkippedDecoratorIsNotRecordedAsApplied()
+    {
+        // #1514: A decorator whose condition is not met must not leave an entry
+        // in the context, or the next decorator's condition sees one too many.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>(context => false);
+        builder.RegisterDecorator<DecoratorB, IDecoratedService>(context => !context.AppliedDecoratorTypes.Any());
+        var container = builder.Build();
+
+        var instance = container.Resolve<IDecoratedService>();
+
+        Assert.IsType<DecoratorB>(instance);
+        Assert.IsType<ImplementorA>(instance.Decorated);
+    }
+
+    [Fact]
+    public void SkippedDecoratorBetweenAppliedDecoratorsIsNotRecordedAsApplied()
+    {
+        // #1514: Skipping a decorator between two applied ones must not record
+        // the earlier decorator a second time.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<DecoratorA, IDecoratedService>();
+        builder.RegisterDecorator<DecoratorB, IDecoratedService>(context => false);
+        builder.RegisterDecorator<DecoratorWithContextA, IDecoratedService>();
+        var container = builder.Build();
+
+        var instance = container.Resolve<IDecoratedService>();
+
+        var context = ((IDecoratorWithContext)instance).Context;
+        Assert.IsType<DecoratorA>(context.CurrentInstance);
+        Assert.Collection(context.AppliedDecorators, item => Assert.IsType<DecoratorA>(item));
+        Assert.Collection(context.AppliedDecoratorTypes, item => Assert.Equal(typeof(DecoratorA), item));
+    }
+
+    [Fact]
+    public void PassThroughDecoratorIsRecordedAsApplied()
+    {
+        // #1514 regression guard: a decorator that returns the instance it was
+        // given was still applied, so it must continue to be recorded.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ImplementorA>().As<IDecoratedService>();
+        builder.RegisterDecorator<IDecoratedService>((c, p, i) => i);
+        builder.RegisterDecorator<DecoratorWithContextA, IDecoratedService>();
+        var container = builder.Build();
+
+        var instance = container.Resolve<IDecoratedService>();
+
+        var context = ((IDecoratorWithContext)instance).Context;
+        Assert.IsType<ImplementorA>(context.CurrentInstance);
+        Assert.Collection(context.AppliedDecoratorTypes, item => Assert.Equal(typeof(ImplementorA), item));
+    }
+
+    [Fact]
     public void CanInjectDecoratorContextAsSnapshot()
     {
         var builder = new ContainerBuilder();
