@@ -102,6 +102,22 @@ internal class ComponentRegistry : Disposable, IComponentRegistry
     public IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service)
         => _registeredServicesTracker.ServiceRegistrationsFor(service);
 
+    /// <summary>
+    /// Gets the registrations <see cref="RegistrationsFor"/> would, but as a shared empty list when there are none.
+    /// </summary>
+    /// <param name="service">The service for which registrations are sought.</param>
+    /// <returns>Registrations supporting <paramref name="service"/>.</returns>
+    internal IReadOnlyList<IComponentRegistration> RegistrationsOrEmptyFor(Service service)
+        => _registeredServicesTracker.RegistrationsOrEmptyFor(service);
+
+    /// <summary>
+    /// Gets the registrations <see cref="ServiceRegistrationsFor"/> would, but as a shared empty list when there are none.
+    /// </summary>
+    /// <param name="service">The service for which registrations are sought.</param>
+    /// <returns>Service registrations supporting <paramref name="service"/>.</returns>
+    internal IReadOnlyList<ServiceRegistration> ServiceRegistrationsOrEmptyFor(Service service)
+        => _registeredServicesTracker.ServiceRegistrationsOrEmptyFor(service);
+
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
