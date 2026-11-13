@@ -335,6 +335,69 @@ public class PropertyInjectionTests
     }
 
     [Fact]
+    public void PropertyInjectionPassesTheInstanceTypeOfEachTypeBeingInjectedOnto()
+    {
+        var captured = new List<Type>();
+        var cb = new ContainerBuilder();
+        cb.RegisterType<HasPublicSetter>().PropertiesAutowired();
+        cb.RegisterType<HasPublicSetterDerived>().PropertiesAutowired();
+        cb.Register((context, parameters) =>
+        {
+            captured.Add(parameters.Named<Type>(ResolutionExtensions.PropertyInjectedInstanceTypeNamedParameter));
+            return "value";
+        });
+
+        var c = cb.Build();
+        c.Resolve<HasPublicSetter>();
+        c.Resolve<HasPublicSetterDerived>();
+        c.Resolve<HasPublicSetter>();
+
+        Assert.Equal(new[] { typeof(HasPublicSetter), typeof(HasPublicSetterDerived), typeof(HasPublicSetter) }, captured);
+    }
+
+    [Fact]
+    public void PropertiesAutowiredDoesNotSetRequiredProperty()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance("registered");
+        builder.Register(_ => new HasRequiredProperty { Required = "lambda" }).PropertiesAutowired();
+        var container = builder.Build();
+
+        var instance = container.Resolve<HasRequiredProperty>();
+
+        Assert.Equal("lambda", instance.Required);
+        Assert.Equal("registered", instance.Optional);
+    }
+
+    [Fact]
+    public void PropertiesAutowiredPreservingSetValuesSkipsPropertyThatThrowsOnGet()
+    {
+        // Issue #799: a property whose getter throws is treated as set.
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance("registered");
+        builder.RegisterType<HasThrowingGetter>().PropertiesAutowired(PropertyWiringOptions.PreserveSetValues);
+        var container = builder.Build();
+
+        var instance = container.Resolve<HasThrowingGetter>();
+
+        Assert.False(instance.ThrowingSetterCalled);
+        Assert.Equal("registered", instance.Unset);
+    }
+
+    [Fact]
+    public void PropertiesAutowiredAsksDefaultPropertySelectorSubclass()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance("registered");
+        builder.RegisterType<HasRequiredProperty>().WithProperty(nameof(HasRequiredProperty.Required), "configured").PropertiesAutowired(new RejectsAllPropertySelector());
+        var container = builder.Build();
+
+        var instance = container.Resolve<HasRequiredProperty>();
+
+        Assert.Null(instance.Optional);
+    }
+
+    [Fact]
     public void PropertySpecifiedAsResolveParameterWhenAutowired()
     {
         // Issue #289 tried to get parameters to work as passed in directly to resolve
@@ -444,6 +507,48 @@ public class PropertyInjectionTests
         {
             get; set;
         }
+    }
+
+    private class HasRequiredProperty
+    {
+        public required string Required
+        {
+            get; set;
+        }
+
+        public string? Optional
+        {
+            get; set;
+        }
+    }
+
+    private class HasThrowingGetter
+    {
+        public bool ThrowingSetterCalled
+        {
+            get; private set;
+        }
+
+        public string Throwing
+        {
+            get => throw new InvalidOperationException();
+            set => ThrowingSetterCalled = value is not null;
+        }
+
+        public string? Unset
+        {
+            get; set;
+        }
+    }
+
+    private class RejectsAllPropertySelector : DefaultPropertySelector
+    {
+        public RejectsAllPropertySelector()
+            : base(false)
+        {
+        }
+
+        public override bool InjectProperty(PropertyInfo propertyInfo, object instance) => false;
     }
 
     private class EnumProperty

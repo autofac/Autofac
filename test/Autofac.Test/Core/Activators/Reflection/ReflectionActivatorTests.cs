@@ -218,6 +218,50 @@ public class ReflectionActivatorTests
     }
 
     [Fact]
+    public void ResolveParameters_OverrideConfiguredParametersAndContext()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance(new object());
+        var container = builder.Build();
+
+        var configured = new object();
+        var supplied = new object();
+        using var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameter), new Parameter[] { new NamedParameter("p", configured) });
+
+        var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+        // An array is used as is; other collections and sequences are copied into one.
+        var fromArray = (AcceptsObjectParameter)invoker(container, new Parameter[] { new NamedParameter("p", supplied) });
+        var fromCollection = (AcceptsObjectParameter)invoker(container, new List<Parameter> { new NamedParameter("p", supplied) });
+        var fromSequence = (AcceptsObjectParameter)invoker(container, Sequence(new NamedParameter("p", supplied)));
+
+        Assert.Same(supplied, fromArray.P);
+        Assert.Same(supplied, fromCollection.P);
+        Assert.Same(supplied, fromSequence.P);
+
+        static IEnumerable<Parameter> Sequence(Parameter parameter)
+        {
+            yield return parameter;
+        }
+    }
+
+    [Fact]
+    public void Pipeline_LaterArgumentNotAvailable_NamesThatArgument()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance(new object());
+        var container = builder.Build();
+
+        using var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectAndString));
+        var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+        var ex = Assert.Throws<DependencyResolutionException>(() => invoker(container, Factory.NoParameters));
+
+        Assert.Contains("second", ex.Message, StringComparison.Ordinal);
+        Assert.DoesNotContain("first", ex.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void SetsMultipleConfiguredProperties()
     {
         const int P1 = 1;
@@ -376,6 +420,13 @@ public class ReflectionActivatorTests
         public int I
         {
             get; private set;
+        }
+    }
+
+    private class AcceptsObjectAndString
+    {
+        public AcceptsObjectAndString(object first, string second)
+        {
         }
     }
 

@@ -47,7 +47,6 @@ public class DefaultPropertySelector : IPropertySelector
     /// <param name="propertyInfo">Property to be injected.</param>
     /// <param name="instance">Instance that has the property to be injected.</param>
     /// <returns>Whether property should be injected.</returns>
-    [SuppressMessage("CA1031", "CA1031", Justification = "Issue #799: If getting the property value throws an exception then assume it's set and skip it.")]
     public virtual bool InjectProperty(PropertyInfo propertyInfo, object instance)
     {
         if (propertyInfo == null)
@@ -55,21 +54,38 @@ public class DefaultPropertySelector : IPropertySelector
             return false;
         }
 
+        return IsSelectable(propertyInfo) && InjectIntoInstance(propertyInfo, instance);
+    }
+
+    /// <summary>
+    /// Determines whether the property can be injected at all, from the property alone.
+    /// </summary>
+    /// <param name="propertyInfo">Property to be injected.</param>
+    /// <returns>Whether the property can be injected.</returns>
+    internal static bool IsSelectable(PropertyInfo propertyInfo)
+    {
         if (!propertyInfo.CanWrite || propertyInfo.SetMethod?.IsPublic != true)
         {
             return false;
         }
 
-        if (propertyInfo.HasRequiredMemberAttribute())
-        {
-            // The default property selector should not inject required properties,
-            // to avoid duplication with the injection automatically applied inside the
-            // ReflectionActivator.
-            // Any other form of activator (lambda, instance) would generally already be required to
-            // set the required properties in order to create the instance.
-            return false;
-        }
+        // The default property selector should not inject required properties,
+        // to avoid duplication with the injection automatically applied inside the
+        // ReflectionActivator.
+        // Any other form of activator (lambda, instance) would generally already be required to
+        // set the required properties in order to create the instance.
+        return !propertyInfo.HasRequiredMemberAttribute();
+    }
 
+    /// <summary>
+    /// Determines whether a selectable property should be injected into this instance.
+    /// </summary>
+    /// <param name="propertyInfo">Property to be injected.</param>
+    /// <param name="instance">Instance that has the property to be injected.</param>
+    /// <returns>Whether the property should be injected.</returns>
+    [SuppressMessage("CA1031", "CA1031", Justification = "Issue #799: If getting the property value throws an exception then assume it's set and skip it.")]
+    internal bool InjectIntoInstance(PropertyInfo propertyInfo, object instance)
+    {
         if (PreserveSetValues && propertyInfo.CanRead)
         {
             try

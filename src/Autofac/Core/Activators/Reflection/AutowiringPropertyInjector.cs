@@ -60,41 +60,29 @@ internal static class AutowiringPropertyInjector
         var injectablePropertiesCache = ReflectionCacheSet.Shared.Internal.AutowiringInjectableProperties;
 
         var instanceType = instance.GetType();
-        var injectableProperties = injectablePropertiesCache.GetOrAdd(instanceType, type => GetInjectableProperties(type).ToList());
+        var injectableProperties = injectablePropertiesCache.GetOrAdd(instanceType, GetInjectableProperties);
+        var defaultPropertySelector = propertySelector.GetType() == typeof(DefaultPropertySelector) ? (DefaultPropertySelector)propertySelector : null;
         var injectedProperties = 0;
 
-        for (var index = 0; index < injectableProperties.Count; index++)
+        for (var index = 0; index < injectableProperties.Length; index++)
         {
             var property = injectableProperties[index];
 
-            if (!propertySelector.InjectProperty(property, instance))
+            if (!IsSelected(property, instance, propertySelector, defaultPropertySelector))
             {
                 continue;
             }
 
-            // SetMethod will be non-null if GetInjectableProperties included it.
-            var setParameter = property.SetMethod!.GetParameters()[0];
-            var valueProvider = (Func<object?>?)null;
-
-            // Issue #1275: If a delegate factory has a named parameter 'value' it will try to
-            // inject into any property being autowired.
-            var parameter = resolveParameters.FirstOrDefault(p =>
-                p.CanSupplyValue(setParameter, context, out valueProvider) &&
-                !(p is NamedParameter n && n.Name.Equals("value", StringComparison.Ordinal)));
-            if (parameter is not null)
+            if (TryFindValueProvider(resolveParameters, property.SetterParameter, context, out var valueProvider))
             {
-                var setter = ReflectionCacheSet.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
-                setter(instance, valueProvider!());
+                SetValue(property, instance, valueProvider());
                 injectedProperties++;
                 continue;
             }
 
-            var propertyService = new TypedService(property.PropertyType);
-            var instanceTypeParameter = new NamedParameter(InstanceTypeNamedParameter, instanceType);
-            if (context.TryResolveService(propertyService, new Parameter[] { instanceTypeParameter }, out var propertyValue))
+            if (context.TryResolveService(property.Service, property.InstanceTypeParameters, out var propertyValue))
             {
-                var setter = ReflectionCacheSet.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property, MakeFastPropertySetter);
-                setter(instance, propertyValue);
+                SetValue(property, instance, propertyValue);
                 injectedProperties++;
             }
         }
@@ -103,27 +91,67 @@ internal static class AutowiringPropertyInjector
         {
             AutofacMetrics.RecordPropertyInjection(
                 instanceType,
-                injectableProperties.Count,
+                injectableProperties.Length,
                 injectedProperties,
                 instrumentationTimer.GetElapsedTime());
         }
+    }
+
+    // An exact DefaultPropertySelector uses the property checks cached per type. Subclasses may override InjectProperty, so they are asked.
+    private static bool IsSelected(AutowiringInjectableProperty property, object instance, IPropertySelector propertySelector, DefaultPropertySelector? defaultPropertySelector)
+    {
+        if (defaultPropertySelector is null)
+        {
+            return propertySelector.InjectProperty(property.Property, instance);
+        }
+
+        return property.IsSelectedByDefault && defaultPropertySelector.InjectIntoInstance(property.Property, instance);
+    }
+
+    private static bool TryFindValueProvider(Parameter[] parameters, ParameterInfo setterParameter, IComponentContext context, [NotNullWhen(returnValue: true)] out Func<object?>? valueProvider)
+    {
+        foreach (var parameter in parameters)
+        {
+            // Issue #1275: If a delegate factory has a named parameter 'value' it will try to
+            // inject into any property being autowired.
+            if (parameter.CanSupplyValue(setterParameter, context, out valueProvider) &&
+                !(parameter is NamedParameter n && n.Name.Equals("value", StringComparison.Ordinal)))
+            {
+                return true;
+            }
+        }
+
+        valueProvider = null;
+        return false;
+    }
+
+    private static void SetValue(AutowiringInjectableProperty property, object instance, object? value)
+    {
+        var setter = property.Setter ??= ReflectionCacheSet.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property.Property, MakeFastPropertySetter);
+        setter(instance, value);
     }
 
     [UnconditionalSuppressMessage(
         "Trimming",
         "IL2067:UnrecognizedReflectionPattern",
         Justification = "instanceType is the runtime type of an already-constructed instance being property-injected. Its public properties are preserved by the activation contract (ActivatorMemberTypes) for reflection-activated types; for externally-provided instances the caller that opted into property injection is responsible for preserving them.")]
-    private static IEnumerable<PropertyInfo> GetInjectableProperties(Type instanceType)
+    private static AutowiringInjectableProperty[] GetInjectableProperties(Type instanceType)
     {
-        foreach (var property in instanceType.GetRuntimeProperties())
+        var properties = instanceType.GetRuntimeProperties().Where(IsInjectableProperty).ToArray();
+        if (properties.Length == 0)
         {
-            if (!IsInjectableProperty(property))
-            {
-                continue;
-            }
-
-            yield return property;
+            return Array.Empty<AutowiringInjectableProperty>();
         }
+
+        // One instance type parameter serves every property, and every resolve, of this type.
+        var instanceTypeParameters = new Parameter[] { new NamedParameter(InstanceTypeNamedParameter, instanceType) };
+        var injectableProperties = new AutowiringInjectableProperty[properties.Length];
+        for (var index = 0; index < properties.Length; index++)
+        {
+            injectableProperties[index] = new AutowiringInjectableProperty(properties[index], instanceTypeParameters);
+        }
+
+        return injectableProperties;
     }
 
     private static bool IsInjectableProperty(PropertyInfo property)
