@@ -8,6 +8,7 @@ using Autofac.Test.Scenarios.RegistrationSources;
 
 namespace Autofac.Test.Core.Registration;
 
+[SuppressMessage("CA2000", "CA2000", Justification = "The tracker or container disposes of the registrations added to it.")]
 public class DefaultRegisteredServicesTrackerTests
 {
     [Fact]
@@ -34,18 +35,44 @@ public class DefaultRegisteredServicesTrackerTests
         var second = Registration();
         tracker.AddRegistration(first, preserveDefaults: false);
 
-        var seen = new List<IComponentRegistration>();
-        foreach (var registration in tracker.Registrations)
-        {
-            seen.Add(registration);
-            if (seen.Count == 1)
-            {
-                tracker.AddRegistration(second, preserveDefaults: false);
-            }
-        }
+        var seen = EnumerateAdding(tracker, second);
 
         Assert.Equal(new[] { first }, seen);
         Assert.Equal(new[] { first, second }, tracker.Registrations);
+    }
+
+    [Fact]
+    public void Registrations_AddedAfterCompleteWhileEnumerating()
+    {
+        // The registry is built this way: the tracker is completed, then its registrations are
+        // enumerated, and building their pipelines can make a source add one.
+        using var tracker = new DefaultRegisteredServicesTracker();
+        var first = Registration();
+        var second = Registration();
+        tracker.AddRegistration(first, preserveDefaults: false);
+        tracker.Complete();
+
+        var seen = EnumerateAdding(tracker, second);
+
+        Assert.Equal(new[] { first }, seen);
+        Assert.Equal(new[] { first, second }, tracker.Registrations);
+    }
+
+    [Fact]
+    public void Registrations_AddedAfterCompleteWhileEnumeratingWithQueuedRegistrations()
+    {
+        using var tracker = new DefaultRegisteredServicesTracker();
+        var first = Registration();
+        var second = Registration();
+        var third = Registration();
+        tracker.AddRegistration(first, preserveDefaults: false);
+        tracker.Complete();
+        tracker.AddRegistration(second, preserveDefaults: false);
+
+        var seen = EnumerateAdding(tracker, third);
+
+        Assert.Equal(new[] { first, second }, seen);
+        Assert.Equal(new[] { first, second, third }, tracker.Registrations);
     }
 
     [Fact]
@@ -78,6 +105,21 @@ public class DefaultRegisteredServicesTrackerTests
 
     private static IComponentRegistration Registration()
         => RegistrationBuilder.ForType<object>().CreateRegistration();
+
+    private static List<IComponentRegistration> EnumerateAdding(DefaultRegisteredServicesTracker tracker, IComponentRegistration added)
+    {
+        var seen = new List<IComponentRegistration>();
+        foreach (var registration in tracker.Registrations)
+        {
+            seen.Add(registration);
+            if (seen.Count == 1)
+            {
+                tracker.AddRegistration(added, preserveDefaults: false);
+            }
+        }
+
+        return seen;
+    }
 
     private sealed class StringRegistrationSource : IRegistrationSource
     {

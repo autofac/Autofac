@@ -501,24 +501,24 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
 
     private IEnumerable<IComponentRegistration> EnumerateRegistrations()
     {
+        // Both parts are taken as they are when enumeration begins, so registrations added while
+        // this runs aren't included. Enumerating the queue takes a snapshot of it, which stops it
+        // reusing its current segment, so that happens only when it has registrations: while the
+        // registry is built, it has none.
         var registrationsBeforeComplete = _registrationsBeforeComplete;
-        if (registrationsBeforeComplete is not null)
+        var count = registrationsBeforeComplete?.Count ?? 0;
+        using var queued = _registrations.IsEmpty ? null : _registrations.GetEnumerator();
+
+        for (var i = 0; i < count; i++)
         {
-            // Registrations added while this runs aren't included, as with enumerating the queue.
-            var count = registrationsBeforeComplete.Count;
-            for (var i = 0; i < count; i++)
-            {
-                yield return registrationsBeforeComplete[i];
-            }
+            yield return registrationsBeforeComplete![i];
         }
 
-        // Checking first leaves the queue reusable while nothing has been added since completion,
-        // which is the case while the registry is built.
-        if (!_registrations.IsEmpty)
+        if (queued is not null)
         {
-            foreach (var registration in _registrations)
+            while (queued.MoveNext())
             {
-                yield return registration;
+                yield return queued.Current;
             }
         }
     }
