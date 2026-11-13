@@ -11,6 +11,8 @@ public static class BenchmarkSet
     {
         typeof(ChildScopeResolveBenchmark),
         typeof(RegistryLookupBenchmark),
+        typeof(SharedChildScopeLookupBenchmark),
+        typeof(StartupComponentsBenchmark),
         typeof(KeyedAnyKeyChildScopeBenchmark),
         typeof(ContainerBuildBenchmark),
         typeof(ContainerBuildInheritedMembersBenchmark),
