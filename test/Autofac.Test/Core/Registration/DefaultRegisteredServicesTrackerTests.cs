@@ -11,7 +11,7 @@ namespace Autofac.Test.Core.Registration;
 public class DefaultRegisteredServicesTrackerTests
 {
     [Fact]
-    public void RegistrationsAddedBeforeAndAfterCompletionAreEnumeratedInOrder()
+    public void Registrations_AddedBeforeAndAfterComplete()
     {
         using var tracker = new DefaultRegisteredServicesTracker();
         var first = Registration();
@@ -27,7 +27,7 @@ public class DefaultRegisteredServicesTrackerTests
     }
 
     [Fact]
-    public void RegistrationAddedWhileEnumeratingIsLeftOutOfThatEnumeration()
+    public void Registrations_AddedWhileEnumerating()
     {
         using var tracker = new DefaultRegisteredServicesTracker();
         var first = Registration();
@@ -49,7 +49,7 @@ public class DefaultRegisteredServicesTrackerTests
     }
 
     [Fact]
-    public void RegistrationsForAServiceWithNoneAreAListOfTheirOwn()
+    public void RegistrationsFor_ServiceWithNoRegistrations()
     {
         using var container = new ContainerBuilder().Build();
         var registry = container.ComponentRegistry;
@@ -65,7 +65,7 @@ public class DefaultRegisteredServicesTrackerTests
     }
 
     [Fact]
-    public void SourceAddedAfterAServiceBeganInitializingIsQueriedForTheNextService()
+    public void Source_AddedAfterServiceBeganInitializing()
     {
         using var tracker = new DefaultRegisteredServicesTracker();
         tracker.AddRegistrationSource(new ObjectRegistrationSource());

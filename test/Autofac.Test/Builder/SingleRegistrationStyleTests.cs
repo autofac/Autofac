@@ -9,7 +9,7 @@ namespace Autofac.Test.Builder;
 public class SingleRegistrationStyleTests
 {
     [Fact]
-    public void RegisteredHandlersKeepTheHandlersAdded()
+    public void RegisteredHandlers_HandlersAdded()
     {
         var style = new SingleRegistrationStyle();
         EventHandler<ComponentRegisteredEventArgs> handler = (s, e) => { };
@@ -23,7 +23,7 @@ public class SingleRegistrationStyleTests
     }
 
     [Fact]
-    public void HandlerAddedToARegistrationRunsWhenItIsRegistered()
+    public void Registration_HandlerAddedThenRegistered()
     {
         var builder = new ContainerBuilder();
         IComponentRegistration? registered = null;
