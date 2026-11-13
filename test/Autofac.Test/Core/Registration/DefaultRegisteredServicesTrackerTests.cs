@@ -3,6 +3,8 @@
 
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Core.Activators.Delegate;
+using Autofac.Core.Lifetime;
 using Autofac.Core.Registration;
 using Autofac.Test.Scenarios.RegistrationSources;
 
@@ -76,6 +78,30 @@ public class DefaultRegisteredServicesTrackerTests
     }
 
     [Fact]
+    public void Dispose_RegistrationsAddedBeforeAndAfterComplete()
+    {
+        var tracker = new DefaultRegisteredServicesTracker();
+        var (before, after) = AddBeforeAndAfterComplete(tracker);
+
+        tracker.Dispose();
+
+        Assert.True(before.IsDisposed);
+        Assert.True(after.IsDisposed);
+    }
+
+    [Fact]
+    public async Task DisposeAsync_RegistrationsAddedBeforeAndAfterComplete()
+    {
+        var tracker = new DefaultRegisteredServicesTracker();
+        var (before, after) = AddBeforeAndAfterComplete(tracker);
+
+        await tracker.DisposeAsync();
+
+        Assert.True(before.IsDisposed);
+        Assert.True(after.IsDisposed);
+    }
+
+    [Fact]
     public void RegistrationsFor_ServiceWithNoRegistrations()
     {
         using var container = new ContainerBuilder().Build();
@@ -103,6 +129,23 @@ public class DefaultRegisteredServicesTrackerTests
         Assert.True(tracker.IsRegistered(new TypedService(typeof(string))));
     }
 
+    [Fact]
+    public void Source_ProvidesRegistrationWithListOfServices()
+    {
+        var first = new TypedService(typeof(IFirst));
+        var second = new TypedService(typeof(ISecond));
+        var builder = new ContainerBuilder();
+        builder.RegisterSource(new ListServicesRegistrationSource(new List<Service> { first, second }));
+        using var container = builder.Build();
+
+        // The source provides a new registration each time it is asked, so the second service shares
+        // the first one only if the registration is held for it rather than the source asked again.
+        var forFirst = Assert.Single(container.ComponentRegistry.RegistrationsFor(first));
+        var forSecond = Assert.Single(container.ComponentRegistry.RegistrationsFor(second));
+        Assert.Same(forFirst, forSecond);
+        Assert.Same(container.Resolve<IFirst>(), container.Resolve<ISecond>());
+    }
+
     private static IComponentRegistration Registration()
         => RegistrationBuilder.ForType<object>().CreateRegistration();
 
@@ -121,6 +164,28 @@ public class DefaultRegisteredServicesTrackerTests
         return seen;
     }
 
+    private static (Mocks.MockComponentRegistration Before, Mocks.MockComponentRegistration After) AddBeforeAndAfterComplete(DefaultRegisteredServicesTracker tracker)
+    {
+        var before = Mocks.GetComponentRegistration();
+        var after = Mocks.GetComponentRegistration();
+        tracker.AddRegistration(before, preserveDefaults: false);
+        tracker.Complete();
+        tracker.AddRegistration(after, preserveDefaults: false);
+        return (before, after);
+    }
+
+    private interface IFirst
+    {
+    }
+
+    private interface ISecond
+    {
+    }
+
+    private sealed class Component : IFirst, ISecond
+    {
+    }
+
     private sealed class StringRegistrationSource : IRegistrationSource
     {
         public bool IsAdapterForIndividualComponents => false;
@@ -131,6 +196,39 @@ public class DefaultRegisteredServicesTrackerTests
             {
                 yield return RegistrationBuilder.ForDelegate((c, p) => "value").CreateRegistration();
             }
+        }
+    }
+
+    private sealed class ListServicesRegistrationSource : IRegistrationSource
+    {
+        private readonly List<Service> _services;
+
+        public ListServicesRegistrationSource(List<Service> services)
+        {
+            _services = services;
+        }
+
+        public bool IsAdapterForIndividualComponents => false;
+
+        public IEnumerable<IComponentRegistration> RegistrationsFor(Service service, Func<Service, IEnumerable<ServiceRegistration>> registrationAccessor)
+        {
+            if (!_services.Contains(service))
+            {
+                return Array.Empty<IComponentRegistration>();
+            }
+
+            // Registrations created by the registration builders hold an array of services; this one doesn't.
+            return new[]
+            {
+                new ComponentRegistration(
+                    Guid.NewGuid(),
+                    new DelegateActivator(typeof(Component), (c, p) => new Component()),
+                    RootScopeLifetime.Instance,
+                    InstanceSharing.Shared,
+                    InstanceOwnership.OwnedByLifetimeScope,
+                    _services,
+                    new Dictionary<string, object?>()),
+            };
         }
     }
 }

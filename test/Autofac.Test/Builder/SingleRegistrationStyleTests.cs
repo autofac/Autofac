@@ -23,6 +23,18 @@ public class SingleRegistrationStyleTests
     }
 
     [Fact]
+    public void RegisteredHandlers_HandlerAddedThenRemoved()
+    {
+        var style = new SingleRegistrationStyle();
+        EventHandler<ComponentRegisteredEventArgs> handler = (s, e) => { };
+        style.RegisteredHandlers.Add(handler);
+
+        style.RegisteredHandlers.Remove(handler);
+
+        Assert.False(style.HasRegisteredHandlers);
+    }
+
+    [Fact]
     public void Registration_HandlerAddedThenRegistered()
     {
         var builder = new ContainerBuilder();
