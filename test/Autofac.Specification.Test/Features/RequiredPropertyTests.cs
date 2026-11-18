@@ -174,6 +174,25 @@ public class RequiredPropertyTests
     }
 
     [Fact]
+    public void ParameterPassedAtResolveOverridesConfiguredParameterForRequiredProperty()
+    {
+        var configured = new ServiceB();
+        var supplied = new ServiceB();
+        var builder = new ContainerBuilder();
+        builder.RegisterType<ServiceA>();
+        builder.RegisterType<Component>().WithParameter(new TypedParameter(typeof(ServiceB), configured));
+
+        var container = builder.Build();
+
+        // An array is used as is; a list is copied into one.
+        var fromArray = container.Resolve<Component>(new TypedParameter(typeof(ServiceB), supplied));
+        var fromList = container.Resolve<Component>(new List<Parameter> { new TypedParameter(typeof(ServiceB), supplied) });
+
+        Assert.Same(supplied, fromArray.ServiceB);
+        Assert.Same(supplied, fromList.ServiceB);
+    }
+
+    [Fact]
     public void NamedParametersIgnoredForRequiredProperties()
     {
         var builder = new ContainerBuilder();

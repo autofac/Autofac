@@ -246,6 +246,34 @@ public class ReflectionActivatorTests
     }
 
     [Fact]
+    public void ResolveParameters_OverrideConfiguredParametersWithSeveralConstructors()
+    {
+        var builder = new ContainerBuilder();
+        builder.RegisterInstance(new object());
+        var container = builder.Build();
+
+        var configured = new object();
+        var supplied = new object();
+        using var target = Factory.CreateReflectionActivator(typeof(AcceptsObjectParameterOrMore), new Parameter[] { new NamedParameter("p", configured) });
+
+        var invoker = target.GetPipelineInvoker(container.ComponentRegistry);
+
+        // With several constructors, the resolve and configured parameters are combined, resolve parameters first.
+        var fromArray = (AcceptsObjectParameterOrMore)invoker(container, new Parameter[] { new NamedParameter("p", supplied) });
+        var fromCollection = (AcceptsObjectParameterOrMore)invoker(container, new List<Parameter> { new NamedParameter("p", supplied) });
+        var fromSequence = (AcceptsObjectParameterOrMore)invoker(container, Sequence(new NamedParameter("p", supplied)));
+
+        Assert.Same(supplied, fromArray.P);
+        Assert.Same(supplied, fromCollection.P);
+        Assert.Same(supplied, fromSequence.P);
+
+        static IEnumerable<Parameter> Sequence(Parameter parameter)
+        {
+            yield return parameter;
+        }
+    }
+
+    [Fact]
     public void Pipeline_LaterArgumentNotAvailable_NamesThatArgument()
     {
         var builder = new ContainerBuilder();
@@ -433,6 +461,25 @@ public class ReflectionActivatorTests
     private class AcceptsObjectParameter
     {
         public AcceptsObjectParameter(object p)
+        {
+            P = p;
+        }
+
+        public object P
+        {
+            get; private set;
+        }
+    }
+
+    private class AcceptsObjectParameterOrMore
+    {
+        public AcceptsObjectParameterOrMore(object p)
+        {
+            P = p;
+        }
+
+        // Can't bind: nothing supplies a string.
+        public AcceptsObjectParameterOrMore(object p, string s)
         {
             P = p;
         }
