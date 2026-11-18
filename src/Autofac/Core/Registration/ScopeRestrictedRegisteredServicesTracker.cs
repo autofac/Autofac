@@ -11,9 +11,11 @@ namespace Autofac.Core.Registration;
 /// </summary>
 internal sealed class ScopeRestrictedRegisteredServicesTracker : DefaultRegisteredServicesTracker
 {
-    // A child scope's registry only adds a service the first time the scope looks it up, so one lock
-    // serves it instead of the lock per processor a default ConcurrentDictionary allocates. Reads
-    // take no lock either way. The capacity is the ConcurrentDictionary default.
+    // A child scope's registry adds services while the scope's configuration action registers
+    // components, before the scope is shared. After that it adds a service only when a lookup first
+    // needs it, either the service looked up or another service of a registration a source provides.
+    // So one lock serves it instead of the lock per processor a default ConcurrentDictionary
+    // allocates. Reads take no lock either way. The capacity is the ConcurrentDictionary default.
     private const int ChildScopeConcurrencyLevel = 1;
 
     private const int DefaultCapacity = 31;
