@@ -127,7 +127,7 @@ internal static class AutowiringPropertyInjector
 
     private static void SetValue(AutowiringInjectableProperty property, object instance, object? value)
     {
-        var setter = property.Setter ??= ReflectionCacheSet.Shared.Internal.AutowiringPropertySetters.GetOrAdd(property.Property, MakeFastPropertySetter);
+        var setter = property.Setter ??= MakeFastPropertySetter(property.Property);
         setter(instance, value);
     }
 
