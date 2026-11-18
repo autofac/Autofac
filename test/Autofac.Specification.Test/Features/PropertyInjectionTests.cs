@@ -337,6 +337,7 @@ public class PropertyInjectionTests
     [Fact]
     public void PropertyInjectionPassesTheInstanceTypeOfEachTypeBeingInjectedOnto()
     {
+        // PR #645: property injection passes the type being injected onto; the cached parameter must be per type.
         var captured = new List<Type>();
         var cb = new ContainerBuilder();
         cb.RegisterType<HasPublicSetter>().PropertiesAutowired();
@@ -358,6 +359,7 @@ public class PropertyInjectionTests
     [Fact]
     public void PropertiesAutowiredDoesNotSetRequiredProperty()
     {
+        // Issue #1369: The default selector ignores required properties; the cached check must too.
         var builder = new ContainerBuilder();
         builder.RegisterInstance("registered");
         builder.Register(_ => new HasRequiredProperty { Required = "lambda" }).PropertiesAutowired();
