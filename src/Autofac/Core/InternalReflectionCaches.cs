@@ -43,8 +43,7 @@ internal class InternalReflectionCaches
         IsGenericTypeContainingType = set.GetOrCreateCache<ReflectionCacheTupleDictionary<Type, bool>>(nameof(IsGenericTypeContainingType));
         OpenGenericImplementationInfoByType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, OpenGenericImplementationInfo>>(nameof(OpenGenericImplementationInfoByType));
         ConstructorBinderFactory = set.GetOrCreateCache<ReflectionCacheDictionary<ConstructorInfo, Func<object?[], object>>>(nameof(ConstructorBinderFactory));
-        AutowiringPropertySetters = set.GetOrCreateCache<ReflectionCacheDictionary<PropertyInfo, Action<object, object?>>>(nameof(AutowiringPropertySetters));
-        AutowiringInjectableProperties = set.GetOrCreateCache<ReflectionCacheDictionary<Type, IReadOnlyList<PropertyInfo>>>(nameof(AutowiringInjectableProperties));
+        AutowiringInjectableProperties = set.GetOrCreateCache<ReflectionCacheDictionary<Type, AutowiringInjectableProperty[]>>(nameof(AutowiringInjectableProperties));
         DefaultPublicConstructors = set.GetOrCreateCache<ReflectionCacheDictionary<Type, ConstructorInfo[]>>(nameof(DefaultPublicConstructors));
         GenericTypeDefinitionByType = set.GetOrCreateCache<ReflectionCacheDictionary<Type, Type>>(nameof(GenericTypeDefinitionByType));
         HasRequiredMemberAttribute = set.GetOrCreateCache<ReflectionCacheDictionary<Type, bool>>(nameof(HasRequiredMemberAttribute));
@@ -127,15 +126,7 @@ internal class InternalReflectionCaches
     /// <summary>
     /// Gets a cache used by <see cref="AutowiringPropertyInjector.InjectProperties"/>.
     /// </summary>
-    public ReflectionCacheDictionary<PropertyInfo, Action<object, object?>> AutowiringPropertySetters
-    {
-        get;
-    }
-
-    /// <summary>
-    /// Gets a cache used by <see cref="AutowiringPropertyInjector.InjectProperties"/>.
-    /// </summary>
-    public ReflectionCacheDictionary<Type, IReadOnlyList<PropertyInfo>> AutowiringInjectableProperties
+    public ReflectionCacheDictionary<Type, AutowiringInjectableProperty[]> AutowiringInjectableProperties
     {
         get;
     }
