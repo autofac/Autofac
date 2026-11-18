@@ -20,10 +20,12 @@ internal static class BuildCallbackManager
     /// <param name="scope">The new scope/container.</param>
     internal static void RunBuildCallbacks(ILifetimeScope scope)
     {
-        var buildCallbackServices = scope.ComponentRegistry.ServiceRegistrationsFor(_callbackServiceType);
+        var buildCallbackServices = StartableManager.ServiceRegistrationsFor(scope.ComponentRegistry, _callbackServiceType);
 
-        foreach (var srv in buildCallbackServices)
+        for (var i = 0; i < buildCallbackServices.Count; i++)
         {
+            var srv = buildCallbackServices[i];
+
             // Use the metadata to track whether we've executed already, to avoid issuing a resolve request.
             if (srv.Metadata.ContainsKey(BuildCallbacksExecutedKey))
             {
