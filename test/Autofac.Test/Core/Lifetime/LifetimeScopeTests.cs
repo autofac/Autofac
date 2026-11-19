@@ -13,6 +13,88 @@ namespace Autofac.Test.Core.Lifetime;
 
 public class LifetimeScopeTests
 {
+    private interface IDecoratedService
+    {
+    }
+
+    [Fact]
+    public void QualifiedSharedInstanceIsFoundOnlyOnceCreated()
+    {
+        using var container = new ContainerBuilder().Build();
+        using var scope = container.BeginLifetimeScope();
+        var sharingScope = (ISharingLifetimeScope)scope;
+        var primaryId = Guid.NewGuid();
+        var qualifyingId = Guid.NewGuid();
+        var instance = new object();
+
+        // No qualified instance has been created in this scope yet.
+        Assert.False(sharingScope.TryGetSharedInstance(primaryId, qualifyingId, out _));
+
+        Assert.Same(instance, sharingScope.CreateSharedInstance(primaryId, qualifyingId, () => instance));
+        Assert.Same(instance, sharingScope.CreateSharedInstance(primaryId, qualifyingId, () => new object()));
+
+        Assert.True(sharingScope.TryGetSharedInstance(primaryId, qualifyingId, out var found));
+        Assert.Same(instance, found);
+        Assert.False(sharingScope.TryGetSharedInstance(primaryId, out _));
+    }
+
+    [Fact]
+    public void SharedInstancesAreKeptWhenTheScopeHoldsMoreThanItsInitialCapacity()
+    {
+        using var container = new ContainerBuilder().Build();
+        using var scope = container.BeginLifetimeScope();
+        var sharingScope = (ISharingLifetimeScope)scope;
+        var ids = Enumerable.Range(0, 100).Select(_ => Guid.NewGuid()).ToArray();
+        var qualifyingId = Guid.NewGuid();
+
+        foreach (var id in ids)
+        {
+            sharingScope.CreateSharedInstance(id, () => id);
+            sharingScope.CreateSharedInstance(id, qualifyingId, () => id);
+        }
+
+        foreach (var id in ids)
+        {
+            Assert.True(sharingScope.TryGetSharedInstance(id, out var instance));
+            Assert.Equal(id, instance);
+            Assert.True(sharingScope.TryGetSharedInstance(id, qualifyingId, out var qualifiedInstance));
+            Assert.Equal(id, qualifiedInstance);
+        }
+    }
+
+    [Fact]
+    public async Task ConcurrentFirstResolvesOfADecoratedSharedInstanceCreateItOnce()
+    {
+        const int ThreadCount = 8;
+        var created = 0;
+        var builder = new ContainerBuilder();
+        builder.Register(_ =>
+        {
+            Interlocked.Increment(ref created);
+            return new DecoratedServiceImplementation();
+        }).As<IDecoratedService>().InstancePerLifetimeScope();
+        builder.RegisterDecorator<DecoratedServiceDecorator, IDecoratedService>();
+        using var container = builder.Build();
+
+        for (var iteration = 0; iteration < 200; iteration++)
+        {
+            created = 0;
+            using var scope = container.BeginLifetimeScope();
+            using var barrier = new Barrier(ThreadCount);
+            var resolves = Enumerable.Range(0, ThreadCount).Select(_ => Task.Run(() =>
+            {
+                barrier.SignalAndWait();
+                return scope.Resolve<IDecoratedService>();
+            })).ToArray();
+
+            var results = await Task.WhenAll(resolves);
+
+            Assert.Equal(1, created);
+            Assert.IsType<DecoratedServiceDecorator>(results[0]);
+            Assert.All(results, result => Assert.Same(results[0], result));
+        }
+    }
+
     [Fact]
     public void AdaptersInNestedScopeOverrideAdaptersInParent()
     {
@@ -294,5 +376,22 @@ public class LifetimeScopeTests
 
     private class Person
     {
+    }
+
+    private sealed class DecoratedServiceImplementation : IDecoratedService
+    {
+    }
+
+    private sealed class DecoratedServiceDecorator : IDecoratedService
+    {
+        public DecoratedServiceDecorator(IDecoratedService decorated)
+        {
+            Decorated = decorated;
+        }
+
+        public IDecoratedService Decorated
+        {
+            get;
+        }
     }
 }
