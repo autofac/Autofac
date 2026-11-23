@@ -279,11 +279,10 @@ public static class RegistrationBuilder
 
         cr.Register(registration, builder.RegistrationStyle.PreserveDefaults);
 
-        var registeredHandlers = builder.RegistrationStyle.RegisteredHandlers;
-        if (registeredHandlers.Count != 0)
+        if (builder.RegistrationStyle.HasRegisteredHandlers)
         {
             var registeredEventArgs = new ComponentRegisteredEventArgs(cr, registration);
-            foreach (var rh in registeredHandlers)
+            foreach (var rh in builder.RegistrationStyle.RegisteredHandlers)
             {
                 rh(cr, registeredEventArgs);
             }
