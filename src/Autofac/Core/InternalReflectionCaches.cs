@@ -61,7 +61,7 @@ internal class InternalReflectionCaches
 
         GeneratedFactoryServiceRegistrationGenerators = set.GetOrCreateCache(
             nameof(GeneratedFactoryServiceRegistrationGenerators),
-            _ => new ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<ProductTarget, IComponentContext, Delegate>>
+            _ => new ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<ResolveRequestTemplate, IComponentContext, Delegate>>
             {
                 Usage = ReflectionCacheUsage.All,
             });
@@ -221,7 +221,7 @@ internal class InternalReflectionCaches
     /// <see cref="Features.GeneratedFactories.FactoryGenerator"/> instances that resolve via
     /// <see cref="IComponentContext.ResolveComponent"/>. Keyed on <c>(delegateType, effectiveParameterMapping)</c>.
     /// </summary>
-    public ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<ProductTarget, IComponentContext, Delegate>> GeneratedFactoryServiceRegistrationGenerators
+    public ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<ResolveRequestTemplate, IComponentContext, Delegate>> GeneratedFactoryServiceRegistrationGenerators
     {
         get;
     }

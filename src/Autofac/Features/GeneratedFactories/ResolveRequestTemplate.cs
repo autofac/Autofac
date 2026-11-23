@@ -6,21 +6,21 @@ using Autofac.Core;
 namespace Autofac.Features.GeneratedFactories;
 
 /// <summary>
-/// The service and registration a generated factory resolves. Passed to the compiled generator as a
-/// single reference type because <see cref="ServiceRegistration"/> is a struct, and value-type
+/// A generated factory's <see cref="ResolveRequest"/>, missing only the parameters built from the
+/// factory's arguments. Passed to the compiled generator as a single reference type because <see cref="ServiceRegistration"/> is a struct, and value-type
 /// parameters prevent Mono full AOT from interpreting the generator (#1519).
 /// </summary>
-internal sealed class ProductTarget
+internal sealed class ResolveRequestTemplate
 {
     private readonly Service _service;
     private readonly ServiceRegistration _registration;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ProductTarget"/> class.
+    /// Initializes a new instance of the <see cref="ResolveRequestTemplate"/> class.
     /// </summary>
     /// <param name="service">The service the factory resolves.</param>
     /// <param name="registration">The registration that provides the service.</param>
-    public ProductTarget(Service service, ServiceRegistration registration)
+    public ResolveRequestTemplate(Service service, ServiceRegistration registration)
     {
         _service = service;
         _registration = registration;

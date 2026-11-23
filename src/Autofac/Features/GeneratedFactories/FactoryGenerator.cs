@@ -74,8 +74,8 @@ public class FactoryGenerator
         var pm = GetParameterMapping(delegateType, parameterMapping);
 
         // Retrieve the cached compiled generator for this delegate type and parameter mapping,
-        // or compile it once on first use. The cached delegate is parameterised on a ProductTarget
-        // holding 'service' and 'productRegistration' (passed at invocation time), so it contains no instance-specific
+        // or compile it once on first use. The cached delegate is parameterised on a ResolveRequestTemplate
+        // built from 'service' and 'productRegistration' (passed at invocation time), so it contains no instance-specific
         // captures and is safe to share across all FactoryGenerator instances for the same delegate type.
         // Accessing ReflectionCacheSet.Shared at point-of-use (not stored in a field) ensures
         // correct weak-reference collection of the cache set.
@@ -88,8 +88,8 @@ public class FactoryGenerator
         // Close over the specific service and product registration so _generator matches the
         // expected signature. These values are instance-specific but are not baked into the
         // compiled expression tree — they are passed as arguments at each invocation.
-        var target = new ProductTarget(service, productRegistration);
-        _generator = (context, _) => compiledGenerator(target, context);
+        var template = new ResolveRequestTemplate(service, productRegistration);
+        _generator = (context, _) => compiledGenerator(template, context);
     }
 
     /// <summary>
@@ -216,11 +216,11 @@ public class FactoryGenerator
     /// <see cref="FactoryGenerator"/> instances with the same (<paramref name="delegateType"/>, <paramref name="pm"/>) pair.
     /// </summary>
     [RequiresDynamicCode(DynamicCodeWarning)]
-    private static Func<ProductTarget, IComponentContext, Delegate> CreateServiceRegistrationGenerator([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, ParameterMapping pm)
+    private static Func<ResolveRequestTemplate, IComponentContext, Delegate> CreateServiceRegistrationGenerator([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, ParameterMapping pm)
     {
-        // Outer parameters: (ProductTarget t, IComponentContext c). Keep these to at most two
+        // Outer parameters: (ResolveRequestTemplate template, IComponentContext c). Keep these to at most two
         // reference types: Mono full AOT (iOS) can only interpret lambdas of that shape (#1519).
-        var targetParam = Expression.Parameter(typeof(ProductTarget), "t");
+        var templateParam = Expression.Parameter(typeof(ResolveRequestTemplate), "template");
         var activatorContextParam = Expression.Parameter(typeof(IComponentContext), "c");
 
         var invoke = delegateType.GetDeclaredMethod("Invoke");
@@ -250,13 +250,13 @@ public class FactoryGenerator
         {
             var resolveParameterArray = MapParameters(creatorParams, pm);
 
-            // t.CreateRequest([...]) — 't' is a runtime parameter.
+            // template.CreateRequest([...]) — 'template' is a runtime parameter.
             var requestExpression = Expression.Call(
-                targetParam,
-                ReflectionExtensions.GetMethod<ProductTarget>(t => t.CreateRequest(default!)),
+                templateParam,
+                ReflectionExtensions.GetMethod<ResolveRequestTemplate>(t => t.CreateRequest(default!)),
                 CreateParametersExpression(resolveParameterArray));
 
-            // c.ResolveComponent(t.CreateRequest(...))
+            // c.ResolveComponent(template.CreateRequest(...))
             var resolveCall = Expression.Call(
                 activatorContextParam,
                 ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveComponent(
@@ -266,13 +266,13 @@ public class FactoryGenerator
             resolveCast = Expression.Convert(resolveCall, invoke.ReturnType);
         }
 
-        // ([dps]*) => (drt)c.ResolveComponent(t.CreateRequest([...]))
+        // ([dps]*) => (drt)c.ResolveComponent(template.CreateRequest([...]))
         var creator = Expression.Lambda(delegateType, resolveCast, creatorParams);
 
-        // (t, c) => ([dps]*) => ...
-        var activator = Expression.Lambda<Func<ProductTarget, IComponentContext, Delegate>>(
+        // (template, c) => ([dps]*) => ...
+        var activator = Expression.Lambda<Func<ResolveRequestTemplate, IComponentContext, Delegate>>(
             creator,
-            targetParam,
+            templateParam,
             activatorContextParam);
 
         return activator.Compile();
