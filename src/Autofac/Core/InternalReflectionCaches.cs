@@ -54,14 +54,14 @@ internal class InternalReflectionCaches
 
         GeneratedFactoryServiceOnlyGenerators = set.GetOrCreateCache(
             nameof(GeneratedFactoryServiceOnlyGenerators),
-            _ => new ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<Service, IComponentContext, IEnumerable<Parameter>, Delegate>>
+            _ => new ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<Service, IComponentContext, Delegate>>
             {
                 Usage = ReflectionCacheUsage.All,
             });
 
         GeneratedFactoryServiceRegistrationGenerators = set.GetOrCreateCache(
             nameof(GeneratedFactoryServiceRegistrationGenerators),
-            _ => new ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<Service, ServiceRegistration, IComponentContext, IEnumerable<Parameter>, Delegate>>
+            _ => new ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<ProductTarget, IComponentContext, Delegate>>
             {
                 Usage = ReflectionCacheUsage.All,
             });
@@ -211,7 +211,7 @@ internal class InternalReflectionCaches
     /// <see cref="Features.GeneratedFactories.FactoryGenerator"/> instances that resolve via
     /// <c>ResolveService</c>. Keyed on <c>(delegateType, effectiveParameterMapping)</c>.
     /// </summary>
-    public ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<Service, IComponentContext, IEnumerable<Parameter>, Delegate>> GeneratedFactoryServiceOnlyGenerators
+    public ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<Service, IComponentContext, Delegate>> GeneratedFactoryServiceOnlyGenerators
     {
         get;
     }
@@ -221,7 +221,7 @@ internal class InternalReflectionCaches
     /// <see cref="Features.GeneratedFactories.FactoryGenerator"/> instances that resolve via
     /// <see cref="IComponentContext.ResolveComponent"/>. Keyed on <c>(delegateType, effectiveParameterMapping)</c>.
     /// </summary>
-    public ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<Service, ServiceRegistration, IComponentContext, IEnumerable<Parameter>, Delegate>> GeneratedFactoryServiceRegistrationGenerators
+    public ReflectionCacheTypeKeyedDictionary<ParameterMapping, Func<ProductTarget, IComponentContext, Delegate>> GeneratedFactoryServiceRegistrationGenerators
     {
         get;
     }
