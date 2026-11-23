@@ -1,10 +1,16 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Core;
+
 namespace Autofac.Benchmarks;
 
 public class RequiredPropertyBenchmark
 {
+    private readonly Parameter[] _resolveTimeParameters = { new TypedParameter(typeof(ServiceB), new ServiceB()) };
+
+    private readonly List<Parameter> _resolveTimeParameterList = new() { new TypedParameter(typeof(ServiceB), new ServiceB()) };
+
     private IContainer _container = default!;
 
     [GlobalSetup]
@@ -16,6 +22,8 @@ public class RequiredPropertyBenchmark
         builder.RegisterType<ServiceB>();
         builder.RegisterType<ConstructorComponent>();
         builder.RegisterType<RequiredPropertyComponent>();
+        builder.RegisterType<ConfiguredPropertyComponent>().WithProperty(nameof(ConfiguredPropertyComponent.ServiceB), new ServiceB());
+        builder.RegisterType<ResolveTimeParameterComponent>();
 
         _container = builder.Build();
     }
@@ -30,6 +38,24 @@ public class RequiredPropertyBenchmark
     public void RequiredProperties()
     {
         _container.Resolve<RequiredPropertyComponent>();
+    }
+
+    [Benchmark]
+    public void RequiredPropertiesWithConfiguredProperty()
+    {
+        _container.Resolve<ConfiguredPropertyComponent>();
+    }
+
+    [Benchmark]
+    public void RequiredPropertiesWithResolveTimeParameter()
+    {
+        _container.Resolve<ResolveTimeParameterComponent>(_resolveTimeParameters);
+    }
+
+    [Benchmark]
+    public void RequiredPropertiesWithResolveTimeParameterList()
+    {
+        _container.Resolve<ResolveTimeParameterComponent>(_resolveTimeParameterList);
     }
 
     private class ServiceA
@@ -67,6 +93,32 @@ public class RequiredPropertyBenchmark
         }
 
         public required ServiceA ServiceB
+        {
+            get; set;
+        }
+    }
+
+    private class ResolveTimeParameterComponent
+    {
+        public required ServiceA ServiceA
+        {
+            get; set;
+        }
+
+        public required ServiceB ServiceB
+        {
+            get; set;
+        }
+    }
+
+    private class ConfiguredPropertyComponent
+    {
+        public required ServiceA ServiceA
+        {
+            get; set;
+        }
+
+        public required ServiceB ServiceB
         {
             get; set;
         }
