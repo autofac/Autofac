@@ -715,7 +715,7 @@ public class GeneratedFactoriesTests
     }
 
     [Fact]
-    public void FactoryDelegate_CompiledGenerators_InterpretableWithoutDynamicCode()
+    public void FactoryDelegate_CompiledGenerators()
     {
         // #1519: Mono full AOT (iOS) interprets expression trees and can only turn a lambda into a
         // delegate through precompiled thunks, which cover at most two reference-type parameters.
