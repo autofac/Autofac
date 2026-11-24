@@ -21,7 +21,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     /// <summary>
     /// Keeps track of the status of registered services.
     /// </summary>
-    private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo = new();
+    private readonly ConcurrentDictionary<Service, ServiceRegistrationInfo> _serviceInfo;
 
     /// <summary>
     /// External registration sources.
@@ -29,7 +29,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     private readonly Stack<IRegistrationSource> _dynamicRegistrationSources = new();
 
     /// <summary>
-    /// All registrations.
+    /// Registrations added once the tracker is complete, which registration sources can do from any thread.
     /// </summary>
     private readonly ConcurrentQueue<IComponentRegistration> _registrations = new();
 
@@ -40,6 +40,22 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         "IDE0052:Remove unread private members",
         Justification = "Intentionally holding a reference to the reflection cache in the tracker to keep the shared instance 'alive'.")]
     private readonly ReflectionCacheSet _capturedReflectionCache;
+
+    /// <summary>
+    /// Registrations added before the tracker is complete, while the registry is built on one thread.
+    /// </summary>
+    /// <remarks>
+    /// These aren't kept in <see cref="_registrations"/> because building the registry enumerates
+    /// them, and enumerating a <see cref="ConcurrentQueue{T}"/> stops it reusing its segment, so the
+    /// first registration a source added afterwards would allocate a new one.
+    /// </remarks>
+    private List<IComponentRegistration>? _registrationsBeforeComplete;
+
+    /// <summary>
+    /// The registration sources in the order services query them, shared by every service that begins
+    /// initializing until another source is added.
+    /// </summary>
+    private IRegistrationSource[]? _sourcesToQuery;
 
     private Dictionary<Service, ServiceRegistrationInfo>? _ephemeralServiceInfo;
     private bool _trackerPopulationComplete;
@@ -61,7 +77,17 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker"/> class.
     /// </summary>
     public DefaultRegisteredServicesTracker()
+        : this(new ConcurrentDictionary<Service, ServiceRegistrationInfo>())
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DefaultRegisteredServicesTracker"/> class.
+    /// </summary>
+    /// <param name="serviceInfo">The dictionary that keeps the status of registered services.</param>
+    private protected DefaultRegisteredServicesTracker(ConcurrentDictionary<Service, ServiceRegistrationInfo> serviceInfo)
+    {
+        _serviceInfo = serviceInfo;
         _registrationAccessor = ServiceRegistrationsFor;
 
         // Hold a reference to the reflection cache here so the current instance stays
@@ -85,7 +111,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     {
         get
         {
-            return _registrations;
+            return EnumerateRegistrations();
         }
     }
 
@@ -137,7 +163,15 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
             // build pipelines for them.
             // The Registrations collection is only available to consumers once the tracker is contained with a ContainerRegistry
             // and the Complete method has been called.
-            _registrations.Enqueue(registration);
+            if (_trackerPopulationComplete)
+            {
+                _registrations.Enqueue(registration);
+            }
+            else
+            {
+                (_registrationsBeforeComplete ??= new List<IComponentRegistration>()).Add(registration);
+            }
+
             var handler = Registered;
             handler?.Invoke(this, registration);
 
@@ -157,6 +191,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         _dynamicRegistrationSources.Push(source);
+        _sourcesToQuery = null;
 
         var handler = RegistrationSourceAdded;
         handler?.Invoke(this, source);
@@ -226,17 +261,20 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     /// <inheritdoc />
     public IEnumerable<IComponentRegistration> RegistrationsFor(Service service)
     {
-        if (service == null)
-        {
-            throw new ArgumentNullException(nameof(service));
-        }
-
-        var info = GetInitializedServiceInfo(service);
-        return info.ImplementationsToList<object?, IComponentRegistration>(null, static (_, implementation) => implementation);
+        // Callers outside the tracker get a list of their own, even an empty one.
+        var registrations = RegistrationsOrEmptyFor(service);
+        return registrations.Count == 0 ? new List<IComponentRegistration>() : registrations;
     }
 
     /// <inheritdoc/>
     public IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service)
+    {
+        var registrations = ServiceRegistrationsOrEmptyFor(service);
+        return registrations.Count == 0 ? new List<ServiceRegistration>() : registrations;
+    }
+
+    /// <inheritdoc/>
+    public IReadOnlyList<IComponentRegistration> RegistrationsOrEmptyFor(Service service)
     {
         if (service == null)
         {
@@ -244,6 +282,28 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         var info = GetInitializedServiceInfo(service);
+        if (!info.HasImplementations)
+        {
+            return Array.Empty<IComponentRegistration>();
+        }
+
+        return info.ImplementationsToList<object?, IComponentRegistration>(null, static (_, implementation) => implementation);
+    }
+
+    /// <inheritdoc/>
+    public IReadOnlyList<ServiceRegistration> ServiceRegistrationsOrEmptyFor(Service service)
+    {
+        if (service == null)
+        {
+            throw new ArgumentNullException(nameof(service));
+        }
+
+        var info = GetInitializedServiceInfo(service);
+        if (!info.HasImplementations)
+        {
+            return Array.Empty<ServiceRegistration>();
+        }
+
         return info.ImplementationsToList(info, static (info, implementation) => new ServiceRegistration(info.ServicePipeline, implementation));
     }
 
@@ -256,7 +316,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        foreach (var registration in _registrations)
+        foreach (var registration in Registrations)
         {
             registration.Dispose();
         }
@@ -267,7 +327,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     /// <inheritdoc />
     protected override async ValueTask DisposeAsync(bool disposing)
     {
-        foreach (var registration in _registrations)
+        foreach (var registration in Registrations)
         {
             await registration.DisposeAsync().ConfigureAwait(false);
         }
@@ -439,6 +499,30 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         info.AddImplementation(registration, preserveDefaults, originatingSource is not null);
     }
 
+    private IEnumerable<IComponentRegistration> EnumerateRegistrations()
+    {
+        // Both parts are taken as they are when enumeration begins, so registrations added while
+        // this runs aren't included. Enumerating the queue takes a snapshot of it, which stops it
+        // reusing its current segment, so that happens only when it has registrations: while the
+        // registry is built, it has none.
+        var registrationsBeforeComplete = _registrationsBeforeComplete;
+        var count = registrationsBeforeComplete?.Count ?? 0;
+        using var queued = _registrations.IsEmpty ? null : _registrations.GetEnumerator();
+
+        for (var i = 0; i < count; i++)
+        {
+            yield return registrationsBeforeComplete![i];
+        }
+
+        if (queued is not null)
+        {
+            while (queued.MoveNext())
+            {
+                yield return queued.Current;
+            }
+        }
+    }
+
     /// <summary>
     /// Ensures the service info is initialized and returns it.
     /// </summary>
@@ -545,7 +629,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     {
         if (!info.IsInitializing)
         {
-            BeginServiceInfoInitialization(service, info, _dynamicRegistrationSources);
+            BeginServiceInfoInitialization(service, info, SourcesToQuery());
         }
 
         info.InitializationDepth++;
@@ -595,18 +679,38 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
     {
         // This ensures that multiple services provided by the same
         // component share a single component (we don't re-query for them)
-        foreach (var additionalService in provided.Services)
+        if (provided.Services is Service[] services)
         {
-            var additionalInfo = GetServiceInfo(additionalService);
-            if (additionalInfo.IsInitialized || additionalInfo == info)
+            foreach (var additionalService in services)
             {
-                continue;
+                PopulateAdditionalService(service, info, source, provided, additionalService);
             }
-
-            additionalInfo = UseEphemeralAdditionalInfoIfNeeded(service, info, additionalInfo);
-
-            HoldOrApplyForAdditionalService(additionalService, additionalInfo, source, provided);
         }
+        else
+        {
+            foreach (var additionalService in provided.Services)
+            {
+                PopulateAdditionalService(service, info, source, provided, additionalService);
+            }
+        }
+    }
+
+    private void PopulateAdditionalService(
+        Service service,
+        ServiceRegistrationInfo info,
+        IRegistrationSource source,
+        IComponentRegistration provided,
+        Service additionalService)
+    {
+        var additionalInfo = GetServiceInfo(additionalService);
+        if (additionalInfo.IsInitialized || additionalInfo == info)
+        {
+            return;
+        }
+
+        additionalInfo = UseEphemeralAdditionalInfoIfNeeded(service, info, additionalInfo);
+
+        HoldOrApplyForAdditionalService(additionalService, additionalInfo, source, provided);
     }
 
     private ServiceRegistrationInfo UseEphemeralAdditionalInfoIfNeeded(
@@ -690,7 +794,7 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         // not removed: it is consumed in order when the additional service is initialized.
         if (!additionalInfo.IsInitializing)
         {
-            BeginServiceInfoInitialization(additionalService, additionalInfo, _dynamicRegistrationSources);
+            BeginServiceInfoInitialization(additionalService, additionalInfo, SourcesToQuery());
         }
 
         if (additionalInfo.IsSourceQueued(source))
@@ -717,6 +821,12 @@ internal class DefaultRegisteredServicesTracker : Disposable, IRegisteredService
         }
 
         info.BeginInitialization(registrationSources);
+    }
+
+    private IRegistrationSource[] SourcesToQuery()
+    {
+        // Enumerating the stack gives the sources most recently added first, the order to query them in.
+        return _sourcesToQuery ??= _dynamicRegistrationSources.ToArray();
     }
 
     /// <summary>

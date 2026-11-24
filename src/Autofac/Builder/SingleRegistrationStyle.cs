@@ -10,6 +10,9 @@ namespace Autofac.Builder;
 /// </summary>
 public class SingleRegistrationStyle
 {
+    // Most registrations never have a handler added, so the list is created on first access.
+    private List<EventHandler<ComponentRegisteredEventArgs>>? _registeredHandlers;
+
     /// <summary>
     /// Gets or sets the ID used for the registration.
     /// </summary>
@@ -18,7 +21,13 @@ public class SingleRegistrationStyle
     /// <summary>
     /// Gets the handlers to notify of the component registration event.
     /// </summary>
-    public ICollection<EventHandler<ComponentRegisteredEventArgs>> RegisteredHandlers { get; } = new List<EventHandler<ComponentRegisteredEventArgs>>();
+    public ICollection<EventHandler<ComponentRegisteredEventArgs>> RegisteredHandlers
+    {
+        get
+        {
+            return _registeredHandlers ??= new List<EventHandler<ComponentRegisteredEventArgs>>();
+        }
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether default registrations should be preserved.
@@ -36,5 +45,16 @@ public class SingleRegistrationStyle
     public IComponentRegistration? Target
     {
         get; set;
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether any handler has been added to <see cref="RegisteredHandlers"/>.
+    /// </summary>
+    internal bool HasRegisteredHandlers
+    {
+        get
+        {
+            return _registeredHandlers is { Count: > 0 };
+        }
     }
 }

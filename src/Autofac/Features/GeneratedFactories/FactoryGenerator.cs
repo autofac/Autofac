@@ -17,11 +17,6 @@ public class FactoryGenerator
 {
     private const string DynamicCodeWarning = "Generated factories compile a delegate from an expression tree at runtime, which requires dynamic code generation and is not compatible with native AOT.";
 
-    // The explicit '!' default is ok because the code is never executed, it's just used by
-    // the expression tree.
-    private static readonly ConstructorInfo _requestConstructor
-        = ReflectionExtensions.GetConstructor(() => new ResolveRequest(default!, default!, default!, default));
-
     private static readonly FieldInfo _noParametersField
         = typeof(ResolveRequest).GetField(nameof(ResolveRequest.NoParameters), BindingFlags.NonPublic | BindingFlags.Static)!;
 
@@ -59,7 +54,7 @@ public class FactoryGenerator
             key => CreateServiceOnlyGenerator(delegateType, key.Item2));
 
         // Close over the specific service so _generator matches the expected signature.
-        _generator = (context, parameters) => compiledGenerator(service, context, parameters);
+        _generator = (context, _) => compiledGenerator(service, context);
     }
 
     /// <summary>
@@ -79,8 +74,8 @@ public class FactoryGenerator
         var pm = GetParameterMapping(delegateType, parameterMapping);
 
         // Retrieve the cached compiled generator for this delegate type and parameter mapping,
-        // or compile it once on first use. The cached delegate is parameterised on both 'service'
-        // and 'productRegistration' (passed at invocation time), so it contains no instance-specific
+        // or compile it once on first use. The cached delegate is parameterised on a ResolveRequestTemplate
+        // built from 'service' and 'productRegistration' (passed at invocation time), so it contains no instance-specific
         // captures and is safe to share across all FactoryGenerator instances for the same delegate type.
         // Accessing ReflectionCacheSet.Shared at point-of-use (not stored in a field) ensures
         // correct weak-reference collection of the cache set.
@@ -93,7 +88,8 @@ public class FactoryGenerator
         // Close over the specific service and product registration so _generator matches the
         // expected signature. These values are instance-specific but are not baked into the
         // compiled expression tree — they are passed as arguments at each invocation.
-        _generator = (context, parameters) => compiledGenerator(service, productRegistration, context, parameters);
+        var template = new ResolveRequestTemplate(service, productRegistration);
+        _generator = (context, _) => compiledGenerator(template, context);
     }
 
     /// <summary>
@@ -152,12 +148,12 @@ public class FactoryGenerator
     /// <see cref="FactoryGenerator"/> instances with the same (<paramref name="delegateType"/>, <paramref name="pm"/>) pair.
     /// </summary>
     [RequiresDynamicCode(DynamicCodeWarning)]
-    private static Func<Service, IComponentContext, IEnumerable<Parameter>, Delegate> CreateServiceOnlyGenerator([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, ParameterMapping pm)
+    private static Func<Service, IComponentContext, Delegate> CreateServiceOnlyGenerator([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, ParameterMapping pm)
     {
-        // Outer parameters: (Service svc, IComponentContext c, IEnumerable<Parameter> p)
+        // Outer parameters: (Service svc, IComponentContext c). Keep these to at most two
+        // reference types: Mono full AOT (iOS) can only interpret lambdas of that shape (#1519).
         var serviceParam = Expression.Parameter(typeof(Service), "svc");
         var activatorContextParam = Expression.Parameter(typeof(IComponentContext), "c");
-        var activatorParamsParam = Expression.Parameter(typeof(IEnumerable<Parameter>), "p");
 
         var invoke = delegateType.GetDeclaredMethod("Invoke");
 
@@ -204,12 +200,11 @@ public class FactoryGenerator
         // ([dps]*) => (drt)c.ResolveService(svc, [...])
         var creator = Expression.Lambda(delegateType, resolveCast, creatorParams);
 
-        // (svc, c, p) => ([dps]*) => ...
-        var activator = Expression.Lambda<Func<Service, IComponentContext, IEnumerable<Parameter>, Delegate>>(
+        // (svc, c) => ([dps]*) => ...
+        var activator = Expression.Lambda<Func<Service, IComponentContext, Delegate>>(
             creator,
             serviceParam,
-            activatorContextParam,
-            activatorParamsParam);
+            activatorContextParam);
 
         return activator.Compile();
     }
@@ -221,13 +216,12 @@ public class FactoryGenerator
     /// <see cref="FactoryGenerator"/> instances with the same (<paramref name="delegateType"/>, <paramref name="pm"/>) pair.
     /// </summary>
     [RequiresDynamicCode(DynamicCodeWarning)]
-    private static Func<Service, ServiceRegistration, IComponentContext, IEnumerable<Parameter>, Delegate> CreateServiceRegistrationGenerator([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, ParameterMapping pm)
+    private static Func<ResolveRequestTemplate, IComponentContext, Delegate> CreateServiceRegistrationGenerator([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)] Type delegateType, ParameterMapping pm)
     {
-        // Outer parameters: (Service svc, ServiceRegistration sr, IComponentContext c, IEnumerable<Parameter> p)
-        var serviceParam = Expression.Parameter(typeof(Service), "svc");
-        var serviceRegistrationParam = Expression.Parameter(typeof(ServiceRegistration), "sr");
+        // Outer parameters: (ResolveRequestTemplate template, IComponentContext c). Keep these to at most two
+        // reference types: Mono full AOT (iOS) can only interpret lambdas of that shape (#1519).
+        var templateParam = Expression.Parameter(typeof(ResolveRequestTemplate), "template");
         var activatorContextParam = Expression.Parameter(typeof(IComponentContext), "c");
-        var activatorParamsParam = Expression.Parameter(typeof(IEnumerable<Parameter>), "p");
 
         var invoke = delegateType.GetDeclaredMethod("Invoke");
 
@@ -256,34 +250,30 @@ public class FactoryGenerator
         {
             var resolveParameterArray = MapParameters(creatorParams, pm);
 
-            // new ResolveRequest(svc, sr, [...], null) — 'svc' and 'sr' are runtime parameters.
-            var newExpression = Expression.New(
-                _requestConstructor,
-                serviceParam,
-                serviceRegistrationParam,
-                CreateParametersExpression(resolveParameterArray),
-                Expression.Constant(null, typeof(IComponentRegistration)));
+            // template.CreateRequest([...]) — 'template' is a runtime parameter.
+            var requestExpression = Expression.Call(
+                templateParam,
+                ReflectionExtensions.GetMethod<ResolveRequestTemplate>(t => t.CreateRequest(default!)),
+                CreateParametersExpression(resolveParameterArray));
 
-            // c.ResolveComponent(new ResolveRequest(...))
+            // c.ResolveComponent(template.CreateRequest(...))
             var resolveCall = Expression.Call(
                 activatorContextParam,
                 ReflectionExtensions.GetMethod<IComponentContext>(cc => cc.ResolveComponent(
                     new ResolveRequest(default!, default, default(Parameter[])!, default))),
-                newExpression);
+                requestExpression);
 
             resolveCast = Expression.Convert(resolveCall, invoke.ReturnType);
         }
 
-        // ([dps]*) => (drt)c.ResolveComponent(new ResolveRequest(svc, sr, [...]))
+        // ([dps]*) => (drt)c.ResolveComponent(template.CreateRequest([...]))
         var creator = Expression.Lambda(delegateType, resolveCast, creatorParams);
 
-        // (svc, sr, c, p) => ([dps]*) => ...
-        var activator = Expression.Lambda<Func<Service, ServiceRegistration, IComponentContext, IEnumerable<Parameter>, Delegate>>(
+        // (template, c) => ([dps]*) => ...
+        var activator = Expression.Lambda<Func<ResolveRequestTemplate, IComponentContext, Delegate>>(
             creator,
-            serviceParam,
-            serviceRegistrationParam,
-            activatorContextParam,
-            activatorParamsParam);
+            templateParam,
+            activatorContextParam);
 
         return activator.Compile();
     }

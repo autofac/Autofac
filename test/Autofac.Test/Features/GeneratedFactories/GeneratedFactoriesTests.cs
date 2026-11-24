@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Linq.Expressions;
 using Autofac.Builder;
 using Autofac.Core;
+using Autofac.Features.GeneratedFactories;
 
 namespace Autofac.Test.Features.GeneratedFactories;
 
@@ -710,5 +712,36 @@ public class GeneratedFactoriesTests
 
         Assert.False(cache.ContainsKey(matchedKey));
         Assert.True(cache.ContainsKey(unmatchedKey));
+    }
+
+    [Fact]
+    public void FactoryDelegate_CompiledGenerators()
+    {
+        // #1519: Mono full AOT (iOS) interprets expression trees and can only turn a lambda into a
+        // delegate through precompiled thunks, which cover at most two reference-type parameters.
+        // Any larger generator signature needs emitted IL and crashes there.
+        var builder = new ContainerBuilder();
+        builder.RegisterType<Dependency1461>();
+        using var container = builder.Build();
+        container.Resolve<Func<Dependency1461>>();
+        _ = new FactoryGenerator(typeof(Func<Dependency1461>), new TypedService(typeof(Dependency1461)), ParameterMapping.Adaptive);
+
+        var key = (typeof(Func<Dependency1461>), ParameterMapping.ByType);
+        Assert.True(ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceOnlyGenerators.TryGetValue(key, out var serviceOnly));
+        Assert.True(ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators.TryGetValue(key, out var serviceRegistration));
+
+        AssertInterpretableWithoutDynamicCode(serviceOnly.GetType());
+        AssertInterpretableWithoutDynamicCode(serviceRegistration.GetType());
+    }
+
+    private static void AssertInterpretableWithoutDynamicCode(Type delegateType)
+    {
+        var parameters = delegateType.GetMethod("Invoke")!.GetParameters().Select(p => Expression.Parameter(p.ParameterType)).ToArray();
+        Assert.All(parameters, p => Assert.False(p.Type.IsValueType, $"{p.Type} is a value type."));
+
+        var interpreted = Expression.Lambda(delegateType, Expression.Default(typeof(Delegate)), parameters).Compile(preferInterpretation: true);
+
+        // A precompiled thunk has a declaring type; an emitted DynamicMethod does not.
+        Assert.NotNull(interpreted.Method.DeclaringType);
     }
 }

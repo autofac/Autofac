@@ -1,10 +1,14 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Core;
+
 namespace Autofac.Benchmarks;
 
 public class MultiConstructorBenchmark
 {
+    private readonly Parameter[] _resolveTimeParameters = { new TypedParameter(typeof(D2), new D2()) };
+
     private IContainer _container = default!;
 
     [GlobalSetup]
@@ -59,6 +63,12 @@ public class MultiConstructorBenchmark
     public void OneValidCtorOneFailingOnFirstArg()
     {
         _container.Resolve<OneValidConstructorOneFailingOnFirstArg>();
+    }
+
+    [Benchmark]
+    public void TwoCtorsWithResolveTimeParameter()
+    {
+        _container.Resolve<TwoConstructors>(_resolveTimeParameters);
     }
 
     private class OneConstructor

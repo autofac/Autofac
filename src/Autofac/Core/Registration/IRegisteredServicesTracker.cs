@@ -101,4 +101,20 @@ internal interface IRegisteredServicesTracker : IDisposable, IAsyncDisposable, I
     /// <param name="service">The service for which registrations are sought.</param>
     /// <returns>Service registrations supporting <paramref name="service"/>.</returns>
     IEnumerable<ServiceRegistration> ServiceRegistrationsFor(Service service);
+
+    /// <summary>
+    /// Gets the registrations <see cref="IComponentRegistryServices.RegistrationsFor"/> would, but as a shared
+    /// empty list when there are none.
+    /// </summary>
+    /// <param name="service">The service for which registrations are sought.</param>
+    /// <returns>Registrations supporting <paramref name="service"/>.</returns>
+    IReadOnlyList<IComponentRegistration> RegistrationsOrEmptyFor(Service service);
+
+    /// <summary>
+    /// Gets the registrations <see cref="ServiceRegistrationsFor"/> would, but as a shared empty list when
+    /// there are none.
+    /// </summary>
+    /// <param name="service">The service for which registrations are sought.</param>
+    /// <returns>Service registrations supporting <paramref name="service"/>.</returns>
+    IReadOnlyList<ServiceRegistration> ServiceRegistrationsOrEmptyFor(Service service);
 }

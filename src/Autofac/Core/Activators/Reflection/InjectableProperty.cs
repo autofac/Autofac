@@ -13,6 +13,7 @@ namespace Autofac.Core.Activators.Reflection;
 internal class InjectableProperty
 {
     private readonly ParameterInfo _setterParameter;
+    private TypedService? _service;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="InjectableProperty"/> class.
@@ -52,6 +53,21 @@ internal class InjectableProperty
     /// <returns>True if the parameter could provide a value, and the property was set. False otherwise.</returns>
     public bool TrySupplyValue(object instance, Parameter p, IComponentContext context)
     {
+        // Resolve autowired values directly rather than through a value provider delegate.
+        // Subclasses of AutowiringParameter may override CanSupplyValue, so they take the general path.
+        if (p.GetType() == typeof(AutowiringParameter))
+        {
+            _service ??= new TypedService(_setterParameter.ParameterType);
+            if (!AutowiringParameter.TryGetServiceRegistration(_setterParameter, context, _service, out var service, out var registration))
+            {
+                return false;
+            }
+
+            Property.SetValue(instance, AutowiringParameter.ResolveValue(context, service, registration), null);
+
+            return true;
+        }
+
         if (p.CanSupplyValue(_setterParameter, context, out var vp))
         {
             Property.SetValue(instance, vp(), null);
