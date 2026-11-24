@@ -37,7 +37,8 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     private readonly object _synchRoot = new();
 
     // One lock rather than the default of one per processor, which every scope would allocate. Writes are serialized
-    // by _synchRoot (Clear on dispose takes the dictionary's own lock) and reads take no lock.
+    // by _synchRoot, except the self-registration in the constructors, which runs before the scope is visible to other
+    // threads, and Clear on dispose, which takes the dictionary's own lock. Reads take no lock.
     private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new(concurrencyLevel: 1, SharedInstanceCapacity);
 
     // Holds only shared instances of decorated services, so it is created on first use, under _synchRoot.

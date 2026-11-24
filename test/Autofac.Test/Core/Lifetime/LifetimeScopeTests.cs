@@ -18,8 +18,9 @@ public class LifetimeScopeTests
     }
 
     [Fact]
-    public void QualifiedSharedInstanceIsFoundOnlyOnceCreated()
+    public void QualifiedSharedInstance_TryGetBeforeCreation()
     {
+        // #1508: the qualified store is created on first use, so a lookup before then must find nothing.
         using var container = new ContainerBuilder().Build();
         using var scope = container.BeginLifetimeScope();
         var sharingScope = (ISharingLifetimeScope)scope;
@@ -39,8 +40,9 @@ public class LifetimeScopeTests
     }
 
     [Fact]
-    public void SharedInstancesAreKeptWhenTheScopeHoldsMoreThanItsInitialCapacity()
+    public void SharedInstances_BeyondInitialCapacity()
     {
+        // #1508: the stores now have one lock and the default capacity, so they must keep every instance as they grow.
         using var container = new ContainerBuilder().Build();
         using var scope = container.BeginLifetimeScope();
         var sharingScope = (ISharingLifetimeScope)scope;
@@ -63,8 +65,10 @@ public class LifetimeScopeTests
     }
 
     [Fact]
-    public async Task ConcurrentFirstResolvesOfADecoratedSharedInstanceCreateItOnce()
+    public async Task DecoratedSharedInstance_ConcurrentFirstResolve()
     {
+        // #1508: the qualified store is created on first use under _synchRoot, so threads racing to create it must
+        // still share one instance.
         const int ThreadCount = 8;
         var created = 0;
         var builder = new ContainerBuilder();
@@ -81,11 +85,18 @@ public class LifetimeScopeTests
             created = 0;
             using var scope = container.BeginLifetimeScope();
             using var barrier = new Barrier(ThreadCount);
-            var resolves = Enumerable.Range(0, ThreadCount).Select(_ => Task.Run(() =>
-            {
-                barrier.SignalAndWait();
-                return scope.Resolve<IDecoratedService>();
-            })).ToArray();
+
+            // Each resolve blocks on the barrier, so each gets its own thread rather than waiting for the thread pool,
+            // whose minimum is the processor count, to add threads.
+            var resolves = Enumerable.Range(0, ThreadCount).Select(_ => Task.Factory.StartNew(
+                () =>
+                {
+                    barrier.SignalAndWait();
+                    return scope.Resolve<IDecoratedService>();
+                },
+                CancellationToken.None,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default)).ToArray();
 
             var results = await Task.WhenAll(resolves);
 
@@ -93,6 +104,34 @@ public class LifetimeScopeTests
             Assert.IsType<DecoratedServiceDecorator>(results[0]);
             Assert.All(results, result => Assert.Same(results[0], result));
         }
+    }
+
+    [Fact]
+    public void QualifiedSharedInstance_SelfConstructing()
+    {
+        // #1508: the self-constructing check relies on the nested call using the same qualified store, which is now
+        // created on first use.
+        using var container = new ContainerBuilder().Build();
+        using var scope = container.BeginLifetimeScope();
+        var sharingScope = (ISharingLifetimeScope)scope;
+        var primaryId = Guid.NewGuid();
+        var qualifyingId = Guid.NewGuid();
+
+        Assert.Throws<DependencyResolutionException>(() =>
+            sharingScope.CreateSharedInstance(primaryId, qualifyingId, () => sharingScope.CreateSharedInstance(primaryId, qualifyingId, () => new object())));
+    }
+
+    [Fact]
+    public void SharedInstance_SelfConstructing()
+    {
+        // #1508: the same check for the unqualified store, which now has one lock.
+        using var container = new ContainerBuilder().Build();
+        using var scope = container.BeginLifetimeScope();
+        var sharingScope = (ISharingLifetimeScope)scope;
+        var id = Guid.NewGuid();
+
+        Assert.Throws<DependencyResolutionException>(() =>
+            sharingScope.CreateSharedInstance(id, () => sharingScope.CreateSharedInstance(id, () => new object())));
     }
 
     [Fact]
