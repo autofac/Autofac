@@ -51,7 +51,7 @@ public class FactoryGenerator
         // unannotated Item1 so the [DynamicallyAccessedMembers] contract flows into the generator.
         var compiledGenerator = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceOnlyGenerators.GetOrAdd(
             (delegateType, pm),
-            key => CreateServiceOnlyGenerator(delegateType, key.Item2));
+            key => FuncFactoryGenerators.TryCreateServiceGenerator(delegateType, key.Item2) ?? CreateServiceOnlyGenerator(delegateType, key.Item2));
 
         // Close over the specific service so _generator matches the expected signature.
         _generator = (context, _) => compiledGenerator(service, context);
@@ -83,7 +83,7 @@ public class FactoryGenerator
         // unannotated Item1 so the [DynamicallyAccessedMembers] contract flows into the generator.
         var compiledGenerator = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators.GetOrAdd(
             (delegateType, pm),
-            key => CreateServiceRegistrationGenerator(delegateType, key.Item2));
+            key => FuncFactoryGenerators.TryCreateRegistrationGenerator(delegateType, key.Item2) ?? CreateServiceRegistrationGenerator(delegateType, key.Item2));
 
         // Close over the specific service and product registration so _generator matches the
         // expected signature. These values are instance-specific but are not baked into the

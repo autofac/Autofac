@@ -52,6 +52,7 @@ public static class BenchmarkSet
         typeof(RequiredPropertyBenchmark),
         typeof(ModuleRegistrationBenchmark),
         typeof(GeneratedFactoryChildScopeBenchmark),
+        typeof(GeneratedFactoryFirstResolveBenchmark),
         typeof(ImplicitRelationshipBenchmark),
     };
 }
