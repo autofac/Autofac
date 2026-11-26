@@ -168,3 +168,6 @@ $RECYCLE.BIN/
 
 # JetBrains Rider
 .idea
+
+# APM dependencies
+apm_modules/
