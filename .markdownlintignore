@@ -1,0 +1,10 @@
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+apm_modules/**
+.agents/**
+.claude/**
+.codex/**
+.github/agents/**
+.github/instructions/**
+.github/skills/**

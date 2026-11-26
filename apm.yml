@@ -1,0 +1,37 @@
+name: autofac
+version: 1.0.0
+description: AI agent instructions for Autofac, generated from autofac/.github by tools/Update-AiInstruction.ps1 there.
+author: Autofac Project
+targets:
+  - claude
+  - codex
+  - copilot
+dependencies:
+  apm:
+    - git: github.com/autofac/.github
+      path: .apm/instructions/commit.instructions.md
+    - git: github.com/autofac/.github
+      path: .apm/instructions/csharp.instructions.md
+    - git: github.com/autofac/.github
+      path: .apm/instructions/documentation.instructions.md
+    - git: github.com/autofac/.github
+      path: .apm/instructions/github-actions.instructions.md
+    - git: github.com/autofac/.github
+      path: .apm/instructions/issues.instructions.md
+    - git: github.com/autofac/.github
+      path: .apm/instructions/library-design.instructions.md
+    - git: github.com/autofac/.github
+      path: .apm/instructions/markdown.instructions.md
+    - git: github.com/autofac/.github
+      path: .apm/instructions/powershell.instructions.md
+    - git: github.com/autofac/.github
+      path: .apm/instructions/project-context.instructions.md
+    - git: github.com/autofac/.github
+      path: .apm/instructions/pull-request.instructions.md
+    - git: github.com/autofac/.github
+      path: .apm/agents/autofac-pull-request-reviewer.agent.md
+    - git: github.com/autofac/.github
+      path: .apm/skills/review-autofac-pull-request
+  mcp: []
+includes: auto
+scripts: {}
