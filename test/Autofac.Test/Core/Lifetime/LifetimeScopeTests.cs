@@ -18,29 +18,7 @@ public class LifetimeScopeTests
     }
 
     [Fact]
-    public void QualifiedSharedInstance_TryGetBeforeCreation()
-    {
-        // #1508: the qualified store is created on first use, so a lookup before then must find nothing.
-        using var container = new ContainerBuilder().Build();
-        using var scope = container.BeginLifetimeScope();
-        var sharingScope = (ISharingLifetimeScope)scope;
-        var primaryId = Guid.NewGuid();
-        var qualifyingId = Guid.NewGuid();
-        var instance = new object();
-
-        // No qualified instance has been created in this scope yet.
-        Assert.False(sharingScope.TryGetSharedInstance(primaryId, qualifyingId, out _));
-
-        Assert.Same(instance, sharingScope.CreateSharedInstance(primaryId, qualifyingId, () => instance));
-        Assert.Same(instance, sharingScope.CreateSharedInstance(primaryId, qualifyingId, () => new object()));
-
-        Assert.True(sharingScope.TryGetSharedInstance(primaryId, qualifyingId, out var found));
-        Assert.Same(instance, found);
-        Assert.False(sharingScope.TryGetSharedInstance(primaryId, out _));
-    }
-
-    [Fact]
-    public void SharedInstances_BeyondInitialCapacity()
+    public void CreateSharedInstance_BeyondInitialCapacity()
     {
         // #1508: the stores now have one lock and the default capacity, so they must keep every instance as they grow.
         using var container = new ContainerBuilder().Build();
@@ -65,7 +43,35 @@ public class LifetimeScopeTests
     }
 
     [Fact]
-    public async Task DecoratedSharedInstance_ConcurrentFirstResolve()
+    public void CreateSharedInstance_QualifiedSelfConstructing()
+    {
+        // #1508: the self-constructing check relies on the nested call using the same qualified store, which is now
+        // created on first use.
+        using var container = new ContainerBuilder().Build();
+        using var scope = container.BeginLifetimeScope();
+        var sharingScope = (ISharingLifetimeScope)scope;
+        var primaryId = Guid.NewGuid();
+        var qualifyingId = Guid.NewGuid();
+
+        Assert.Throws<DependencyResolutionException>(() =>
+            sharingScope.CreateSharedInstance(primaryId, qualifyingId, () => sharingScope.CreateSharedInstance(primaryId, qualifyingId, () => new object())));
+    }
+
+    [Fact]
+    public void CreateSharedInstance_SelfConstructing()
+    {
+        // #1508: the same check for the unqualified store, which now has one lock.
+        using var container = new ContainerBuilder().Build();
+        using var scope = container.BeginLifetimeScope();
+        var sharingScope = (ISharingLifetimeScope)scope;
+        var id = Guid.NewGuid();
+
+        Assert.Throws<DependencyResolutionException>(() =>
+            sharingScope.CreateSharedInstance(id, () => sharingScope.CreateSharedInstance(id, () => new object())));
+    }
+
+    [Fact]
+    public async Task Resolve_ConcurrentFirstDecoratedSharedInstance()
     {
         // #1508: the qualified store is created on first use under _synchRoot, so threads racing to create it must
         // still share one instance.
@@ -107,31 +113,25 @@ public class LifetimeScopeTests
     }
 
     [Fact]
-    public void QualifiedSharedInstance_SelfConstructing()
+    public void TryGetSharedInstance_QualifiedBeforeCreation()
     {
-        // #1508: the self-constructing check relies on the nested call using the same qualified store, which is now
-        // created on first use.
+        // #1508: the qualified store is created on first use, so a lookup before then must find nothing.
         using var container = new ContainerBuilder().Build();
         using var scope = container.BeginLifetimeScope();
         var sharingScope = (ISharingLifetimeScope)scope;
         var primaryId = Guid.NewGuid();
         var qualifyingId = Guid.NewGuid();
+        var instance = new object();
 
-        Assert.Throws<DependencyResolutionException>(() =>
-            sharingScope.CreateSharedInstance(primaryId, qualifyingId, () => sharingScope.CreateSharedInstance(primaryId, qualifyingId, () => new object())));
-    }
+        // No qualified instance has been created in this scope yet.
+        Assert.False(sharingScope.TryGetSharedInstance(primaryId, qualifyingId, out _));
 
-    [Fact]
-    public void SharedInstance_SelfConstructing()
-    {
-        // #1508: the same check for the unqualified store, which now has one lock.
-        using var container = new ContainerBuilder().Build();
-        using var scope = container.BeginLifetimeScope();
-        var sharingScope = (ISharingLifetimeScope)scope;
-        var id = Guid.NewGuid();
+        Assert.Same(instance, sharingScope.CreateSharedInstance(primaryId, qualifyingId, () => instance));
+        Assert.Same(instance, sharingScope.CreateSharedInstance(primaryId, qualifyingId, () => new object()));
 
-        Assert.Throws<DependencyResolutionException>(() =>
-            sharingScope.CreateSharedInstance(id, () => sharingScope.CreateSharedInstance(id, () => new object())));
+        Assert.True(sharingScope.TryGetSharedInstance(primaryId, qualifyingId, out var found));
+        Assert.Same(instance, found);
+        Assert.False(sharingScope.TryGetSharedInstance(primaryId, out _));
     }
 
     [Fact]

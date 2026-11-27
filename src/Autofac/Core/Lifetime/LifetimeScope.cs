@@ -41,7 +41,8 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     // threads, and Clear on dispose, which takes the dictionary's own lock. Reads take no lock.
     private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new(concurrencyLevel: 1, SharedInstanceCapacity);
 
-    // Holds only shared instances of decorated services, so it is created on first use, under _synchRoot.
+    // Holds only shared instances of decorated services, so it is created on first use, under _synchRoot. Reads take no
+    // lock and treat null as not found.
     private ConcurrentDictionary<(Guid, Guid), object>? _sharedQualifiedInstances;
     private object? _anonymousTag;
     private LifetimeScope? _parentScope;
