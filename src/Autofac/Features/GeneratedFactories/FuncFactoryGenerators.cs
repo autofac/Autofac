@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#if !NETSTANDARD2_0
 using System.Reflection;
+#if NETSTANDARD2_0
+using System.Runtime.InteropServices;
+#else
 using System.Runtime.CompilerServices;
 #endif
 using Autofac.Core;
@@ -15,46 +17,28 @@ namespace Autofac.Features.GeneratedFactories;
 /// </summary>
 /// <remarks>
 /// Only <c>System.Func</c> delegates with up to four distinct argument types are handled, and only
-/// where code is compiled rather than interpreted. Everything else gets <see langword="null"/> and
-/// uses the compiled expression path in <see cref="FactoryGenerator"/>. The generated factories pass
-/// the same parameters as that path: one <see cref="TypedParameter"/> per argument, or
+/// where code is JIT-compiled. Everything else gets <see langword="null"/> and uses the compiled
+/// expression path in <see cref="FactoryGenerator"/>. The generated factories pass the same
+/// parameters as that path: one <see cref="TypedParameter"/> per argument, or
 /// <see cref="ResolveRequest.NoParameters"/> when there are none.
 /// </remarks>
 internal static class FuncFactoryGenerators
 {
     private const string DynamicCodeWarning = "Generated factories construct generic methods over the factory's argument types at runtime, which is not compatible with native AOT.";
 
-#if !NETSTANDARD2_0
     private const int MaxArguments = 4;
 
-    private static readonly Type[] _funcDefinitions =
-    {
-        typeof(Func<>),
-        typeof(Func<,>),
-        typeof(Func<,,>),
-        typeof(Func<,,,>),
-        typeof(Func<,,,,>),
-    };
-
-    // The definitions come from delegates rather than lookups by name, so trimming and AOT analysis
-    // see exactly which methods are used.
-    private static readonly MethodInfo[] _serviceGenerators =
-    {
-        Definition(ForService0<object>),
-        Definition(ForService1<object, object>),
-        Definition(ForService2<object, object, object>),
-        Definition(ForService3<object, object, object, object>),
-        Definition(ForService4<object, object, object, object, object>),
-    };
-
-    private static readonly MethodInfo[] _registrationGenerators =
-    {
-        Definition(ForRegistration0<object>),
-        Definition(ForRegistration1<object, object>),
-        Definition(ForRegistration2<object, object, object>),
-        Definition(ForRegistration3<object, object, object, object>),
-        Definition(ForRegistration4<object, object, object, object, object>),
-    };
+    // This class deliberately has no static fields: a type initializer would run its reflection
+    // setup on runtimes that never use the precompiled generators.
+    private static bool PrecompiledGeneratorsSupported =>
+#if NETSTANDARD2_0
+        // RuntimeFeature is missing here. .NET Framework always JIT-compiles, but older Unity and
+        // Xamarin.iOS AOT can load netstandard2.0 too, so only .NET Framework is trusted.
+        RuntimeInformation.FrameworkDescription.StartsWith(".NET Framework", StringComparison.Ordinal);
+#else
+        // Where code is interpreted (Mono full AOT, Native AOT), compiling the expression is cheap
+        // and closing generic methods over value types may not be possible.
+        RuntimeFeature.IsDynamicCodeCompiled;
 #endif
 
     /// <summary>
@@ -65,11 +49,7 @@ internal static class FuncFactoryGenerators
     /// <returns>The generator, or <see langword="null"/> to use the compiled expression path.</returns>
     [RequiresDynamicCode(DynamicCodeWarning)]
     public static Func<Service, IComponentContext, Delegate>? TryCreateServiceGenerator(Type delegateType, ParameterMapping pm)
-#if NETSTANDARD2_0
-        => null;
-#else
-        => TryCreate<Func<Service, IComponentContext, Delegate>>(_serviceGenerators, delegateType, pm);
-#endif
+        => TryCreate<Func<Service, IComponentContext, Delegate>>(delegateType, pm, ServiceGenerator);
 
     /// <summary>
     /// Gets a generator for a factory that resolves through <see cref="IComponentContext.ResolveComponent"/>, if the delegate type is supported.
@@ -79,47 +59,93 @@ internal static class FuncFactoryGenerators
     /// <returns>The generator, or <see langword="null"/> to use the compiled expression path.</returns>
     [RequiresDynamicCode(DynamicCodeWarning)]
     public static Func<ResolveRequestTemplate, IComponentContext, Delegate>? TryCreateRegistrationGenerator(Type delegateType, ParameterMapping pm)
-#if NETSTANDARD2_0
-        => null;
-#else
-        => TryCreate<Func<ResolveRequestTemplate, IComponentContext, Delegate>>(_registrationGenerators, delegateType, pm);
-#endif
+        => TryCreate<Func<ResolveRequestTemplate, IComponentContext, Delegate>>(delegateType, pm, RegistrationGenerator);
 
-#if !NETSTANDARD2_0
     [RequiresDynamicCode(DynamicCodeWarning)]
-    [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "The generic generator methods place no DynamicallyAccessedMembers requirements on their type parameters.")]
-    private static TGenerator? TryCreate<TGenerator>(MethodInfo[] generators, Type delegateType, ParameterMapping pm)
+    private static TGenerator? TryCreate<TGenerator>(Type delegateType, ParameterMapping pm, Func<int, MethodInfo> definition)
         where TGenerator : Delegate
     {
-        // Where code is interpreted rather than compiled (Mono full AOT, for example), compiling the
-        // expression is cheap and closing generic methods over value types may not be possible.
-        if (!RuntimeFeature.IsDynamicCodeCompiled || pm != ParameterMapping.ByType || !delegateType.IsGenericType)
+        var arguments = PrecompiledGeneratorsSupported ? SupportedArguments(delegateType, pm) : null;
+        return arguments is null ? null : Create<TGenerator>(definition(arguments.Length - 1), arguments);
+    }
+
+    private static Type[]? SupportedArguments(Type delegateType, ParameterMapping pm)
+    {
+        if (pm != ParameterMapping.ByType || !delegateType.IsGenericType)
         {
             return null;
         }
 
         var arguments = delegateType.GenericTypeArguments;
         var argumentCount = arguments.Length - 1;
-        if (argumentCount > MaxArguments || delegateType.GetGenericTypeDefinition() != _funcDefinitions[argumentCount])
+        if (argumentCount > MaxArguments || delegateType.GetGenericTypeDefinition() != FuncDefinition(argumentCount))
         {
             return null;
         }
 
-        // Ref struct arguments cannot close these generic methods. Duplicate argument types are
-        // left to the compiled expression path, which reports them when the factory is invoked (#269).
-        if (arguments.Any(argument => argument.IsByRefLike) || arguments.Take(argumentCount).Distinct().Count() != argumentCount)
+        // Duplicate argument types are left to the compiled expression path, which reports them
+        // when the factory is invoked (#269).
+        if (arguments.Take(argumentCount).Distinct().Count() != argumentCount)
         {
             return null;
         }
 
-        return (TGenerator)generators[argumentCount].MakeGenericMethod(arguments).CreateDelegate(typeof(TGenerator));
+#if !NETSTANDARD2_0
+        // Ref struct arguments cannot close these generic methods. .NET Framework has no
+        // ref struct Func arguments, so netstandard2.0 needs no check.
+        if (arguments.Any(argument => argument.IsByRefLike))
+        {
+            return null;
+        }
+#endif
+
+        return arguments;
     }
 
-    private static MethodInfo Definition(Func<Service, IComponentContext, Delegate> generator)
-        => generator.Method.GetGenericMethodDefinition();
+    [RequiresDynamicCode(DynamicCodeWarning)]
+    [UnconditionalSuppressMessage("Trimming", "IL2060", Justification = "The generic generator methods place no DynamicallyAccessedMembers requirements on their type parameters.")]
+    private static TGenerator Create<TGenerator>(MethodInfo definition, Type[] arguments)
+        where TGenerator : Delegate
+        => (TGenerator)definition.MakeGenericMethod(arguments).CreateDelegate(typeof(TGenerator));
 
-    private static MethodInfo Definition(Func<ResolveRequestTemplate, IComponentContext, Delegate> generator)
-        => generator.Method.GetGenericMethodDefinition();
+    private static Type FuncDefinition(int argumentCount) => argumentCount switch
+    {
+        0 => typeof(Func<>),
+        1 => typeof(Func<,>),
+        2 => typeof(Func<,,>),
+        3 => typeof(Func<,,,>),
+        _ => typeof(Func<,,,,>),
+    };
+
+    // The definitions come from delegates rather than lookups by name, so trimming and AOT analysis
+    // see exactly which methods are used.
+    private static MethodInfo ServiceGenerator(int argumentCount)
+    {
+        Func<Service, IComponentContext, Delegate> generator = argumentCount switch
+        {
+            0 => ForService0<object>,
+            1 => ForService1<object, object>,
+            2 => ForService2<object, object, object>,
+            3 => ForService3<object, object, object, object>,
+            _ => ForService4<object, object, object, object, object>,
+        };
+
+        return generator.Method.GetGenericMethodDefinition();
+    }
+
+    private static MethodInfo RegistrationGenerator(int argumentCount)
+    {
+        Func<ResolveRequestTemplate, IComponentContext, Delegate> generator = argumentCount switch
+        {
+            0 => ForRegistration0<object>,
+            1 => ForRegistration1<object, object>,
+            2 => ForRegistration2<object, object, object>,
+            3 => ForRegistration3<object, object, object, object>,
+            _ => ForRegistration4<object, object, object, object, object>,
+        };
+
+        return generator.Method.GetGenericMethodDefinition();
+    }
 
     private static Delegate ForService0<TResult>(Service service, IComponentContext context)
         => new Func<TResult>(() => (TResult)context.ResolveService(service, ResolveRequest.NoParameters));
@@ -182,5 +208,4 @@ internal static class FuncFactoryGenerators
             new TypedParameter(typeof(T3), arg3),
             new TypedParameter(typeof(T4), arg4),
         })));
-#endif
 }

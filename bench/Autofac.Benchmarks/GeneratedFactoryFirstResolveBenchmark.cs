@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Autofac Project. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using Autofac.Builder;
 using Autofac.Core;
 
 namespace Autofac.Benchmarks;
 
 /// <summary>
-/// Measures the first resolution of distinct implicit <c>Func</c> factory signatures, which
-/// creates the generator for each signature, and the cost of calling a factory afterwards.
+/// Measures the first resolution of distinct <c>Func</c> factory signatures, which creates the
+/// generator for each signature.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -28,9 +29,9 @@ namespace Autofac.Benchmarks;
 /// </remarks>
 public class GeneratedFactoryFirstResolveBenchmark
 {
-    private static readonly Type[] _funcDefinitions = { typeof(Func<>), typeof(Func<,>), typeof(Func<,,>), typeof(Func<,,,>) };
+    private static readonly Type[] FuncDefinitions = { typeof(Func<>), typeof(Func<,>), typeof(Func<,,>), typeof(Func<,,,>), typeof(Func<,,,,>) };
 
-    private static readonly Type[] _argumentTypes = { typeof(int), typeof(string), typeof(long) };
+    private static readonly Type[] ArgumentTypes = { typeof(int), typeof(string), typeof(long), typeof(Guid) };
 
     private Type[] _productTypes = Array.Empty<Type>();
 
@@ -38,14 +39,14 @@ public class GeneratedFactoryFirstResolveBenchmark
 
     private HashSet<Type> _factoryTypeSet = new();
 
-    private IContainer _container = default!;
-
-    private Func<Product<Zero>> _factory0 = default!;
-
-    private Func<int, ProductWithArgument> _factory1 = default!;
-
     [Params(1, 10, 100)]
     public int SignatureCount
+    {
+        get; set;
+    }
+
+    [Params(GeneratedFactorySource.Implicit, GeneratedFactorySource.Registered)]
+    public GeneratedFactorySource Source
     {
         get; set;
     }
@@ -55,9 +56,9 @@ public class GeneratedFactoryFirstResolveBenchmark
     {
         _productTypes = DistinctProductTypes(SignatureCount);
 
-        // Cycle through zero to three arguments so every precompiled arity is represented.
+        // Cycle through zero to four arguments so every precompiled arity is represented.
         _factoryTypes = _productTypes
-            .Select((product, index) => _funcDefinitions[index % 4].MakeGenericType(_argumentTypes.Take(index % 4).Append(product).ToArray()))
+            .Select((product, index) => FuncDefinitions[index % 5].MakeGenericType(ArgumentTypes.Take(index % 5).Append(product).ToArray()))
             .ToArray();
         _factoryTypeSet = new HashSet<Type>(_factoryTypes);
 
@@ -65,17 +66,7 @@ public class GeneratedFactoryFirstResolveBenchmark
         {
             throw new InvalidOperationException("Factory signatures are not distinct.");
         }
-
-        var builder = new ContainerBuilder();
-        builder.RegisterType<Product<Zero>>();
-        builder.RegisterType<ProductWithArgument>();
-        _container = builder.Build();
-        _factory0 = _container.Resolve<Func<Product<Zero>>>();
-        _factory1 = _container.Resolve<Func<int, ProductWithArgument>>();
     }
-
-    [GlobalCleanup]
-    public void Cleanup() => _container.Dispose();
 
     [Benchmark]
     public void BuildContainer()
@@ -95,12 +86,6 @@ public class GeneratedFactoryFirstResolveBenchmark
         }
     }
 
-    [Benchmark]
-    public object InvokeFactoryWithoutArguments() => _factory0();
-
-    [Benchmark]
-    public object InvokeFactoryWithArgument() => _factory1(42);
-
     private IContainer BuildProductContainer()
     {
         ReflectionCacheSet.Shared.Clear((member, _) => member is Type type && _factoryTypeSet.Contains(type));
@@ -110,6 +95,16 @@ public class GeneratedFactoryFirstResolveBenchmark
         foreach (var productType in _productTypes)
         {
             builder.RegisterType(productType);
+        }
+
+        if (Source == GeneratedFactorySource.Registered)
+        {
+            foreach (var factoryType in _factoryTypes)
+            {
+#pragma warning disable CS0618 // RegisterGeneratedFactory is obsolete, but it still uses the ResolveService generators measured here.
+                builder.RegisterGeneratedFactory(factoryType);
+#pragma warning restore CS0618
+            }
         }
 
         return builder.Build();
@@ -160,18 +155,5 @@ public class GeneratedFactoryFirstResolveBenchmark
 
     private sealed class Product<T>
     {
-    }
-
-    private sealed class ProductWithArgument
-    {
-        public ProductWithArgument(int value)
-        {
-            Value = value;
-        }
-
-        public int Value
-        {
-            get;
-        }
     }
 }

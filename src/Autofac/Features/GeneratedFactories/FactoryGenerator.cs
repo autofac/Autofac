@@ -41,20 +41,20 @@ public class FactoryGenerator
 
         var pm = GetParameterMapping(delegateType, parameterMapping);
 
-        // Retrieve the cached compiled generator for this delegate type and parameter mapping,
-        // or compile it once on first use. The cached delegate is parameterised on 'service'
+        // Retrieve the cached generator for this delegate type and parameter mapping,
+        // or create it on first use. The cached delegate is parameterised on 'service'
         // (passed at invocation time) so it contains no instance-specific captures and is safe
         // to share across all FactoryGenerator instances with the same structural signature.
         // Accessing ReflectionCacheSet.Shared at point-of-use (not stored in a field) ensures
         // correct weak-reference collection of the cache set.
         // The factory reads the annotated delegateType local rather than the cache key's
         // unannotated Item1 so the [DynamicallyAccessedMembers] contract flows into the generator.
-        var compiledGenerator = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceOnlyGenerators.GetOrAdd(
+        var generator = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceOnlyGenerators.GetOrAdd(
             (delegateType, pm),
             key => FuncFactoryGenerators.TryCreateServiceGenerator(delegateType, key.Item2) ?? CreateServiceOnlyGenerator(delegateType, key.Item2));
 
         // Close over the specific service so _generator matches the expected signature.
-        _generator = (context, _) => compiledGenerator(service, context);
+        _generator = (context, _) => generator(service, context);
     }
 
     /// <summary>
@@ -73,23 +73,23 @@ public class FactoryGenerator
 
         var pm = GetParameterMapping(delegateType, parameterMapping);
 
-        // Retrieve the cached compiled generator for this delegate type and parameter mapping,
-        // or compile it once on first use. The cached delegate is parameterised on a ResolveRequestTemplate
+        // Retrieve the cached generator for this delegate type and parameter mapping,
+        // or create it on first use. The cached delegate is parameterised on a ResolveRequestTemplate
         // built from 'service' and 'productRegistration' (passed at invocation time), so it contains no instance-specific
         // captures and is safe to share across all FactoryGenerator instances for the same delegate type.
         // Accessing ReflectionCacheSet.Shared at point-of-use (not stored in a field) ensures
         // correct weak-reference collection of the cache set.
         // The factory reads the annotated delegateType local rather than the cache key's
         // unannotated Item1 so the [DynamicallyAccessedMembers] contract flows into the generator.
-        var compiledGenerator = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators.GetOrAdd(
+        var generator = ReflectionCacheSet.Shared.Internal.GeneratedFactoryServiceRegistrationGenerators.GetOrAdd(
             (delegateType, pm),
             key => FuncFactoryGenerators.TryCreateRegistrationGenerator(delegateType, key.Item2) ?? CreateServiceRegistrationGenerator(delegateType, key.Item2));
 
         // Close over the specific service and product registration so _generator matches the
         // expected signature. These values are instance-specific but are not baked into the
-        // compiled expression tree — they are passed as arguments at each invocation.
+        // cached generator — they are passed as arguments at each invocation.
         var template = new ResolveRequestTemplate(service, productRegistration);
-        _generator = (context, _) => compiledGenerator(template, context);
+        _generator = (context, _) => generator(template, context);
     }
 
     /// <summary>

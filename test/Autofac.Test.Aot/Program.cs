@@ -46,6 +46,7 @@ internal static class Program
         builder.RegisterType<ConstructorConsumer>();
         builder.RegisterType<PropertyConsumer>().PropertiesAutowired();
         builder.RegisterType<ParameterizedConsumer>();
+        builder.RegisterType<NumberedConsumer>();
         builder.RegisterType<KeyedDependency>().Keyed<IDependency>("special");
         builder.RegisterInstance(new ProvidedService()).AsSelf();
         builder.Register(c => new LambdaService(c.Resolve<IDependency>())).AsSelf();
@@ -123,6 +124,11 @@ internal static class Program
         Check(failures, "Resolve IEnumerable<IDependency>", () => container.Resolve<IEnumerable<IDependency>>().Any());
         Check(failures, "Resolve Lazy<IDependency>", () => container.Resolve<Lazy<IDependency>>().Value is Dependency);
         Check(failures, "Resolve Func<IDependency>", () => container.Resolve<Func<IDependency>>()() is Dependency);
+
+        // Generated factories with arguments take the compiled-expression path here, because the
+        // precompiled generators are switched off where code is interpreted.
+        Check(failures, "Resolve Func<int, T>", () => container.Resolve<Func<int, NumberedConsumer>>()(5) is { Number: 5, Text: "none" });
+        Check(failures, "Resolve Func<int, string, T>", () => container.Resolve<Func<int, string, NumberedConsumer>>()(6, "six") is { Number: 6, Text: "six" });
         Check(failures, "Resolve Meta<IDependency>", () => container.Resolve<Meta<IDependency>>().Value is Dependency);
         Check(failures, "Resolve Owned<IDependency>", () =>
         {
