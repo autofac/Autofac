@@ -1,5 +1,5 @@
 lockfile_version: '4'
-apm_version: 0.38.1
+apm_version: 0.39.1
 manifest_targets:
 - claude
 - codex
@@ -8,7 +8,7 @@ dependencies:
 - repo_url: autofac/.github
   name: .github-autofac-pull-request-reviewer
   host: github.com
-  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  resolved_commit: e38beb52e5d324b15bb4754f00c1aef949902655
   version: 1.0.0
   virtual_path: .apm/agents/autofac-pull-request-reviewer.agent.md
   is_virtual: true
@@ -25,7 +25,7 @@ dependencies:
 - repo_url: autofac/.github
   name: .github-commit
   host: github.com
-  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  resolved_commit: e38beb52e5d324b15bb4754f00c1aef949902655
   version: 1.0.0
   virtual_path: .apm/instructions/commit.instructions.md
   is_virtual: true
@@ -38,7 +38,7 @@ dependencies:
 - repo_url: autofac/.github
   name: .github-csharp
   host: github.com
-  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  resolved_commit: e38beb52e5d324b15bb4754f00c1aef949902655
   version: 1.0.0
   virtual_path: .apm/instructions/csharp.instructions.md
   is_virtual: true
@@ -47,13 +47,13 @@ dependencies:
   - .claude/rules/csharp.md
   - .github/instructions/csharp.instructions.md
   deployed_file_hashes:
-    .claude/rules/csharp.md: sha256:354b1915f0e279bf1bc0e64cb21b393c38cee2a1c88df1243af195638fcfe698
-    .github/instructions/csharp.instructions.md: sha256:c57a032aeaafea191f302ae01c5adacb07152ee749534878eb64ad4a8b126e9a
-  content_hash: sha256:885e952427d67afc2ac80dcbf2ee4b2486c35a22c730b4fd7f2b75c54f89f1fb
+    .claude/rules/csharp.md: sha256:0734224dc955030c6df5338a034f4691f474666a7e66b7de4d7747b31f3f0b29
+    .github/instructions/csharp.instructions.md: sha256:920980d678dc740176c4dfb0a6404f89f77e00048f801ec6de34e70083e85a8c
+  content_hash: sha256:f348330c9ee9ea7f08c41dd83faaf73ff3344b7457e8a871df5a88a3d0d87f01
 - repo_url: autofac/.github
   name: .github-documentation
   host: github.com
-  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  resolved_commit: e38beb52e5d324b15bb4754f00c1aef949902655
   version: 1.0.0
   virtual_path: .apm/instructions/documentation.instructions.md
   is_virtual: true
@@ -66,7 +66,7 @@ dependencies:
 - repo_url: autofac/.github
   name: .github-github-actions
   host: github.com
-  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  resolved_commit: e38beb52e5d324b15bb4754f00c1aef949902655
   version: 1.0.0
   virtual_path: .apm/instructions/github-actions.instructions.md
   is_virtual: true
@@ -81,7 +81,7 @@ dependencies:
 - repo_url: autofac/.github
   name: .github-issues
   host: github.com
-  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  resolved_commit: e38beb52e5d324b15bb4754f00c1aef949902655
   version: 1.0.0
   virtual_path: .apm/instructions/issues.instructions.md
   is_virtual: true
@@ -94,7 +94,7 @@ dependencies:
 - repo_url: autofac/.github
   name: .github-library-design
   host: github.com
-  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  resolved_commit: e38beb52e5d324b15bb4754f00c1aef949902655
   version: 1.0.0
   virtual_path: .apm/instructions/library-design.instructions.md
   is_virtual: true
@@ -107,7 +107,7 @@ dependencies:
 - repo_url: autofac/.github
   name: .github-markdown
   host: github.com
-  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  resolved_commit: e38beb52e5d324b15bb4754f00c1aef949902655
   version: 1.0.0
   virtual_path: .apm/instructions/markdown.instructions.md
   is_virtual: true
@@ -122,7 +122,7 @@ dependencies:
 - repo_url: autofac/.github
   name: .github-powershell
   host: github.com
-  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  resolved_commit: e38beb52e5d324b15bb4754f00c1aef949902655
   version: 1.0.0
   virtual_path: .apm/instructions/powershell.instructions.md
   is_virtual: true
@@ -137,7 +137,7 @@ dependencies:
 - repo_url: autofac/.github
   name: .github-project-context
   host: github.com
-  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  resolved_commit: e38beb52e5d324b15bb4754f00c1aef949902655
   version: 1.0.0
   virtual_path: .apm/instructions/project-context.instructions.md
   is_virtual: true
@@ -150,7 +150,7 @@ dependencies:
 - repo_url: autofac/.github
   name: .github-pull-request
   host: github.com
-  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  resolved_commit: e38beb52e5d324b15bb4754f00c1aef949902655
   version: 1.0.0
   virtual_path: .apm/instructions/pull-request.instructions.md
   is_virtual: true
@@ -163,7 +163,7 @@ dependencies:
 - repo_url: autofac/.github
   name: review-autofac-pull-request
   host: github.com
-  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  resolved_commit: e38beb52e5d324b15bb4754f00c1aef949902655
   version: unknown
   virtual_path: .apm/skills/review-autofac-pull-request
   is_virtual: true
@@ -195,7 +195,7 @@ deployments:
   owners:
   - autofac/.github/.apm/instructions/csharp.instructions.md
   active_owner: autofac/.github/.apm/instructions/csharp.instructions.md
-  content_hash: sha256:354b1915f0e279bf1bc0e64cb21b393c38cee2a1c88df1243af195638fcfe698
+  content_hash: sha256:0734224dc955030c6df5338a034f4691f474666a7e66b7de4d7747b31f3f0b29
 - kind: project-relative
   target: claude
   value: .claude/rules/github-actions.md
@@ -294,7 +294,7 @@ deployments:
   owners:
   - autofac/.github/.apm/instructions/csharp.instructions.md
   active_owner: autofac/.github/.apm/instructions/csharp.instructions.md
-  content_hash: sha256:c57a032aeaafea191f302ae01c5adacb07152ee749534878eb64ad4a8b126e9a
+  content_hash: sha256:920980d678dc740176c4dfb0a6404f89f77e00048f801ec6de34e70083e85a8c
 - kind: project-relative
   target: copilot
   value: .github/instructions/documentation.instructions.md
