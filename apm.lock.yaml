@@ -1,0 +1,369 @@
+lockfile_version: '4'
+apm_version: 0.38.1
+manifest_targets:
+- claude
+- codex
+- copilot
+dependencies:
+- repo_url: autofac/.github
+  name: .github-autofac-pull-request-reviewer
+  host: github.com
+  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  version: 1.0.0
+  virtual_path: .apm/agents/autofac-pull-request-reviewer.agent.md
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .claude/agents/autofac-pull-request-reviewer.md
+  - .codex/agents/autofac-pull-request-reviewer.toml
+  - .github/agents/autofac-pull-request-reviewer.agent.md
+  deployed_file_hashes:
+    .claude/agents/autofac-pull-request-reviewer.md: sha256:e0624b885354749260c688e1ab5c699b124d62f9a0bdb1a6f0cc3fb3fe6f7577
+    .codex/agents/autofac-pull-request-reviewer.toml: sha256:ef599e67fe13b9e53302b7d87403fe86d401ca474bdeafffc9c8fc941d608456
+    .github/agents/autofac-pull-request-reviewer.agent.md: sha256:e0624b885354749260c688e1ab5c699b124d62f9a0bdb1a6f0cc3fb3fe6f7577
+  content_hash: sha256:3f42f433b6f049c29c1db35acbe3a60fd405ab9e959774d54026ca8c1724f25a
+- repo_url: autofac/.github
+  name: .github-commit
+  host: github.com
+  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  version: 1.0.0
+  virtual_path: .apm/instructions/commit.instructions.md
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .github/instructions/commit.instructions.md
+  deployed_file_hashes:
+    .github/instructions/commit.instructions.md: sha256:3c5176805890fbf2fde74b36e2f7d403c2377d421cf3eaa23ca3872b94e248e4
+  content_hash: sha256:24f05851fa8adc8aa725b7e90a5465eb6b3928bcd357d3d773fa82e13cd8bd6f
+- repo_url: autofac/.github
+  name: .github-csharp
+  host: github.com
+  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  version: 1.0.0
+  virtual_path: .apm/instructions/csharp.instructions.md
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .claude/rules/csharp.md
+  - .github/instructions/csharp.instructions.md
+  deployed_file_hashes:
+    .claude/rules/csharp.md: sha256:354b1915f0e279bf1bc0e64cb21b393c38cee2a1c88df1243af195638fcfe698
+    .github/instructions/csharp.instructions.md: sha256:c57a032aeaafea191f302ae01c5adacb07152ee749534878eb64ad4a8b126e9a
+  content_hash: sha256:885e952427d67afc2ac80dcbf2ee4b2486c35a22c730b4fd7f2b75c54f89f1fb
+- repo_url: autofac/.github
+  name: .github-documentation
+  host: github.com
+  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  version: 1.0.0
+  virtual_path: .apm/instructions/documentation.instructions.md
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .github/instructions/documentation.instructions.md
+  deployed_file_hashes:
+    .github/instructions/documentation.instructions.md: sha256:3b45d80a35bafa091470903d371357eb812b8adab3c1429b33428593d5903434
+  content_hash: sha256:470da4e12a2adf8259de6e451d23d75a0def0758c8df34425eab9f95501178e5
+- repo_url: autofac/.github
+  name: .github-github-actions
+  host: github.com
+  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  version: 1.0.0
+  virtual_path: .apm/instructions/github-actions.instructions.md
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .claude/rules/github-actions.md
+  - .github/instructions/github-actions.instructions.md
+  deployed_file_hashes:
+    .claude/rules/github-actions.md: sha256:4d21c6223dd893b35c08d26d9f8e6e14aab5eacc4df3def1caa3e22da1c238d8
+    .github/instructions/github-actions.instructions.md: sha256:a05cfe69e3d183641fcf3157c9b7940bc5a944b974de5b148b390cd416ab71b0
+  content_hash: sha256:c7070ac11f612f584b1c87d5f0459553a82155b6e5668038475c5baf4f19311f
+- repo_url: autofac/.github
+  name: .github-issues
+  host: github.com
+  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  version: 1.0.0
+  virtual_path: .apm/instructions/issues.instructions.md
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .github/instructions/issues.instructions.md
+  deployed_file_hashes:
+    .github/instructions/issues.instructions.md: sha256:01316573d66593d05f3eea876af1517d7e4125e72688889aa6d42de58fdd6bc1
+  content_hash: sha256:5dfb172ba9ac3210f04e357bacf2dd838a32f9e17d2ad2cb6e8ca3b20de78c1e
+- repo_url: autofac/.github
+  name: .github-library-design
+  host: github.com
+  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  version: 1.0.0
+  virtual_path: .apm/instructions/library-design.instructions.md
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .github/instructions/library-design.instructions.md
+  deployed_file_hashes:
+    .github/instructions/library-design.instructions.md: sha256:35ef636d0f4f3b96e52a28a42d709c99c45ad7e6ba42ec36ee6b05182ac77c46
+  content_hash: sha256:533a077ec9c2333e31def19a27917873dbc0c1421f00322812a4f0450e8806a7
+- repo_url: autofac/.github
+  name: .github-markdown
+  host: github.com
+  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  version: 1.0.0
+  virtual_path: .apm/instructions/markdown.instructions.md
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .claude/rules/markdown.md
+  - .github/instructions/markdown.instructions.md
+  deployed_file_hashes:
+    .claude/rules/markdown.md: sha256:c52dc6909725b9b1538a52e07b39f912239fe87715319515f428da3820a8555f
+    .github/instructions/markdown.instructions.md: sha256:4720377385281e6196f92bf0b1657a8f7dd93bd481ec9f5fbca2cf0ffc08d6cb
+  content_hash: sha256:354b8b486d643975fddad8fbd9119ba4c3e2747e3f2ed7399bb44685da196cec
+- repo_url: autofac/.github
+  name: .github-powershell
+  host: github.com
+  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  version: 1.0.0
+  virtual_path: .apm/instructions/powershell.instructions.md
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .claude/rules/powershell.md
+  - .github/instructions/powershell.instructions.md
+  deployed_file_hashes:
+    .claude/rules/powershell.md: sha256:55cb8f0ce29f8e50fadc3683e24573ff909195e9d409c5b940f12aabbc67fb72
+    .github/instructions/powershell.instructions.md: sha256:49c9cb09f5c9bfe7c474a9200c13d9281dfd2fea9c3da1007e3a29594e6c232c
+  content_hash: sha256:adc8a2cf5663f0562effbf6e845da71e825f062262dc712079a2147e8e9fe82e
+- repo_url: autofac/.github
+  name: .github-project-context
+  host: github.com
+  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  version: 1.0.0
+  virtual_path: .apm/instructions/project-context.instructions.md
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .github/instructions/project-context.instructions.md
+  deployed_file_hashes:
+    .github/instructions/project-context.instructions.md: sha256:fd007f3d21022748c8ac8770b84f54696d24e45b2c9d5e5e8051b0a6be48010e
+  content_hash: sha256:ce9136af6fa6b648573b77c481b77b058ed5267aa2f39b9c7cd2c3c6fbdd3fe0
+- repo_url: autofac/.github
+  name: .github-pull-request
+  host: github.com
+  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  version: 1.0.0
+  virtual_path: .apm/instructions/pull-request.instructions.md
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .github/instructions/pull-request.instructions.md
+  deployed_file_hashes:
+    .github/instructions/pull-request.instructions.md: sha256:423ee938d6b9e1c65d8621737404cb34974f98beda7ee3bc6b84328cf3526fbb
+  content_hash: sha256:c34b92338e0f8c90bb3a9b218960db9ca104d368e01d3ea9910bef2f7af208cf
+- repo_url: autofac/.github
+  name: review-autofac-pull-request
+  host: github.com
+  resolved_commit: 5d91f071d90e886e20f557ee179e3f793d89317d
+  version: unknown
+  virtual_path: .apm/skills/review-autofac-pull-request
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/review-autofac-pull-request
+  - .agents/skills/review-autofac-pull-request/SKILL.md
+  - .claude/skills/review-autofac-pull-request
+  - .claude/skills/review-autofac-pull-request/SKILL.md
+  deployed_file_hashes:
+    .agents/skills/review-autofac-pull-request/SKILL.md: sha256:ce864eff079e9b275b1242cfdf5efef32f813eae403b47892634523ded44fb93
+    .claude/skills/review-autofac-pull-request/SKILL.md: sha256:ce864eff079e9b275b1242cfdf5efef32f813eae403b47892634523ded44fb93
+  content_hash: sha256:764ac4e4ed011cb7c6afd5a96804e2f4bdb823330106277ac7af6579bfe07827
+deployments:
+- kind: project-relative
+  target: claude
+  value: .claude/agents/autofac-pull-request-reviewer.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/agents/autofac-pull-request-reviewer.agent.md
+  active_owner: autofac/.github/.apm/agents/autofac-pull-request-reviewer.agent.md
+  content_hash: sha256:e0624b885354749260c688e1ab5c699b124d62f9a0bdb1a6f0cc3fb3fe6f7577
+- kind: project-relative
+  target: claude
+  value: .claude/rules/csharp.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/csharp.instructions.md
+  active_owner: autofac/.github/.apm/instructions/csharp.instructions.md
+  content_hash: sha256:354b1915f0e279bf1bc0e64cb21b393c38cee2a1c88df1243af195638fcfe698
+- kind: project-relative
+  target: claude
+  value: .claude/rules/github-actions.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/github-actions.instructions.md
+  active_owner: autofac/.github/.apm/instructions/github-actions.instructions.md
+  content_hash: sha256:4d21c6223dd893b35c08d26d9f8e6e14aab5eacc4df3def1caa3e22da1c238d8
+- kind: project-relative
+  target: claude
+  value: .claude/rules/markdown.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/markdown.instructions.md
+  active_owner: autofac/.github/.apm/instructions/markdown.instructions.md
+  content_hash: sha256:c52dc6909725b9b1538a52e07b39f912239fe87715319515f428da3820a8555f
+- kind: project-relative
+  target: claude
+  value: .claude/rules/powershell.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/powershell.instructions.md
+  active_owner: autofac/.github/.apm/instructions/powershell.instructions.md
+  content_hash: sha256:55cb8f0ce29f8e50fadc3683e24573ff909195e9d409c5b940f12aabbc67fb72
+- kind: project-relative
+  target: claude
+  value: .claude/skills/review-autofac-pull-request
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/skills/review-autofac-pull-request
+  active_owner: autofac/.github/.apm/skills/review-autofac-pull-request
+  content_hash: null
+- kind: project-relative
+  target: claude
+  value: .claude/skills/review-autofac-pull-request/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/skills/review-autofac-pull-request
+  active_owner: autofac/.github/.apm/skills/review-autofac-pull-request
+  content_hash: sha256:ce864eff079e9b275b1242cfdf5efef32f813eae403b47892634523ded44fb93
+- kind: project-relative
+  target: codex
+  value: .agents/skills/review-autofac-pull-request
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/skills/review-autofac-pull-request
+  active_owner: autofac/.github/.apm/skills/review-autofac-pull-request
+  content_hash: null
+- kind: project-relative
+  target: codex
+  value: .agents/skills/review-autofac-pull-request/SKILL.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/skills/review-autofac-pull-request
+  active_owner: autofac/.github/.apm/skills/review-autofac-pull-request
+  content_hash: sha256:ce864eff079e9b275b1242cfdf5efef32f813eae403b47892634523ded44fb93
+- kind: project-relative
+  target: codex
+  value: .codex/agents/autofac-pull-request-reviewer.toml
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/agents/autofac-pull-request-reviewer.agent.md
+  active_owner: autofac/.github/.apm/agents/autofac-pull-request-reviewer.agent.md
+  content_hash: sha256:ef599e67fe13b9e53302b7d87403fe86d401ca474bdeafffc9c8fc941d608456
+- kind: project-relative
+  target: copilot
+  value: .github/agents/autofac-pull-request-reviewer.agent.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/agents/autofac-pull-request-reviewer.agent.md
+  active_owner: autofac/.github/.apm/agents/autofac-pull-request-reviewer.agent.md
+  content_hash: sha256:e0624b885354749260c688e1ab5c699b124d62f9a0bdb1a6f0cc3fb3fe6f7577
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/commit.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/commit.instructions.md
+  active_owner: autofac/.github/.apm/instructions/commit.instructions.md
+  content_hash: sha256:3c5176805890fbf2fde74b36e2f7d403c2377d421cf3eaa23ca3872b94e248e4
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/csharp.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/csharp.instructions.md
+  active_owner: autofac/.github/.apm/instructions/csharp.instructions.md
+  content_hash: sha256:c57a032aeaafea191f302ae01c5adacb07152ee749534878eb64ad4a8b126e9a
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/documentation.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/documentation.instructions.md
+  active_owner: autofac/.github/.apm/instructions/documentation.instructions.md
+  content_hash: sha256:3b45d80a35bafa091470903d371357eb812b8adab3c1429b33428593d5903434
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/github-actions.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/github-actions.instructions.md
+  active_owner: autofac/.github/.apm/instructions/github-actions.instructions.md
+  content_hash: sha256:a05cfe69e3d183641fcf3157c9b7940bc5a944b974de5b148b390cd416ab71b0
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/issues.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/issues.instructions.md
+  active_owner: autofac/.github/.apm/instructions/issues.instructions.md
+  content_hash: sha256:01316573d66593d05f3eea876af1517d7e4125e72688889aa6d42de58fdd6bc1
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/library-design.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/library-design.instructions.md
+  active_owner: autofac/.github/.apm/instructions/library-design.instructions.md
+  content_hash: sha256:35ef636d0f4f3b96e52a28a42d709c99c45ad7e6ba42ec36ee6b05182ac77c46
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/markdown.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/markdown.instructions.md
+  active_owner: autofac/.github/.apm/instructions/markdown.instructions.md
+  content_hash: sha256:4720377385281e6196f92bf0b1657a8f7dd93bd481ec9f5fbca2cf0ffc08d6cb
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/powershell.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/powershell.instructions.md
+  active_owner: autofac/.github/.apm/instructions/powershell.instructions.md
+  content_hash: sha256:49c9cb09f5c9bfe7c474a9200c13d9281dfd2fea9c3da1007e3a29594e6c232c
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/project-context.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/project-context.instructions.md
+  active_owner: autofac/.github/.apm/instructions/project-context.instructions.md
+  content_hash: sha256:fd007f3d21022748c8ac8770b84f54696d24e45b2c9d5e5e8051b0a6be48010e
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/pull-request.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - autofac/.github/.apm/instructions/pull-request.instructions.md
+  active_owner: autofac/.github/.apm/instructions/pull-request.instructions.md
+  content_hash: sha256:423ee938d6b9e1c65d8621737404cb34974f98beda7ee3bc6b84328cf3526fbb
