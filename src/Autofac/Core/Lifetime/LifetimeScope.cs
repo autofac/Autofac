@@ -28,12 +28,22 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// </summary>
     public static readonly object RootTag = "root";
 
+    // The ConcurrentDictionary default. The capacity is set only because the concurrency level can't be set alone.
+    private const int SharedInstanceCapacity = 31;
+
     /// <summary>
     /// Protects shared instances from concurrent access. Other members and the base class are thread-safe.
     /// </summary>
     private readonly object _synchRoot = new();
-    private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new();
-    private readonly ConcurrentDictionary<(Guid, Guid), object> _sharedQualifiedInstances = new();
+
+    // One lock rather than the default of one per processor, which every scope would allocate. Writes are serialized
+    // by _synchRoot, except the self-registration in the constructors, which runs before the scope is visible to other
+    // threads, and Clear on dispose, which takes the dictionary's own lock. Reads take no lock.
+    private readonly ConcurrentDictionary<Guid, object> _sharedInstances = new(concurrencyLevel: 1, SharedInstanceCapacity);
+
+    // Holds only shared instances of decorated services, so it is created on first use, under _synchRoot. Reads take no
+    // lock and treat null as not found.
+    private ConcurrentDictionary<(Guid, Guid), object>? _sharedQualifiedInstances;
     private object? _anonymousTag;
     private LifetimeScope? _parentScope;
 
@@ -342,7 +352,8 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
 
         var instanceKey = (primaryId, qualifyingId.Value);
 
-        if (_sharedQualifiedInstances.TryGetValue(instanceKey, out var tempResult))
+        var existingInstances = _sharedQualifiedInstances;
+        if (existingInstances is not null && existingInstances.TryGetValue(instanceKey, out var tempResult))
         {
             return tempResult;
         }
@@ -362,13 +373,14 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
                 Monitor.Enter(_synchRoot, ref lockTaken);
             }
 
-            if (_sharedQualifiedInstances.TryGetValue(instanceKey, out var result))
+            var sharedQualifiedInstances = _sharedQualifiedInstances ??= new(concurrencyLevel: 1, SharedInstanceCapacity);
+            if (sharedQualifiedInstances.TryGetValue(instanceKey, out var result))
             {
                 return result;
             }
 
             result = creator();
-            if (!_sharedQualifiedInstances.TryAdd(instanceKey, result))
+            if (!sharedQualifiedInstances.TryAdd(instanceKey, result))
             {
                 throw new DependencyResolutionException(string.Format(CultureInfo.CurrentCulture, LifetimeScopeResources.SelfConstructingDependencyDetected, result.GetType().FullName));
             }
@@ -390,9 +402,19 @@ public class LifetimeScope : Disposable, ISharingLifetimeScope, IServiceProvider
     /// <inheritdoc/>
     public bool TryGetSharedInstance(Guid primaryId, Guid? qualifyingId, [NotNullWhen(true)] out object? value)
     {
-        return qualifyingId == null
-            ? TryGetSharedInstance(primaryId, out value)
-            : _sharedQualifiedInstances.TryGetValue((primaryId, qualifyingId.Value), out value);
+        if (qualifyingId == null)
+        {
+            return TryGetSharedInstance(primaryId, out value);
+        }
+
+        var sharedQualifiedInstances = _sharedQualifiedInstances;
+        if (sharedQualifiedInstances is null)
+        {
+            value = null;
+            return false;
+        }
+
+        return sharedQualifiedInstances.TryGetValue((primaryId, qualifyingId.Value), out value);
     }
 
     /// <summary>
